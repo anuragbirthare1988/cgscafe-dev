@@ -73,35 +73,45 @@ document.addEventListener("mousemove",(e)=>{
 });
 
 // Sharing feature
-const toggle = document.getElementById("shareToggle");
-const shareContainer = document.querySelector(".shareContainer");
+const shareWrapper = document.querySelector(".share-wrapper");
+const shareMain = document.getElementById("shareMain");
 
-toggle.addEventListener("click", () => {
-  if(shareContainer) shareContainer.classList.toggle("open");
-});
+shareMain.onclick = () => {
+    shareWrapper.classList.toggle("open");
+};
 
-/* WhatsApp Share */
+/* Web Share API */
 
-const pageURL = encodeURIComponent(window.location.href);
-const text = encodeURIComponent("Check out CGS – Coffee, Grill & Shots ☕");
+function nativeShare(){
+    if(navigator.share){
+        navigator.share({
+            title:"CGS – Coffee, Grill & Shots",
+            text:"Check out this premium cafe ☕",
+            url:window.location.href
+        });
+    }
+}
 
-document.getElementById("whatsappShare").href =
-`https://wa.me/?text=${text}%20${pageURL}`;
+/* WhatsApp */
 
+document.getElementById("whatsappShare").onclick = () => {
 
-/* Copy Link */
+    const text = encodeURIComponent(
+    "Let's visit CGS – Coffee, Grill & Shots ☕\n"+window.location.href
+    );
 
-document.getElementById("copyLink").addEventListener("click", () => {
+    window.open("https://wa.me/?text="+text,"_blank");
+}
 
-  navigator.clipboard.writeText(window.location.href);
+/* Instagram */
 
-  const btn = document.getElementById("copyLink");
+document.getElementById("instaShare").onclick = nativeShare;
 
-  btn.style.background = "hsl(40 60% 56%)";
-  btn.style.color = "#1a120c";
+/* Copy */
 
-  setTimeout(()=>{
-    btn.style.background = "#2a1d15";
-  },1000);
+document.getElementById("copyLink").onclick = () => {
 
-});
+    navigator.clipboard.writeText(window.location.href);
+
+    alert("Link copied!");
+};

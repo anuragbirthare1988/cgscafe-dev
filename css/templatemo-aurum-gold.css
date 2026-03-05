@@ -3277,65 +3277,85 @@ svg,
   user-select: none;
   -webkit-user-drag: none;
 }
-.shareContainer{
-	position:fixed;
-	bottom:30px;
-	right:30px;
-	display:flex;
-	flex-direction:column;
-	align-items:center;
-	z-index:9999;
+.share-wrapper{
+position:fixed;
+bottom:300px;
+right:30px;
+width:40px;
+height:40px;
 }
 
-.share-menu{
-	display:flex;
-	flex-direction:column;
-	gap:10px;
-	margin: 10px 0 10px 0;
-	opacity:0;
-	transform:translateY(10px);
-	pointer-events:none;
-	transition:all .3s ease;
+.share-main{
+width:40px;
+height:40px;
+border:1px solid hsl(40 60% 56%);
+background:#2a1d15;
+color:hsl(40 60% 56%);
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+position:absolute;
+transition:all .35s ease;
 }
 
-.shareContainer.open .share-menu{
-	opacity:1;
-	transform:translateY(0);
-	pointer-events:auto;
+.icon-close{
+display:none;
 }
 
-.shareContainer.open .shareToggle {
-	font-size: 0;
+.share-wrapper.open .icon-share{
+display:none;
 }
 
-.share-btn,
-.share-toggle{
-	width:56px;
-	height:56px;
-	display:flex;
-	align-items:center;
-	justify-content:center;
-	background:#2a1d15;
-	border:2px solid hsl(40 60% 56%);
-	color:hsl(40 60% 56%);
-	cursor:pointer;
-	transition:all .3s ease;
+.share-wrapper.open .icon-close{
+display:block;
 }
 
-.share-btn:hover,
-.share-toggle:hover{
+.share-item{
+position:absolute;
+width:40px;
+height:40px;
+border:1px solid hsl(40 60% 56%);
+background:#2a1d15;
+display:flex;
+align-items:center;
+justify-content:center;
+opacity:0;
+transform:scale(0);
+transition:all .35s ease;
+cursor:pointer;
+}
+
+.share-wrapper.open .share-item{
+opacity:1;
+transform:scale(1);
+}
+
+.insta{ transform:translate(-70px,-10px); }
+.whatsapp{ transform:translate(-50px,-60px); }
+.copy{ transform:translate(-5px,-80px); }
+
+.share-wrapper.open .insta{ transform: translate(-20px,60px) scale(1);}
+.share-wrapper.open .whatsapp{ transform: translate(-70px,1px) scale(1)}
+.share-wrapper.open .copy{ transform: translate(-20px,-60px) scale(1);}
+
+.share-item svg{
+stroke:hsl(40 60% 56%);
+fill:none;
+stroke-width:2;
+}
+
+.share-item:hover,
+.share-main:hover, .share-wrapper.open .share-main {
 	background:hsl(40 60% 56%);
-	color:#1a120c;
-	transform:translateY(-2px);
 }
 
-.share-btn svg,
-.share-toggle svg{
-	stroke:hsl(40 60% 56%);
-	fill:none;
-	stroke-width:2;
+.share-item:hover svg, .share-main:hover svg {
+	stroke:#1a120c;
 }
 
-.share-btn:hover svg{
+.share-wrapper.open .share-main svg { 
+	background:hsl(40 60% 56%);
+	color: #2a1d15;
 	stroke:#1a120c;
 }
