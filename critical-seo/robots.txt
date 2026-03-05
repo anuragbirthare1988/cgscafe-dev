@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://anuragbirthare1988.github.io/cgscafe/sitemap.xml
