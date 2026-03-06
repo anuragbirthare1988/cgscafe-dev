@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       initReveal(); // Initialize animations
       initTabs(); // Initialize tabs
       updateActiveMenu(); // Update the active navigation menu link
+      showDevBadge(); // Shows the badge as "Dev" if URL has dev word in it
    }
 
   // Active menu upon link navigation
