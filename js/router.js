@@ -214,4 +214,20 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
    });
 });
 
+// Deploying Environment Badge
+function showDevBadge() {
+
+  const params = new URLSearchParams(window.location.search);
+  const devParam = params.get("dev");
+  const path = window.location.pathname.toLowerCase();
+  if (
+      devParam === "true" ||
+      devParam === "1" ||
+      path.includes("dev")
+     ) {
+      document.getElementById("dev-badge").style.display = "block";
+      }
+   }
+   document.addEventListener("DOMContentLoaded", showDevBadge);
+
 });
