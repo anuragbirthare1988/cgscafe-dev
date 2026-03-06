@@ -150,7 +150,7 @@ img {
 }
 
 .nav-links a::before {
-	content: '―';
+	content: '→';
 	position: absolute;
 	left: -20px;
 	top: 50%;
@@ -654,7 +654,7 @@ body.menu-open {
 
 /* Section Styles */
 section {
-	padding: 120px 0;
+	padding: 170px 0;
 }
 
 .section-header {
@@ -3060,7 +3060,7 @@ section.content-section:nth-child(even) { background: var(--off-white);}
 
 #scroll-buttons {
 	position: fixed;
-	bottom: 100px;
+	bottom: 160px;
 	right: 30px;
 	display: flex;
 	flex-direction: column;
@@ -3279,7 +3279,7 @@ svg,
 }
 .share-wrapper{
 position:fixed;
-bottom:300px;
+bottom:80px;
 right:30px;
 width:40px;
 height:40px;

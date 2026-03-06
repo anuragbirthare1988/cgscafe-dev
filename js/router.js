@@ -16,6 +16,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     { path: "visit-us", file: "visit-us.html", title: "Visit Us | CGS Cafe" }
   ];
 
+  function initPageFeatures(){
+      initReveal(); // Initialize animations
+      initTabs(); // Initialize tabs
+      updateActiveMenu(); // Update the active navigation menu link
+   }
+
   // Active menu upon link navigation
   function updateActiveMenu() {
     let currentHash = window.location.hash.replace("#", "");
@@ -31,6 +37,33 @@ document.addEventListener("DOMContentLoaded", async () => {
         link.classList.add("active");
       }
     });
+  }
+
+  function initTabs() {
+   // Product tabs
+   const tabBtns = document.querySelectorAll('.tab-btn');
+   const tabContents = document.querySelectorAll('.tab-content');
+   tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+         const tabId = btn.getAttribute('data-tab');
+
+         // Remove active from all buttons
+         tabBtns.forEach(b => b.classList.remove('active'));
+         // Add active to clicked button
+         btn.classList.add('active');
+
+         // Hide all tab contents
+         tabContents.forEach(content => {
+            content.classList.remove('active');
+         });
+
+         // Show selected tab content
+         const activeContent = document.getElementById('tab-' + tabId);
+         if (activeContent) {
+            activeContent.classList.add('active');
+         }
+      });
+   });
   }
 
   async function loadComponent(id, file) {
@@ -53,8 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const html = await res.text();
     document.getElementById("app").innerHTML = html;
     document.title = route.title;
-    initReveal(); // Reinitialize animations
-    updateActiveMenu(); // Update the active navigation menu link
+    initPageFeatures();
   }
 
   function initReveal() {

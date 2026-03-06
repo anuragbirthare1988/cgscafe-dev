@@ -2362,7 +2362,7 @@ body {
     transition: color .3s ease
 }
 
-.nav-link:after {
+/* .nav-link:after {
     content: "";
     position: absolute;
     bottom: -2px;
@@ -2373,7 +2373,7 @@ body {
     transform: scaleX(0);
     transform-origin: right;
     transition: transform .3s ease
-}
+} */
 
 .nav-link:hover:after,.nav-link.active:after {
     transform: scaleX(1);
