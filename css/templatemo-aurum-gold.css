@@ -654,7 +654,7 @@ body.menu-open {
 
 /* Section Styles */
 section {
-	padding: 170px 0;
+	padding: 110px 0;
 }
 
 .section-header {
@@ -1597,7 +1597,7 @@ main#app { min-height: 600px;}
 
 @media (max-width: 768px) {
 	section {
-		padding: 140px 0;
+		padding: 90px 0;
 	}
 
 	.hero {
