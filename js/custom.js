@@ -72,20 +72,12 @@ document.addEventListener("mousemove",(e)=>{
   },600);
 });
 
-// Sharing feature
-const shareWrapper = document.querySelector(".share-wrapper");
-const shareMain = document.getElementById("shareMain");
-
-shareMain.onclick = () => {
-    shareWrapper.classList.toggle("open");
-};
-
 // Generic share feature
 function shareWebsite() {
     if (navigator.share) {
         navigator.share({
             title: "Let’s plan a coffee ☕",
-            text: "CGS - Coffee, Grill & Shots \nExplore Premium Coffee, Sandwiches and Refreshing Shots",
+            text: " \n \nCGS - Coffee, Grill & Shots \nExplore Premium Coffee, Sandwiches and Refreshing Shots \n \n",
             url: "https://anuragbirthare1988.github.io/cgscafe-dev"
         });
     } else {
