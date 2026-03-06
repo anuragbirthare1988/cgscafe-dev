@@ -3059,7 +3059,7 @@ section.content-section:nth-child(even) { background: var(--off-white);}
 
 #scroll-buttons {
 	position: fixed;
-	bottom: 80px;
+	bottom: 130px;
 	right: 30px;
 	display: flex;
 	flex-direction: column;
@@ -3278,7 +3278,7 @@ svg,
 }
 .share-wrapper{
 position:fixed;
-bottom:240px;
+bottom:280px;
 right:30px;
 width:40px;
 height:40px;
