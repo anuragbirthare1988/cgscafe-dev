@@ -3278,26 +3278,19 @@ svg,
 }
 footer { position: relative; bottom: 0; left: 0; right: 0;}
 #dev-badge {
-  position: fixed;
-  top: 50%;
-  left: -20px;
-  transform: translateY(-50%) rotate(-20deg);
-
-  background: rgba(255, 0, 0, 0.15);
-  color: red;
-
-  font-size: 22px;
-  font-weight: 800;
-
-  padding: 8px 18px;
-
-  border: 2px dashed red;
-  border-radius: 6px;
-
-  z-index: 9999;
-  pointer-events: none;
-
-  display: none;
+	position: fixed;
+	top: 150px;
+	left: -20px;
+	transform: translateY(-50%) rotate(-30deg);
+	background: rgba(255, 0, 0, 0.15);
+	color: red;
+	font-size: 22px;
+	font-weight: 800;
+	padding: 0 20px;
+	border: 2px dashed red;
+	z-index: 9999;
+	pointer-events: none;
+	/* display: none; */
 }
 .share-btn {
 	padding: 10px;
@@ -3309,6 +3302,7 @@ footer { position: relative; bottom: 0; left: 0; right: 0;}
 	position: fixed;
     bottom: 250px;
     right: 30px;
+	z-index: 99;
 }
 .share-btn:hover {
 	background-color: hsl(var(--gold));
