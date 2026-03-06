@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       initTabs(); // Initialize tabs
       updateActiveMenu(); // Update the active navigation menu link
       showDevBadge(); // Shows the badge as "Dev" if URL has dev word in it
+      accordionMenu();
    }
 
   // Active menu upon link navigation
@@ -38,6 +39,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         link.classList.add("active");
       }
     });
+  }
+
+  function accordionMenu() {
+   // Collapsible Accordion feature
+   document.querySelectorAll('.accordion-trigger').forEach(function(trigger) {
+      trigger.addEventListener('click', function() {
+         var item = this.closest('.accordion-item');
+         var isOpen = item.getAttribute('data-state') === 'open';
+
+         // Close all siblings in the same section
+         item.parentElement.querySelectorAll('.accordion-item').forEach(function(sibling) {
+         sibling.setAttribute('data-state', 'closed');
+         });
+
+         // Toggle clicked item
+         if (!isOpen) {
+         item.setAttribute('data-state', 'open');
+         }
+      });
+   });
   }
 
   function initTabs() {
