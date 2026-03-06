@@ -894,8 +894,8 @@ p {
   font-size: 1rem;
 }
 
+main#app { min-height: 600px;}
 @media (min-width: 601px) {
-	main#app { min-height: 300px;}
 	.info-item {
 		font-size: 0.65rem;
 		gap: 2rem;
@@ -905,7 +905,6 @@ p {
 
 /* Mobile - 2 column layout */
 @media (max-width: 600px) {
-	main#app { min-height: 200px;}
 	html {
 		font-size: .875rem; /* All 1rem (16px) elements now become 14px. 1rem = 16px is defined as default in html tag's css declaration */
 	}
@@ -3060,7 +3059,7 @@ section.content-section:nth-child(even) { background: var(--off-white);}
 
 #scroll-buttons {
 	position: fixed;
-	bottom: 160px;
+	bottom: 80px;
 	right: 30px;
 	display: flex;
 	flex-direction: column;
@@ -3279,7 +3278,7 @@ svg,
 }
 .share-wrapper{
 position:fixed;
-bottom:80px;
+bottom:240px;
 right:30px;
 width:40px;
 height:40px;
@@ -3361,3 +3360,4 @@ stroke-width:2;
 	color: #2a1d15;
 	stroke:#1a120c;
 }
+footer { position: relative; bottom: 0; left: 0; right: 0;}

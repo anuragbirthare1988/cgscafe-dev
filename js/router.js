@@ -100,12 +100,23 @@ document.addEventListener("DOMContentLoaded", async () => {
                 el.classList.add("active");
             }
         });
+        // Enable top-down buttons if content is scrollable
+        const scrollDownBtn = document.querySelector(".scroll-down-btn");
+        if (scrollDownBtn) {
+            if (document.body.scrollHeight > window.innerHeight) {
+                scrollDownBtn.disabled = false;
+            } else {
+                scrollDownBtn.disabled = true;
+            }
+        }
     }
     window.removeEventListener("scroll", revealOnScroll);
     window.addEventListener("scroll", revealOnScroll);
-
+    // Run once on load to handle elements already in view
     revealOnScroll();
-  }
+   }
+   // Initialize after DOM is loaded
+   document.addEventListener("DOMContentLoaded", initReveal);
 
   function router() {
     const hash = window.location.hash.replace("#/", "") || "home";
