@@ -80,38 +80,17 @@ shareMain.onclick = () => {
     shareWrapper.classList.toggle("open");
 };
 
-/* Web Share API */
-
-function nativeShare(){
-    if(navigator.share){
+// Generic share feature
+function shareWebsite() {
+    if (navigator.share) {
         navigator.share({
-            title:"CGS – Coffee, Grill & Shots",
-            text:"Check out this premium cafe ☕",
-            url:window.location.href
+            title: "Let’s plan a coffee ☕",
+            text: "CGS - Coffee, Grill & Shots \nExplore Premium Coffee, Sandwiches and Refreshing Shots",
+            url: "https://anuragbirthare1988.github.io/cgscafe-dev"
         });
+    } else {
+        // fallback if share not supported
+        navigator.clipboard.writeText("https://anuragbirthare1988.github.io/cgscafe-dev");
+        alert("Link copied, you can share it further.");
     }
 }
-
-/* WhatsApp */
-
-document.getElementById("whatsappShare").onclick = () => {
-
-    const text = encodeURIComponent(
-    "Let's visit CGS – Coffee, Grill & Shots ☕\n"+window.location.href
-    );
-
-    window.open("https://wa.me/?text="+text,"_blank");
-}
-
-/* Instagram */
-
-document.getElementById("instaShare").onclick = nativeShare;
-
-/* Copy */
-
-document.getElementById("copyLink").onclick = () => {
-
-    navigator.clipboard.writeText(window.location.href);
-
-    alert("Link copied!");
-};
