@@ -52,6 +52,7 @@ body {
 	line-height: 1.7;
 	font-weight: 300;
 	overflow-x: hidden;
+	cursor: url(/images/icons/cursor.svg) 16 16, auto;
 }
 
 /* Noise texture overlay */
@@ -2864,7 +2865,7 @@ main#app { min-height: 600px;}
     position: fixed;
 	z-index: 99;
     bottom: 20px;
-    right: 30px;
+    right: 10px;
 }
 
 .whatsapp-icon img {
@@ -3060,7 +3061,7 @@ section.content-section:nth-child(even) { background: var(--off-white);}
 #scroll-buttons {
 	position: fixed;
 	bottom: 130px;
-	right: 30px;
+	right: 10px;
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
@@ -3301,10 +3302,257 @@ footer { position: relative; bottom: 0; left: 0; right: 0;}
 	border-color: hsl(var(--gold) / .4);
 	position: fixed;
     bottom: 250px;
-    right: 30px;
+    right: 10px;
 	z-index: 99;
 }
 .share-btn:hover {
 	background-color: hsl(var(--gold));
 	color: hsl(var(--espresso) / .9);
+}
+
+/* Overlay (Splash) Screen */
+/* ── Intro Overlay ── */
+#intro-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  background: #1B1412;
+  transition: opacity 0.7s ease;
+}
+#intro-overlay.fade-out { opacity: 0; pointer-events: none; }
+.intro-particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+
+/* Content */
+.intro-content { position: relative; z-index: 10; text-align: center; padding: 0 1.5rem; }
+.intro-letters { display: flex; justify-content: center; line-height: 160px;}
+.intro-letter {
+  display: inline-block;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(5rem, 15vw, 10rem);
+  font-weight: 600;
+  letter-spacing: 1rem;
+  
+  /* 1. Multicolor Gradient (Gold, Bronze, Cream) */
+  background: linear-gradient(
+    to right, 
+    #C6A15B 0%, 
+    #EAD4AA 25%, 
+    #8E6E4E 50%, 
+    #D4B996 75%, 
+    #C6A15B 100%
+  );
+  background-size: 200% auto;
+  
+  /* 2. Clip to Text */
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent; /* Ensures the original color is removed */
+
+  /* 3. Original Animation + New Shimmer Animation */
+  opacity: 0; 
+  filter: blur(12px);
+  transform: translateY(30px);
+  animation: 
+    steamForm 1.2s ease forwards, 
+    shimmer 5s linear infinite;
+}
+
+/* 4. The Shimmer Keyframe (Moves the colors) */
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Ensure your original steamForm keyframe remains in your file */
+@keyframes steamForm {
+  0%   { opacity:0; filter:blur(16px); transform:translateY(40px) scale(0.9); }
+  50%  { opacity:0.6; filter:blur(6px); transform:translateY(-8px) scale(1.03); }
+  100% { opacity:1; filter:blur(0); transform:translateY(0) scale(1); }
+}
+@keyframes steamForm {
+  0%   { opacity:0; filter:blur(16px); transform:translateY(40px) scale(0.9); }
+  50%  { opacity:0.6; filter:blur(6px); transform:translateY(-8px) scale(1.03); }
+  100% { opacity:1; filter:blur(0); transform:translateY(0) scale(1); }
+}
+
+.intro-cafe-name {
+  font-family: 'Montserrat', sans-serif; color: rgba(198,161,91,0.6);
+  font-size: 3rem; letter-spacing: 0.3em; text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  opacity: 0; transform: translateY(10px);
+  animation: introFadeUp 0.8s ease forwards;
+}
+.intro-tagline {
+  /* 1. Structural Fixes */
+  display: block; /* Required for the gradient to calculate width correctly */
+  margin: 0 auto;
+  line-height: 130px; /* Adjusted for better alignment */
+  
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; 
+  font-size: 3rem; 
+  letter-spacing: 0.1em;
+
+  /* 2. The Dynamic Multicolor Gradient */
+  /* Using Gold (#C6A15B), White-Gold (#F2E2C4), and Deep Coffee (#8E6E4E) */
+  background: linear-gradient(
+    to right, 
+    #C6A15B 0%, 
+    #F2E2C4 25%, 
+    #8E6E4E 50%, 
+    #D4B996 75%, 
+    #C6A15B 100%
+  );
+  background-size: 200% auto;
+  
+  /* 3. The Clipping Magic (MUST be in this order) */
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important; /* Forces the removal of solid color */
+
+  /* 4. Combined Animations */
+  opacity: 0; 
+  transform: translateY(10px);
+  animation: 
+    introFadeUp 0.8s ease forwards, 
+    shimmer 4s linear infinite; /* Faster shimmer for visible motion */
+}
+
+/* Ensure these keyframes exist in your CSS file */
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes introFadeUp { 
+  to { opacity: 1; transform: translateY(0); } 
+}
+.brand-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 100px;
+  
+  /* Multicolor Gradient */
+  background: linear-gradient(to right, #c6a15b, #eac07b, #86e3ce, #d0e6a5);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  /* Your Original Animation + Gradient Shift */
+  opacity: 0;
+  transform: translateY(10px);
+  animation: 
+    introFadeUp 0.8s ease forwards,
+    shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  to { background-position: 200% center; }
+}
+@keyframes introFadeUp { to { opacity:1; transform:translateY(0); } }
+
+.intro-divider {
+  width: 0; height: 1px; background: #C6A15B; margin: 0 auto 0.75rem;
+  opacity: 0; animation: introDividerGrow 0.8s ease forwards;
+}
+.brand-divider {
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(to right, #ff7e5f, #feb47b, #86e3ce, #d0e6a5); margin: 0 auto 0.75rem;
+  opacity: 0; animation: introDividerGrow 0.8s ease forwards;
+}
+@keyframes introDividerGrow { to { width:60px; opacity:1; } }
+
+/* Glow */
+.intro-glow {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%); width: 300px; height: 300px;
+  border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(198,161,91,0.06) 0%, transparent 70%);
+  animation: glowPulse 3s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%,100% { transform:translate(-50%,-50%) scale(1); opacity:0.5; }
+  50%     { transform:translate(-50%,-50%) scale(1.2); opacity:0.8; }
+}
+
+/* Steam Particles */
+.steam-particle {
+  position: absolute; bottom: 40%; width: 3px; height: 3px;
+  background: rgba(198,161,91,0.4); border-radius: 50%;
+  animation: steamRise 3s ease-in-out infinite;
+}
+@keyframes steamRise {
+  0%   { transform:translateY(0) scale(1); opacity:0; }
+  20%  { opacity:0.4; }
+  100% { transform:translateY(-200px) scale(2.5); opacity:0; }
+}
+
+/* Coffee Pour Drops */
+.pour-drop {
+  position: absolute; top: -10px; width: 4px; height: 16px;
+  background: linear-gradient(to bottom, rgba(120,60,20,0.8), rgba(80,40,10,0.4));
+  border-radius: 0 0 50% 50%;
+  animation: pourFall 2s ease-in infinite;
+}
+@keyframes pourFall {
+  0%   { transform:translateY(0) scaleY(1); opacity:0; }
+  10%  { opacity:0.8; }
+  70%  { opacity:0.6; }
+  100% { transform:translateY(100vh) scaleY(1.5); opacity:0; }
+}
+
+/* Grill Sizzle Sparks */
+.sizzle-spark {
+  position: absolute; bottom: 15%; width: 3px; height: 3px;
+  background: hsl(30,100%,60%); border-radius: 50%;
+  box-shadow: 0 0 6px rgba(255,150,0,0.8), 0 0 12px rgba(200,80,0,0.4);
+  animation: sizzleRise 1.5s ease-out infinite;
+}
+@keyframes sizzleRise {
+  0%   { transform:translateY(0) scale(1); opacity:0; }
+  15%  { opacity:1; }
+  100% { transform:translateY(-120px) translateX(var(--tx,0px)) scale(0); opacity:0; }
+}
+
+/* Shot Splash Drops */
+.shot-splash {
+  position: absolute; top: 55%; width: 5px; height: 5px;
+  background: rgba(198,161,91,0.7); border-radius: 50%;
+  animation: shotSplash 2s ease-out infinite;
+}
+@keyframes shotSplash {
+  0%   { transform:translate(0,0) scale(1); opacity:0; }
+  10%  { opacity:0.9; }
+  100% { transform:translate(var(--sx,30px), var(--sy,-40px)) scale(0.3); opacity:0; }
+}
+
+/* Frappe Drizzle Lines */
+.drizzle-line {
+  position: absolute; top: 8%; width: 2px; height: 0;
+  background: linear-gradient(to bottom, rgba(210,195,170,0.7), transparent);
+  border-radius: 2px;
+  animation: drizzleFall 3s ease-in-out infinite;
+}
+@keyframes drizzleFall {
+  0%   { height:0; opacity:0; top:5%; }
+  20%  { opacity:0.6; }
+  50%  { height:80px; opacity:0.4; top:30%; }
+  100% { height:0; opacity:0; top:70%; }
+}
+
+/* Themed Emoji Particles */
+.themed-particle {
+  position: absolute; opacity: 0;
+  animation: themedFloat 3s ease-in-out infinite;
+}
+@keyframes themedFloat {
+  0%   { opacity:0; transform:translateY(0) scale(0.8) rotate(0deg); }
+  25%  { opacity:0.5; }
+  50%  { opacity:0.7; transform:translateY(-30px) scale(1.1) rotate(15deg); }
+  75%  { opacity:0.4; }
+  100% { opacity:0; transform:translateY(-60px) scale(0.6) rotate(-10deg); }
 }
