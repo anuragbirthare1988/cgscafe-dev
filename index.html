@@ -41,7 +41,9 @@
 	<link rel="canonical" href="https://anuragbirthare1988.github.io/cgscafe/">	<!-- This tells Google which URL is the official one -->
 	<meta name="theme-color" content="#3b2a1a"> <!-- This controls browser UI color on Android Chrome -->
 
-	<meta name="robots" content="noindex, nofollow" />
+	<!-- Prevent getting the site from getting crawled on search engines -->
+	<meta name="robots" content="noindex, nofollow">
+
 	<!-- Geo Location (Helps Local SEO) -->
 	<meta name="geo.region" content="IN-MP">
 	<meta name="geo.placename" content="Indore">
@@ -63,23 +65,20 @@
     <!-- templatemo tm-610-aurum-gold (templatemo.com/live/templatemo_610_aurum_gold) -->
 </head>
 <body>
-	<!-- Cursor trailing effect -->
-	<div class="cursor-trail-container"></div>
-
+	<!-- Spinkling-shimmering overlay effect on the canvas over body -->
+	<canvas id="effect-canvas"></canvas>
    <!-- Header Section -->
 	<header id="header"></header>
-
 	<!-- Main Content Section -->
    <main id="app"></main>
-
     <!-- Footer Section -->
     <footer class="footer bg-espresso" id="footer"></footer>
-
 	<!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
 	<div class="miscellaneous">
+		<!-- Cursor trailing effect -->
+		<div class="cursor-trail-container"></div>
 		<!-- Deploying Environment Badge -->
 		<div id="dev-badge">DEV</div>
-
 		<!-- Share Button -->
 		<button class="share-btn" onclick="shareWebsite()" title="Share with others">
 			<svg class="icon-share" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 w-5 h-5">
@@ -128,8 +127,8 @@
 			</div>
 			<div class="intro-glow"></div>
 		</div>
-
-
+		<!-- Custom Cursor Design -->
+		 <div id="sparkle-container"></div>
 	</div>
 
 	<script src="js/router.js"></script>
