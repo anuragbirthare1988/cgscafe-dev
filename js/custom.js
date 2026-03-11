@@ -160,5 +160,225 @@ function shareWebsite() {
   setTimeout(function() { overlay.remove(); }, 4800);
 
   // Click to skip
-  overlay.addEventListener('click', function() { overlay.remove(); });
+  // overlay.addEventListener('click', function() { overlay.remove(); });
 })();
+
+// Party effect for the all the screens
+window.onload = function() {
+    const canvas = document.createElement('canvas');
+    canvas.id = "party-canvas";
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    
+    let particles = [];
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    class Particle {
+        constructor(isStone) {
+            this.isStone = isStone;
+            // Stones explode from center, Glitter falls from top
+            this.x = isStone ? canvas.width / 2 : Math.random() * canvas.width;
+            this.y = isStone ? canvas.height / 2 : -10;
+            this.size = isStone ? Math.random() * 10 + 5 : Math.random() * 3 + 1;
+            this.speedX = (Math.random() - 0.5) * (isStone ? 15 : 2);
+            this.speedY = isStone ? (Math.random() - 0.5) * 15 : Math.random() * 3 + 2;
+            this.color = `hsl(${Math.random() * 360}, 80%, 60%)`;
+            this.rotation = Math.random() * 360;
+        }
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            if (this.isStone) this.rotation += 5;
+        }
+        draw() {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            if (this.isStone) {
+                // Drawing a "Stone" (Pentagon shape)
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation * Math.PI / 180);
+                for(let i=0; i<5; i++) {
+                    ctx.lineTo(this.size * Math.cos(i * 2 * Math.PI / 5), this.size * Math.sin(i * 2 * Math.PI / 5));
+                }
+            } else {
+                // Drawing Glitter (Circle)
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            }
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    // Initialize: 40 stones, 100 glitters
+    for (let i = 0; i < 40; i++) particles.push(new Particle(true));
+    for (let i = 0; i < 100; i++) particles.push(new Particle(false));
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Kill the party after 3 seconds
+    setTimeout(() => {
+        canvas.classList.add('fade-out');
+        setTimeout(() => canvas.remove(), 1000);
+    }, 3000);
+};
+
+// Custom Cursor Design
+document.addEventListener('mousemove', (e) => {
+  const sparkle = document.createElement('div');
+  sparkle.className = 'sparkle';
+  
+  // Random Multicolors
+  const colors = ['#FFD700', '#FF1493', '#00BFFF', '#7FFF00', '#FF4500'];
+  sparkle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+  
+  // Position
+  sparkle.style.left = e.pageX + 'px';
+  sparkle.style.top = e.pageY + 'px';
+  
+  // Add to body and remove after animation
+  document.body.appendChild(sparkle);
+  setTimeout(() => sparkle.remove(), 800);
+});
+
+// Glittering Click Appearance
+document.addEventListener('mousedown', (e) => {
+    for (let i = 0; i < 6; i++) {
+        const prop = document.createElement('div');
+        prop.className = 'party-prop';
+        // Randomize shape: Square, Circle, or Triangle (The "Stones")
+        const shapes = ['50%', '0%', '20%']; 
+        prop.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)];
+        prop.style.left = e.pageX + 'px';
+        prop.style.top = e.pageY + 'px';
+        prop.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        
+        // Random flight direction
+        const x = (Math.random() - 0.5) * 200;
+        const y = (Math.random() - 0.5) * 200;
+        prop.style.setProperty('--x', `${x}px`);
+        prop.style.setProperty('--y', `${y}px`);
+
+        document.body.appendChild(prop);
+        setTimeout(() => prop.remove(), 1000);
+    }
+});
+
+// Spinkling-shimmering overlay effect on the canvas over body
+const canvas = document.getElementById('effect-canvas');
+if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let flairs = []; 
+    // High-Intensity Palette (Added pure white for maximum pop)
+    const colors = ['#FFFFFF', '#E0F7FA', '#C6A15B', '#FF8C00', '#783C14'];
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Flair {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = Math.random() * 1.2 + 0.3; // Tiny flairs
+            this.speedX = (Math.random() - 0.5) * 4;
+            this.speedY = (Math.random() - 0.5) * 4;
+            this.color = colors[Math.floor(Math.random() * colors.length)];
+            this.life = 1.0; 
+            this.decay = 0.04; // Faster decay for "spark" feel
+        }
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            this.life -= this.decay;
+        }
+        draw() {
+            ctx.save();
+            ctx.globalAlpha = this.life;
+            ctx.fillStyle = this.color;
+            ctx.shadowBlur = 6; // High intensity glow
+            ctx.shadowColor = this.color;
+            ctx.fillRect(this.x, this.y, this.size, this.size); // Sharp square sparkle
+            ctx.restore();
+        }
+    }
+
+    class Particle {
+        constructor() { this.init(); }
+        init() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 1.2 + 0.5; // Smaller "Dust" size
+            this.color = colors[Math.floor(Math.random() * colors.length)];
+            this.isVertical = Math.random() > 0.6; 
+            this.speedY = this.isVertical ? Math.random() * 1.5 + 1 : Math.random() * 0.4 + 0.2;
+            this.speedX = this.isVertical ? 0 : (Math.random() - 0.5) * 0.3;
+            this.opacity = Math.random() * 0.6 + 0.3; // Higher base opacity (30-90%)
+            this.length = Math.random() * 6 + 3; // Shorter streaks
+        }
+        update() {
+            this.y += this.speedY;
+            this.x += this.speedX;
+            if (this.y > canvas.height) { this.y = -10; this.x = Math.random() * canvas.width; }
+        }
+        draw() {
+            ctx.save();
+            ctx.globalAlpha = this.opacity;
+            ctx.strokeStyle = this.color;
+            ctx.fillStyle = this.color;
+            ctx.shadowBlur = 3; // Subtle glow on main particles
+            ctx.shadowColor = this.color;
+
+            if (this.isVertical) {
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x, this.y + this.length);
+                ctx.stroke();
+            } else {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+    }
+
+    // Main particle count
+    for (let i = 0; i < 70; i++) { particles.push(new Particle()); }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < particles.length; i++) {
+            let p1 = particles[i];
+            p1.update();
+            p1.draw();
+            for (let j = i + 1; j < particles.length; j++) {
+                let p2 = particles[j];
+                let dx = p1.x - p2.x;
+                let dy = p1.y - p2.y;
+                if (Math.sqrt(dx * dx + dy * dy) < 15) {
+                    if (flairs.length < 100) flairs.push(new Flair(p1.x, p1.y));
+                }
+            }
+        }
+        for (let i = flairs.length - 1; i >= 0; i--) {
+            let f = flairs[i];
+            f.update();
+            f.draw();
+            if (f.life <= 0) flairs.splice(i, 1);
+        }
+        requestAnimationFrame(animate);
+    }
+    animate();
+}

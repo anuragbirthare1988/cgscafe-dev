@@ -9,13 +9,29 @@
 		<div class="reveal tabs">
 			<button class="tab-btn text-xs uppercase px-6 py-2.5 transition-all duration-300 border-border hover:border-gold hover:text-gold active" data-tab="chillers">Chillers</button>
 			<button class="tab-btn text-xs uppercase px-6 py-2.5 transition-all duration-300 border-border hover:border-gold hover:text-gold" data-tab="hot-drinks">Hot Drinks</button>
-			<button class="tab-btn text-xs uppercase px-6 py-2.5 transition-all duration-300 border-border hover:border-gold hover:text-gold" data-tab="sandwiches">Sandwiches</button>
 			<button class="tab-btn text-xs uppercase px-6 py-2.5 transition-all duration-300 border-border hover:border-gold hover:text-gold" data-tab="refreshing-drinks">Refreshing Drinks</button>
-			<button class="tab-btn text-xs uppercase px-6 py-2.5 transition-all duration-300 border-border hover:border-gold hover:text-gold" data-tab="shots">Shots</button>
+			<button class="tab-btn text-xs uppercase px-6 py-2.5 transition-all duration-300 border-border hover:border-gold hover:text-gold" data-tab="pasta">Pasta</button>
+			<button class="tab-btn text-xs uppercase px-6 py-2.5 transition-all duration-300 border-border hover:border-gold hover:text-gold" data-tab="sandwiches">Sandwiches</button>
 		</div>
 
 		<!-- Chillers Tab -->
 		<div class="tab-content active" id="tab-chillers">
+			<div class="reveal product-card">
+				<div class="product-image">
+					<img src="images/dishes/drinks/signature-frozen-coffee.jpg" alt="Frozen Coffee Slush">
+					<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
+				</div>
+				<div class="product-info">
+					<h3 class="product-name">Frozen Coffee Slush</h3>
+					<div class="product-summary">
+						Sun-kissed crema swirled in icy velvet with a rich caramel heart — a gilded arctic bliss.
+					</div>
+					<div class="product-quantity flex items-center gap-3 flex-wrap">
+						<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">300ml</span>
+						<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">420ml</span>
+					</div>
+				</div>
+			</div>
 			<div class="reveal product-card">
 				<div class="product-image">
 					<img src="images/dishes/drinks/hazelnut-cold-coffee.jpg" alt="Hazelnut Cold Coffee">
@@ -64,7 +80,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="reveal product-card">
+			<!-- <div class="reveal product-card">
 				<div class="product-image">
 					<img src="images/dishes/drinks/lotus-biscoff-shake.jpg" alt="Lotus Biscoff Shake">
 					<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
@@ -79,7 +95,7 @@
 						<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">420ml</span>
 					</div>
 				</div>
-			</div>
+			</div> -->
 		</div>
 		
 		<!-- Hot Drinks Tab -->
@@ -116,19 +132,67 @@
 			</div>
 		</div>
 
-		<!-- Sandwiches Tab -->
-		<div class="tab-content" id="tab-sandwiches">
-			<p class="text-gold">No products available in this section yet</p>
-		</div>
-
 		<!-- Refreshing Drinks Tab -->
 		<div class="tab-content" id="tab-refreshing-drinks">
-			<p class="text-gold">No products available in this section yet</p>
+			<div class="reveal product-card">
+				<div class="product-image">
+					<img src="images/dishes/drinks/blue-lagoon.jpg" alt="Blue Lagoon">
+					<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
+				</div>
+				<div class="product-info">
+					<h3 class="product-name">Blue Lagoon</h3>
+					<div class="product-summary">
+						Ocean brilliance, a sharp citrus tang and botanical sweetness — an arctic refreshment.
+					</div>
+					<div class="product-quantity flex items-center gap-3 flex-wrap">
+						<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">320ml</span>
+					</div>
+				</div>
+			</div>
 		</div>
 
-		<!-- Shots Tab -->
-		<div class="tab-content" id="tab-shots">
-			<p class="text-gold">No products available in this section yet</p>
+		<!-- Pasta Tab -->
+		<div class="tab-content" id="tab-pasta">
+			<div class="reveal product-card">
+				<div class="product-image">
+					<img src="images/dishes/eatables/pasta/alfredo-pasta.jpg" alt="Alfredo Pasta">
+					<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
+				</div>
+				<div class="product-info">
+					<h3 class="product-name">Alfredo Pasta</h3>
+					<div class="product-summary">
+						Velvety cream folded into melted golden cheese with a hint of garlic — a silken masterpiece.
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Sandwiches Tab -->
+		<div class="tab-content" id="tab-sandwiches">
+			<div class="reveal product-card">
+				<div class="product-image">
+					<img src="images/dishes/eatables/sandwiches/masala-sandwich.jpeg" alt="Masala Sandwich">
+					<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
+				</div>
+				<div class="product-info">
+					<h3 class="product-name">Masala Sandwich</h3>
+					<div class="product-summary">
+						Vibrant mint-coriander greens, crisp capsicum and juicy tomato in a creamy curd embrace.
+					</div>
+				</div>
+			</div>
+			<div class="reveal product-card">
+				<div class="product-image">
+					<img src="images/dishes/eatables/sandwiches/pizza-sandwich.jpeg" alt="Pizza Sandwich">
+					<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
+				</div>
+				<div class="product-info">
+					<h3 class="product-name">Pizza Sandwich</h3>
+					<div class="product-summary">
+						Tangy herb-infused marinara, molten cheese and crisp garden greens — a toasted Italian dream.
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </section>
