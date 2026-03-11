@@ -3432,7 +3432,7 @@ footer { position: relative; bottom: 0; left: 0; right: 0;}
 }
 .brand-tagline {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 2rem;
+  font-size: 1.9rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   line-height: 100px;
