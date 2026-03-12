@@ -60,11 +60,11 @@ function shareWebsite() {
         navigator.share({
             title: "Let’s plan a coffee ☕",
             text: " \n \nCGS - Coffee, Grill & Shots \nExplore Premium Coffee, Sandwiches and Refreshing Shots \n \n",
-            url: "https://anuragbirthare1988.github.io/cgscafe-dev"
+            url: window.location.pathname
         });
     } else {
         // fallback if share not supported
-        navigator.clipboard.writeText("https://anuragbirthare1988.github.io/cgscafe-dev");
+        navigator.clipboard.writeText(window.location.pathname);
         alert("Link copied, you can share it further.");
     }
 }
@@ -159,7 +159,7 @@ function shareWebsite() {
   setTimeout(function() { overlay.classList.add('fade-out'); }, 3800);
   setTimeout(function() { overlay.remove(); }, 4800);
 
-  // Click to skip
+  // Click to skip the ongoing overlay animation upon page load
   // overlay.addEventListener('click', function() { overlay.remove(); });
 })();
 

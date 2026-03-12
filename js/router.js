@@ -1,20 +1,85 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
   const routes = [
-    { path: "browse-menu", file: "browse-menu.html", title: "Menu | CGS Cafe" },
-    { path: "careers", file: "careers.html", title: "Careers | CGS Cafe" },
-    { path: "cgs-experience", file: "cgs-experience.html", title: "The CGS Experience | CGS Cafe" },
-    { path: "faq", file: "faq.html", title: "FAQ | CGS Cafe" },
-    { path: "home", file: "home.html", title: "Home | CGS Cafe" },
-    { path: "hygiene", file: "hygiene.html", title: "Hygiene | CGS Cafe" },
-    { path: "orders", file: "orders.html", title: "Orders | CGS Cafe" },
-    { path: "our-story", file: "our-story.html", title: "Our Story | CGS Cafe" },
-    { path: "privacy-policy", file: "privacy-policy.html", title: "Privacy policy | CGS Cafe" },
-    { path: "signature-picks", file: "signature-picks.html", title: "Signature Picks | CGS Cafe" },
-    { path: "terms-and-conditions", file: "terms-and-conditions.html", title: "Terms and Conditions | CGS Cafe" },
-    { path: "testimonials", file: "testimonials.html", title: "Testimonials | CGS Cafe" },
-    { path: "visit-us", file: "visit-us.html", title: "Visit Us | CGS Cafe" }
-  ];
+      {
+      path: "browse-menu",
+      file: "browse-menu.html",
+      title: "Menu | CGS Cafe",
+      description: "Discover the signature coffee, frappes, and sandwiches at CGS Coffee Grill & Shots Cafe in Indore."
+      },
+      {
+         path: "careers",
+         file: "careers.html",
+         title: "Careers | CGS Cafe",
+         description: "Join the CGS Cafe team in Indore and grow with a passionate team serving premium coffee and gourmet delights."
+      },
+      {
+         path: "cgs-experience",
+         file: "cgs-experience.html",
+         title: "The CGS Experience | CGS Cafe",
+         description: "Experience the unique blend of premium instant coffee, frappe frost, grilled sandwiches, and creative shots at CGS Cafe."
+      },
+      {
+         path: "faq",
+         file: "faq.html",
+         title: "FAQ | CGS Cafe",
+         description: "Find answers to common questions about CGS Cafe’s menu, ordering, hygiene practices, and cafe experience."
+      },
+      {
+         path: "home",
+         file: "home.html",
+         title: "Home | CGS Cafe",
+         description: "Welcome to CGS Cafe – Indore’s destination for signature coffee, frappe frost, grilled sandwiches, and delightful shots."
+      },
+      {
+         path: "hygiene",
+         file: "hygiene.html",
+         title: "Hygiene | CGS Cafe",
+         description: "Learn about CGS Cafe’s commitment to cleanliness, safety, and hygiene in every cup and dish we serve."
+      },
+      {
+         path: "orders",
+         file: "orders.html",
+         title: "Orders | CGS Cafe",
+         description: "Place your order online at CGS Cafe and enjoy premium coffee, frappes, and gourmet sandwiches delivered to you."
+      },
+      {
+         path: "our-story",
+         file: "our-story.html",
+         title: "Our Story | CGS Cafe",
+         description: "Discover the journey of CGS Cafe, where premium instant coffee meets innovation and a passion for gourmet flavors."
+      },
+      {
+         path: "privacy-policy",
+         file: "privacy-policy.html",
+         title: "Privacy policy | CGS Cafe",
+         description: "Read CGS Cafe’s privacy policy outlining how we protect your personal information and ensure secure interactions."
+      },
+      {
+         path: "signature-picks",
+         file: "signature-picks.html",
+         title: "Signature Picks | CGS Cafe",
+         description: "Explore the signature coffee, frappes, and gourmet picks that define CGS Cafe’s unique menu in Indore."
+      },
+      {
+         path: "terms-and-conditions",
+         file: "terms-and-conditions.html",
+         title: "Terms and Conditions | CGS Cafe",
+         description: "Review the terms and conditions for using CGS Cafe’s website and services for a safe and seamless experience."
+      },
+      {
+         path: "testimonials",
+         file: "testimonials.html",
+         title: "Testimonials | CGS Cafe",
+         description: "Read what customers are saying about their CGS Cafe experience, from premium coffee to delicious sandwiches."
+      },
+      {
+         path: "visit-us",
+         file: "visit-us.html",
+         title: "Visit Us | CGS Cafe",
+         description: "Plan your visit to CGS Cafe in Indore and enjoy premium coffee, frappes, grilled sandwiches, and creative shots in person."
+      }
+   ];
 
   function initPageFeatures(){
       initReveal(); // Initialize animations
@@ -22,11 +87,46 @@ document.addEventListener("DOMContentLoaded", async () => {
       updateActiveMenu(); // Update the active navigation menu link
       showDevBadge(); // Shows the badge as "Dev" if URL has dev word in it
       accordionMenu();
+      generateDynamicMetaTags(); // Generates and inserts the dynamic meta tags to individual pages
+      generateCanonicalUrls(); // Add canonical URLs dynamically. This tells Google the official URL of each page.
+   }
+
+   function generateDynamicMetaTags() {
+      // Get current path without leading/trailing slashes
+      const currentPath = window.location.pathname.replace(/^\/|\/$/g, "") || "home";
+
+      // Find the matching route object from routes array
+      const route = routes.find(r => r.path === currentPath);
+
+      // Only proceed if route exists
+      if (route) {
+         // Set document title
+         document.title = route.title;
+
+         // Set meta description
+         const metaDesc = document.querySelector('meta[name="description"]');
+         if (metaDesc && route.description) {
+            metaDesc.setAttribute("content", route.description);
+         }
+      } else {
+         console.warn("No route matched for path:", currentPath);
+      }
+   }
+
+   function generateCanonicalUrls(){
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+      }
+
+      canonical.setAttribute("href", "https://cgscafe.in/" + routes.path);
    }
 
   // Active menu upon link navigation
   function updateActiveMenu() {
-    let currentHash = window.location.hash.replace("#", "");
+    let currentHash = window.location.pathname.replace("/", "");
 
     if (currentHash === "") currentHash = "home";
 
@@ -141,9 +241,20 @@ document.addEventListener("DOMContentLoaded", async () => {
    document.addEventListener("DOMContentLoaded", initReveal);
 
   function router() {
-    const hash = window.location.hash.replace("#/", "") || "home";
-    loadPage(hash);
-  }
+      let path = window.location.pathname;
+      if (window.location.hash.startsWith("#/")) {
+         path = window.location.hash.replace("#/", "");
+         // remove hash and convert to clean URL
+         history.replaceState(null, "", "/" + path);
+      } 
+      else {
+         path = path.replace("/", "");
+      }
+      if (!path || path === "") {
+         path = "home";
+      }
+      loadPage(path);
+   }
 
   // Load header & footer once
   await loadComponent("header", "components/header.html");
@@ -151,12 +262,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Listen for navigation clicks
   document.addEventListener("click", (e) => {
-    if (e.target.matches("[data-link]")) {
+      const link = e.target.closest("[data-link]");
+      if (!link) return;
       e.preventDefault();
-      const page = e.target.getAttribute("href").replace("/", "");
-      window.location.hash = "/" + page;
-    }
-  });
+      const url = link.getAttribute("href");
+      history.pushState(null, "", url);
+      router();
+   });
 
   // Handle back/forward
   window.addEventListener("hashchange", router);
