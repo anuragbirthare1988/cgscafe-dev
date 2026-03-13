@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
          description: "Read CGS Cafe’s privacy policy outlining how we protect your personal information and ensure secure interactions."
       },
       {
-         path: "signature-picks",
+         path: "must-haves",
          file: "must-haves.html",
          title: "Signature Picks | CGS Cafe",
          description: "Explore the signature coffee, frappes, and gourmet picks that define CGS Cafe’s unique menu in Indore."
