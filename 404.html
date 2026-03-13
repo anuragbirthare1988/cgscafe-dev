@@ -1,31 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Redirecting…</title>
-  <script>
-    (function() {
-      // Get current hostname and path
-      const hostname = window.location.hostname; // e.g., cgscafe.in or dev.cgscafe.in
-      const pathname = window.location.pathname;
-
-      // If user is already at root or index.html, no redirect needed
-      if (pathname === '/' || pathname === '/index.html') return;
-
-      // Dynamically redirect all unknown paths to index.html
-      // Your SPA router can then parse the path and render correctly
-      const target = '/' + (pathname.startsWith('/') ? pathname.slice(1) : pathname);
-
-      // Preserve path in history without causing server 404
-      window.history.replaceState({}, '', target);
-
-      // Optional: store the original path for SPA routing
-      window.__ORIGINAL_PATH__ = pathname;
-    })();
-  </script>
-</head>
-<body>
-  <h1>Loading…</h1>
-  <p>If nothing happens, <a href="/">click here</a>.</p>
-</body>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <script>
+         var path = window.location.pathname;
+         window.location.replace("/#" + path);  // This snippet is used to eliminate hash (#) from the URLs (before the param) and creates the URL with no hash tags in it. Ex: The URLs will get converted from like cgscafe.in/#/gallery to cgscafe.in/gallery
+      </script>
+   </head>
+   <body></body>
 </html>
