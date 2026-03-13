@@ -1,18 +1,11 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <script type="text/javascript">
-      // This snippet is used to eliminate hash (#) from the URLs (before the param) and creates the URL with no hash tags in it. Ex: The URLs will get converted from like cgscafe.in/#/faq to cgscafe.in/faq
-      // This script takes the current URL and turns it into a query string
-      // So /dishes/pasta becomes /?p=/dishes/pasta
-      var l = window.location;
-      l.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-        l.pathname.split('/').slice(0, 1).join('/') + '/?p=/' +
-        l.pathname.slice(1).split('/').join('/').replace(/&/g, '~and~') +
-        (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-        l.hash);
-    </script>
-  </head>
-  <body></body>
+   <head>
+      <meta charset="utf-8">
+      <script>
+         var path = window.location.pathname;
+         window.location.replace("/#" + path);  // This snippet is used to eliminate hash (#) from the URLs (before the param) and creates the URL with no hash tags in it. Ex: The URLs will get converted from like cgscafe.in/#/gallery to cgscafe.in/gallery
+      </script>
+   </head>
+   <body></body>
 </html>

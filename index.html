@@ -33,23 +33,6 @@
 		}
 	</script>
 <head>
-	<script type="text/javascript">
-		// This script captures the path (e.g., /gallery) and converts it into a search parameter that won't confuse the browser's image loading.
-		(function(l) {
-			if (l.search[1] === 'p') {
-			var decoded = l.search.slice(1).split('&').map(function(s) { 
-				return s.replace(/~and~/g, '&') 
-			}).filter(function(s) { 
-				return s.slice(0, 2) === 'p=' 
-			})[0];
-			if (decoded !== undefined) {
-				window.history.replaceState(null, null,
-				l.pathname.slice(0, -1) + decoded.slice(2) + l.hash
-				);
-			}
-			}
-		}(window.location))
-	</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>CGS Café Indore | Coffee, Grill & Mocktail Shots | Scheme No 103</title>
@@ -58,8 +41,8 @@
 	<link rel="canonical" href="https://cgscafe.in/">	<!-- This tells Google which URL is the official one -->
 	<meta name="theme-color" content="#3b2a1a"> <!-- This controls browser UI color on Android Chrome -->
 
-	<!-- Uncomment the following snippet to continue getting the site getting crawled on search engines -->
-	<meta name="robots" content="noindex, nofollow">
+	<!-- Prevent getting the site from getting crawled on search engines -->
+	<!-- <meta name="robots" content="noindex, nofollow"> -->
 
 	<!-- Geo Location (Helps Local SEO) -->
 	<meta name="geo.region" content="IN-MP">
@@ -75,10 +58,10 @@
 	<meta property="og:image" content="https://cgscafe.in/images/cgs-preview.jpg">
 
 	<meta name="google-site-verification" content="fd40eee476e539a8" />
-	<link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any">	
-    <link rel="stylesheet" href="/css/templatemo-aurum-gold.css">
-    <link rel="stylesheet" href="/css/main.css">
-    <link href="/fonts/google-fonts.css" rel="stylesheet">
+	<link rel="icon" type="image/x-icon" href="favicon.ico" sizes="any">	
+    <link rel="stylesheet" href="css/templatemo-aurum-gold.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="fonts/google-fonts.css" rel="stylesheet">
     <!-- templatemo tm-610-aurum-gold (templatemo.com/live/templatemo_610_aurum_gold) -->
 </head>
 <body>
@@ -148,10 +131,7 @@
 		 <div id="sparkle-container"></div>
 	</div>
 
-	<script src="/js/router.js"></script>
-	<script src="/js/custom.js"></script>
+	<script src="js/router.js"></script>
+	<script src="js/custom.js"></script>
 </body>
 </html>
-
-
-
