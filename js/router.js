@@ -352,13 +352,10 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 function showDevBadge() {
 
   const params = new URLSearchParams(window.location.search);
+  isDevEnv = window.location.href.toLowerCase().includes('dev');
+//   console.log(params, isDevEnv);
   const devParam = params.get("dev");
-  const path = window.location.pathname.toLowerCase();
-  if (
-      devParam === "true" ||
-      devParam === "1" ||
-      path.includes("dev")
-     ) {
+  if (isDevEnv) {
       document.getElementById("dev-badge").style.display = "block";
       }
    }
