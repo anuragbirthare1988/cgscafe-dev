@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
       {
          path: "signature-picks",
-         file: "signature-picks.html",
+         file: "must-haves.html",
          title: "Signature Picks | CGS Cafe",
          description: "Explore the signature coffee, frappes, and gourmet picks that define CGS Cafe’s unique menu in Indore."
       },
