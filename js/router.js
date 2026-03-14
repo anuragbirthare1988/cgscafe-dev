@@ -244,14 +244,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       let path = window.location.pathname;
       if (window.location.hash.startsWith("#/")) {
          path = window.location.hash.replace("#/", "");
-         // remove hash and convert to clean URL
          history.replaceState(null, "", "/" + path);
-      } 
-      else {
+      } else {
          path = path.replace("/", "");
       }
       if (!path || path === "") {
          path = "home";
+      }
+      const matchedRoute = routes.find(r => r.path === path);
+      if (!matchedRoute) {
+         show404();
+         return;
       }
       loadPage(path);
    }
@@ -360,5 +363,75 @@ function showDevBadge() {
       }
    }
    document.addEventListener("DOMContentLoaded", showDevBadge);
-
 });
+
+function show404() {
+   document.body.innerHTML = `<div id="not-found-page" class="nf-container">
+   <div class="nf-glow"></div>
+   <div class="nf-card" id="nf-card">
+      <p class="nf-404" id="nf-num">404</p>
+      <div class="nf-divider"></div>
+      <h1 class="nf-title">Looks like this page didn't make it to the menu.</h1>
+      <p class="nf-desc">We checked the blender, the grill, and even behind the coffee jars — but the page you're looking for hasn't been served yet.</p>
+      <p class="nf-phrase" id="nf-phrase">"Still searching..."</p>
+      <a href="/browse-menu" class="nf-cta">Take Me to the Menu</a>
+      <p class="nf-hint">click anywhere for a surprise</p>
+   </div>
+   </div>`;
+   (function () {
+      var EMOJIS = ['☕','🥤','🧊','🔥','🥪','🥗','🍝','🧁','🍫','🧀'];
+      var PHRASES = [
+         'Still searching...',
+         'Not in the grill either!',
+         'The barista says no.',
+         'Maybe try the dessert section?',
+         '404 coffee drops spilled.',
+         'This page is on a coffee break.',
+      ];
+
+      var container = document.getElementById('not-found-page');
+      var card = document.getElementById('nf-card');
+      var numEl = document.getElementById('nf-num');
+      var phraseEl = document.getElementById('nf-phrase');
+      var clickCount = 0;
+
+      // 3D tilt
+      container.addEventListener('mousemove', function (e) {
+         var rect = container.getBoundingClientRect();
+         var x = (e.clientX - rect.left - rect.width / 2) / rect.width;
+         var y = (e.clientY - rect.top - rect.height / 2) / rect.height;
+         card.style.transform = 'perspective(800px) rotateY(' + (x * 5) + 'deg) rotateX(' + (-y * 5) + 'deg)';
+      });
+
+      // Click interactions
+      container.addEventListener('click', function (e) {
+         var rect = container.getBoundingClientRect();
+         var cx = e.clientX - rect.left;
+         var cy = e.clientY - rect.top;
+
+         // Spark burst
+         for (var i = 0; i < 6; i++) {
+            var spark = document.createElement('span');
+            spark.className = 'nf-spark';
+            spark.textContent = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+            spark.style.left = cx + 'px';
+            spark.style.top = cy + 'px';
+            spark.style.setProperty('--angle', (Math.random() * Math.PI * 2) + 'rad');
+            spark.style.setProperty('--dist', (50 + Math.random() * 70) + 'px');
+            container.appendChild(spark);
+            setTimeout(function (s) { s.remove(); }.bind(null, spark), 1200);
+         }
+
+         // Wiggle 404
+         numEl.classList.add('wiggle');
+         setTimeout(function () { numEl.classList.remove('wiggle'); }, 600);
+
+         // Cycle phrase
+         clickCount++;
+         phraseEl.textContent = '"' + PHRASES[clickCount % PHRASES.length] + '"';
+         phraseEl.style.animation = 'none';
+         phraseEl.offsetHeight; // reflow
+         phraseEl.style.animation = 'nfFadeIn 0.3s ease-out';
+      });
+      })();
+}

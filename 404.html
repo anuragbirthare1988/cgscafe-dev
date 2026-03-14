@@ -4,7 +4,9 @@
       <meta charset="utf-8">
       <script>
          var path = window.location.pathname;
-         window.location.replace("/#" + path);  // This snippet is used to eliminate hash (#) from the URLs (before the param) and creates the URL with no hash tags in it. Ex: The URLs will get converted from like cgscafe.in/#/gallery to cgscafe.in/gallery
+         if(path !== "/" && !path.includes(".")){
+               window.location.replace("/#" + path);
+         }  // This snippet is used to eliminate hash (#) from the URLs (before the param) and creates the URL with no hash tags in it. Ex: The URLs will get converted from like cgscafe.in/#/gallery to cgscafe.in/gallery
       </script>
    </head>
    <body></body>
