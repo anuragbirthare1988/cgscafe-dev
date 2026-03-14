@@ -41,8 +41,8 @@
 	<link rel="canonical" href="https://cgscafe.in/">	<!-- This tells Google which URL is the official one -->
 	<meta name="theme-color" content="#3b2a1a"> <!-- This controls browser UI color on Android Chrome -->
 
-	<!-- Prevent getting the site from getting crawled on search engines -->
-	<meta name="robots" content="noindex, nofollow">
+	<!-- Uncomment For PROD Environment. Commenting prevents getting the site from getting crawled on search engines -->
+	<!-- <meta name="robots" content="noindex, nofollow"> -->
 
 	<!-- Geo Location (Helps Local SEO) -->
 	<meta name="geo.region" content="IN-MP">
@@ -107,7 +107,7 @@
 			<img src="images/whatsapp.png" alt="whatsapp-icon">
 		</a>
 		<!-- Overlay (Splash) screen -->
-		<div id="intro-overlay">
+		<div class="intro-overlay" id="intro-overlay">
 			<div class="intro-particles" id="steamParticles"></div>
 			<div class="intro-particles" id="pourDrops"></div>
 			<div class="intro-particles" id="sizzleSparks"></div>

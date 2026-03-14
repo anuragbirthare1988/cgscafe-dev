@@ -3269,14 +3269,18 @@ filter:blur(0.6px);
 }
 
 /* Prevents users from accidentally selecting text while clicking */
-button,
-a,
-.nav-item,
-.icon-btn,
-img,
-svg,
-.icon, .hero-content, .intro-content {
+/* Disable selection for everything */
+* {
   user-select: none;
+}
+
+.hero-content *, .intro-overlay * {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+/* Allow selection only for text elements */
+p, span, h1, h2, h3, h4, h5, h6, a, li, input, textarea {
+  user-select: text;
   -webkit-user-drag: none;
 }
 footer { position: relative; bottom: 0; left: 0; right: 0;}

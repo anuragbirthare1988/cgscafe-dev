@@ -1,3 +1,14 @@
+// Remove selection on (Esc) key
+document.addEventListener('keydown', function(e) {
+  if (e.key === "Escape") {
+    // Clear any current selection
+    const selection = window.getSelection();
+    if (selection) {
+      selection.removeAllRanges();
+    }
+  }
+});
+
 // Top -Bottom quick scrolling feature
 const scrollToTopBtn = document.getElementById("to-top");
 const scrollToBottomBtn = document.getElementById("to-bottom");
