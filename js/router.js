@@ -120,8 +120,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       canonical.setAttribute("rel", "canonical");
       document.head.appendChild(canonical);
       }
-
-      canonical.setAttribute("href", "https://cgscafe.in/" + routes.path);
+      const path = routes.path ? routes.path : "";
+      canonical.setAttribute("href", "https://cgscafe.in/" + path);
    }
 
   // Active menu upon link navigation
