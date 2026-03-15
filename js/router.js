@@ -2,82 +2,88 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const routes = [
       {
-      path: "browse-menu",
-      file: "browse-menu.html",
-      title: "Menu | CGS Cafe",
-      description: "Discover the signature coffee, frappes, and sandwiches at CGS Coffee Grill & Shots Cafe in Indore."
+         path: "browse-menu",
+         file: "browse-menu.html",
+         title: "Cafe Menu | Coffee, Sandwiches & Frappes | CGS Cafe Indore",
+         description: "Browse the full menu at CGS Cafe in Scheme No 103, Indore. Explore premium coffee, frappes, grilled sandwiches, mocktails and signature cafe delights."
       },
       {
          path: "careers",
          file: "careers.html",
-         title: "Careers | CGS Cafe",
-         description: "Join the CGS Cafe team in Indore and grow with a passionate team serving premium coffee and gourmet delights."
+         title: "Careers | Work With CGS Cafe Indore",
+         description: "Looking to work in a vibrant cafe environment? Join the CGS Cafe team in Indore and grow with a passionate group serving premium coffee and gourmet food."
       },
       {
          path: "cgs-experience",
          file: "cgs-experience.html",
-         title: "The CGS Experience | CGS Cafe",
-         description: "Experience the unique blend of premium instant coffee, frappe frost, grilled sandwiches, and creative shots at CGS Cafe."
+         title: "The CGS Experience | Premium Cafe Experience in Indore",
+         description: "Discover the CGS Cafe experience in Indore where premium coffee, frappe frost, grilled sandwiches and signature shots come together to create a unique cafe vibe."
       },
       {
          path: "faq",
          file: "faq.html",
-         title: "FAQ | CGS Cafe",
-         description: "Find answers to common questions about CGS Cafe’s menu, ordering, hygiene practices, and cafe experience."
+         title: "Cafe FAQ | CGS Cafe Indore",
+         description: "Find answers to common questions about CGS Cafe in Indore including menu details, takeaway options, hygiene standards and cafe policies."
       },
       {
          path: "home",
          file: "home.html",
-         title: "Home | CGS Cafe",
-         description: "Welcome to CGS Cafe – Indore’s destination for signature coffee, frappe frost, grilled sandwiches, and delightful shots."
+         title: "CGS Cafe Indore | Coffee, Grill & Shots | Scheme No 103",
+         description: "CGS Cafe in Scheme No 103, Indore serving premium coffee, frappes, grilled sandwiches, mocktails and signature cafe beverages. Jumpstart your mood."
       },
       {
          path: "hygiene",
          file: "hygiene.html",
-         title: "Hygiene | CGS Cafe",
-         description: "Learn about CGS Cafe’s commitment to cleanliness, safety, and hygiene in every cup and dish we serve."
+         title: "Hygiene Standards | CGS Cafe Indore",
+         description: "Learn about CGS Cafe’s commitment to hygiene, food safety and cleanliness while preparing every coffee, sandwich and beverage."
       },
       {
          path: "orders",
          file: "orders.html",
-         title: "Orders | CGS Cafe",
-         description: "Place your order online at CGS Cafe and enjoy premium coffee, frappes, and gourmet sandwiches delivered to you."
+         title: "Order & Enquiries | CGS Cafe Indore",
+         description: "Contact CGS Cafe for takeaway orders or enquiries. Enjoy freshly prepared coffee, sandwiches and beverages from our cafe in Scheme No 103 Indore."
       },
       {
          path: "our-story",
          file: "our-story.html",
-         title: "Our Story | CGS Cafe",
-         description: "Discover the journey of CGS Cafe, where premium instant coffee meets innovation and a passion for gourmet flavors."
+         title: "Our Story | The Journey Behind CGS Cafe Indore",
+         description: "Discover the story behind CGS Cafe in Indore – built around a passion for premium coffee, grilled sandwiches and creating a unique cafe experience."
       },
       {
          path: "privacy-policy",
          file: "privacy-policy.html",
-         title: "Privacy policy | CGS Cafe",
-         description: "Read CGS Cafe’s privacy policy outlining how we protect your personal information and ensure secure interactions."
+         title: "Privacy Policy | CGS Cafe",
+         description: "Read the privacy policy of CGS Cafe outlining how we protect visitor information and maintain secure interactions on our website."
       },
       {
          path: "must-haves",
          file: "must-haves.html",
-         title: "Signature Picks | CGS Cafe",
-         description: "Explore the signature coffee, frappes, and gourmet picks that define CGS Cafe’s unique menu in Indore."
+         title: "Signature Picks | Must Try Items at CGS Cafe Indore",
+         description: "Explore the must-try signature picks at CGS Cafe in Indore including premium coffee, frappe frost, grilled sandwiches and refreshing beverages."
       },
       {
          path: "terms-and-conditions",
          file: "terms-and-conditions.html",
-         title: "Terms and Conditions | CGS Cafe",
-         description: "Review the terms and conditions for using CGS Cafe’s website and services for a safe and seamless experience."
+         title: "Terms & Conditions | CGS Cafe Website",
+         description: "Review the terms and conditions governing the use of the CGS Cafe website and its services."
       },
       {
          path: "testimonials",
          file: "testimonials.html",
-         title: "Testimonials | CGS Cafe",
-         description: "Read what customers are saying about their CGS Cafe experience, from premium coffee to delicious sandwiches."
+         title: "Customer Reviews | CGS Cafe Indore",
+         description: "See what customers say about their experience at CGS Cafe in Indore, from premium coffee to delicious grilled sandwiches."
       },
       {
          path: "visit-us",
          file: "visit-us.html",
-         title: "Visit Us | CGS Cafe",
-         description: "Plan your visit to CGS Cafe in Indore and enjoy premium coffee, frappes, grilled sandwiches, and creative shots in person."
+         title: "Visit CGS Cafe | Scheme No 103 Indore",
+         description: "Visit CGS Cafe in Scheme No 103, Indore for premium coffee, frappes, grilled sandwiches and refreshing cafe beverages."
+      },
+      {
+         path: "cafe-in-indore",
+         file: "cafe-in-indore.html",
+         title: "Best Cafe in Scheme No 103 Indore | CGS Cafe",
+         description: "Looking for a cafe in Scheme No 103 Indore? CGS Cafe serves premium coffee, frappes, grilled sandwiches and refreshing beverages in a relaxed cafe setting."
       }
    ];
 
@@ -87,8 +93,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       updateActiveMenu(); // Update the active navigation menu link
       showDevBadge(); // Shows the badge as "Dev" if URL has dev word in it
       accordionMenu();
+      generateMetaData();
+   }
+
+   function generateMetaData() { // Generates meta data for individual pages dynamically once the page URL is hit
       generateDynamicMetaTags(); // Generates and inserts the dynamic meta tags to individual pages
-      generateCanonicalUrls(); // Add canonical URLs dynamically. This tells Google the official URL of each page.
+      generateCanonicalUrlsAndOgTags(); // Add canonical URLs and Og URLs dynamically. This tells Google the official URL of each page.
    }
 
    function generateDynamicMetaTags() {
@@ -97,7 +107,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Find the matching route object from routes array
       const route = routes.find(r => r.path === currentPath);
-
       // Only proceed if route exists
       if (route) {
          // Set document title
@@ -113,15 +122,25 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
    }
 
-   function generateCanonicalUrls(){
+   function generateCanonicalUrlsAndOgTags(route) {
+      // Canonical tags generation
       let canonical = document.querySelector('link[rel="canonical"]');
       if (!canonical) {
-      canonical = document.createElement("link");
-      canonical.setAttribute("rel", "canonical");
-      document.head.appendChild(canonical);
+         canonical = document.createElement("link");
+         canonical.setAttribute("rel", "canonical");
+         document.head.appendChild(canonical);
       }
-      const path = routes.path ? routes.path : "";
-      canonical.setAttribute("href", "https://cgscafe.in/" + path);
+      let canonicalUrl = "https://cgscafe.in/";
+      if (route && route.path && route.path !== "home") {
+         canonicalUrl += route.path;
+      }
+      canonical.setAttribute("href", canonicalUrl);
+
+      // Og tags generation
+      const ogUrl = document.querySelector('meta[property="og:url"]');
+      if(ogUrl){
+         ogUrl.setAttribute("content", canonicalUrl);
+      }
    }
 
   // Active menu upon link navigation
