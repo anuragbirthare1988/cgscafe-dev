@@ -33,6 +33,41 @@
 		}
 	</script>
 <head>
+	<script> // This scripot is linked with the script written in 404.html
+		/*
+		RESTORE ORIGINAL ROUTE AFTER SPA FALLBACK
+
+		If a user was redirected here from 404.html,
+		the original path (like /our-story) will be
+		stored in sessionStorage.
+
+		This script restores that path in the browser URL
+		without reloading the page, allowing router.js
+		to load the correct SPA content.
+
+		Example flow:
+		user visits /our-story
+			↓
+		404.html stores path and redirects to /
+			↓
+		index.html loads
+			↓
+		this script restores /our-story in the URL
+			↓
+		router.js loads the corresponding page
+		*/
+
+		(function() {
+			// Check if a stored redirect path exists
+			var redirect = sessionStorage.redirect;
+			if (redirect) {
+				// Remove stored value to prevent repeated redirects
+				delete sessionStorage.redirect;
+				// Update browser URL without reloading the page
+				history.replaceState(null, null, redirect);
+			}
+			})();
+		</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>CGS Café Indore | Coffee, Grill & Mocktail Shots | Scheme No 103</title>
