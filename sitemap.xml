@@ -62,31 +62,38 @@
   </url>
 
   <url>
-    <loc>https://cgscafe.in/hygiene</loc>
-    <lastmod>2026-03-16</lastmod>
+    <loc>https://cgscafe.in/join-our-team</loc>
+    <lastmod>2026-03-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://cgscafe.in/careers</loc>
+    <loc>https://cgscafe.in/hygiene</loc>
     <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
 
   <url>
-    <loc>https://cgscafe.in/faq</loc>
+    <loc>https://cgscafe.in/careers</loc>
     <lastmod>2026-03-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
+    <loc>https://cgscafe.in/faq</loc>
+    <lastmod>2026-03-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.2</priority>
+  </url>
+
+  <url>
     <loc>https://cgscafe.in/testimonials</loc>
     <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
+    <priority>0.1</priority>
   </url>
 
 </urlset>

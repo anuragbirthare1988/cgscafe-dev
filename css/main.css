@@ -1885,6 +1885,10 @@ body {
     line-height: 1rem
 }
 
+.text-xxs {
+    font-size: .7rem;
+}
+
 .font-bold {
     font-weight: 700
 }

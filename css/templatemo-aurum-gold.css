@@ -1122,7 +1122,7 @@ main#app { min-height: 600px;}
     overflow: auto;
     font-family: Cormorant Garamond, serif;
     font-style: italic;
-    font-size: 1.25rem;
+    font-size: 1.10rem;
 }
 
 .must-haves .product-summary {
@@ -2990,8 +2990,10 @@ ul li.why-item { border: none;}
 }
 
 .product-quantity .serving-quantity {
-	background: #e7bd77;
-    color: #000;
+	background: rgb(207 162 73 / 18%);
+    color: #c48825;
+    border: 1px solid #e8d7b9;
+	font-size: 0.65rem;
 }
 
 section.content-section:nth-child(odd) { background: var(--light-off-white);}
@@ -3008,8 +3010,7 @@ section.content-section:nth-child(even) { background: var(--off-white);}
     border-radius: 4px;
 }
 .category-name {
-	font-family: 'Montserrat', sans-serif;
-	color: var(--coffee-brown);
+	color: #000;
 	font-weight: 400;
 }
 
@@ -4082,8 +4083,8 @@ z-index:2;
   text-align: center;
   margin-bottom: 40px;
   background: hsl(13 20% 9%);
-  padding: 80px 30px 50px;
-  margin: -100px -30px 0;
+  padding: 80px 0 50px;
+  margin: -100px 0 0;
 }
 
 .cgs-story-header h1 {
@@ -4147,11 +4148,8 @@ z-index:2;
 
 .cgs-offerings {
   text-align: center;
-  padding: 60px 0;
+  padding: 30px 15px;
   background: hsl(30 20% 88% / 0.4);
-  margin: 0 -30px;
-  padding-left: 30px;
-  padding-right: 30px;
 }
 
 .cgs-offerings h2 {
@@ -4191,13 +4189,13 @@ z-index:2;
 
 .cgs-diamond {
   color: hsl(39 48% 57%);
-  font-size: 18px;
+  font-size: 2rem;
   display: block;
   margin-bottom: 8px;
 }
 
 .cgs-offering-card p {
-  font-size: 12px;
+  font-size: 1rem;
   letter-spacing: 0.03em;
   margin: 0;
 }
@@ -4205,8 +4203,9 @@ z-index:2;
 .cgs-cta-section {
   text-align: center;
   background: hsl(13 20% 9%);
-  margin: 40px -30px -100px;
-  padding: 60px 30px 80px;
+  margin: 40px 0 -110px;
+  padding: 60px 0 80px;
+  border-bottom: 1px solid grey;
 }
 
 .cgs-cta-section h2 {
@@ -4240,3 +4239,60 @@ z-index:2;
   color: hsl(13 20% 9%);
   box-shadow: 0 0 20px hsl(39 48% 57% / 0.35);
 }
+
+.sup { vertical-align: super;}
+
+.supplementNote {
+	font-size: 0.75rem;
+    color: #333;
+    background: rgb(231 189 119 / 39%);
+	border: 1px solid hsl(var(--gold));
+    padding: 5px 10px;
+    vertical-align: middle;
+	margin-top: 10px;
+}
+
+.menuDishHeader { margin-top: 50px;}
+
+/* ── CGS Vacancy Page ── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;400;500&display=swap');
+
+.cgs-vacancy-section { max-width: 780px; margin: auto; padding: 0 30px 80px; font-family: 'Montserrat', sans-serif; font-weight: 300; color: #6c5b4b; }
+
+/* Header */
+.cgs-vacancy-header { background: #1B1412; text-align: center; padding: 100px 30px 60px; margin: 0 -30px 60px; }
+.cgs-vacancy-tag { font-family: 'Montserrat', sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #C6A15B; margin-bottom: 16px; }
+.cgs-vacancy-header h1 { font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 500; color: #fff; margin: 0 0 12px; }
+.cgs-vacancy-subtitle { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 20px; color: rgba(255,255,255,0.55); margin: 0; }
+.cgs-vacancy-header .cgs-divider { margin-top: 32px; }
+
+/* Divider */
+.cgs-divider { width: 60px; height: 1px; background: #C6A15B; margin: 30px auto; }
+
+/* Body */
+.cgs-vacancy-body { text-align: center; margin-bottom: 50px; }
+.cgs-vacancy-body h2 { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 500; color: #2C2C2C; margin-bottom: 8px; }
+
+/* List */
+.cgs-vacancy-list { list-style: none; padding: 0; text-align: left; max-width: 640px; margin: 24px auto 32px; }
+.cgs-vacancy-list li { position: relative; padding-left: 20px; margin: 14px 0; font-size: 15px; line-height: 1.7; color: #6c5b4b; }
+.cgs-vacancy-list li::before { content: ''; position: absolute; left: 0; top: 10px; width: 6px; height: 6px; border-radius: 50%; background: #C6A15B; }
+
+/* Note */
+.cgs-vacancy-note { border-left: 2px solid #C6A15B; padding: 14px 20px; background: rgba(0,0,0,0.03); text-align: left; max-width: 640px; margin: 0 auto; font-size: 14px; }
+
+/* CTA */
+.cgs-vacancy-cta { background: #1B1412; padding: 60px 40px; text-align: center; }
+.cgs-vacancy-cta h3 { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 500; color: #fff; margin: 0 0 10px; }
+.cgs-vacancy-cta-sub { font-family: 'Cormorant Garamond', serif; font-style: italic; color: rgba(255,255,255,0.45); font-size: 18px; max-width: 480px; margin: 0 auto 36px; }
+.cgs-vacancy-buttons { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 32px; }
+.cgs-vacancy-buttons svg { display: inline-block; margin-right: 15px;}
+
+/* Buttons */
+.cgs-btn-gold { background: #C6A15B; color: #1B1412; font-family: 'Montserrat', sans-serif; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; font-size: 12px; padding: 14px 36px; border: 1px solid #C6A15B; text-decoration: none; transition: all 0.3s ease; display: inline-block; }
+.cgs-btn-gold:hover { background: transparent; color: #C6A15B; box-shadow: 0 0 20px rgba(198,161,91,0.35); }
+.cgs-btn-outline-gold { background: transparent; color: #C6A15B; font-family: 'Montserrat', sans-serif; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; font-size: 12px; padding: 14px 36px; border: 1px solid #C6A15B; text-decoration: none; transition: all 0.3s ease; display: inline-block; }
+.cgs-btn-outline-gold:hover { background: #C6A15B; color: #1B1412; box-shadow: 0 0 20px rgba(198,161,91,0.35); }
+
+.cgs-vacancy-visit { color: rgba(255,255,255,0.35); margin: 0 0 8px; }
+.cgs-vacancy-location { color: rgba(255,255,255,0.5); font-weight: 600;}
