@@ -1,17 +1,17 @@
-<section class="reveal content-section menu-section" id="menu">
-	<div class="reveal section-header">
+<section class="content-section menu-section" id="menu">
+	<div class="animate-fade-up section-header">
 		<div class="container">
 			<span class="gold-divider mx-auto mb-6"></span>
 			<div class="section-label font-display text-4xl text-gold">The Menu</div>
 			<p class="font-cormorant text-xl text-muted-foreground leading-loose mb-8 italic">Curated selection — A Boutique Blend of Taste, Refined Grills & Signature Shots</p>
 		</div>
 	</div>
-	<!-- No online order service Note -->
-	<div class="reveal service-note">
+	<!-- Dine-in service note -->
+	<div class="service-note">
 		Freshly prepared and served in-store. 
 		Dine-in and take-away available — online ordering coming soon.
 	</div>
-	<div class="reveal tabs sticky top-[72px] z-40 bg-background/95 backdrop-blur-sm border-b border-border">
+	<div class="animate-fade-up tabs sticky top-[72px] z-40 bg-background/95 backdrop-blur-sm border-b border-border">
 		<div class="max-w-7xl mx-auto px-6 py-4 flex justify-center gap-2">
 			<button class="tab-btn active font-montserrat text-xs tracking-widest uppercase px-6 py-2.5 border transition-all duration-300 bg-transparent text-muted-foreground border-border hover:border-gold hover:text-gold" data-tab="beverages">Beverages</button>
 			<button class="tab-btn font-montserrat text-xs tracking-widest uppercase px-6 py-2.5 border transition-all duration-300 bg-transparent text-muted-foreground border-border hover:border-gold hover:text-gold" data-tab="bites">Bites</button>
@@ -20,6 +20,19 @@
 	<div class="pb-10 px-6">
 		<!-- Beverages Tab -->
 		<div class="tab-content active" id="tab-beverages">
+			<!-- Additional Notes -->
+				<div class="animate-fade-up">
+					<blockquote class="menu-note width-auto">
+						<div class="bg-gold text-espresso w-7 h-7 flex items-center justify-center float-left mr-3">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current">
+								<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
+							</svg>
+						</div>
+						<p>Indicates our <b>Signature Picks</b> - Highly recommended by CGS
+						<br>
+						Want to explore them all? <a href="/must-haves" class="bold underline" title="See all our Signature Picks, all in one place.">Let's dive in.</a></p>
+					</blockquote>
+				</div>
 			<!-- Hot Beverages -->
 			<div class="animate-fade-up">
 				<div class="flex items-center gap-4 mb-3">
@@ -40,8 +53,8 @@
 				</div>
 				<span class="gold-divider ml-16"></span>
 			</div>
-			<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 ml-16">
-				<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+			<div class="animate-fade-up grid sm:grid-cols-2 lg:grid-cols-3 gap-5 ml-16">
+				<div class="reveal group menu-item regular-block">
 					<div class="flex items-start justify-between gap-3 mb-3">
 						<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Whipped Coffee</h3>
 						<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -55,7 +68,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-gold/50 shadow-[0_2px_16px_-4px_hsla(39,48%,57%,0.2)] hover:shadow-[0_8px_30px_-4px_hsla(39,48%,57%,0.3)] hover:border-gold" title="Signature-Pick">
+				<div class="reveal group menu-item signature-block" title="Signature-Pick">
 					<div class="absolute -top-2.5 -right-2.5 bg-gold text-espresso w-7 h-7 flex items-center justify-center">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current">
 							<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
@@ -74,7 +87,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-gold/50 shadow-[0_2px_16px_-4px_hsla(39,48%,57%,0.2)] hover:shadow-[0_8px_30px_-4px_hsla(39,48%,57%,0.3)] hover:border-gold" title="Signature-Pick">
+				<div class="reveal group menu-item signature-block" title="Signature-Pick">
 					<div class="absolute -top-2.5 -right-2.5 bg-gold text-espresso w-7 h-7 flex items-center justify-center">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current">
 							<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
@@ -93,7 +106,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+				<div class="reveal group menu-item regular-block">
 					<div class="flex items-start justify-between gap-3 mb-3">
 						<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Cinnamon Milk</h3>
 						<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -107,7 +120,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+				<div class="reveal group menu-item regular-block">
 					<div class="flex items-start justify-between gap-3 mb-3">
 						<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Black Tea</h3>
 						<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -121,7 +134,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+				<div class="reveal group menu-item regular-block">
 					<div class="flex items-start justify-between gap-3 mb-3">
 						<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Black Coffee</h3>
 						<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -135,7 +148,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+				<div class="reveal group menu-item regular-block">
 					<div class="flex items-start justify-between gap-3 mb-3">
 						<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Lemon Tea</h3>
 						<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -169,7 +182,7 @@
 				</div>
 				<span class="gold-divider mb-8 ml-16"></span>
 				<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 ml-16">
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Frozen Coffee Slush</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -184,7 +197,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Frosted (Classic) Cold Coffee</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -199,7 +212,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-gold/50 shadow-[0_2px_16px_-4px_hsla(39,48%,57%,0.2)] hover:shadow-[0_8px_30px_-4px_hsla(39,48%,57%,0.3)] hover:border-gold" title="Signature-Pick">
+					<div class="reveal group menu-item signature-block" title="Signature-Pick">
 						<div class="absolute -top-2.5 -right-2.5 bg-gold text-espresso w-7 h-7 flex items-center justify-center">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current">
 								<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
@@ -219,7 +232,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Saffron Cardamom Iced Coffee</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -234,7 +247,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-gold/50 shadow-[0_2px_16px_-4px_hsla(39,48%,57%,0.2)] hover:shadow-[0_8px_30px_-4px_hsla(39,48%,57%,0.3)] hover:border-gold" title="Signature-Pick">
+					<div class="reveal group menu-item signature-block" title="Signature-Pick">
 						<div class="absolute -top-2.5 -right-2.5 bg-gold text-espresso w-7 h-7 flex items-center justify-center">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current">
 								<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
@@ -254,7 +267,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Vietnamese Iced Coffee</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -289,7 +302,7 @@
 				</div>
 				<span class="gold-divider mb-8 ml-16"></span>
 				<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 ml-16">
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-gold/50 shadow-[0_2px_16px_-4px_hsla(39,48%,57%,0.2)] hover:shadow-[0_8px_30px_-4px_hsla(39,48%,57%,0.3)] hover:border-gold" title="Signature-Pick">
+					<div class="reveal group menu-item signature-block" title="Signature-Pick">
 						<div class="absolute -top-2.5 -right-2.5 bg-gold text-espresso w-7 h-7 flex items-center justify-center">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current">
 								<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
@@ -309,7 +322,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Mocha Frappe</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -324,7 +337,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Classic Greek Frappe</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -339,7 +352,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-gold/50 shadow-[0_2px_16px_-4px_hsla(39,48%,57%,0.2)] hover:shadow-[0_8px_30px_-4px_hsla(39,48%,57%,0.3)] hover:border-gold" title="Signature-Pick">
+					<div class="reveal group menu-item signature-block" title="Signature-Pick">
 						<div class="absolute -top-2.5 -right-2.5 bg-gold text-espresso w-7 h-7 flex items-center justify-center">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current">
 								<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
@@ -382,7 +395,7 @@
 				</div>
 				<span class="gold-divider mb-8 ml-16"></span>
 				<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 ml-16">
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Oreo Shake</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold bg-gold"></span>
@@ -397,7 +410,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-gold/50 shadow-[0_2px_16px_-4px_hsla(39,48%,57%,0.2)] hover:shadow-[0_8px_30px_-4px_hsla(39,48%,57%,0.3)] hover:border-gold" title="Signature-Pick">
+					<div class="reveal group menu-item signature-block" title="Signature-Pick">
 						<div class="absolute -top-2.5 -right-2.5 bg-gold text-espresso w-7 h-7 flex items-center justify-center">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current">
 								<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
@@ -417,7 +430,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">KitKat Shake</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -432,7 +445,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Dark Choco Chip Shake</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -470,7 +483,7 @@
 				</div>
 				<span class="gold-divider mb-8 ml-16"></span>
 				<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 ml-16">
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Lemonade</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -485,7 +498,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Virgin Mojito</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -500,7 +513,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Blue Lagoon</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -515,7 +528,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Strawberry Fizz</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -530,7 +543,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Chilli Guava</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -545,7 +558,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Paan</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -582,7 +595,7 @@
 				</div>
 				<span class="gold-divider mb-8 ml-16"></span>
 				<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 ml-16">
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Blueberry Shot</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -596,7 +609,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Strawberry Shot</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -610,7 +623,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Jamun Shot</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -624,7 +637,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Paan Shot</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -664,7 +677,7 @@
 				<span class="gold-divider ml-16"></span>
 			</div>
 			<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 ml-16">
-				<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+				<div class="reveal group menu-item regular-block">
 					<div class="flex items-start justify-between gap-3 mb-3">
 						<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Cheese Chutney Sandwich</h3>
 						<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -678,7 +691,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+				<div class="reveal group menu-item regular-block">
 					<div class="flex items-start justify-between gap-3 mb-3">
 						<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Paneer Cheese Grilled Sandwich</h3>
 						<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -690,7 +703,7 @@
 						<div class="product-quantity flex items-center gap-3 flex-wrap"></div>
 					</div>
 				</div>
-				<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-gold/50 shadow-[0_2px_16px_-4px_hsla(39,48%,57%,0.2)] hover:shadow-[0_8px_30px_-4px_hsla(39,48%,57%,0.3)] hover:border-gold" title="Signature-Pick">
+				<div class="reveal group menu-item signature-block" title="Signature-Pick">
 					<div class="absolute -top-2.5 -right-2.5 bg-gold text-espresso w-7 h-7 flex items-center justify-center">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current">
 							<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
@@ -707,7 +720,7 @@
 						<div class="product-quantity flex items-center gap-3 flex-wrap"></div>
 					</div>
 				</div>
-				<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+				<div class="reveal group menu-item regular-block">
 					<div class="flex items-start justify-between gap-3 mb-3">
 					<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Burnt Garlic Onion Cheese Sandwich</h3>
 					<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -719,7 +732,7 @@
 						<div class="product-quantity flex items-center gap-3 flex-wrap"></div>
 					</div>
 				</div>
-				<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-gold/50 shadow-[0_2px_16px_-4px_hsla(39,48%,57%,0.2)] hover:shadow-[0_8px_30px_-4px_hsla(39,48%,57%,0.3)] hover:border-gold" title="Signature-Pick">
+				<div class="reveal group menu-item signature-block" title="Signature-Pick">
 					<div class="absolute -top-2.5 -right-2.5 bg-gold text-espresso w-7 h-7 flex items-center justify-center">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current">
 							<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
@@ -736,7 +749,7 @@
 						<div class="product-quantity flex items-center gap-3 flex-wrap"></div>
 					</div>
 				</div>
-				<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+				<div class="reveal group menu-item regular-block">
 					<div class="flex items-start justify-between gap-3 mb-3">
 					<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Chocolate Sandwich</h3>
 					<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -764,7 +777,7 @@
 				</div>
 				<span class="gold-divider mb-8 ml-16"></span>
 				<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 ml-16">
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-gold/50 shadow-[0_2px_16px_-4px_hsla(39,48%,57%,0.2)] hover:shadow-[0_8px_30px_-4px_hsla(39,48%,57%,0.3)] hover:border-gold" title="Signature-Pick">
+					<div class="reveal group menu-item signature-block" title="Signature-Pick">
 						<div class="absolute -top-2.5 -right-2.5 bg-gold text-espresso w-7 h-7 flex items-center justify-center">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star w-3.5 h-3.5 fill-current">
 								<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
@@ -781,7 +794,7 @@
 							<div class="product-quantity flex items-center gap-3 flex-wrap"></div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Roasted Mushroom (Peanut) Cheese Sandwich</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -793,7 +806,7 @@
 							<div class="product-quantity flex items-center gap-3 flex-wrap"></div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Turkey Sandwich</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -805,7 +818,7 @@
 							<div class="product-quantity flex items-center gap-3 flex-wrap"></div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 						<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Ham Sandwich</h3>
 						<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -837,7 +850,7 @@
 				</div>
 				<span class="gold-divider mb-8 ml-16"></span>
 				<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 ml-16">
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">White Sauce Pasta</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -849,7 +862,7 @@
 							<div class="product-quantity flex items-center gap-3 flex-wrap"></div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 						<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Pink Sauce Pasta</h3>
 						<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -861,7 +874,7 @@
 							<div class="product-quantity flex items-center gap-3 flex-wrap"></div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 						<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Red Sauce Pasta</h3>
 						<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -894,7 +907,7 @@
 				</div>
 				<span class="gold-divider mb-8 ml-16"></span>
 				<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 ml-16">
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Beetroot Curd Salad</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -906,7 +919,7 @@
 							<div class="product-quantity flex items-center gap-3 flex-wrap"></div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Italian Salad</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -918,7 +931,7 @@
 							<div class="product-quantity flex items-center gap-3 flex-wrap"></div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Russian Salad</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -930,7 +943,7 @@
 							<div class="product-quantity flex items-center gap-3 flex-wrap"></div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Greek Salad</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>
@@ -942,7 +955,7 @@
 							<div class="product-quantity flex items-center gap-3 flex-wrap"></div>
 						</div>
 					</div>
-					<div class="reveal group relative bg-card border p-6 transition-all duration-300 border-border/60 hover:border-gold/40 hover:shadow-[0_4px_20px_-4px_hsla(39,48%,57%,0.15)]">
+					<div class="reveal group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 							<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">Turkish Salad</h3>
 							<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>

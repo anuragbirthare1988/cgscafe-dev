@@ -171,7 +171,7 @@ function shareWebsite() {
   setTimeout(function() { overlay.remove(); }, 4800);
 
   // Click to skip the ongoing overlay animation upon page load
-  // overlay.addEventListener('click', function() { overlay.remove(); });
+  overlay.addEventListener('click', function() { overlay.remove(); });
 })();
 
 // Party effect for the all the screens

@@ -14,9 +14,9 @@ document.addEventListener("DOMContentLoaded", async () => {
          description: "Looking to work in a vibrant cafe environment? Join the CGS Cafe team in Indore and grow with a passionate group serving premium coffee and gourmet food."
       },
       {
-         path: "cgs-experience",
-         file: "cgs-experience.html",
-         title: "The CGS Experience | Premium Cafe Experience in Indore",
+         path: "explore-cgs",
+         file: "explore-cgs.html",
+         title: "Explore CGS | Premium Cafe Experience in Indore",
          description: "Discover the CGS Cafe experience in Indore where premium coffee, frappe frost, grilled sandwiches and signature shots come together to create a unique cafe vibe."
       },
       {
