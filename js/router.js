@@ -74,8 +74,8 @@ document.addEventListener("DOMContentLoaded", async () => {
          description: "See what customers say about their experience at CGS Cafe in Indore, from premium coffee to delicious grilled sandwiches."
       },
       {
-         path: "visit-us",
-         file: "visit-us.html",
+         path: "find-us",
+         file: "find-us.html",
          title: "Visit CGS Cafe | Scheme No 103 Indore",
          description: "Visit CGS Cafe in Scheme No 103, Indore for premium coffee, frappes, grilled sandwiches and refreshing cafe beverages."
       },

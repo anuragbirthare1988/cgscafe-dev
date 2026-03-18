@@ -658,7 +658,7 @@ body.menu-open {
 
 /* Section Styles */
 section {
-	padding: 110px 0;
+	padding: 110px 0 50px 0;
 }
 
 .section-header {
@@ -1356,11 +1356,7 @@ main#app { min-height: 600px;}
 
 .contact-section { }
 
-.contact-grid {
-	display: grid;
-	grid-template-columns: 2fr 1fr;
-	gap: 80px;
-}
+.contact-grid { }
 
 .contact-info h3 {
 	font-size: 32px;
@@ -1369,10 +1365,7 @@ main#app { min-height: 600px;}
 }
 
 .contact-info p {
-	font-size: 16px;
-	color: var(--text-secondary);
-	margin-bottom: 40px;
-	line-height: 1.8;
+	font-size: 1.5rem;
 }
 
 .contact-details {
@@ -1619,9 +1612,7 @@ main#app { min-height: 600px;}
 	.form-row {
 		grid-template-columns: 1fr;
 	}
-
-	footer { padding-top: 50px; padding-bottom: 100px;}
-
+	
 	.footer-grid {
 		grid-template-columns: 1fr;
 		gap: 40px;
@@ -2195,10 +2186,6 @@ main#app { min-height: 600px;}
 
 @media (min-width: 768px) {
 	main#app { margin-top: 10vh;}
-	.footer {
-		padding: 50px 0 40px;
-		border-top: 1px solid var(--bg-card);
-	}
 	.md\:absolute {
 		position: absolute
 	}
@@ -3266,7 +3253,7 @@ filter:blur(0.6px);
 
 ::selection {
   color: #ffffff; /* Sets the text color to white */
-  background-color: #6f4e37; /* Sets the highlight background to dark red */
+  background-color: #d17533; /* Sets the highlight background to dark red */
 }
 
 /* Prevents users from accidentally selecting text while clicking */
@@ -4360,3 +4347,218 @@ blockquote {
 .mx-0 { margin: 0;}
 .my-0 { margin: 0;}
 .mxy-0 { margin: 0;}
+
+#explore-cgs ul li {
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+#explore-cgs .multi-para-section-heading {
+  font-size: 1.5rem;   /* increase size */
+  font-weight: 600;     /* stronger presence */
+  color: hsl(var(--foreground));
+  letter-spacing: 0.5px;
+}
+
+#explore-cgs .list-diamond-outlined li,
+#explore-cgs .list-diamond-empty li {
+  color: hsl(var(--foreground));
+}
+
+.info-card {
+  padding: 20px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 16px;
+  background: hsl(var(--card));
+  transition: all 0.3s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.info-icon {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.info-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.info-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  color: hsl(var(--foreground));
+  line-height: 1.5;
+}
+
+/* Footer Base */
+.cgs-footer {
+  background: #0f0f0f;
+  padding: 60px 20px 30px;
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Grid Layout */
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 40px;
+  margin-bottom: 50px;
+}
+
+@media (min-width: 768px) {
+  .footer-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .footer-middle  {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Headings */
+.footer-heading {
+  font-family: 'Cormorant', serif;
+  color: #C8A96A;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.footer-heading.small {
+  font-size: 0.85rem;
+}
+
+/* Links */
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-column li {
+  margin-bottom: 10px;
+}
+
+.footer-grid a {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.footer-grid a:hover {
+  color: #C8A96A;
+  transform: translateX(4px);
+}
+
+/* Text */
+.footer-text {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Actions */
+.footer-actions {
+  margin-top: 12px;
+}
+
+.footer-actions a {
+  display: inline-block;
+  margin-right: 12px;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #C8A96A;
+  transition: all 0.3s ease;
+}
+
+.footer-actions a:hover {
+  opacity: 0.7;
+}
+
+/* Middle Section */
+.footer-middle {
+  border-top: 1px solid rgba(200,169,106,0.2);
+  padding: 30px 0;
+  display: grid;
+  gap: 30px;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .footer-middle {
+    align-items: center;
+  }
+}
+
+/* Brand Text */
+.footer-brand-text {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.6;
+}
+
+/* Social */
+.social-icons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.social-icons img {
+  width: 20px;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.social-icons img:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Logo */
+.footer-brand .logo {
+  font-family: 'Cormorant', serif;
+  font-size: 1.8rem;
+  color: #C8A96A;
+}
+
+.footer-brand .tagline {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+}
+
+/* Bottom */
+.footer-bottom {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 1px;
+}
+
+/* Highlight Menu as primary CTA even if it is not active route */
+.nav-link[href="/browse-menu"] {
+  color: #C8A96A;
+}
