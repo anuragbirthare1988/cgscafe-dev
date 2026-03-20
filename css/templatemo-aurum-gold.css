@@ -2991,7 +2991,7 @@ section.content-section:nth-child(odd) { background: var(--light-off-white);}
 section.content-section:nth-child(even) { background: var(--off-white);}
 .service-note {
 	font-size: 14px;
-    margin: 0 20px;
+    margin: 0 15px;
     padding: 10px 15px;
     text-align: center;
     letter-spacing: 0.5px;
@@ -4284,10 +4284,10 @@ z-index:2;
 .cgs-vacancy-location { color: rgba(255,255,255,0.5); font-weight: 600;}
 
 .menu-note {
-	font-size:12px;
-	margin-bottom:15px;
+	font-size:14px;
 	color: hsl(var(--gold));
 	font-weight: 500;
+    margin: 10px 15px;
 }
 
 .star {
@@ -4304,9 +4304,11 @@ z-index:2;
 .mr-4 { margin-right: 2rem;}
 .mr-8 { margin-right: 4rem;}
 blockquote {
+	padding: 10px 15px;
 	background-color: #e9e9e9;
 	border: 1px solid #ccc;
-	padding: 10px 15px;
+	border-radius: 5px;
+	text-align: center;
 }
 .width-auto {
 	display: inline-flex;
