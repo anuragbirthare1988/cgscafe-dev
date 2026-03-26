@@ -550,6 +550,26 @@ body {
     margin-bottom: 4rem;
 }
 
+.pxy-8 {
+    padding: 2rem;
+}
+.pxy-16 {
+    padding: 4rem;
+}
+.pxy-24 {
+    padding: 8rem;
+}
+
+.mxy-8 {
+    margin: 2rem;
+}
+.mxy-16 {
+    margin: 4rem;
+}
+.mxy-24 {
+    margin: 8rem;
+}
+
 .-ml-4 {
     margin-left: -1rem
 }
@@ -1721,6 +1741,11 @@ body {
 .py-6 {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem
+}
+
+.py-8 {
+    padding-top: 2rem;
+    padding-bottom: 2rem
 }
 
 .pb-10 {

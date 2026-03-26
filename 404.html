@@ -1,44 +1,45 @@
 <!DOCTYPE html>
-<html>
-   <head>
-      <meta charset="utf-8">
-      <script> // This scripot is linked with the script written in index.html (under <head> tag)
-         /*
-         SPA FALLBACK HANDLER FOR GITHUB PAGES
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>CGS Café Indore | Coffee, Grill & Mocktail Shots | Scheme No 103</title>
 
-         GitHub Pages is a static host and does not know how to serve
-         deep SPA routes like /our-story or /browse-menu.
+	<meta name="description" content="Premium café in Scheme No 103, Indore serving premium coffee, frappes, grilled sandwiches, signature shakes, mocktails & refreshing beverages.">
+	<link rel="canonical" href="https://cgscafe.in/">	<!-- This tells Google which URL is the official one -->
+	<meta name="theme-color" content="#3b2a1a"> <!-- This controls browser UI color on Android Chrome -->
 
-         When a user or search engine directly visits:
-            https://cgscafe.in/our-story
+	<!-- Keep commented For PROD Environment. Commenting helps in getting the site from getting crawled on search engines -->
+	<meta name="robots" content="noindex, nofollow">
 
-         GitHub Pages looks for:
-            /our-story/index.html
-         which does not exist, so it returns 404.
+	<meta name="google-site-verification" content="fd40eee476e539a8" />
+	<link rel="icon" type="image/x-icon" href="favicon.ico" sizes="any">	
+   <link rel="stylesheet" href="css/templatemo-aurum-gold.css">
+   <link rel="stylesheet" href="css/main.css">
+   <link href="fonts/google-fonts.css" rel="stylesheet">
+   <!-- templatemo tm-610-aurum-gold (templatemo.com/live/templatemo_610_aurum_gold) -->
+</head>
+<body>
+   <!-- Header Section -->
+	<header id="header"></header>
+   <div id="not-found-page" class="nf-container">
+      <div class="nf-glow"></div>
+      <div class="nf-card" id="nf-card">
+         <p class="nf-404" id="nf-num">404</p>
+         <div class="nf-divider"></div>
+         <h1 class="nf-title">Looks like this page didn't make it to the menu.</h1>
+         <p class="nf-desc">We checked the blender, the grill, and even behind the coffee jars — but the page you're looking for hasn't been served yet.</p>
+         <p class="nf-phrase" id="nf-phrase">"Still searching..."</p>
+         <a href="/browse-menu" class="nf-cta">Take Me to the Menu</a>
+         <p class="nf-hint">click anywhere for a surprise</p>
+      </div>
+   </div>
+   <!-- Footer Section -->
+   <footer class="footer" id="footer"></footer>
+	<!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
+	<div id="preloader"></div>
 
-         This script captures that 404 request and stores the
-         requested path temporarily in sessionStorage, then
-         redirects the browser to the homepage.
-
-         The homepage (index.html) will then restore this path
-         and allow router.js to load the correct page content.
-
-         Example flow:
-            /our-story
-               ↓
-            404.html executes
-               ↓
-            store "/our-story"
-               ↓
-            redirect to "/"
-         */
-         sessionStorage.redirect = location.pathname + location.search;
-         /*
-         Redirect to homepage so the SPA router can take control.
-         The router will later restore the stored path.
-         */
-         location.replace("/");
-      </script>
-   </head>
-   <body></body>
+	<script src="../js/custom.js"></script>
+	<script src="../js/animations.js"></script>
+</body>
 </html>

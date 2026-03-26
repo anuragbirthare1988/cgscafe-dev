@@ -1,0 +1,58 @@
+<div class="miscellaneous">
+	<!-- Spinkling-shimmering effect on the canvas over body -->
+	<canvas id="effect-canvas"></canvas>
+	<!-- Cursor trailing effect -->
+	<div class="cursor-trail-container"></div>
+	<!-- Deploying Environment Badge -->
+	<div id="dev-badge">DEV</div>
+	<!-- Share Button -->
+	<button class="share-btn" onclick="shareWebsite()" title="Share with others">
+		<svg class="icon-share" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 w-5 h-5">
+			<circle cx="18" cy="5" r="3"></circle>
+			<circle cx="6" cy="12" r="3"></circle>
+			<circle cx="18" cy="19" r="3"></circle>
+			<line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line>
+			<line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>
+		</svg>
+	</button>
+	<!-- Scroll Buttons -->
+	<div id="scroll-buttons">
+		<button id="to-top" title="Scroll to Top" class="w-10 h-10 flex items-center justify-center border border-gold/40 bg-espresso/90 backdrop-blur-sm text-gold transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:bg-gold hover:enabled:text-espresso hover:enabled:shadow-[0_0_14px_hsla(39,48%,57%,0.4)] hover:enabled:scale-110">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up w-5 h-5">
+				<path d="m18 15-6-6-6 6"></path>
+			</svg>
+		</button>
+		<button id="to-bottom" title="Scroll to Bottom" class="w-10 h-10 flex items-center justify-center border border-gold/40 bg-espresso/90 backdrop-blur-sm text-gold transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:bg-gold hover:enabled:text-espresso hover:enabled:shadow-[0_0_14px_hsla(39,48%,57%,0.4)] hover:enabled:scale-110">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down w-5 h-5">
+				<path d="m6 9 6 6 6-6"></path>
+			</svg>
+		</button>
+	</div>
+	<!-- WhatsApp Chat -->
+	<a href="https://wa.me/918390540094?text=Hi,%0AI%20am%20writing%20to%20you%20to%20inquire%20about%20something."  class="whatsapp-icon" target="_blank">
+		<img src="images/whatsapp.png" alt="whatsapp-icon">
+	</a>
+	<!-- Overlay (Splash) screen -->
+	<div class="intro-overlay" id="intro-overlay">
+		<div class="intro-particles" id="steamParticles"></div>
+		<div class="intro-particles" id="pourDrops"></div>
+		<div class="intro-particles" id="sizzleSparks"></div>
+		<div class="intro-particles" id="shotSplashes"></div>
+		<div class="intro-particles" id="drizzleLines"></div>
+		<div class="intro-particles" id="themedParticles"></div>
+
+		<div class="intro-content">
+			<div class="intro-letters">
+				<span class="intro-letter" style="animation-delay:0.3s">C</span>
+				<span class="intro-letter" style="animation-delay:0.65s">G</span>
+				<span class="intro-letter" style="animation-delay:1s">S</span>
+			</div>
+			<p class="intro-tagline" style="animation-delay:2s">Coffee · Grill · Shots</p>
+			<div class="brand-divider" style="animation-delay:2s"></div>
+			<p class="brand-tagline" style="animation-delay:2s">Jumpstart Your Mood</p>
+		</div>
+		<div class="intro-glow"></div>
+	</div>
+	<!-- Custom Cursor Design -->
+		<div id="sparkle-container"></div>
+</div>
