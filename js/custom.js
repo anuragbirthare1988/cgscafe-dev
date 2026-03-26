@@ -211,10 +211,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Active menu upon link navigation
       function updateActiveMenu() {
-            const currentPath = window.location.pathname;
+            let currentPath = window.location.pathname;
+            // Remove trailing slash (important)
+            if (currentPath.length > 1 && currentPath.endsWith('/')) {
+                  currentPath = currentPath.slice(0, -1);
+            }
             document.querySelectorAll(".nav-link").forEach(link => {
                   link.classList.remove("active");
-                  const linkPath = link.getAttribute("href");
+                  let linkPath = link.getAttribute("href");
+                  // Normalize link path
+                  if (linkPath.endsWith('/')) {
+                        linkPath = linkPath.slice(0, -1);
+                  }
                   if (linkPath === currentPath) {
                         link.classList.add("active");
                   }
