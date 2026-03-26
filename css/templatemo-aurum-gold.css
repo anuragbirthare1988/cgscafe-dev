@@ -1486,6 +1486,7 @@ main#app { min-height: 600px;}
 	display: grid;
 	gap: 60px;
 	margin-bottom: 60px;
+	text-transform: uppercase;
 }
 
 .footer-brand .logo {
@@ -4428,6 +4429,7 @@ footer .logo img {
 .footer-bottom {
   margin-top: 25px;
   padding-top: 25px;
+  align-items: center;
   text-align: center;
   font-size: 0.75rem;
   color: rgba(255,255,255,0.3);
