@@ -946,6 +946,7 @@ main#app { min-height: 600px;}
 	.why-thumb:nth-child(5) {
 		aspect-ratio: 1;
 	}
+
 }
 
 /* Products Section */
@@ -1014,7 +1015,6 @@ main#app { min-height: 600px;}
 }
 
 @media (max-width: 900px) {
-
 	.tab-content.active,
 	.products-grid {
 		grid-template-columns: repeat(2, 1fr);
@@ -1484,7 +1484,6 @@ main#app { min-height: 600px;}
 
 .footer-grid {
 	display: grid;
-	grid-template-columns: 2fr 1fr 1fr 1fr;
 	gap: 60px;
 	margin-bottom: 60px;
 }
@@ -1562,13 +1561,6 @@ main#app { min-height: 600px;}
 	background: rgba(184, 134, 11, 0.1);
 }
 
-/* Responsive */
-@media (max-width: 1200px) {
-	.footer-grid {
-		grid-template-columns: repeat(2, 1fr);
-	}
-}
-
 @media (max-width: 768px) {
 	/* Starts - Enable Mobile Menu Navigation for reduced screen width*/
 	.nav-links {
@@ -1601,11 +1593,6 @@ main#app { min-height: 600px;}
 	.form-row {
 		grid-template-columns: 1fr;
 	}
-	
-	.footer-grid {
-		grid-template-columns: 1fr;
-		gap: 40px;
-	}
 
 	.footer-bottom {
 		flex-direction: column;
@@ -1637,15 +1624,27 @@ main#app { min-height: 600px;}
 	.testimonial-item {
 		padding: 0 20px;
 	}
+	.footer-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+	.footer-middle {
+		grid-template-columns: repeat(1, 1fr);
+	}
 }
 
-@media (min-width: 769px) and (max-width: 1100px) {
+@media (min-width: 769px) {
 	.testimonial-arrow.prev {
 		margin-left: -20px;
 	}
 
 	.testimonial-arrow.next {
 		margin-right: -20px;
+	}
+	.footer-grid {
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+	}
+	.footer-middle {
+		grid-template-columns: repeat(3, 1fr);
 	}
 }
 
@@ -4285,30 +4284,6 @@ blockquote {
   padding: 60px 20px 30px;
   color: white;
   font-family: 'Montserrat', sans-serif;
-}
-
-/* Grid Layout */
-.footer-grid {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 40px;
-  margin-bottom: 50px;
-  text-transform: uppercase;
-}
-
-@media (min-width: 768px) {
-  .footer-grid {
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .footer-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  .footer-middle  {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 
 /* Headings */
