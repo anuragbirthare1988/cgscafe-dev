@@ -382,6 +382,11 @@ body.menu-open {
 	overflow: hidden;
 }
 
+.home-banner {
+	background-image: url('/images/banner-1.jpg');
+	background-size: cover;
+}
+
 .logo-wrapper {
 	position: relative;
 	opacity: 0;
@@ -2854,7 +2859,7 @@ main#app { min-height: 600px;}
 	opacity: 0.8;
 }
 
-.scroll-below-icon { bottom: 0.5rem;}
+.scroll-below-icon { bottom: 7rem;}
 
 .link-highlighting {
     color: var(--gold-light);
@@ -3682,17 +3687,6 @@ font-size:1.25rem;
 color:#555;
 line-height:1.5;
 font-style: italic;
-}
-
-/* AUTHENTICITY LINE */
-
-.cgs-auth-line{
-	width: 80%;
-	font-size:2rem;
-	color:#333;
-	text-align: center;
-	margin: 0 auto 20px auto;
-	font-family: 'Cormorant Garamond', serif;
 }
 
 /* MINI NOTE */
