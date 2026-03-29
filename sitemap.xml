@@ -5,27 +5,27 @@
   <!-- Homepage -->
   <url>
     <loc>https://cgscafe.in/</loc>
-    <lastmod>2026-03-28</lastmod>
+    <lastmod>2026-03-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
 
     <image:image>
-      <image:loc>https://cgscafe.in/images/cgs-preview.jpg</image:loc>
+      <image:loc>https://cgscafe.in/images/cgs-preview.webp</image:loc>
       <image:title>CGS Café Indore - Coffee, Grill &amp; Shots</image:title>
     </image:image>
 
     <image:image>
-      <image:loc>https://cgscafe.in/images/logo.png</image:loc>
+      <image:loc>https://cgscafe.in/images/cgs-logo.webp</image:loc>
       <image:title>CGS Indore - Frappe, Pasta, Salads, Mocktail Shots</image:title>
     </image:image>
 
     <image:image>
-      <image:loc>https://cgscafe.in/images/sitemap-images/signature-picks.png</image:loc>
+      <image:loc>https://cgscafe.in/images/sitemap-images/signature-picks.webp</image:loc>
       <image:title>Signature Coffee &amp; Sandwiches in Indore</image:title>
     </image:image>
 
     <image:image>
-      <image:loc>https://cgscafe.in/images/sitemap-images/the-cgs-experience.png</image:loc>
+      <image:loc>https://cgscafe.in/images/sitemap-images/the-cgs-experience.webp</image:loc>
       <image:title>Premium Cafe Ambience Experience in Indore</image:title>
     </image:image>
   </url>
@@ -38,7 +38,7 @@
     <priority>0.9</priority>
 
     <image:image>
-      <image:loc>https://cgscafe.in/images/sitemap-images/cafe-in-indore.png</image:loc>
+      <image:loc>https://cgscafe.in/images/sitemap-images/cafe-in-indore.webp</image:loc>
       <image:title>Premium Cafe Ambience Experience in Indore</image:title>
     </image:image>
   </url>
@@ -110,7 +110,7 @@
     <priority>0.5</priority>
     
     <image:image>
-      <image:loc>https://cgscafe.in/images/sitemap-images/careers.png</image:loc>
+      <image:loc>https://cgscafe.in/images/sitemap-images/careers.webp</image:loc>
       <image:title>Careers - CGS Cafe Indore - Coffee, Grill &amp; Shots </image:title>
     </image:image>
   </url>
@@ -122,7 +122,7 @@
     <priority>0.5</priority>
 
     <image:image>
-      <image:loc>https://cgscafe.in/images/sitemap-images/join-our-team.png</image:loc>
+      <image:loc>https://cgscafe.in/images/sitemap-images/join-our-team.webp</image:loc>
       <image:title>Join Our Team - CGS Cafe Indore - Coffee, Grill &amp; Shots </image:title>
     </image:image>
   </url>
