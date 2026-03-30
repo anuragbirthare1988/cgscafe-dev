@@ -1,31 +1,3 @@
-<!-- 
-  SEO ENVIRONMENT CONTROL:
-  Automatically prevents indexing on non-production environments.
-  - Allows indexing ONLY on production domains (cgscafe.in, www.cgscafe.in)
-  - Adds "noindex, nofollow" meta tag dynamically for staging/dev environments (e.g., GitHub Pages)
-  This avoids manual commenting/uncommenting of robots meta tags across deployments.
--->
-<script id="seo-env-control">
-  (function () {
-    const hostname = window.location.hostname;
-
-    // Define production domains
-    const isProd = hostname === "cgscafe.in" || hostname === "www.cgscafe.in";
-
-    // If NOT production → block indexing
-    if (!isProd) {
-      console.log("Host Name - " + hostname + "SEO: 'noindex, nofollow' Applicable for NON-PROD environment");
-      const meta = document.createElement("meta");
-      meta.name = "robots";
-      meta.content = "noindex, nofollow";
-      document.head.appendChild(meta);
-    }
-    else {
-      console.log("Host Name - " + hostname + "SEO: 'noindex, nofollow' NOT Applicable for PROD environment");
-    }
-  })();
-</script>
-
 <!-- Header contents -->
  <div class="sticky-info-header">
   <nav class="nav disable-select" id="navbar">
