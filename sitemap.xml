@@ -32,7 +32,7 @@
 
   <!-- High Priority Pages -->
   <url>
-    <loc>https://cgscafe.in/cafe-in-indore</loc>
+    <loc>https://cgscafe.in/cafe-in-indore/</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -44,14 +44,14 @@
   </url>
 
   <url>
-    <loc>https://cgscafe.in/browse-menu</loc>
+    <loc>https://cgscafe.in/browse-menu/</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://cgscafe.in/must-haves</loc>
+    <loc>https://cgscafe.in/must-haves/</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -59,14 +59,14 @@
 
   <!-- Experience & Location -->
   <url>
-    <loc>https://cgscafe.in/find-us</loc>
+    <loc>https://cgscafe.in/find-us/</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://cgscafe.in/cgs-experience</loc>
+    <loc>https://cgscafe.in/cgs-experience/</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -74,14 +74,14 @@
 
   <!-- Informational -->
   <url>
-    <loc>https://cgscafe.in/quality-hygiene</loc>
+    <loc>https://cgscafe.in/quality-hygiene/</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://cgscafe.in/faq</loc>
+    <loc>https://cgscafe.in/faq/</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -89,14 +89,14 @@
 
   <!-- Conversion / Brand -->
   <url>
-    <loc>https://cgscafe.in/orders</loc>
+    <loc>https://cgscafe.in/orders/</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://cgscafe.in/our-story</loc>
+    <loc>https://cgscafe.in/our-story/</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -104,7 +104,7 @@
 
   <!-- Careers -->
   <url>
-    <loc>https://cgscafe.in/join-our-team</loc>
+    <loc>https://cgscafe.in/join-our-team/</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -116,7 +116,7 @@
   </url>
 
   <url>
-    <loc>https://cgscafe.in/careers</loc>
+    <loc>https://cgscafe.in/careers/</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -129,7 +129,7 @@
 
   <!-- Trust -->
   <url>
-    <loc>https://cgscafe.in/testimonials</loc>
+    <loc>https://cgscafe.in/testimonials/</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.3</priority>
@@ -137,14 +137,14 @@
 
   <!-- Legal -->
   <url>
-    <loc>https://cgscafe.in/privacy-policy</loc>
+    <loc>https://cgscafe.in/privacy-policy/</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
 
   <url>
-    <loc>https://cgscafe.in/terms-and-conditions</loc>
+    <loc>https://cgscafe.in/terms-and-conditions/</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
