@@ -5,7 +5,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://cgscafe.in/</loc>
-    <lastmod>2026-03-29</lastmod>
+    <lastmod>2026-04-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
 
@@ -14,7 +14,7 @@
       <image:title>CGS Café Indore - Coffee, Grill &amp; Shots</image:title>
     </image:image>
 
-    <image:image>
+    <image:image> 
       <image:loc>https://cgscafe.in/images/cgs-logo.webp</image:loc>
       <image:title>CGS Indore - Frappe, Pasta, Salads, Mocktail Shots</image:title>
     </image:image>
