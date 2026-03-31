@@ -2302,6 +2302,10 @@ main#app { min-height: 600px;}
 	}
 }
 
+@media (max-width: 1220px) {
+	.footer-middle { padding-bottom: 40px;}
+}
+
 @media (min-width: 1024px) {
 	.lg\:grid-cols-3 {
 		grid-template-columns: repeat(3, minmax(0, 1fr))
@@ -4587,9 +4591,9 @@ footer .logo img {
 
 /* Desktop */
 @media (min-width: 1024px) {
-   .footer-logo img {
-      width: 180px;
-   }
+	.footer-logo img {
+		width: 180px;
+	}
 }
 
 /* Prevent oversized logo on ultra-wide */
