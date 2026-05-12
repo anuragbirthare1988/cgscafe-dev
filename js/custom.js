@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             loadComponent("footer", "/components/footer.html"),
             loadComponent("preloader", "/components/preloader.html")
       ]);
+      document.getElementById("currentYear").innerHTML = new Date().getFullYear(); // Get the current year for copyright note
       initAllAnimations(); // from animations.js
 
       // Remove selection on (Esc) key
