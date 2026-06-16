@@ -78,22 +78,26 @@
     let MASTER_DATABASE = { beverages: [], eatables: [] };
 
     window.addEventListener("load", () => {
-      // 1. Set your fixed GitHub Username/Organization
-      const githubUsername = "anuragbirthare1988@gmail.com"; 
+      // 1. Set your exact GitHub Username/Organization
+      const githubUsername = "anuragbirthare1988"; 
       
-      // 2. Dynamically extract the repository name from the browser URL path
       let repoName = "";
-      const pathSegments = window.location.pathname.split('/').filter(segment => segment.length > 0);
+      const hostname = window.location.hostname;
 
-      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-        // FALLBACK FOR LOCALHOST: If testing locally, fallback to your dev repo name
+      // 2. Robust Environment Detection
+      if (hostname === "localhost" || hostname === "127.0.0.1" || hostname.includes("dev.cgscafe.in")) {
+        // DEV SITES: Matches local testing or your development subdomain
         repoName = "cgscafe-dev"; 
+      } else if (hostname.includes("cgscafe.in")) {
+        // PROD SITE: Matches your main custom production domain
+        repoName = "cgscafe"; 
       } else {
-        // LIVE SITE: Automatically grabs "cgscafe", "cgscafe-dev", or "cgscafe-staging" from the URL path
-        repoName = pathSegments[0]; 
+        // FALLBACK: If accessing via raw github.io URL (username.github.io/repo-name/menu/)
+        const pathSegments = window.location.pathname.split('/').filter(s => s.length > 0);
+        repoName = pathSegments[0] || "cgscafe";
       }
       
-      // 3. Construct the dynamic data URL stream
+      // 3. Construct the verified raw data stream URL
       const liveDataUrl = `https://raw.githubusercontent.com/${githubUsername}/${repoName}/main/menu/menu-data.json`;
       
       fetch(liveDataUrl + '?cb=' + Date.now())
