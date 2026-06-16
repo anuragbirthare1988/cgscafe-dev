@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CGS Control Center - Secure Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark-color: #0c0a08;
+      --accent-gold: #c5a880;
+      --accent-gold-hover: #d4bda1;
+      --text-main: #e6dfd5;
+      --text-muted: #8c7b68;
+      --border-color: #221d17;
+      --admin-bg: #1c1814;
+      --admin-surface: #26211c;
+      --text-darker: #524639;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background-color: #050403; color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; padding: 40px 20px; }
+    
+    /* Login Gate */
+    .login-box { max-width: 450px; margin: 100px auto; background: var(--admin-bg); border: 1px solid var(--border-color); padding: 40px; border-radius: 4px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+    .login-box h2 { font-family: 'Oswald', sans-serif; font-size: 24px; color: var(--accent-gold); letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
+    .login-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
+
+    /* Admin Workspace */
+    .admin-container { max-width: 1300px; margin: 0 auto; background-color: var(--admin-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: none; }
+    .admin-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 30px; }
+    .admin-header h2 { font-family: 'Oswald', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--accent-gold); margin-bottom: 5px; }
+    .admin-header p { color: var(--text-muted); font-size: 13px; }
+    
+    .primary-btn { background-color: var(--accent-gold); color: var(--bg-dark-color); border: none; padding: 12px 28px; font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
+    .primary-btn:hover { background-color: var(--accent-gold-hover); }
+    .primary-btn:disabled { background-color: var(--text-darker); color: var(--text-muted); cursor: not-allowed; }
+    
+    .category-block { margin-bottom: 40px; background-color: rgba(0,0,0,0.15); border-radius: 4px; border: 1px solid #1f1a15; overflow: hidden; }
+    .category-header { background-color: var(--admin-surface); padding: 15px 25px; font-family: 'Oswald', sans-serif; font-size: 16px; letter-spacing: 2px; color: var(--text-main); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; }
+    
+    .database-table { width: 100%; border-collapse: collapse; text-align: left; }
+    .database-table th { background-color: rgba(0,0,0,0.2); padding: 12px 20px; font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-color); }
+    .database-table td { padding: 14px 20px; border-bottom: 1px solid rgba(34, 29, 23, 0.5); }
+    
+    .db-input { width: 100%; background-color: #0c0a08; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 12px; font-size: 13px; border-radius: 2px; }
+    .db-input:focus { border-color: var(--accent-gold); outline: none; }
+    .db-input-name { font-family: 'Oswald', sans-serif; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-gold); }
+    
+    .width-small { width: 90px; }
+    .width-medium { width: 140px; }
+    .width-toggle { width: 100px; text-align: center; }
+
+    .switch-wrapper { display: inline-flex; align-items: center; cursor: pointer; }
+    .switch-input { display: none; }
+    .switch-rail { width: 40px; height: 20px; background-color: #0c0a08; border: 1px solid var(--border-color); border-radius: 10px; position: relative; }
+    .switch-indicator { width: 14px; height: 14px; background-color: var(--text-muted); border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: transform 0.2s; }
+    .switch-input:checked + .switch-rail { background-color: rgba(197, 168, 128, 0.2); border-color: var(--accent-gold); }
+    .switch-input:checked + .switch-rail .switch-indicator { transform: translateX(20px); background-color: var(--accent-gold); }
+
+    .btn-delete { background: none; border: none; color: #9c3a3a; cursor: pointer; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 12px; }
+    .btn-delete:hover { color: #e65e5e; }
+    .btn-add { background-color: transparent; border: 1px dashed var(--border-color); color: var(--text-muted); width: 100%; padding: 12px; font-family: 'Oswald', sans-serif; text-transform: uppercase; cursor: pointer; }
+    .btn-add:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+  </style>
+</head>
+<body>
+
+  <div class="login-box" id="auth-gate">
+    <h2>CGS Terminal Gate</h2>
+    <p>Authentication via secure personal environment scope. Insert authorization credentials to map changes directly to your active repository ecosystem.</p>
+    <input type="text" id="gh-username" class="db-input" placeholder="GitHub Username" style="margin-bottom: 12px;">
+    <input type="text" id="gh-repo" class="db-input" placeholder="Repository Name" style="margin-bottom: 12px;">
+    <input type="password" id="gh-token" class="db-input" placeholder="GitHub Personal Access Token (classic)" style="margin-bottom: 20px;">
+    <button class="primary-btn" style="width: 100%;" onclick="initializeDatabaseConnection()">Establish Connection</button>
+  </div>
+
+  <div class="admin-container" id="admin-panel">
+    <div class="admin-header">
+      <div>
+        <h2>CGS Static File Data Panel</h2>
+        <p>Connected to Serverless Git File Sync System. Edits map dynamically based on your runtime environment path.</p>
+      </div>
+      <div class="action-group">
+        <button class="primary-btn" id="save-btn" onclick="commitDatabaseToServer()">⚡ Publish Live Updates</button>
+      </div>
+    </div>
+    <div id="accordion-render-target">Building workspace tree components...</div>
+  </div>
+
+  <script>
+    let MASTER_DATABASE = {};
+    let FILE_SHA = "";
+    let GIT_USER, GIT_REPO, GIT_TOKEN;
+
+    // Environment Auto-Detection Layer
+    window.addEventListener("DOMContentLoaded", () => {
+      const pathSegments = window.location.pathname.split('/').filter(s => s.length > 0);
+      const repoInput = document.getElementById("gh-repo");
+      
+      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        repoInput.value = "cgscafe-dev"; // Local testing sandbox fallback
+      } else {
+        repoInput.value = pathSegments[0] || ""; // Live: Grabs "cgscafe", "cgscafe-dev", etc. from the active path
+      }
+    });
+
+    function initializeDatabaseConnection() {
+      GIT_USER = document.getElementById("gh-username").value.trim();
+      GIT_REPO = document.getElementById("gh-repo").value.trim();
+      GIT_TOKEN = document.getElementById("gh-token").value.trim();
+
+      if(!GIT_USER || !GIT_REPO || !GIT_TOKEN) {
+        alert("Please complete all integration authentication inputs completely.");
+        return;
+      }
+
+      const url = `https://api.github.com/repos/${GIT_USER}/${GIT_REPO}/contents/menu/menu-data.json`;
+      
+      fetch(url, {
+        headers: { "Authorization": `token ${GIT_TOKEN}`, "Accept": "application/vnd.github.v3+json" }
+      })
+      .then(res => {
+        if(!res.ok) throw new Error("Connection failed. Check your token, username, repository layout, or ensure menu-data.json exists inside the /menu subdirectory.");
+        return res.json();
+      })
+      .then(data => {
+        FILE_SHA = data.sha;
+        // Safe UTF-8 Base64 structural parsing mapping
+        MASTER_DATABASE = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+        
+        document.getElementById("auth-gate").style.display = "none";
+        document.getElementById("admin-panel").style.display = "block";
+        renderAdminDatabasePanel();
+      })
+      .catch(err => alert("Auth Failed: " + err.message));
+    }
+
+    function renderAdminDatabasePanel() {
+      const target = document.getElementById("accordion-render-target");
+      target.innerHTML = "";
+
+      const keys = [{ label: "Beverages Layout Matrix", dataKey: "beverages" }, { label: "Eatables Layout Matrix", dataKey: "eatables" }];
+
+      keys.forEach(config => {
+        if (!MASTER_DATABASE[config.dataKey]) return;
+
+        MASTER_DATABASE[config.dataKey].forEach((block, blockIndex) => {
+          const blockElement = document.createElement("div");
+          blockElement.className = "category-block";
+          blockElement.innerHTML = `
+            <div class="category-header">
+              <span>${config.label.toUpperCase()} ➔ ${block.superCategory} (${block.subCategoryName})</span>
+            </div>
+            <table class="database-table">
+              <thead>
+                <tr>
+                  <th>Product Name Field</th>
+                  <th>Product Summary Lines</th>
+                  <th class="width-medium">Serving Size</th>
+                  <th class="width-small">Price (INR)</th>
+                  <th class="width-toggle">Star Rec.</th>
+                  <th class="width-small">Control</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-${config.dataKey}-${blockIndex}"></tbody>
+            </table>
+            <div style="padding: 15px; background: rgba(0,0,0,0.1);">
+              <button class="btn-add" onclick="insertNewRow('${config.dataKey}', ${blockIndex})">+ Append New Product Data Row</button>
+            </div>
+          `;
+          target.appendChild(blockElement);
+
+          const tbody = document.getElementById(`tbody-${config.dataKey}-${blockIndex}`);
+          block.items.forEach((item, itemIndex) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td><input type="text" class="db-input db-input-name" value="${item.name}" oninput="modifyCell('${config.dataKey}',${blockIndex},${itemIndex},'name',this.value)"></td>
+              <td><input type="text" class="db-input" value="${item.description}" oninput="modifyCell('${config.dataKey}',${blockIndex},${itemIndex},'description',this.value)"></td>
+              <td class="width-medium"><input type="text" class="db-input" value="${item.qty}" oninput="modifyCell('${config.dataKey}',${blockIndex},${itemIndex},'qty',this.value)"></td>
+              <td class="width-small"><input type="number" class="db-input" value="${item.price}" oninput="modifyCell('${config.dataKey}',${blockIndex},${itemIndex},'price',this.value)"></td>
+              <td class="width-toggle">
+                <label class="switch-wrapper">
+                  <input type="checkbox" class="switch-input" ${item.featured ? 'checked' : ''} onchange="modifyCell('${config.dataKey}',${blockIndex},${itemIndex},'featured',this.checked)">
+                  <span class="switch-rail"><span class="switch-indicator"></span></span>
+                </label>
+              </td>
+              <td class="width-small"><button class="btn-delete" onclick="deleteRow('${config.dataKey}',${blockIndex},${itemIndex})">Delete</button></td>
+            `;
+            tbody.appendChild(row);
+          });
+        });
+      });
+    }
+
+    function modifyCell(dataKey, blockIndex, itemIndex, prop, value) {
+      MASTER_DATABASE[dataKey][blockIndex].items[itemIndex][prop] = value;
+    }
+
+    function insertNewRow(dataKey, blockIndex) {
+      MASTER_DATABASE[dataKey][blockIndex].items.push({
+        id: "item_" + Math.random().toString(36).substr(2, 9),
+        name: "NEW CATALOG PRODUCT",
+        description: "Artisanal summary profile details fit here perfectly",
+        qty: "1 Unit", price: "150", featured: false
+      });
+      renderAdminDatabasePanel();
+    }
+
+    function deleteRow(dataKey, blockIndex, itemIndex) {
+      MASTER_DATABASE[dataKey][blockIndex].items.splice(itemIndex, 1);
+      renderAdminDatabasePanel();
+    }
+
+    function commitDatabaseToServer() {
+      const btn = document.getElementById("save-btn");
+      btn.innerText = "Processing Cloud Deploy...";
+      btn.disabled = true;
+
+      const url = `https://api.github.com/repos/${GIT_USER}/${GIT_REPO}/contents/menu/menu-data.json`;
+      const jsonStringContent = JSON.stringify(MASTER_DATABASE, null, 2);
+      
+      // Multi-byte clean string base64 normalization encoding
+      const encodedContent = btoa(unescape(encodeURIComponent(jsonStringContent)));
+
+      const requestPayload = {
+        message: "Production Menu Update via CGS Panel Portal Engine",
+        content: encodedContent,
+        sha: FILE_SHA
+      };
+
+      fetch(url, {
+        method: "PUT",
+        headers: {
+          "Authorization": `token ${GIT_TOKEN}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestPayload)
+      })
+      .then(res => {
+        if(!res.ok) throw new Error("GitHub write API processing error. Verify token scope properties permissions.");
+        return res.json();
+      })
+      .then(data => {
+        FILE_SHA = data.content.sha;
+        alert("Success! Menu updates have been committed directly into your active repository. Both your local workspace and live domain web users will show updated information instantly on refresh.");
+      })
+      .catch(err => alert("Sync Error: " + err.message))
+      .finally(() => {
+        btn.innerText = "⚡ Publish Live Updates";
+        btn.disabled = false;
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CGS Menu Canvas Display Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark-color: #0c0a08;
+      --bg-card-color: #12100e;
+      --bg-sidebar-color: #161310;
+      --accent-gold: #c5a880;
+      --text-main: #e6dfd5;
+      --text-muted: #8c7b68;
+      --text-darker: #524639;
+      --border-color: #221d17;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background-color: #050403; color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+    
+    .top-menu-selector-hub { background-color: #1c1814; border-bottom: 2px solid var(--border-color); padding: 15px 30px; position: sticky; top: 0; z-index: 9999; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .brand-logo-txt { font-family: 'Oswald', sans-serif; font-size: 22px; letter-spacing: 2px; color: var(--accent-gold); text-transform: uppercase; }
+    .nav-toggle-cluster { display: flex; background: #0c0a08; padding: 4px; border-radius: 4px; border: 1px solid var(--border-color); }
+    .toggle-view-btn { background: none; border: none; color: var(--text-muted); font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; padding: 8px 24px; cursor: pointer; transition: all 0.3s; }
+    .toggle-view-btn.active { background-color: var(--accent-gold); color: var(--bg-dark-color); }
+    .btn-print-action { background-color: var(--accent-gold); color: var(--bg-dark-color); border: none; padding: 10px 28px; font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; cursor: pointer; }
+    
+    .canvas-container { width: 100%; max-width: 1400px; margin: 40px auto; display: flex; flex-direction: column; align-items: center; }
+    .a5-landscape-sheet { width: 210mm; height: 148mm; background-color: var(--bg-card-color); border: 1px solid var(--border-color); position: relative; display: flex; flex-direction: row; padding: 14mm 10mm 14mm 0mm; margin-bottom: 35px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); overflow: hidden; }
+    .vertical-sidebar-banner { width: 16mm; background-color: var(--bg-sidebar-color); border-right: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; flex-shrink: 0; height: 100%; }
+    .sidebar-text-wrap { display: flex; align-items: center; justify-content: center; gap: 14px; transform: rotate(-90deg); white-space: nowrap; }
+    .sidebar-main-title { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 500; color: var(--accent-gold); letter-spacing: 7px; text-transform: uppercase; }
+    .sidebar-subtitle { font-family: 'Oswald', sans-serif; font-size: 11px; color: var(--text-darker); letter-spacing: 3px; text-transform: uppercase; }
+    
+    .menu-page-content-pane { flex: 1; height: 120mm; display: flex; flex-direction: column; padding-left: 10mm; position: relative; }
+    .section-horizontal-band { width: 100%; margin-bottom: 38px; display: flex; flex-direction: column; }
+    .section-header-title { margin-bottom: 16px; border-bottom: 1px solid rgba(197, 168, 128, 0.08); padding-bottom: 6px; }
+    .section-header-title h3 { font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 3px; color: var(--accent-gold); text-transform: uppercase; }
+    .section-header-desc { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10.5px; color: #807160; line-height: 1.4; }
+    
+    .products-masonry-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 24px; width: 100%; }
+    .product-column-row { display: flex; flex-direction: column; }
+    .product-title-row { display: flex; align-items: center; margin-bottom: 4px; }
+    .product-title-text { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; color: var(--text-main); letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+    .star-marker { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10px; color: var(--accent-gold); margin-left: 5px; }
+    .product-desc-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; color: var(--text-muted); line-height: 1.55; }
+    .price-tag-append { color: var(--text-muted); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; }
+    .footer-stamp-line { position: absolute; bottom: 6mm; left: 26mm; right: 10mm; font-family: 'Oswald', sans-serif; font-size: 11px; color: #3b332b; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(197, 168, 128, 0.04); padding-top: 6px; }
+    
+    @media print {
+      body { background-color: var(--bg-dark-color) !important; color: var(--text-main) !important; }
+      .top-menu-selector-hub { display: none !important; }
+      .canvas-container { padding: 0 !important; margin: 0 !important; max-width: none !important; }
+      .a5-landscape-sheet { width: 210mm !important; height: 148mm !important; page-break-after: always !important; box-shadow: none !important; border: none !important; margin: 0 !important; padding: 14mm 10mm 14mm 0mm !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .vertical-sidebar-banner { background-color: var(--bg-sidebar-color) !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-menu-selector-hub">
+    <div class="brand-logo-txt">CGS Cafe Menu Viewport</div>
+    <div class="nav-toggle-cluster">
+      <button id="tab-bev" class="toggle-view-btn active" onclick="switchCanvasTab('beverages')">Beverages</button>
+      <button id="tab-eat" class="toggle-view-btn" onclick="switchCanvasTab('eatables')">Eatables</button>
+    </div>
+    <button class="btn-print-action" onclick="window.print()">Review & Print Menu</button>
+  </header>
+
+  <main class="canvas-container">
+    <div id="print-canvas-render-target">Establishing data canvas synchronization pipeline...</div>
+  </main>
+
+  <script>
+    let ACTIVE_CANVAS = 'beverages';
+    let MASTER_DATABASE = { beverages: [], eatables: [] };
+
+    window.addEventListener("load", () => {
+      // 1. Set your fixed GitHub Username/Organization
+      const githubUsername = "anuragbirthare1988@gmail.com"; 
+      
+      // 2. Dynamically extract the repository name from the browser URL path
+      let repoName = "";
+      const pathSegments = window.location.pathname.split('/').filter(segment => segment.length > 0);
+
+      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        // FALLBACK FOR LOCALHOST: If testing locally, fallback to your dev repo name
+        repoName = "cgscafe-dev"; 
+      } else {
+        // LIVE SITE: Automatically grabs "cgscafe", "cgscafe-dev", or "cgscafe-staging" from the URL path
+        repoName = pathSegments[0]; 
+      }
+      
+      // 3. Construct the dynamic data URL stream
+      const liveDataUrl = `https://raw.githubusercontent.com/${githubUsername}/${repoName}/main/menu/menu-data.json`;
+      
+      fetch(liveDataUrl + '?cb=' + Date.now())
+        .then(res => {
+          if(!res.ok) throw new Error(`Target core dataset structure missing at ${repoName}.`);
+          return res.json();
+        })
+        .then(data => {
+          MASTER_DATABASE = data;
+          generateProductionMenuLayout();
+        })
+        .catch(err => {
+          document.getElementById("print-canvas-render-target").innerText = "Menu Dynamic Synchronization Failed: " + err.message;
+        });
+    });
+
+    function switchCanvasTab(canvasKey) {
+      ACTIVE_CANVAS = canvasKey;
+      document.getElementById("tab-bev").classList.toggle("active", canvasKey === 'beverages');
+      document.getElementById("tab-eat").classList.toggle("active", canvasKey === 'eatables');
+      generateProductionMenuLayout();
+    }
+
+    function generateProductionMenuLayout() {
+      const target = document.getElementById("print-canvas-render-target");
+      target.innerHTML = "";
+      
+      const activeDataSet = MASTER_DATABASE[ACTIVE_CANVAS] || [];
+      const MAXIMUM_PAGE_BUDGET_HEIGHT = 440; 
+      
+      let pageCount = 1;
+      let activeTrackingCategory = "";
+      let currentAllocatedHeight = 0;
+      let pageFrameElement = null;
+      let contentPaneWindow = null;
+
+      activeDataSet.forEach(subCatGroup => {
+        let costHeaderBlock = 54;
+        const columnsHeightTracker = [0, 0, 0];
+        
+        subCatGroup.items.forEach((item, index) => {
+          const textLengthScore = item.description.trim().length + item.price.length + 4;
+          const overflowLineMultiplier = Math.max(0, Math.ceil(textLengthScore / 34) - 1);
+          columnsHeightTracker[index % 3] += (26 + (overflowLineMultiplier * 18));
+        });
+        
+        const totalCalculatedBlockFootprint = costHeaderBlock + Math.max(...columnsHeightTracker) + 36;
+
+        if (!activeTrackingCategory) { activeTrackingCategory = subCatGroup.superCategory; }
+
+        if (!pageFrameElement || 
+            (currentAllocatedHeight + totalCalculatedBlockFootprint > MAXIMUM_PAGE_BUDGET_HEIGHT) || 
+            (activeTrackingCategory !== subCatGroup.superCategory)) {
+          
+          activeTrackingCategory = subCatGroup.superCategory;
+          pageFrameElement = buildPageStructuralShell(pageCount, subCatGroup.superCategory, subCatGroup.tag || "");
+          contentPaneWindow = pageFrameElement.querySelector(".menu-page-content-pane");
+          target.appendChild(pageFrameElement);
+          currentAllocatedHeight = 0;
+          pageCount++;
+        }
+
+        const sectionBandNode = document.createElement("div");
+        sectionBandNode.className = "section-horizontal-band";
+        sectionBandNode.innerHTML = `
+          <div class="section-header-title">
+            <h3>${subCatGroup.subCategoryName}</h3>
+            ${subCatGroup.subCategoryDesc ? `<div class="section-header-desc">${subCatGroup.subCategoryDesc}</div>` : ""}
+          </div>
+        `;
+
+        const masonryGrid = document.createElement("div");
+        masonryGrid.className = "products-masonry-grid";
+
+        subCatGroup.items.forEach(item => {
+          const itemCol = document.createElement("div");
+          itemCol.className = "product-column-row";
+          const recommendMarker = item.featured ? `<span class="star-marker">✦</span>` : "";
+          
+          let cleanDescription = item.description.trim();
+          if (cleanDescription.endsWith('.')) { cleanDescription = cleanDescription.slice(0, -1); }
+
+          itemCol.innerHTML = `
+            <div class="product-title-row">
+              <span class="product-title-text">${item.name}</span>
+              ${recommendMarker}
+            </div>
+            <div class="product-desc-text">
+              ${cleanDescription} <span class="price-tag-append">. ${item.price}</span>
+            </div>
+          `;
+          masonryGrid.appendChild(itemCol);
+        });
+
+        sectionBandNode.appendChild(masonryGrid);
+        contentPaneWindow.appendChild(sectionBandNode);
+        currentAllocatedHeight += totalCalculatedBlockFootprint;
+      });
+    }
+
+    function buildPageStructuralShell(pageIndex, mainTitleText, tagSubtitleText) {
+      const frame = document.createElement("div");
+      frame.className = "a5-landscape-sheet";
+      frame.innerHTML = `
+        <div class="vertical-sidebar-banner">
+          <div class="sidebar-text-wrap">
+            <span class="sidebar-main-title">${mainTitleText}</span>
+            ${tagSubtitleText ? `<span class="sidebar-subtitle">${tagSubtitleText}</span>` : ""}
+          </div>
+        </div>
+        <div class="menu-page-content-pane"></div>
+        <div class="footer-stamp-line">
+          <span style="font-family:'Plus Jakarta Sans'; font-size:9.5px; color:#4a3f34; letter-spacing:0.8px;">✦ Recommended Option</span>
+          <span>${pageIndex}</span>
+        </div>
+      `;
+      return frame;
+    }
+  </script>
+</body>
+</html>

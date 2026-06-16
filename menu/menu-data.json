@@ -1,0 +1,49 @@
+{
+  "beverages": [
+    {
+      "superCategory": "LIQUID ENERGY",
+      "tag": "(SHOTS & ESPRESSOS)",
+      "subCategoryName": "CLASSIC HOT COFFEE",
+      "subCategoryDesc": "Artisanal extractions brewed from premium roasted single-origin arabica beans.",
+      "items": [
+        { "id": "b1", "name": "ESPRESSO SHOT", "description": "Bold intense extraction of premium origins with rich hazel crema", "qty": "30ml", "price": "119", "featured": false },
+        { "id": "b2", "name": "CLASSIC CAPPUCCINO", "description": "Perfect harmony of espresso steamed milk and velvet froth layer", "qty": "240ml", "price": "159", "featured": true },
+        { "id": "b3", "name": "AMERICANO CAFE", "description": "Rich double espresso shot elongated over hot mountain spring water", "qty": "200ml", "price": "139", "featured": false }
+      ]
+    },
+    {
+      "superCategory": "LIQUID ENERGY",
+      "tag": "(FRAPPES & COLD BREWS)",
+      "subCategoryName": "CHILLED COFFEE CANVAS",
+      "subCategoryDesc": "Double-strength house concentrates flash-chilled and blended for smooth body.",
+      "items": [
+        { "id": "b4", "name": "CLASSIC FRACTION FRAPPE", "description": "Velvety smooth cold coffee whipped with artisanal vanilla bean sauce", "qty": "350ml", "price": "189", "featured": true },
+        { "id": "b5", "name": "DARK MOCHA CHILLER", "description": "Intense cocoa particles blended with a double shot of espresso blend", "qty": "350ml", "price": "199", "featured": false }
+      ]
+    }
+  ],
+  "eatables": [
+    {
+      "superCategory": "GRILLED EMBERS",
+      "tag": "(ARTISANAL PRESSES)",
+      "subCategoryName": "SIGNATURE MELTS",
+      "subCategoryDesc": "Premium slow-pressed multi-grain canvas recipes built with premium fillings.",
+      "items": [
+        { "id": "e1", "name": "TANDOORI PANEER FUSION PRESS", "description": "Succulent paneer cubes folded in a rich-smoky tandoori reduction", "qty": "1 Unit", "price": "229", "featured": true },
+        { "id": "e2", "name": "CREAMY ALFREDO HERB MELT", "description": "Rich white luxury herb folding with hints of roasted garlic essence", "qty": "1 Unit", "price": "219", "featured": false },
+        { "id": "e4", "name": "GOURMET CREAMY HERB STACK", "description": "A cold medley of premium veggies & paneer in a chilled herb cream", "qty": "1 Unit", "price": "199", "featured": true }
+      ]
+    },
+    {
+      "superCategory": "SWEET FINALES",
+      "tag": "(CRAFTED DOLCE)",
+      "subCategoryName": "DESSERTS",
+      "subCategoryDesc": "Decadent sweet creations to complete your culinary journey.",
+      "items": [
+        { "id": "e28", "name": "COCOA WALNUT FUDGE", "description": "Deep dark chocolate brownie with butter-toasted walnut shards", "qty": "1 Unit", "price": "159", "featured": false },
+        { "id": "e29", "name": "CRUSHED HAZELNUT PRALINE", "description": "Fudgy dark chocolate brownie with toasted hazelnut notes", "qty": "1 Unit", "price": "169", "featured": false },
+        { "id": "e30", "name": "EMERALD PISTACHIO LUXE", "description": "Fudgy dark brownie swirled with premium pistachio ganache", "qty": "1 Unit", "price": "189", "featured": true }
+      ]
+    }
+  ]
+}
