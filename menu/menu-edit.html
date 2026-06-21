@@ -5,7 +5,7 @@
   <title>CGS Control Center - Secure Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght=400;500;600&family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-dark-color: #0c0a08;
@@ -17,6 +17,7 @@
       --admin-bg: #1c1814;
       --admin-surface: #26211c;
       --text-darker: #524639;
+      --env-badge-color: #2c5234;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background-color: #050403; color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; padding: 40px 20px; }
@@ -37,15 +38,23 @@
     .primary-btn:disabled { background-color: var(--text-darker); color: var(--text-muted); cursor: not-allowed; }
     
     .category-block { margin-bottom: 40px; background-color: rgba(0,0,0,0.15); border-radius: 4px; border: 1px solid #1f1a15; overflow: hidden; }
-    .category-header { background-color: var(--admin-surface); padding: 15px 25px; font-family: 'Oswald', sans-serif; font-size: 16px; letter-spacing: 2px; color: var(--text-main); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; }
+    .category-header { background-color: var(--admin-surface); padding: 15px 25px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .category-title-display { font-family: 'Oswald', sans-serif; font-size: 14px; letter-spacing: 2px; color: var(--text-main); }
+    .category-edit-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; width: 85%; }
     
+    .type-pill { background: #0c0a08; border: 1px solid var(--border-color); color: var(--accent-gold); padding: 4px 10px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; border-radius: 3px; }
+    .env-badge { display: inline-block; background-color: #221d17; border: 1px solid var(--border-color); padding: 6px 12px; font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 1px; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 15px; border-radius: 2px; }
+
+    .btn-edit-header { background: none; border: 1px solid var(--text-darker); color: var(--text-muted); padding: 4px 12px; font-family: 'Oswald', sans-serif; font-size: 11px; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
+    .btn-edit-header:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+
     .database-table { width: 100%; border-collapse: collapse; text-align: left; }
     .database-table th { background-color: rgba(0,0,0,0.2); padding: 12px 20px; font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-color); }
     .database-table td { padding: 14px 20px; border-bottom: 1px solid rgba(34, 29, 23, 0.5); }
     
-    .db-input { width: 100%; background-color: #0c0a08; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 12px; font-size: 13px; border-radius: 2px; }
+    .db-input { background-color: #0c0a08; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 12px; font-size: 13px; border-radius: 2px; }
     .db-input:focus { border-color: var(--accent-gold); outline: none; }
-    .db-input-name { font-family: 'Oswald', sans-serif; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-gold); }
+    .db-input-name { font-family: 'Oswald', sans-serif; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-gold); width: 100%; }
     
     .width-small { width: 90px; }
     .width-medium { width: 140px; }
@@ -62,16 +71,24 @@
     .btn-delete:hover { color: #e65e5e; }
     .btn-add { background-color: transparent; border: 1px dashed var(--border-color); color: var(--text-muted); width: 100%; padding: 12px; font-family: 'Oswald', sans-serif; text-transform: uppercase; cursor: pointer; }
     .btn-add:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+    
+    .global-action-bar { display: flex; gap: 15px; margin-bottom: 30px; background: rgba(197, 168, 128, 0.03); border: 1px solid var(--border-color); padding: 15px 25px; border-radius: 4px; align-items: center; }
+    .global-bar-text { font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 1px; color: var(--accent-gold); text-transform: uppercase; }
   </style>
 </head>
 <body>
 
   <div class="login-box" id="auth-gate">
     <h2>CGS Terminal Gate</h2>
-    <p>Authentication via secure personal environment scope. Insert authorization credentials to map changes directly to your active repository ecosystem.</p>
-    <input type="text" id="gh-username" class="db-input" placeholder="GitHub Username" style="margin-bottom: 12px;">
-    <input type="text" id="gh-repo" class="db-input" placeholder="Repository Name" style="margin-bottom: 12px;">
-    <input type="password" id="gh-token" class="db-input" placeholder="GitHub Personal Access Token (classic)" style="margin-bottom: 20px;">
+    <p>Authentication via secure domain scoping scope. Your active repository ecosystem target has been hardlocked based on your client URL routing parameters.</p>
+    
+    <div style="margin-bottom: 12px;">
+      <label style="font-size: 11px; color: var(--text-muted); display:block; margin-bottom:4px;">Target Repository Scope</label>
+      <div id="env-badge-display" class="env-badge">Detecting...</div>
+    </div>
+
+    <input type="text" id="gh-username" class="db-input" placeholder="GitHub Username" style="margin-bottom: 12px; width: 100%;">
+    <input type="password" id="gh-token" class="db-input" placeholder="GitHub Personal Access Token (classic)" style="margin-bottom: 20px; width: 100%;">
     <button class="primary-btn" style="width: 100%;" onclick="initializeDatabaseConnection()">Establish Connection</button>
   </div>
 
@@ -79,126 +96,218 @@
     <div class="admin-header">
       <div>
         <h2>CGS Static File Data Panel</h2>
-        <p>Connected to Serverless Git File Sync System. Edits map dynamically based on your runtime environment path.</p>
+        <p id="admin-scope-desc">Connected to Serverless Git File Sync System.</p>
       </div>
       <div class="action-group">
         <button class="primary-btn" id="save-btn" onclick="commitDatabaseToServer()">⚡ Publish Live Updates</button>
       </div>
     </div>
+
+    <div class="global-action-bar">
+      <span class="global-bar-text">Structure Controls:</span>
+      <button class="btn-edit-header" style="padding: 8px 16px; border-style: dashed;" onclick="addNewCategoryBlock()">+ Create New Menu Category Section</button>
+    </div>
+
     <div id="accordion-render-target">Building workspace tree components...</div>
   </div>
 
   <script>
-    let MASTER_DATABASE = {};
+    let MASTER_DATABASE = { categories: [] };
     let FILE_SHA = "";
     let GIT_USER, GIT_REPO, GIT_TOKEN;
+    let EDITING_CATEGORIES = {}; 
 
-    // Environment Auto-Detection Layer
+    // Runtime Isolation Scoper Engine
     window.addEventListener("DOMContentLoaded", () => {
-      const pathSegments = window.location.pathname.split('/').filter(s => s.length > 0);
-      const repoInput = document.getElementById("gh-repo");
-      
-      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-        repoInput.value = "cgscafe-dev"; // Local testing sandbox fallback
+      const hostname = window.location.hostname;
+      const badge = document.getElementById("env-badge-display");
+
+      // Enforces strict environment boundaries automatically
+      if (hostname === "localhost" || hostname === "127.0.0.1") {
+        GIT_REPO = "cgscafe-dev";
+        badge.innerText = "LOCAL SANDBOX ➔ REPO: cgscafe-dev";
+        badge.style.borderColor = "#c5a880";
+      } else if (hostname === "dev.cgscafe.in") {
+        GIT_REPO = "cgscafe-dev";
+        badge.innerText = "DEV ENVIRONMENT ➔ REPO: cgscafe-dev";
+        badge.style.borderColor = "#4a7bb0";
+      } else if (hostname === "qa.cgscafe.in") {
+        GIT_REPO = "cgscafe-qa";
+        badge.innerText = "QA TEST SUITE ➔ REPO: cgscafe-qa";
+        badge.style.borderColor = "#b37d34";
+      } else if (hostname === "cgscafe.in" || hostname === "www.cgscafe.in") {
+        GIT_REPO = "cgscafe";
+        badge.innerText = "PRODUCTION MASTER ➔ REPO: cgscafe";
+        badge.style.backgroundColor = "#381a1a";
+        badge.style.borderColor = "#9c3a3a";
       } else {
-        repoInput.value = pathSegments[0] || ""; // Live: Grabs "cgscafe", "cgscafe-dev", etc. from the active path
+        // Fallback safety catch-all for custom domains or hosting sub-routes
+        GIT_REPO = "cgscafe-dev";
+        badge.innerText = "UNKNOWN ROUTE ➔ FALLBACK: cgscafe-dev";
       }
     });
 
     function initializeDatabaseConnection() {
       GIT_USER = document.getElementById("gh-username").value.trim();
-      GIT_REPO = document.getElementById("gh-repo").value.trim();
       GIT_TOKEN = document.getElementById("gh-token").value.trim();
 
-      if(!GIT_USER || !GIT_REPO || !GIT_TOKEN) {
-        alert("Please complete all integration authentication inputs completely.");
+      if(!GIT_USER || !GIT_TOKEN) {
+        alert("Please complete both username and access token credentials inputs.");
         return;
       }
 
+      // Appends variables dynamically cleanly 
       const url = `https://api.github.com/repos/${GIT_USER}/${GIT_REPO}/contents/menu/menu-data.json`;
       
       fetch(url, {
         headers: { "Authorization": `token ${GIT_TOKEN}`, "Accept": "application/vnd.github.v3+json" }
       })
       .then(res => {
-        if(!res.ok) throw new Error("Connection failed. Check your token, username, repository layout, or ensure menu-data.json exists inside the /menu subdirectory.");
+        if(!res.ok) throw new Error(`Connection failed. Target repository '${GIT_REPO}' could not reach file target path.`);
         return res.json();
       })
       .then(data => {
         FILE_SHA = data.sha;
-        // Safe UTF-8 Base64 structural parsing mapping
         MASTER_DATABASE = JSON.parse(decodeURIComponent(escape(atob(data.content))));
         
+        if (!MASTER_DATABASE.categories) {
+          MASTER_DATABASE.categories = [];
+        }
+
         document.getElementById("auth-gate").style.display = "none";
         document.getElementById("admin-panel").style.display = "block";
+        document.getElementById("admin-scope-desc").innerText = `Target Bound Core Pipeline Rule Location: GitHub Ecosystem Repository ➔ [${GIT_REPO.toUpperCase()}]`;
         renderAdminDatabasePanel();
       })
-      .catch(err => alert("Auth Failed: " + err.message));
+      .catch(err => alert("Auth Boundary Violation Check Failed: " + err.message));
+    }
+
+    function toggleCategoryEditMode(blockIndex) {
+      EDITING_CATEGORIES[blockIndex] = !EDITING_CATEGORIES[blockIndex];
+      renderAdminDatabasePanel();
+    }
+
+    // ... (rest of structural functions preserved identically below for continuity)
+    function modifyCategoryMetadata(blockIndex, property, value) {
+      MASTER_DATABASE.categories[blockIndex][property] = value;
+    }
+
+    function addNewCategoryBlock() {
+      MASTER_DATABASE.categories.push({
+        superCategory: "NEW CATEGORY BANNER",
+        subCategoryName: "Sub Category Title",
+        subCategoryDesc: "Optional short text describing this layout section line.",
+        originType: "beverages",
+        tag: "",
+        items: []
+      });
+      const newIndex = MASTER_DATABASE.categories.length - 1;
+      EDITING_CATEGORIES[newIndex] = true; 
+      renderAdminDatabasePanel();
+    }
+
+    function removeWholeCategoryBlock(blockIndex) {
+      if(confirm(`Are you absolutely sure you want to completely delete the entire category section "${MASTER_DATABASE.categories[blockIndex].subCategoryName}" along with ALL of its items?`)) {
+        MASTER_DATABASE.categories.splice(blockIndex, 1);
+        renderAdminDatabasePanel();
+      }
     }
 
     function renderAdminDatabasePanel() {
       const target = document.getElementById("accordion-render-target");
       target.innerHTML = "";
 
-      const keys = [{ label: "Beverages Layout Matrix", dataKey: "beverages" }, { label: "Eatables Layout Matrix", dataKey: "eatables" }];
+      if (MASTER_DATABASE.categories.length === 0) {
+        target.innerHTML = `<div style="text-align:center; padding: 40px; color:var(--text-muted); font-family: 'Oswald'; letter-spacing:1px;">No category blocks found in menu data. Click above to add one.</div>`;
+        return;
+      }
 
-      keys.forEach(config => {
-        if (!MASTER_DATABASE[config.dataKey]) return;
-
-        MASTER_DATABASE[config.dataKey].forEach((block, blockIndex) => {
-          const blockElement = document.createElement("div");
-          blockElement.className = "category-block";
-          blockElement.innerHTML = `
-            <div class="category-header">
-              <span>${config.label.toUpperCase()} ➔ ${block.superCategory} (${block.subCategoryName})</span>
+      MASTER_DATABASE.categories.forEach((block, blockIndex) => {
+        const blockElement = document.createElement("div");
+        blockElement.className = "category-block";
+        
+        let headerContent = "";
+        if (EDITING_CATEGORIES[blockIndex]) {
+          headerContent = `
+            <div class="category-edit-form">
+              <input type="text" class="db-input" style="width:180px; font-family:'Oswald'; color:var(--accent-gold);" value="${block.superCategory}" placeholder="Sidebar Title" oninput="modifyCategoryMetadata(${blockIndex},'superCategory',this.value)">
+              <input type="text" class="db-input" style="width:200px;" value="${block.subCategoryName}" placeholder="Section Title" oninput="modifyCategoryMetadata(${blockIndex},'subCategoryName',this.value)">
+              <input type="text" class="db-input" style="flex:1; min-width:250px;" value="${block.subCategoryDesc || ''}" placeholder="Section Description" oninput="modifyCategoryMetadata(${blockIndex},'subCategoryDesc',this.value)">
+              <input type="text" class="db-input" style="width:120px;" value="${block.tag || ''}" placeholder="Sidebar Tag" oninput="modifyCategoryMetadata(${blockIndex},'tag',this.value)">
+              <select class="db-input" style="width:120px; height:33px;" onchange="modifyCategoryMetadata(${blockIndex},'originType',this.value)">
+                <option value="beverages" ${block.originType === 'beverages' ? 'selected' : ''}>Beverages</option>
+                <option value="eatables" ${block.originType === 'eatables' ? 'selected' : ''}>Eatables</option>
+              </select>
             </div>
-            <table class="database-table">
-              <thead>
-                <tr>
-                  <th>Product Name Field</th>
-                  <th>Product Summary Lines</th>
-                  <th class="width-medium">Serving Size</th>
-                  <th class="width-small">Price (INR)</th>
-                  <th class="width-toggle">Star Rec.</th>
-                  <th class="width-small">Control</th>
-                </tr>
-              </thead>
-              <tbody id="tbody-${config.dataKey}-${blockIndex}"></tbody>
-            </table>
-            <div style="padding: 15px; background: rgba(0,0,0,0.1);">
-              <button class="btn-add" onclick="insertNewRow('${config.dataKey}', ${blockIndex})">+ Append New Product Data Row</button>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-edit-header" style="color:var(--accent-gold); border-color:var(--accent-gold);" onclick="toggleCategoryEditMode(${blockIndex})">Done</button>
+              <button class="btn-delete" style="font-size:11px; padding:0 5px;" onclick="removeWholeCategoryBlock(${blockIndex})">Drop</button>
             </div>
           `;
-          target.appendChild(blockElement);
+        } else {
+          headerContent = `
+            <div class="category-title-display">
+              <span style="color: var(--text-muted); font-size:11px; margin-right:5px;">[${block.originType.toUpperCase()}]</span>
+              <strong>${block.superCategory.toUpperCase()}</strong> 
+              <span style="color: var(--accent-gold); margin: 0 8px;">➔</span> 
+              ${block.subCategoryName}
+              ${block.subCategoryDesc ? `<span style="font-family:'Plus Jakarta Sans'; font-size:12px; color:var(--text-muted); font-weight:400; margin-left:15px; letter-spacing:0;">— ${block.subCategoryDesc}</span>` : ''}
+            </div>
+            <button class="btn-edit-header" onclick="toggleCategoryEditMode(${blockIndex})">Edit Section Headers</button>
+          `;
+        }
 
-          const tbody = document.getElementById(`tbody-${config.dataKey}-${blockIndex}`);
-          block.items.forEach((item, itemIndex) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td><input type="text" class="db-input db-input-name" value="${item.name}" oninput="modifyCell('${config.dataKey}',${blockIndex},${itemIndex},'name',this.value)"></td>
-              <td><input type="text" class="db-input" value="${item.description}" oninput="modifyCell('${config.dataKey}',${blockIndex},${itemIndex},'description',this.value)"></td>
-              <td class="width-medium"><input type="text" class="db-input" value="${item.qty}" oninput="modifyCell('${config.dataKey}',${blockIndex},${itemIndex},'qty',this.value)"></td>
-              <td class="width-small"><input type="number" class="db-input" value="${item.price}" oninput="modifyCell('${config.dataKey}',${blockIndex},${itemIndex},'price',this.value)"></td>
-              <td class="width-toggle">
-                <label class="switch-wrapper">
-                  <input type="checkbox" class="switch-input" ${item.featured ? 'checked' : ''} onchange="modifyCell('${config.dataKey}',${blockIndex},${itemIndex},'featured',this.checked)">
-                  <span class="switch-rail"><span class="switch-indicator"></span></span>
-                </label>
-              </td>
-              <td class="width-small"><button class="btn-delete" onclick="deleteRow('${config.dataKey}',${blockIndex},${itemIndex})">Delete</button></td>
-            `;
-            tbody.appendChild(row);
-          });
+        blockElement.innerHTML = `
+          <div class="category-header">${headerContent}</div>
+          <table class="database-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Product Name Field</th>
+                <th style="width: 45%;">Product Summary Lines</th>
+                <th class="width-medium">Serving Size</th>
+                <th class="width-small">Price (INR)</th>
+                <th class="width-toggle">Star Rec.</th>
+                <th class="width-small">Control</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-cat-${blockIndex}"></tbody>
+          </table>
+          <div style="padding: 15px; background: rgba(0,0,0,0.1);">
+            <button class="btn-add" onclick="insertNewRow(${blockIndex})">+ Append New Product Data Row</button>
+          </div>
+        `;
+        target.appendChild(blockElement);
+
+        const tbody = document.getElementById(`tbody-cat-${blockIndex}`);
+        (block.items || []).forEach((item, itemIndex) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td><input type="text" class="db-input db-input-name" value="${item.name || ''}" oninput="modifyCell(${blockIndex},${itemIndex},'name',this.value)"></td>
+            <td><input type="text" class="db-input" style="width:100%;" value="${item.description || ''}" oninput="modifyCell(${blockIndex},${itemIndex},'description',this.value)"></td>
+            <td class="width-medium"><input type="text" class="db-input" style="width:100%;" value="${item.qty || ''}" oninput="modifyCell(${blockIndex},${itemIndex},'qty',this.value)"></td>
+            <td class="width-small"><input type="number" class="db-input" style="width:100%;" value="${item.price || ''}" oninput="modifyCell(${blockIndex},${itemIndex},'price',this.value)"></td>
+            <td class="width-toggle">
+              <label class="switch-wrapper">
+                <input type="checkbox" class="switch-input" ${item.featured ? 'checked' : ''} onchange="modifyCell(${blockIndex},${itemIndex},'featured',this.checked)">
+                <span class="switch-rail"><span class="switch-indicator"></span></span>
+              </label>
+            </td>
+            <td class="width-small"><button class="btn-delete" onclick="deleteRow(${blockIndex},${itemIndex})">Delete</button></td>
+          `;
+          tbody.appendChild(row);
         });
       });
     }
 
-    function modifyCell(dataKey, blockIndex, itemIndex, prop, value) {
-      MASTER_DATABASE[dataKey][blockIndex].items[itemIndex][prop] = value;
+    function modifyCell(blockIndex, itemIndex, prop, value) {
+      MASTER_DATABASE.categories[blockIndex].items[itemIndex][prop] = value;
     }
 
-    function insertNewRow(dataKey, blockIndex) {
-      MASTER_DATABASE[dataKey][blockIndex].items.push({
+    function insertNewRow(blockIndex) {
+      if(!MASTER_DATABASE.categories[blockIndex].items) {
+        MASTER_DATABASE.categories[blockIndex].items = [];
+      }
+      MASTER_DATABASE.categories[blockIndex].items.push({
         id: "item_" + Math.random().toString(36).substr(2, 9),
         name: "NEW CATALOG PRODUCT",
         description: "Artisanal summary profile details fit here perfectly",
@@ -207,8 +316,8 @@
       renderAdminDatabasePanel();
     }
 
-    function deleteRow(dataKey, blockIndex, itemIndex) {
-      MASTER_DATABASE[dataKey][blockIndex].items.splice(itemIndex, 1);
+    function deleteRow(blockIndex, itemIndex) {
+      MASTER_DATABASE.categories[blockIndex].items.splice(itemIndex, 1);
       renderAdminDatabasePanel();
     }
 
@@ -219,12 +328,10 @@
 
       const url = `https://api.github.com/repos/${GIT_USER}/${GIT_REPO}/contents/menu/menu-data.json`;
       const jsonStringContent = JSON.stringify(MASTER_DATABASE, null, 2);
-      
-      // Multi-byte clean string base64 normalization encoding
       const encodedContent = btoa(unescape(encodeURIComponent(jsonStringContent)));
 
       const requestPayload = {
-        message: "Production Menu Update via CGS Panel Portal Engine",
+        message: `Production Menu Update [Scope: ${GIT_REPO}] via Admin Portal Engine`,
         content: encodedContent,
         sha: FILE_SHA
       };
@@ -238,12 +345,12 @@
         body: JSON.stringify(requestPayload)
       })
       .then(res => {
-        if(!res.ok) throw new Error("GitHub write API processing error. Verify token scope properties permissions.");
+        if(!res.ok) throw new Error("GitHub write API error. Verify token scope properties.");
         return res.json();
       })
       .then(data => {
         FILE_SHA = data.content.sha;
-        alert("Success! Menu updates have been committed directly into your active repository. Both your local workspace and live domain web users will show updated information instantly on refresh.");
+        alert(`Success! Menu updates have been committed directly into the '${GIT_REPO}' branch environment successfully.`);
       })
       .catch(err => alert("Sync Error: " + err.message))
       .finally(() => {
