@@ -6,7 +6,7 @@
       "subCategoryDesc": "Summary for the dummy section will appear here.",
       "originType": "beverages",
       "tag": "DUMMY SIDEBAR",
-      "hidden": false,
+      "hidden": true,
       "items": [
         {
           "id": "item_mqzx30oij",
@@ -15,7 +15,7 @@
           "qty": "250 ml",
           "price": "299",
           "featured": true,
-          "hidden": false
+          "hidden": true
         },
         {
           "id": "item_ddkhubg5j",
