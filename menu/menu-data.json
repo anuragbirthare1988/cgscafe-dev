@@ -25,6 +25,15 @@
           "price": "399",
           "featured": true,
           "hidden": false
+        },
+        {
+          "id": "item_5l81dgesy",
+          "name": "New PRODUCT",
+          "description": "Summary for the newly added product",
+          "qty": "350 ml",
+          "price": "249",
+          "featured": false,
+          "hidden": false
         }
       ]
     },
