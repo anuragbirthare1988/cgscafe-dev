@@ -5,7 +5,7 @@
   <title>CGS Control Center - Secure Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght=400;500;600&family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-dark-color: #0c0a08;
@@ -17,7 +17,6 @@
       --admin-bg: #1c1814;
       --admin-surface: #26211c;
       --text-darker: #524639;
-      --env-badge-color: #2c5234;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background-color: #050403; color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; padding: 40px 20px; }
@@ -117,12 +116,11 @@
     let GIT_USER, GIT_REPO, GIT_TOKEN;
     let EDITING_CATEGORIES = {}; 
 
-    // Runtime Isolation Scoper Engine
+    // Explicit Repository Scoper
     window.addEventListener("DOMContentLoaded", () => {
       const hostname = window.location.hostname;
       const badge = document.getElementById("env-badge-display");
 
-      // Enforces strict environment boundaries automatically
       if (hostname === "localhost" || hostname === "127.0.0.1") {
         GIT_REPO = "cgscafe-dev";
         badge.innerText = "LOCAL SANDBOX ➔ REPO: cgscafe-dev";
@@ -141,7 +139,6 @@
         badge.style.backgroundColor = "#381a1a";
         badge.style.borderColor = "#9c3a3a";
       } else {
-        // Fallback safety catch-all for custom domains or hosting sub-routes
         GIT_REPO = "cgscafe-dev";
         badge.innerText = "UNKNOWN ROUTE ➔ FALLBACK: cgscafe-dev";
       }
@@ -156,14 +153,14 @@
         return;
       }
 
-      // Appends variables dynamically cleanly 
+      // Explicitly locks the Git API endpoint path relative to repository root
       const url = `https://api.github.com/repos/${GIT_USER}/${GIT_REPO}/contents/menu/menu-data.json`;
       
       fetch(url, {
         headers: { "Authorization": `token ${GIT_TOKEN}`, "Accept": "application/vnd.github.v3+json" }
       })
       .then(res => {
-        if(!res.ok) throw new Error(`Connection failed. Target repository '${GIT_REPO}' could not reach file target path.`);
+        if(!res.ok) throw new Error(`Connection failed. Target repository '${GIT_REPO}' could not resolve menu/menu-data.json layout file path.`);
         return res.json();
       })
       .then(data => {
@@ -187,7 +184,6 @@
       renderAdminDatabasePanel();
     }
 
-    // ... (rest of structural functions preserved identically below for continuity)
     function modifyCategoryMetadata(blockIndex, property, value) {
       MASTER_DATABASE.categories[blockIndex][property] = value;
     }

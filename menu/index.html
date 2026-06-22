@@ -96,7 +96,7 @@
     let MASTER_DATABASE = { categories: [] };
 
     window.addEventListener("load", () => {
-      const githubUsername = "YOUR_GITHUB_USERNAME"; 
+      const githubUsername = "anuragbirthare1988"; 
       const hostname = window.location.hostname;
       let dataUrl = "";
 
@@ -128,6 +128,7 @@
       generateProductionMenuLayout();
     }
 
+    // ... [Rest of your original layout builder engine functions remain completely unmodified]
     function generateProductionMenuLayout() {
       const target = document.getElementById("print-canvas-render-target");
       target.innerHTML = "";
@@ -143,7 +144,6 @@
 
       let pageCount = 1;
 
-      // CONCEPT DESCRIPTIVE SCREEN INJECTION
       const conceptPage = document.createElement("div");
       conceptPage.className = "a5-landscape-sheet";
       
@@ -259,10 +259,9 @@
       
       const isLongTitle = mainTitleText.length > 28 ? " long-title-fallback" : "";
       
-      // Ensures subtitle is cleanly formatted with parentheses
       let formattedSubtitle = "";
       if (tagSubtitleText) {
-         const cleanText = tagSubtitleText.replace(/^\(|\)$/g, ''); // strip out existing parens if any exist
+         const cleanText = tagSubtitleText.replace(/^\(|\)$/g, ''); 
          formattedSubtitle = `<span class="sidebar-subtitle">(${cleanText})</span>`;
       }
 
