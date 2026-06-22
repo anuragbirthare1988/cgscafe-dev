@@ -6,7 +6,7 @@
       "subCategoryDesc": "Summary for the dummy section will appear here.",
       "originType": "beverages",
       "tag": "DUMMY SIDEBAR",
-      "hidden": false,
+      "hidden": true,
       "items": [
         {
           "id": "item_mqzx30oij",
@@ -49,21 +49,25 @@
           "description": "Whipped coffee crystals over ice for a frothy, bold chills",
           "price": "149",
           "featured": true,
-          "qty": "250 ml"
+          "qty": "250 ml",
+          "hidden": false
         },
         {
           "name": "HONEY CINNAMON ICED COFFEE",
           "description": "Frothy coffee and floral honey with a dash of sweet spice",
           "price": "169",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "VIETNAMESE ICED COFFEE",
           "description": "Aerated coffee with condensed milk for a velvety kick",
           "price": "179",
-          "featured": true
+          "featured": true,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "THE CHILLERS",
@@ -76,33 +80,39 @@
           "name": "SIGNATURE WHIPPED FRAPPE",
           "description": "A high-intensity whipped coffee with a frothy finish",
           "price": "189",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "DARK MOCHA FRAPPE",
           "description": "Whipped coffee and dark cocoa with molten chocolate",
           "price": "219",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "GOLDEN CARAMEL FRAPPE",
           "description": "Velvety coffee froth with buttery caramel over crisp ice",
           "price": "219",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "ROASTED HAZELNUT FRAPPE",
           "description": "Coffee solids and warm hazelnut notes in a toasted blend",
           "price": "229",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "VELVET GREEK FRAPPE",
           "description": "Dense, cloud-like coffee foam and cold milk for an icy kick",
           "price": "199",
-          "featured": false
+          "featured": false,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "VELVET BLENDS",
@@ -115,39 +125,46 @@
           "name": "OREO SHAKE",
           "description": "A thick, creamy Oreo blend with a crunchy cookie finish",
           "price": "189",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "LOTUS BISCOFF SHAKE",
           "description": "Signature Biscoff crunch in a thick, luxurious caramel shake",
           "price": "249",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "KITKAT SHAKE",
           "description": "KitKat bars folded into a smooth, decadent chocolate treat",
           "price": "189",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "CHOCOLATE SHAKE",
           "description": "Bold cocoa and molten chocolate for a deep, silky finish",
           "price": "179",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "NUTELLA SHAKE",
           "description": "A creamy Nutella blend with a rich hazelnut-cocoa finish",
           "price": "239",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "DATES & NUTS SHAKE",
           "description": "A nutrient-rich blend of dates and nuts with a toasted pop",
           "price": "219",
-          "featured": false
+          "featured": false,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "VELVET BLENDS",
@@ -160,15 +177,18 @@
           "name": "CAD M",
           "description": "Velvety milk chocolate blend with a signature malted finish",
           "price": "169",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "CAD B",
           "description": "Creamy dark cocoa base blended with fine chocolate bits",
           "price": "179",
-          "featured": false
+          "featured": false,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "WARM & COMFORT",
@@ -181,33 +201,39 @@
           "name": "WHIPPED COFFEE",
           "description": "A velvety, hand-whipped coffee cloud over steamed milk",
           "price": "139",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "TRI-SPICE BLEND TEA",
           "description": "Fragrant ginger, cardamom, and cinnamon to awaken the senses",
           "price": "99",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "HONEY GINGER LEMON TEA",
           "description": "Tangy lemon and spicy ginger with a sweet honey finish",
           "price": "119",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "DARK HOT CHOCOLATE",
           "description": "Rich dark cocoa, molten chocolate and cinnamon. Pure silk",
           "price": "189",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "WHITE HOT CHOCOLATE",
           "description": "Creamy white chocolate and warm cinnamon in a silky blend",
           "price": "189",
-          "featured": false
+          "featured": false,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "WARM & COMFORT",
@@ -220,39 +246,46 @@
           "name": "CLASSIC BUN MASKA",
           "description": "Pillowy bun sliced and filled with creamy salted butter",
           "price": "89",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "CRUNCHY BUN MASKA",
           "description": "Slow-pressed bun with a rich, silky and buttery crunch",
           "price": "99",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "CHEESE BUN MASKA",
           "description": "Griddled bun filled with silky cheese and rich salty butter",
           "price": "119",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "CHOCOLATE BUN MASKA",
           "description": "Soft bun toasted with molten chocolate and creamy butter",
           "price": "129",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "CLASSIC BREAD BUTTER",
           "description": "Soft sliced bread layered with a generous spread of rich butter",
           "price": "69",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "GOLDEN SALTED TOAST",
           "description": "Gold-crisped bread with a rich, silky and buttery punch",
           "price": "89",
-          "featured": false
+          "featured": false,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "FRESH & LIGHT",
@@ -265,33 +298,39 @@
           "name": "CLASSIC CITRUS PRESS",
           "description": "Zesty hand-pressed lemon with mint and club soda bubbles",
           "price": "129",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "GARDEN MINT MOJITO",
           "description": "Hand-muddled mint and lime with chilled effervescence",
           "price": "149",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "BLUE CURACAO FIZZ",
           "description": "Tangy citrus blend with blue curacao and sparkling soda",
           "price": "149",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "WILD STRAWBERRY SPRITZ",
           "description": "Chilled strawberry blend with lime and sparkling soda",
           "price": "159",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "CHILI GUAVA SPARKLE",
           "description": "Zingy guava with a hint of chili and a sparkling finish",
           "price": "159",
-          "featured": true
+          "featured": true,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "FRESH & LIGHT",
@@ -304,27 +343,32 @@
           "name": "WILD BLUEBERRY NECTAR",
           "description": "A concentrated forest berry blend with a bright citrus zip",
           "price": "99",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "BLACK PLUM VELVET",
           "description": "A rich, smooth black plum silk with a hint of toasted seasoning",
           "price": "99",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "EMERALD KIWI PRESS",
           "description": "Cold-pressed kiwi extract with a sharp and vibrant zest",
           "price": "99",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "BANARASI PAAN BLOOM",
           "description": "Aromatic betel leaf infusion with sweet rose notes",
           "price": "99",
-          "featured": true
+          "featured": true,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "ARTISANAL FOLDS",
@@ -337,39 +381,46 @@
           "name": "TANDOORI PANEER FUSION PRESS",
           "description": "Succulent paneer cubes folded in a rich-smoky tandoori reduction",
           "price": "229",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "CREAMY ALFREDOHERB MELT",
           "description": "Rich white luxury herb folding with hints of roasted garlic essence",
           "price": "219",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "CHIPOTLE SUNRISE SPICED PRESS",
           "description": "Smoked chipotle infusion with crisp multi-grain surface layout",
           "price": "219",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "GOURMET CREAMY HERB STACK",
           "description": "A cold medley of premium veggies & paneer in a chilled herb cream",
           "price": "199",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "EXOTIC SIZZLING MOLTEN MELT",
           "description": "High intensity spice reduction loaded with sharp melting cheeses",
           "price": "239",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "VIBRANT RAINBOW OPEN TOAST",
           "description": "Vibrant veggies served open faced with sharp golden toast edges",
           "price": "189",
-          "featured": false
+          "featured": false,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "ARTISANAL FOLDS",
@@ -382,39 +433,46 @@
           "name": "CHEF SPECIAL MASALA PRESS",
           "description": "Spicy potato formulation laced with fresh house aromatic greens",
           "price": "149",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "ZESTY CHEESE CHUTNEY FOLD",
           "description": "Mint reduction layered with creamy slices of gourmet cheese",
           "price": "139",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "CORN CHEESE GRILLED CRUST",
           "description": "Sweet corn suspended inside rich, molten premium mozzarella",
           "price": "169",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "ITALIAN MARINARA GARDEN FOLD",
           "description": "Rich marinara, melted mozzarella, paneer & veggies in a warm fold",
           "price": "179",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "RICH COCOA MELT FOLD",
           "description": "Rich chocolate ganache layered inside a warm golden fold",
           "price": "169",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "COFFEE INFUSED CHOCO-MELT",
           "description": "Decadent molten cocoa laced with a bold shot of aromatic coffee",
           "price": "179",
-          "featured": false
+          "featured": false,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "THE SKILLET & FRYERY",
@@ -427,21 +485,25 @@
           "name": "WHITE SAUCE PASTA",
           "description": "Classic velvety cream architecture topped with cracked pepper",
           "price": "249",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "PINK SAUCE PASTA",
           "description": "The perfect balance of sharp tomato acid and rich double cream",
           "price": "259",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "RED SAUCE PASTA",
           "description": "Slow-stewed plum tomatoes seasoned with oregano leaves",
           "price": "239",
-          "featured": false
+          "featured": false,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "THE SKILLET & FRYERY",
@@ -454,33 +516,39 @@
           "name": "CLASSIC SALTED FRIES",
           "description": "Lightly dusted with fine sea crystals for crisp crunch",
           "price": "139",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "FIERY PERI-PERI FRIES",
           "description": "Crisp, large batons tossed in a blistering chili blend",
           "price": "159",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "TANDOORI CHEESE FRIES",
           "description": "Smoky tandoori sauce topped with warm, golden cheeses",
           "price": "189",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "LEMON PEPPER FRIES",
           "description": "Sharp zesty citrus brightness balanced by warm peppercorns",
           "price": "169",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "MAGGI MASALA FRIES",
           "description": "Dusted with a deeply comforting, high-umami spice blend",
           "price": "159",
-          "featured": false
+          "featured": false,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "HARVEST BOARDS",
@@ -493,21 +561,25 @@
           "name": "SEA CRYSTAL BUTTER CORN",
           "description": "Sweet kernels glistening in rich churned butter and sea crystals",
           "price": "139",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "TRIPLE CHEESE CRUSH CORN",
           "description": "Warm sweet grains blanketed in a rich, velvety cheese emulsion",
           "price": "169",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "FIERY BLEND CHEESE CORN",
           "description": "Steamed kernels tossed in chili dust and smooth, velvety cream",
           "price": "179",
-          "featured": false
+          "featured": false,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "HARVEST BOARDS",
@@ -520,21 +592,25 @@
           "name": "BEETROOT CURD SALAD",
           "description": "Earthy crimson beet threads folded into thick hung yogurt",
           "price": "189",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "GARDEN ITALIAN SALAD",
           "description": "Vibrant garden cuts tossed with cold-pressed olive oil",
           "price": "199",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "CREAMY RUSSIAN SALAD",
           "description": "Tender daintily diced root vegetables bound in sweet cream",
           "price": "199",
-          "featured": false
+          "featured": false,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "HARVEST BOARDS",
@@ -547,9 +623,11 @@
           "name": "THE GOURMET BOARD",
           "description": "A luxury board of fine cheese, rich berries, nuts, and gourmet jam",
           "price": "269",
-          "featured": true
+          "featured": true,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     },
     {
       "superCategory": "SWEET FINALES",
@@ -562,39 +640,46 @@
           "name": "CHOCOLATE WALNUT",
           "description": "Deep dark chocolate brownie with butter-toasted walnut shards",
           "price": "159",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "ROASTED HAZELNUT",
           "description": "Fudgy dark chocolate brownie with toasted hazelnut notes",
           "price": "169",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "EMERALD PISTACHIO LUXE",
           "description": "Fudgy dark brownie swirled with premium pistachio ganache",
           "price": "189",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "MIDNIGHT OREO",
           "description": "Glossy chocolate fudge brownie with a crisp Oreo cream crunch",
           "price": "169",
-          "featured": false
+          "featured": false,
+          "hidden": false
         },
         {
           "name": "CAST-IRON SIZZLE",
           "description": "Decadent fudge brownie drenched in crackling chocolate sauce",
           "price": "189",
-          "featured": true
+          "featured": true,
+          "hidden": false
         },
         {
           "name": "YOGURT PARFAIT",
           "description": "Creamy Greek yogurt, crunchy granola, berries and almonds",
           "price": "169",
-          "featured": false
+          "featured": false,
+          "hidden": false
         }
-      ]
+      ],
+      "hidden": false
     }
   ]
 }
