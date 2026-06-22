@@ -48,6 +48,9 @@
     .admin-header h2 { font-family: 'Oswald', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--accent-gold); margin-bottom: 5px; }
     .admin-header p { color: var(--text-muted); font-size: 13px; font-weight: 600; letter-spacing: 0.5px; }
     
+    .deployment-notice-banner { background: rgba(197, 168, 128, 0.04); border-left: 3px solid var(--accent-gold); padding: 10px 16px; margin-bottom: 20px; font-size: 12px; line-height: 1.5; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
+    .deployment-notice-banner strong { color: var(--accent-gold); font-family: 'Oswald', sans-serif; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
+
     .primary-btn { background-color: var(--accent-gold); color: #000000; border: none; padding: 12px 28px; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; cursor: pointer; border-radius: 2px; display: flex; align-items: center; gap: 10px; transition: background-color 0.2s, transform 0.1s, opacity 0.2s; }
     .primary-btn:hover { background-color: var(--accent-gold-hover); transform: translateY(-1px); }
     
@@ -111,14 +114,11 @@
 
     .switch-wrapper { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; width: 36px; height: 18px; }
     
-    /* Visually hidden but keyboard accessible checkbox fix */
     .switch-input { position: absolute; opacity: 0; width: 0; height: 0; margin: 0; }
     .switch-rail { width: 36px; height: 18px; background-color: #0c0a08; border: 1px solid var(--border-color); border-radius: 10px; position: relative; display: block; transition: border-color 0.15s; }
     .switch-indicator { width: 12px; height: 12px; background-color: var(--text-muted); border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: transform 0.2s, background-color 0.2s; }
     
     .switch-input:checked + .switch-rail .switch-indicator { transform: translateX(18px); background-color: var(--accent-gold); }
-    
-    /* Clear active focus layout bounding rings */
     .switch-input:focus-visible + .switch-rail { outline: 2px solid var(--accent-gold); outline-offset: 2px; border-color: var(--accent-gold); }
 
     .btn-delete { background: none; border: none; color: #a44343; cursor: pointer; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
@@ -142,7 +142,6 @@
     .cgs-dialog-footer { display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 8px; }
     
     .double-confirm-gate { background: #211414; padding: 14px; border: 1px dashed #9c3a3a; border-radius: 2px; }
-
     .empty-section-notice { padding: 30px 20px; text-align: center; color: var(--text-muted); font-size: 13px; font-style: italic; background-color: rgba(197, 168, 128, 0.02); border-bottom: 1px dashed var(--border-color); letter-spacing: 0.3px; }
   </style>
 </head>
@@ -186,6 +185,11 @@
           Publish the revised menu
         </button>
       </div>
+    </div>
+
+    <!-- GitHub Deployment Lag System Info Notice Banner -->
+    <div class="deployment-notice-banner">
+      <span>ℹ️ <strong>Deployment Latency Notice:</strong> Due to downstream GitHub Deployment compilation and edge-caching routines, published menu alterations require <strong>approx. 4 minutes</strong> to completely reflect live on consumer-facing display templates.</span>
     </div>
 
     <div class="controls-filter-row">
@@ -249,11 +253,9 @@
     let CURRENT_SEARCH_STRING = "";
     let CURRENT_ORIGIN_FILTER = "all"; 
     let ACTIVE_PENDING_NEW_ROW_MAP = {}; 
-    
     let IS_UNPUBLISHED_CHANGES_PENDING = false;
 
     const CRITICAL_DRAG_WARNING = "⚠️ CRITICAL WARNING: Moving items or sections may alter page heights, causing text overflows, misalignments, or unexpected page breaks on the live/printed menu layout. Check on the lower environment before making this change as this change may cause page misalignment and page breaks for the live menu.";
-
     let dialogResolvePointer = null;
 
     window.addEventListener("beforeunload", (event) => {
@@ -290,7 +292,6 @@
         badge.innerText = "Default Core Target [cgscafe-dev]";
         subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
       }
-
       checkForSavedSession();
     });
 
@@ -326,10 +327,8 @@
     function executeRevertAndReload() {
       const target = document.getElementById("accordion-render-target");
       target.innerHTML = "Reverting components back to baseline...";
-      
       ACTIVE_PENDING_NEW_ROW_MAP = {};
       EDITING_CATEGORIES = {};
-      
       initializeDatabaseConnection(true);
     }
 
@@ -380,7 +379,7 @@
 
     function showCgsDialog(title, message, isDoubleConfirm = false) {
       document.getElementById("modal-title").innerText = title;
-      document.getElementById("modal-body").innerText = message;
+      document.getElementById("modal-body").innerHTML = message; // Using innerHTML to fully support custom line breaks
       
       const doubleGate = document.getElementById("modal-double-gate");
       const confirmBtn = document.getElementById("modal-confirm-btn");
@@ -542,7 +541,14 @@
     }
 
     function toggleItemVisibilityMask(blockIndex, itemIndex) {
-      MASTER_DATABASE.categories[blockIndex].items[itemIndex].hidden = !MASTER_DATABASE.categories[blockIndex].items[itemIndex].hidden;
+      const itemRef = MASTER_DATABASE.categories[blockIndex].items[itemIndex];
+      itemRef.hidden = !itemRef.hidden;
+      
+      const trackingKey = `${blockIndex}-${itemIndex}`;
+      if (!itemRef.hidden && ACTIVE_PENDING_NEW_ROW_MAP[blockIndex]) {
+        ACTIVE_PENDING_NEW_ROW_MAP[trackingKey] = itemRef;
+      }
+
       setPendingChanges(true);
       renderAdminDatabasePanel();
     }
@@ -792,7 +798,6 @@
 
     function insertNewRow(blockIndex) {
       if (ACTIVE_PENDING_NEW_ROW_MAP[blockIndex] === true) return;
-
       if(!MASTER_DATABASE.categories[blockIndex].items) {
         MASTER_DATABASE.categories[blockIndex].items = [];
       }
@@ -836,12 +841,12 @@
         e.preventDefault();
         return;
       }
-      
       draggedCategoryIdx = parseInt(targetBlock.getAttribute("data-cat-index"));
       draggedItemIdx = null; 
       targetBlock.classList.add("is-dragging");
       e.dataTransfer.effectAllowed = "move";
     }
+
     function handleCategoryDragOver(e) {
       e.preventDefault();
       const el = e.currentTarget.closest('.category-block');
@@ -849,10 +854,12 @@
         el.classList.add("drag-over");
       }
     }
+
     function handleCategoryDragLeave(e) {
       const el = e.currentTarget.closest('.category-block');
       if(el) el.classList.remove("drag-over");
     }
+
     async function handleCategoryDrop(e) {
       e.preventDefault();
       const el = e.currentTarget.closest('.category-block');
@@ -887,6 +894,7 @@
       row.classList.add("is-dragging");
       e.dataTransfer.effectAllowed = "move";
     }
+
     function handleItemDragOver(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -899,11 +907,13 @@
         }
       }
     }
+
     function handleItemDragLeave(e) {
       e.preventDefault();
       const row = e.currentTarget.closest('tr');
       if(row) row.classList.remove("drag-active-indicator");
     }
+
     async function handleItemDrop(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -976,7 +986,13 @@
         FILE_SHA = data.content.sha;
         ACTIVE_PENDING_NEW_ROW_MAP = {};
         setPendingChanges(false);
-        showCgsDialog("Sync Complete", "Menu layout successfully updated. Your changes are now live across all sections.", false);
+        
+        // Aligned success message using matching metrics structure
+        showCgsDialog(
+          "Sync Complete", 
+          "Menu configuration schema published successfully.<br><br>Please note: Changes require <strong>approx. 4 minutes</strong> to completely reflect live on active menu modules after GitHub build deployment completes.", 
+          false
+        );
         renderAdminDatabasePanel();
       })
       .catch(err => {
