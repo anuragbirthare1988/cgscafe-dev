@@ -1,6 +1,15 @@
 {
   "categories": [
     {
+      "superCategory": "DUMMY CATEGORY",
+      "subCategoryName": "DUMMY SECTION",
+      "subCategoryDesc": "Summary for the dummy section will appear here.",
+      "originType": "beverages",
+      "tag": "DUMMY SIDEBAR",
+      "hidden": false,
+      "items": []
+    },
+    {
       "superCategory": "THE CHILLERS",
       "tag": "SIDEBARTAG",
       "subCategoryName": "ICED COFFEE",
