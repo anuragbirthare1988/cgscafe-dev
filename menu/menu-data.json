@@ -40,17 +40,17 @@
       "originType": "beverages",
       "items": [
         {
-          "name": "DARK MOCHA FRAPPE",
-          "description": "Whipped coffee and dark cocoa with molten chocolate",
-          "price": "219",
-          "featured": true,
-          "hidden": false
-        },
-        {
           "name": "SIGNATURE WHIPPED FRAPPE",
           "description": "A high-intensity whipped coffee with a frothy finish",
           "price": "189",
           "featured": false,
+          "hidden": false
+        },
+        {
+          "name": "DARK MOCHA FRAPPE",
+          "description": "Whipped coffee and dark cocoa with molten chocolate",
+          "price": "219",
+          "featured": true,
           "hidden": false
         },
         {
