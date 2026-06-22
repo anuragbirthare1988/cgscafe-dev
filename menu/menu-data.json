@@ -7,7 +7,27 @@
       "originType": "beverages",
       "tag": "DUMMY SIDEBAR",
       "hidden": false,
-      "items": []
+      "items": [
+        {
+          "id": "item_mqzx30oij",
+          "name": "DUMMY ProducT",
+          "description": "Dummy product summary",
+          "qty": "250 ml",
+          "price": "299",
+          "featured": true,
+          "hidden": false
+        },
+        {
+          "id": "item_ddkhubg5j",
+          "name": "",
+          "description": "",
+          "qty": "",
+          "price": "",
+          "featured": false,
+          "hidden": false,
+          "isPendingNew": true
+        }
+      ]
     },
     {
       "superCategory": "THE CHILLERS",
