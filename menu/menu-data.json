@@ -2,14 +2,14 @@
   "categories": [
     {
       "superCategory": "THE CHILLERS",
-      "tag": "",
+      "tag": "SIDEBARTAG",
       "subCategoryName": "ICED COFFEE",
       "subCategoryDesc": "Crafted using our signature coffee blend for a smooth experience.",
       "originType": "beverages",
       "items": [
         {
           "name": "CLASSIC ICED COFFEE",
-          "description": "Whipped coffee crystals over ice for a frothy, bold chill",
+          "description": "Whipped coffee crystals over ice for a frothy, bold chills",
           "price": "149",
           "featured": true,
           "qty": "250 ml"
