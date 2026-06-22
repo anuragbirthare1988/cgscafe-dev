@@ -15,7 +15,7 @@
           "qty": "250 ml",
           "price": "299",
           "featured": true,
-          "hidden": true
+          "hidden": false
         },
         {
           "id": "item_ddkhubg5j",
@@ -23,7 +23,7 @@
           "description": "Sample product summery will appear here. Sample product summery will appear here.",
           "qty": "420 ML",
           "price": "399",
-          "featured": false,
+          "featured": true,
           "hidden": false
         },
         {
