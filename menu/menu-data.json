@@ -1,6 +1,43 @@
 {
   "categories": [
     {
+      "superCategory": "DUMMY CATEGORY",
+      "subCategoryName": "DUMMY SECTION",
+      "subCategoryDesc": "Summary for the dummy section will appear here.",
+      "originType": "beverages",
+      "tag": "DUMMY SIDEBAR",
+      "hidden": false,
+      "items": [
+        {
+          "id": "item_mqzx30oij",
+          "name": "DUMMY ProducT",
+          "description": "Dummy product summary",
+          "qty": "250 ml",
+          "price": "299",
+          "featured": true,
+          "hidden": false
+        },
+        {
+          "id": "item_ddkhubg5j",
+          "name": "SAMPLE PRODUCT NAME",
+          "description": "Sample product summery will appear here. Sample product summery will appear here.",
+          "qty": "420 ML",
+          "price": "399",
+          "featured": true,
+          "hidden": false
+        },
+        {
+          "id": "item_5l81dgesy",
+          "name": "New PRODUCT",
+          "description": "Summary for the newly added product",
+          "qty": "350 ml",
+          "price": "249",
+          "featured": true,
+          "hidden": false
+        }
+      ]
+    },
+    {
       "superCategory": "THE CHILLERS",
       "tag": "",
       "subCategoryName": "ICED COFFEE",
