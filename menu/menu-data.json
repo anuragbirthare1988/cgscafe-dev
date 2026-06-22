@@ -19,13 +19,12 @@
         },
         {
           "id": "item_ddkhubg5j",
-          "name": "",
-          "description": "",
-          "qty": "",
-          "price": "",
-          "featured": false,
-          "hidden": false,
-          "isPendingNew": true
+          "name": "SAMPLE PRODUCT NAME",
+          "description": "Sample product summery will appear here. Sample product summery will appear here.",
+          "qty": "420 ML",
+          "price": "399",
+          "featured": true,
+          "hidden": false
         }
       ]
     },
