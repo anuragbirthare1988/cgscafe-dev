@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CGS Control Center - Secure Portal</title>
+  <title>CGS LIVE MENU MANAGER</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,100 +14,230 @@
       --text-main: #e6dfd5;
       --text-muted: #8c7b68;
       --border-color: #221d17;
-      --admin-bg: #1c1814;
-      --admin-surface: #26211c;
-      --text-darker: #524639;
+      --admin-bg: #13100e;
+      --admin-surface: #161311; 
+      --text-darker: #4a3e32;
+      --highlight-new-row: #241e17;
+      --danger-color: #ff6b6b;
+      --danger-hover: #fa5252;
+      
+      --dragged-source-color: #c5a880;      
+      --drop-target-hover-color: #a44343;   
+      --drop-target-bg: rgba(164, 67, 67, 0.1);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background-color: #050403; color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; padding: 40px 20px; }
+    body { background-color: #050403; color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; padding: 40px 20px; transition: padding-top 0.2s; }
     
-    /* Login Gate */
+    .unsaved-ribbon-toast { position: fixed; top: 0; left: 0; width: 100%; background: #2b1616; border-bottom: 2px solid var(--danger-color); color: #fcdbdb; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 500; text-align: center; padding: 12px 20px; z-index: 999999; box-shadow: 0 5px 20px rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; gap: 15px; animation: slideDownRibbon 0.25s cubic-bezier(0.1, 0.9, 0.2, 1); }
+    @keyframes slideDownRibbon { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+    .pulse-danger-dot { width: 8px; height: 8px; background-color: var(--danger-color); border-radius: 50%; box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); animation: pulseDanger 1.6s infinite; }
+    @keyframes pulseDanger { 0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.8); } 70% { box-shadow: 0 0 0 8px rgba(255, 107, 107, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); } }
+
+    .btn-rollback-action { background: rgba(255,107,107,0.15); border: 1px solid var(--danger-color); color: #ff8b8b; font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; padding: 4px 12px; cursor: pointer; border-radius: 3px; transition: all 0.2s; }
+    .btn-rollback-action:hover { background: var(--danger-color); color: var(--bg-dark-color); }
+
+    .pulse-publish-btn { animation: pulseButton 2s infinite ease-in-out; border: 1px solid var(--accent-gold) !important; }
+    @keyframes pulseButton { 0% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(197, 168, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0); } }
+
     .login-box { max-width: 450px; margin: 100px auto; background: var(--admin-bg); border: 1px solid var(--border-color); padding: 40px; border-radius: 4px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
     .login-box h2 { font-family: 'Oswald', sans-serif; font-size: 24px; color: var(--accent-gold); letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
     .login-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
 
-    /* Admin Workspace */
     .admin-container { max-width: 1300px; margin: 0 auto; background-color: var(--admin-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: none; }
-    .admin-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 30px; }
+    .admin-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 20px; }
     .admin-header h2 { font-family: 'Oswald', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--accent-gold); margin-bottom: 5px; }
-    .admin-header p { color: var(--text-muted); font-size: 13px; }
+    .admin-header p { color: var(--text-muted); font-size: 13px; font-weight: 600; letter-spacing: 0.5px; }
     
-    .primary-btn { background-color: var(--accent-gold); color: var(--bg-dark-color); border: none; padding: 12px 28px; font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
-    .primary-btn:hover { background-color: var(--accent-gold-hover); }
-    .primary-btn:disabled { background-color: var(--text-darker); color: var(--text-muted); cursor: not-allowed; }
+    .primary-btn { background-color: var(--accent-gold); color: #000000; border: none; padding: 12px 28px; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; cursor: pointer; border-radius: 2px; display: flex; align-items: center; gap: 10px; transition: background-color 0.2s, transform 0.1s, opacity 0.2s; }
+    .primary-btn:hover { background-color: var(--accent-gold-hover); transform: translateY(-1px); }
     
-    .category-block { margin-bottom: 40px; background-color: rgba(0,0,0,0.15); border-radius: 4px; border: 1px solid #1f1a15; overflow: hidden; }
-    .category-header { background-color: var(--admin-surface); padding: 15px 25px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-    .category-title-display { font-family: 'Oswald', sans-serif; font-size: 14px; letter-spacing: 2px; color: var(--text-main); }
-    .category-edit-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; width: 85%; }
-    
-    .type-pill { background: #0c0a08; border: 1px solid var(--border-color); color: var(--accent-gold); padding: 4px 10px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; border-radius: 3px; }
-    .env-badge { display: inline-block; background-color: #221d17; border: 1px solid var(--border-color); padding: 6px 12px; font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 1px; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 15px; border-radius: 2px; }
+    .sync-icon { width: 16px; height: 16px; fill: currentColor; display: inline-block; }
 
-    .btn-edit-header { background: none; border: 1px solid var(--text-darker); color: var(--text-muted); padding: 4px 12px; font-family: 'Oswald', sans-serif; font-size: 11px; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
-    .btn-edit-header:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
-
-    .database-table { width: 100%; border-collapse: collapse; text-align: left; }
-    .database-table th { background-color: rgba(0,0,0,0.2); padding: 12px 20px; font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-color); }
-    .database-table td { padding: 14px 20px; border-bottom: 1px solid rgba(34, 29, 23, 0.5); }
+    .primary-btn:disabled { background-color: var(--text-darker); color: var(--text-muted); cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.6; }
     
-    .db-input { background-color: #0c0a08; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 12px; font-size: 13px; border-radius: 2px; }
+    .controls-filter-row { display: flex; gap: 15px; margin-bottom: 25px; align-items: center; }
+    .search-input-field { flex: 1; background-color: #0c0a08; border: 1px solid var(--border-color); padding: 14px 16px; color: var(--text-main); font-size: 14px; font-family: inherit; border-radius: 4px; transition: border-color 0.2s; }
+    .search-input-field:focus { border-color: var(--accent-gold); outline: none; }
+
+    .origin-filter-pill-box { display: flex; background: #0c0a08; padding: 4px; border-radius: 4px; border: 1px solid var(--border-color); height: 48px; align-items: center; }
+    .filter-pill-btn { background: none; border: none; color: var(--text-muted); font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; padding: 8px 20px; cursor: pointer; transition: all 0.2s; height: 100%; border-radius: 2px; }
+    .filter-pill-btn.active { background-color: var(--accent-gold); color: var(--bg-dark-color); }
+
+    .top-creation-stage-panel { background: #1a1511; border: 1px solid var(--accent-gold); border-radius: 4px; padding: 20px; margin-bottom: 25px; display: none; }
+    .creation-stage-title { font-family: 'Oswald', sans-serif; font-size: 13px; text-transform: uppercase; color: var(--accent-gold); letter-spacing: 1.5px; margin-bottom: 12px; }
+
+    .category-block { margin-bottom: 16px; background-color: rgba(0,0,0,0.1); border-radius: 4px; border: 1px solid #1c1814; overflow: hidden; position: relative; transition: all 0.15s ease; }
+    .category-block.is-dragging { outline: 2px solid var(--dragged-source-color); opacity: 0.4; }
+    .category-block.drag-over { outline: 2px dashed var(--drop-target-hover-color); background-color: var(--drop-target-bg); }
+    
+    .category-header { background-color: var(--admin-surface); padding: 14px 22px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background-color 0.2s; }
+    .category-header:hover { background-color: #1e1a16; }
+    .category-title-display { display: flex; align-items: center; width: 100%; overflow: hidden; }
+    
+    .category-edit-grid-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; width: 100%; margin-bottom: 14px; }
+    .category-edit-actions-row { display: flex; gap: 12px; justify-content: flex-end; align-items: center; width: 100%; }
+
+    .env-badge { display: inline-block; background-color: #161311; border: 1px solid var(--border-color); padding: 6px 12px; font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 1px; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 15px; border-radius: 2px; }
+    .btn-edit-header { background: none; border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 14px; font-family: 'Oswald', sans-serif; font-size: 11px; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: all 0.2s; white-space: nowrap; }
+    .btn-edit-header:hover { border-color: var(--accent-gold); color: var(--accent-gold); background-color: rgba(255,255,255,0.01); }
+
+    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s cubic-bezier(0, 1, 0, 1); background-color: rgba(0,0,0,0.15); }
+    .category-block.open .accordion-content { max-height: 3000px; transition: max-height 0.4s cubic-bezier(1, 0, 1, 0); }
+
+    .database-table { width: 100%; border-collapse: collapse; text-align: left; table-layout: fixed; }
+    .database-table th { background-color: rgba(0,0,0,0.25); padding: 12px 20px; font-family: 'Oswald', sans-serif; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-color); }
+    .database-table td { padding: 10px 20px; border-bottom: 1px solid rgba(34, 29, 23, 0.4); vertical-align: middle; }
+    
+    .db-input { background-color: #090807; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 12px; font-size: 13px; font-family: 'Plus Jakarta Sans', sans-serif; border-radius: 2px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; width: 100%; }
     .db-input:focus { border-color: var(--accent-gold); outline: none; }
-    .db-input-name { font-family: 'Oswald', sans-serif; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-gold); width: 100%; }
+    .db-input-name { font-family: 'Oswald', sans-serif; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-gold); }
     
-    .width-small { width: 90px; }
-    .width-medium { width: 140px; }
-    .width-toggle { width: 100px; text-align: center; }
+    .col-drag { width: 45px; text-align: center; }
+    .col-name { width: 22%; }
+    .col-desc { width: 33%; }
+    .col-size { width: 11%; } 
+    .col-price { width: 11%; } 
+    .col-star { width: 8%; text-align: center; }
+    .col-vis { width: 8%; text-align: center; }
+    .col-ctrl { width: 12%; text-align: right; }
 
-    .switch-wrapper { display: inline-flex; align-items: center; cursor: pointer; }
-    .switch-input { display: none; }
-    .switch-rail { width: 40px; height: 20px; background-color: #0c0a08; border: 1px solid var(--border-color); border-radius: 10px; position: relative; }
-    .switch-indicator { width: 14px; height: 14px; background-color: var(--text-muted); border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: transform 0.2s; }
-    .switch-input:checked + .switch-rail { background-color: rgba(197, 168, 128, 0.2); border-color: var(--accent-gold); }
-    .switch-input:checked + .switch-rail .switch-indicator { transform: translateX(20px); background-color: var(--accent-gold); }
+    .product-row-node { transition: all 0.15s ease; }
+    .product-row-node.newly-created { background-color: var(--highlight-new-row); }
+    .product-row-node.is-dragging { outline: 2px solid var(--dragged-source-color); opacity: 0.4; }
+    .product-row-node.drag-active-indicator { outline: 2px dashed var(--drop-target-hover-color); background-color: var(--drop-target-bg); }
 
-    .btn-delete { background: none; border: none; color: #9c3a3a; cursor: pointer; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 12px; }
-    .btn-delete:hover { color: #e65e5e; }
-    .btn-add { background-color: transparent; border: 1px dashed var(--border-color); color: var(--text-muted); width: 100%; padding: 12px; font-family: 'Oswald', sans-serif; text-transform: uppercase; cursor: pointer; }
-    .btn-add:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+    .drag-handle-pill { cursor: grab; color: var(--text-muted); font-size: 15px; padding: 2px 6px; user-select: none; font-weight: normal; }
+    .drag-handle-pill:active { cursor: grabbing; color: var(--accent-gold); }
+
+    .switch-wrapper { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; width: 36px; height: 18px; }
     
-    .global-action-bar { display: flex; gap: 15px; margin-bottom: 30px; background: rgba(197, 168, 128, 0.03); border: 1px solid var(--border-color); padding: 15px 25px; border-radius: 4px; align-items: center; }
-    .global-bar-text { font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 1px; color: var(--accent-gold); text-transform: uppercase; }
+    /* Visually hidden but keyboard accessible checkbox fix */
+    .switch-input { position: absolute; opacity: 0; width: 0; height: 0; margin: 0; }
+    .switch-rail { width: 36px; height: 18px; background-color: #0c0a08; border: 1px solid var(--border-color); border-radius: 10px; position: relative; display: block; transition: border-color 0.15s; }
+    .switch-indicator { width: 12px; height: 12px; background-color: var(--text-muted); border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: transform 0.2s, background-color 0.2s; }
+    
+    .switch-input:checked + .switch-rail .switch-indicator { transform: translateX(18px); background-color: var(--accent-gold); }
+    
+    /* Clear active focus layout bounding rings */
+    .switch-input:focus-visible + .switch-rail { outline: 2px solid var(--accent-gold); outline-offset: 2px; border-color: var(--accent-gold); }
+
+    .btn-delete { background: none; border: none; color: #a44343; cursor: pointer; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+    .btn-delete:hover { color: #f26161; }
+    
+    .btn-save-inline { background: none; border: 1px solid var(--accent-gold); color: var(--accent-gold); font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 11px; padding: 4px 8px; cursor: pointer; border-radius: 2px; letter-spacing: 0.5px; margin-right: 6px; }
+    .btn-save-inline:hover { background-color: var(--accent-gold); color: var(--bg-dark-color); }
+
+    .btn-add-inline { background: none; border: 1px dashed var(--accent-gold); color: var(--accent-gold); font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 11px; padding: 4px 10px; cursor: pointer; border-radius: 2px; letter-spacing: 0.5px; }
+    .btn-add-inline:hover { background-color: rgba(197, 168, 128, 0.05); }
+    .btn-add-inline:disabled { border-color: var(--text-darker); color: var(--text-darker); cursor: not-allowed; background: none; }
+
+    .hidden-mask-dim { opacity: 0.35; }
+
+    .cgs-dialog-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(5,4,3,0.85); display: flex; align-items: center; justify-content: center; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 0.2s; padding: 20px; }
+    .cgs-dialog-overlay.active { opacity: 1; pointer-events: auto; }
+    .cgs-dialog-box { background: var(--admin-bg); border: 1px solid var(--border-color); width: 100%; max-width: 520px; padding: 30px; border-radius: 4px; box-shadow: 0 25px 60px rgba(0,0,0,0.7); transform: translateY(-20px); transition: transform 0.2s; display: flex; flex-direction: column; gap: 16px; }
+    .cgs-dialog-overlay.active .cgs-dialog-box { transform: translateY(0); }
+    .cgs-dialog-title { font-family: 'Oswald', sans-serif; font-size: 18px; text-transform: uppercase; color: var(--accent-gold); letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+    .cgs-dialog-body { font-size: 14px; color: var(--text-main); line-height: 1.6; word-wrap: break-word; }
+    .cgs-dialog-footer { display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 8px; }
+    
+    .double-confirm-gate { background: #211414; padding: 14px; border: 1px dashed #9c3a3a; border-radius: 2px; }
+
+    .empty-section-notice { padding: 30px 20px; text-align: center; color: var(--text-muted); font-size: 13px; font-style: italic; background-color: rgba(197, 168, 128, 0.02); border-bottom: 1px dashed var(--border-color); letter-spacing: 0.3px; }
   </style>
 </head>
 <body>
 
+  <div class="unsaved-ribbon-toast" id="unsaved-warning-bar">
+    <div class="pulse-danger-dot"></div>
+    <span style="letter-spacing: 0.3px;">
+      <strong>⚠️ CRITICAL OPERATIONAL RISK:</strong> You have uncommitted workspace changes. Closing this window or refreshing will completely clear all local menu additions, pricing modifications, and structural adjustments.
+    </span>
+    <button class="btn-rollback-action" onclick="triggerRollbackWorkflow()">↩ Discard Changes & Reload</button>
+  </div>
+
   <div class="login-box" id="auth-gate">
     <h2>CGS Terminal Gate</h2>
-    <p>Authentication via secure domain scoping scope. Your active repository ecosystem target has been hardlocked based on your client URL routing parameters.</p>
+    <p>Authentication setup via protected secure scoping domain parameters.</p>
     
     <div style="margin-bottom: 12px;">
-      <label style="font-size: 11px; color: var(--text-muted); display:block; margin-bottom:4px;">Target Repository Scope</label>
+      <label style="font-size: 11px; color: var(--text-muted); display:block; margin-bottom:4px; text-transform: uppercase;">Active Workspace environment</label>
       <div id="env-badge-display" class="env-badge">Detecting...</div>
     </div>
 
-    <input type="text" id="gh-username" class="db-input" placeholder="GitHub Username" style="margin-bottom: 12px; width: 100%;">
-    <input type="password" id="gh-token" class="db-input" placeholder="GitHub Personal Access Token (classic)" style="margin-bottom: 20px; width: 100%;">
+    <input type="text" id="gh-username" class="db-input" placeholder="GitHub Username" style="margin-bottom: 12px;">
+    <input type="password" id="gh-token" class="db-input" placeholder="GitHub Personal Access Token (classic)" style="margin-bottom: 20px;">
     <button class="primary-btn" style="width: 100%;" onclick="initializeDatabaseConnection()">Establish Connection</button>
   </div>
 
   <div class="admin-container" id="admin-panel">
     <div class="admin-header">
       <div>
-        <h2>CGS Static File Data Panel</h2>
-        <p id="admin-scope-desc">Connected to Serverless Git File Sync System.</p>
+        <h2>CGS LIVE MENU MANAGER</h2>
+        <p id="admin-scope-desc">LIVE MENU SOURCE - LOADING...</p>
       </div>
-      <div class="action-group">
-        <button class="primary-btn" id="save-btn" onclick="commitDatabaseToServer()">⚡ Publish Live Updates</button>
+      <div class="action-group" style="display: flex; gap: 15px; align-items: center;">
+        <button class="btn-edit-header" style="color: #ff6b6b; border-color: rgba(255,107,107,0.3);" onclick="handleSignOutRequest()">Sign Out</button>
+        <button class="btn-edit-header" style="padding: 10px 20px; border-style: dashed; color: var(--accent-gold); border-color: var(--accent-gold);" onclick="openTopCreationRow()">+ Create New Category</button>
+        <button class="primary-btn" id="save-btn" onclick="triggerPublishWorkflow()" disabled>
+          <svg class="sync-icon" viewBox="0 0 24 24">
+            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+          </svg>
+          Publish the revised menu
+        </button>
       </div>
     </div>
 
-    <div class="global-action-bar">
-      <span class="global-bar-text">Structure Controls:</span>
-      <button class="btn-edit-header" style="padding: 8px 16px; border-style: dashed;" onclick="addNewCategoryBlock()">+ Create New Menu Category Section</button>
+    <div class="controls-filter-row">
+      <input type="text" id="menu-search-filter" class="search-input-field" placeholder="Search menu by category headers or single product titles..." oninput="handleLiveSearchFilter(this.value)">
+      
+      <div class="origin-filter-pill-box">
+        <button id="filter-btn-all" class="filter-pill-btn active" onclick="handleOriginContextSwitch('all')">All</button>
+        <button id="filter-btn-beverages" class="filter-pill-btn" onclick="handleOriginContextSwitch('beverages')">Beverages</button>
+        <button id="filter-btn-eatables" class="filter-pill-btn" onclick="handleOriginContextSwitch('eatables')">Eatables</button>
+      </div>
+    </div>
+
+    <div id="top-creation-stage" class="top-creation-stage-panel">
+      <div class="creation-stage-title">Add New Menu Section</div>
+      <div style="display: flex; flex-direction: column;">
+        <div class="category-edit-grid-row">
+          <input type="text" id="new-cat-super" class="db-input" style="font-family:'Oswald'; color:var(--accent-gold);" placeholder="Sidebar Group (e.g. HOT COFFEE)" title="Enter the broad core segment grouping name">
+          <input type="text" id="new-cat-sub" class="db-input" placeholder="Section Title (e.g. Classic Espressos)" title="Enter the localized display card subset name">
+          <input type="text" id="new-cat-desc" class="db-input" placeholder="Section Line Summary Description (Optional)" title="Optional context notes line summarized across live view boards">
+          <input type="text" id="new-cat-tag" class="db-input" placeholder="Sidebar Tag (Optional)" title="Metadata tag context values paired to sidebar items">
+          <select id="new-cat-origin" class="db-input" style="height:33px;">
+            <option value="beverages">Beverages</option>
+            <option value="eatables">Eatables</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button class="primary-btn" style="padding: 8px 20px; font-size: 11px;" onclick="saveTopCreatedCategory()">Save Section</button>
+          <button class="btn-edit-header" onclick="closeTopCreationRow()">Cancel</button>
+        </div>
+      </div>
     </div>
 
     <div id="accordion-render-target">Building workspace tree components...</div>
+  </div>
+
+  <div class="cgs-dialog-overlay" id="cgs-modal-overlay">
+    <div class="cgs-dialog-box">
+      <div class="cgs-dialog-title" id="modal-title">System Alert</div>
+      <div class="cgs-dialog-body" id="modal-body">Message body content summary text details.</div>
+      
+      <div class="double-confirm-gate" id="modal-double-gate">
+        <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:12px; color:#ff8888;">
+          <input type="checkbox" id="double-confirm-checkbox" onchange="toggleDoubleConfirmBtn(this.checked)">
+          I understand this action can disrupt live menu alignment layouts.
+        </label>
+      </div>
+
+      <div class="cgs-dialog-footer">
+        <button class="btn-edit-header" id="modal-cancel-btn" onclick="closeCgsDialog(false)">Cancel</button>
+        <button class="primary-btn" id="modal-confirm-btn" style="padding:8px 20px; font-size:12px;" onclick="closeCgsDialog(true)">Confirm</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -115,98 +245,326 @@
     let FILE_SHA = "";
     let GIT_USER, GIT_REPO, GIT_TOKEN;
     let EDITING_CATEGORIES = {}; 
+    let CURRENT_ACTIVE_OPEN_ACCORDION_IDX = null;
+    let CURRENT_SEARCH_STRING = "";
+    let CURRENT_ORIGIN_FILTER = "all"; 
+    let ACTIVE_PENDING_NEW_ROW_MAP = {}; 
+    
+    let IS_UNPUBLISHED_CHANGES_PENDING = false;
 
-    // Explicit Repository Scoper
-    window.addEventListener("DOMContentLoaded", () => {
-      const hostname = window.location.hostname;
-      const badge = document.getElementById("env-badge-display");
+    const CRITICAL_DRAG_WARNING = "⚠️ CRITICAL WARNING: Moving items or sections may alter page heights, causing text overflows, misalignments, or unexpected page breaks on the live/printed menu layout. Check on the lower environment before making this change as this change may cause page misalignment and page breaks for the live menu.";
 
-      if (hostname === "localhost" || hostname === "127.0.0.1") {
-        GIT_REPO = "cgscafe-dev";
-        badge.innerText = "LOCAL SANDBOX ➔ REPO: cgscafe-dev";
-        badge.style.borderColor = "#c5a880";
-      } else if (hostname === "dev.cgscafe.in") {
-        GIT_REPO = "cgscafe-dev";
-        badge.innerText = "DEV ENVIRONMENT ➔ REPO: cgscafe-dev";
-        badge.style.borderColor = "#4a7bb0";
-      } else if (hostname === "qa.cgscafe.in") {
-        GIT_REPO = "cgscafe-qa";
-        badge.innerText = "QA TEST SUITE ➔ REPO: cgscafe-qa";
-        badge.style.borderColor = "#b37d34";
-      } else if (hostname === "cgscafe.in" || hostname === "www.cgscafe.in") {
-        GIT_REPO = "cgscafe";
-        badge.innerText = "PRODUCTION MASTER ➔ REPO: cgscafe";
-        badge.style.backgroundColor = "#381a1a";
-        badge.style.borderColor = "#9c3a3a";
-      } else {
-        GIT_REPO = "cgscafe-dev";
-        badge.innerText = "UNKNOWN ROUTE ➔ FALLBACK: cgscafe-dev";
+    let dialogResolvePointer = null;
+
+    window.addEventListener("beforeunload", (event) => {
+      if (IS_UNPUBLISHED_CHANGES_PENDING) {
+        event.preventDefault();
+        event.returnValue = "You have uncommitted modifications. Exiting or reloading will clear all local menu changes.";
+        return "You have uncommitted modifications. Exiting or reloading will clear all local menu changes.";
       }
     });
 
-    function initializeDatabaseConnection() {
+    window.addEventListener("DOMContentLoaded", () => {
+      const hostname = window.location.hostname;
+      const badge = document.getElementById("env-badge-display");
+      const subdesc = document.getElementById("admin-scope-desc");
+
+      if (hostname === "localhost" || hostname === "127.0.0.1") {
+        GIT_REPO = "cgscafe-dev";
+        badge.innerText = "Studio Local Sandbox [cgscafe-dev]";
+        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
+      } else if (hostname === "dev.cgscafe.in") {
+        GIT_REPO = "cgscafe-dev";
+        badge.innerText = "Development Sandbox [cgscafe-dev]";
+        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
+      } else if (hostname === "qa.cgscafe.in") {
+        GIT_REPO = "cgscafe-qa";
+        badge.innerText = "Quality Assurance Suite [cgscafe-qa]";
+        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-QA";
+      } else if (hostname === "cgscafe.in" || hostname === "www.cgscafe.in") {
+        GIT_REPO = "cgscafe";
+        badge.innerText = "Production Master Cluster [cgscafe]";
+        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE";
+      } else {
+        GIT_REPO = "cgscafe-dev";
+        badge.innerText = "Default Core Target [cgscafe-dev]";
+        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
+      }
+
+      checkForSavedSession();
+    });
+
+    function setPendingChanges(stateValue) {
+      IS_UNPUBLISHED_CHANGES_PENDING = stateValue;
+      const bar = document.getElementById("unsaved-warning-bar");
+      const pubBtn = document.getElementById("save-btn");
+      
+      if (IS_UNPUBLISHED_CHANGES_PENDING) {
+        bar.style.display = "flex";
+        document.body.style.paddingTop = "65px";
+        pubBtn.classList.add("pulse-publish-btn");
+        pubBtn.disabled = false; 
+      } else {
+        bar.style.display = "none";
+        document.body.style.paddingTop = "40px";
+        pubBtn.classList.remove("pulse-publish-btn");
+        pubBtn.disabled = true; 
+      }
+    }
+
+    async function triggerRollbackWorkflow() {
+      const confirmRollback = await showCgsDialog(
+        "Discard Changes & Revert State",
+        "Are you absolutely sure you want to discard your current work? This will completely clear your local changes and pull a clean snapshot from production storage.",
+        true
+      );
+      if (confirmRollback) {
+        executeRevertAndReload();
+      }
+    }
+
+    function executeRevertAndReload() {
+      const target = document.getElementById("accordion-render-target");
+      target.innerHTML = "Reverting components back to baseline...";
+      
+      ACTIVE_PENDING_NEW_ROW_MAP = {};
+      EDITING_CATEGORIES = {};
+      
+      initializeDatabaseConnection(true);
+    }
+
+    async function handleSignOutRequest() {
+      if (IS_UNPUBLISHED_CHANGES_PENDING) {
+        const leave = await showCgsDialog(
+          "Unsaved Changes Alert",
+          "You have unpublished modifications. Signing out now will completely discard all current work. Do you still want to exit?",
+          true
+        );
+        if (!leave) return;
+      }
+      clearSavedSession();
+    }
+
+    async function handleOriginContextSwitch(contextKey) {
+      if (IS_UNPUBLISHED_CHANGES_PENDING) {
+        const switchView = await showCgsDialog(
+          "Filter View Warning",
+          "Switching views hides sections that contain active unsaved modifications. Unsaved progress will remain in cache, but we recommend publishing before altering view scopes.",
+          false
+        );
+        if (!switchView) return;
+      }
+      setOriginContextFilter(contextKey);
+    }
+
+    function checkForSavedSession() {
+      const savedUser = localStorage.getItem("cgs_gh_username");
+      const savedToken = localStorage.getItem("cgs_gh_token");
+
+      if (savedUser && savedToken) {
+        document.getElementById("gh-username").value = savedUser;
+        document.getElementById("gh-token").value = savedToken;
+        initializeDatabaseConnection(true);
+      }
+    }
+
+    function clearSavedSession() {
+      localStorage.removeItem("cgs_gh_username");
+      localStorage.removeItem("cgs_gh_token");
+      document.getElementById("gh-username").value = "";
+      document.getElementById("gh-token").value = "";
+      document.getElementById("admin-panel").style.display = "none";
+      document.getElementById("auth-gate").style.display = "block";
+      setPendingChanges(false);
+    }
+
+    function showCgsDialog(title, message, isDoubleConfirm = false) {
+      document.getElementById("modal-title").innerText = title;
+      document.getElementById("modal-body").innerText = message;
+      
+      const doubleGate = document.getElementById("modal-double-gate");
+      const confirmBtn = document.getElementById("modal-confirm-btn");
+      document.getElementById("double-confirm-checkbox").checked = false;
+
+      if (isDoubleConfirm) {
+        doubleGate.style.display = "block";
+        confirmBtn.disabled = true;
+      } else {
+        doubleGate.style.display = "none";
+        confirmBtn.disabled = false;
+      }
+
+      document.getElementById("cgs-modal-overlay").classList.add("active");
+      return new Promise((resolve) => {
+        dialogResolvePointer = resolve;
+      });
+    }
+
+    function toggleDoubleConfirmBtn(isChecked) {
+      document.getElementById("modal-confirm-btn").disabled = !isChecked;
+    }
+
+    function closeCgsDialog(isConfirmed) {
+      document.getElementById("cgs-modal-overlay").classList.remove("active");
+      if (dialogResolvePointer) {
+        dialogResolvePointer(isConfirmed);
+        dialogResolvePointer = null;
+      }
+    }
+
+    function initializeDatabaseConnection(isAutoConnect = false) {
       GIT_USER = document.getElementById("gh-username").value.trim();
       GIT_TOKEN = document.getElementById("gh-token").value.trim();
 
       if(!GIT_USER || !GIT_TOKEN) {
-        alert("Please complete both username and access token credentials inputs.");
+        showCgsDialog("Missing Fields", "Please complete credentials inputs to target authentication scopes.");
         return;
       }
 
-      // Explicitly locks the Git API endpoint path relative to repository root
       const url = `https://api.github.com/repos/${GIT_USER}/${GIT_REPO}/contents/menu/menu-data.json`;
       
       fetch(url, {
         headers: { "Authorization": `token ${GIT_TOKEN}`, "Accept": "application/vnd.github.v3+json" }
       })
       .then(res => {
-        if(!res.ok) throw new Error(`Connection failed. Target repository '${GIT_REPO}' could not resolve menu/menu-data.json layout file path.`);
+        if(!res.ok) throw new Error("Authentication failed. Check access scope definitions mapping keys.");
         return res.json();
       })
       .then(data => {
         FILE_SHA = data.sha;
         MASTER_DATABASE = JSON.parse(decodeURIComponent(escape(atob(data.content))));
         
-        if (!MASTER_DATABASE.categories) {
-          MASTER_DATABASE.categories = [];
-        }
+        if (!MASTER_DATABASE.categories) MASTER_DATABASE.categories = [];
+        
+        MASTER_DATABASE.categories.forEach(cat => {
+          if (cat.hidden === undefined) cat.hidden = false;
+          if (cat.items) {
+            cat.items.forEach(i => { if (i.hidden === undefined) i.hidden = false; });
+          }
+        });
+
+        localStorage.setItem("cgs_gh_username", GIT_USER);
+        localStorage.setItem("cgs_gh_token", GIT_TOKEN);
 
         document.getElementById("auth-gate").style.display = "none";
         document.getElementById("admin-panel").style.display = "block";
-        document.getElementById("admin-scope-desc").innerText = `Target Bound Core Pipeline Rule Location: GitHub Ecosystem Repository ➔ [${GIT_REPO.toUpperCase()}]`;
+        setPendingChanges(false);
         renderAdminDatabasePanel();
       })
-      .catch(err => alert("Auth Boundary Violation Check Failed: " + err.message));
+      .catch(err => {
+        if (isAutoConnect) {
+          localStorage.removeItem("cgs_gh_username");
+          localStorage.removeItem("cgs_gh_token");
+        }
+        showCgsDialog("Auth Connection Interrupted", err.message);
+      });
     }
 
-    function toggleCategoryEditMode(blockIndex) {
+    function setOriginContextFilter(contextKey) {
+      CURRENT_ORIGIN_FILTER = contextKey;
+      document.getElementById("filter-btn-all").classList.toggle("active", contextKey === 'all');
+      document.getElementById("filter-btn-beverages").classList.toggle("active", contextKey === 'beverages');
+      document.getElementById("filter-btn-eatables").classList.toggle("active", contextKey === 'eatables');
+      renderAdminDatabasePanel();
+    }
+
+    function openTopCreationRow() {
+      document.getElementById("new-cat-super").value = "";
+      document.getElementById("new-cat-sub").value = "";
+      document.getElementById("new-cat-desc").value = "";
+      document.getElementById("new-cat-tag").value = "";
+      document.getElementById("top-creation-stage").style.display = "block";
+    }
+
+    function closeTopCreationRow() {
+      document.getElementById("top-creation-stage").style.display = "none";
+    }
+
+    async function saveTopCreatedCategory() {
+      const superTitle = document.getElementById("new-cat-super").value.trim() || "NEW CATEGORY";
+      const subTitle = document.getElementById("new-cat-sub").value.trim() || "Sub Category Section";
+      const description = document.getElementById("new-cat-desc").value.trim();
+      const tagStr = document.getElementById("new-cat-tag").value.trim();
+      const originType = document.getElementById("new-cat-origin").value;
+
+      MASTER_DATABASE.categories.unshift({
+        superCategory: superTitle,
+        subCategoryName: subTitle,
+        subCategoryDesc: description,
+        originType: originType,
+        tag: tagStr,
+        hidden: false,
+        items: []
+      });
+
+      closeTopCreationRow();
+      CURRENT_ACTIVE_OPEN_ACCORDION_IDX = 0; 
+      setPendingChanges(true);
+      renderAdminDatabasePanel();
+
+      await showCgsDialog(
+        "Empty Section Added", 
+        `"${subTitle}" has been successfully appended to the workspace list. Please add structural product rows to it now to prevent empty layout blocks from rendering on the customer-facing menu layout.`,
+        false
+      );
+    }
+
+    function toggleAccordionView(index, event) {
+      if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT' || event.target.tagName === 'BUTTON' || event.target.classList.contains('drag-handle-pill') || event.target.classList.contains('switch-rail') || event.target.classList.contains('switch-indicator')) {
+        return; 
+      }
+      CURRENT_ACTIVE_OPEN_ACCORDION_IDX = (CURRENT_ACTIVE_OPEN_ACCORDION_IDX === index) ? null : index;
+      renderAdminDatabasePanel();
+    }
+
+    function toggleCategoryEditMode(blockIndex, event) {
+      if(event) event.stopPropagation();
       EDITING_CATEGORIES[blockIndex] = !EDITING_CATEGORIES[blockIndex];
+      renderAdminDatabasePanel();
+    }
+
+    function cancelCategoryEditMode(blockIndex, event) {
+      if(event) event.stopPropagation();
+      delete EDITING_CATEGORIES[blockIndex];
       renderAdminDatabasePanel();
     }
 
     function modifyCategoryMetadata(blockIndex, property, value) {
       MASTER_DATABASE.categories[blockIndex][property] = value;
+      setPendingChanges(true);
     }
 
-    function addNewCategoryBlock() {
-      MASTER_DATABASE.categories.push({
-        superCategory: "NEW CATEGORY BANNER",
-        subCategoryName: "Sub Category Title",
-        subCategoryDesc: "Optional short text describing this layout section line.",
-        originType: "beverages",
-        tag: "",
-        items: []
-      });
-      const newIndex = MASTER_DATABASE.categories.length - 1;
-      EDITING_CATEGORIES[newIndex] = true; 
+    function toggleCategoryVisibilityMask(blockIndex, event) {
+      event.stopPropagation();
+      MASTER_DATABASE.categories[blockIndex].hidden = !MASTER_DATABASE.categories[blockIndex].hidden;
+      setPendingChanges(true);
       renderAdminDatabasePanel();
     }
 
-    function removeWholeCategoryBlock(blockIndex) {
-      if(confirm(`Are you absolutely sure you want to completely delete the entire category section "${MASTER_DATABASE.categories[blockIndex].subCategoryName}" along with ALL of its items?`)) {
+    function toggleItemVisibilityMask(blockIndex, itemIndex) {
+      MASTER_DATABASE.categories[blockIndex].items[itemIndex].hidden = !MASTER_DATABASE.categories[blockIndex].items[itemIndex].hidden;
+      setPendingChanges(true);
+      renderAdminDatabasePanel();
+    }
+
+    async function removeWholeCategoryBlock(blockIndex, event) {
+      event.stopPropagation();
+      const confirmed = await showCgsDialog(
+        "Delete Structural Component", 
+        `Are you absolutely sure you want to completely delete the category section "${MASTER_DATABASE.categories[blockIndex].subCategoryName}" along with all items?`,
+        true
+      );
+      if (confirmed) {
         MASTER_DATABASE.categories.splice(blockIndex, 1);
+        if (CURRENT_ACTIVE_OPEN_ACCORDION_IDX === blockIndex) CURRENT_ACTIVE_OPEN_ACCORDION_IDX = null;
+        setPendingChanges(true);
         renderAdminDatabasePanel();
       }
+    }
+
+    function handleLiveSearchFilter(val) {
+      CURRENT_SEARCH_STRING = val.toLowerCase().trim();
+      renderAdminDatabasePanel();
     }
 
     function renderAdminDatabasePanel() {
@@ -214,81 +572,201 @@
       target.innerHTML = "";
 
       if (MASTER_DATABASE.categories.length === 0) {
-        target.innerHTML = `<div style="text-align:center; padding: 40px; color:var(--text-muted); font-family: 'Oswald'; letter-spacing:1px;">No category blocks found in menu data. Click above to add one.</div>`;
+        target.innerHTML = `<div style="text-align:center; padding: 40px; color:var(--text-muted); font-family: 'Oswald'; letter-spacing:1px;">No data tracks configured.</div>`;
         return;
       }
 
       MASTER_DATABASE.categories.forEach((block, blockIndex) => {
+        if (CURRENT_ORIGIN_FILTER !== "all" && block.originType !== CURRENT_ORIGIN_FILTER) {
+          return;
+        }
+
+        const catMatched = block.superCategory.toLowerCase().includes(CURRENT_SEARCH_STRING) || 
+                           block.subCategoryName.toLowerCase().includes(CURRENT_SEARCH_STRING);
+        
+        let hasMatchingItem = false;
+        let visibleItemsCount = 0;
+        
+        if(block.items) {
+          block.items.forEach(i => {
+            if(CURRENT_SEARCH_STRING === "" || i.name.toLowerCase().includes(CURRENT_SEARCH_STRING) || (i.description && i.description.toLowerCase().includes(CURRENT_SEARCH_STRING)) || catMatched) {
+              visibleItemsCount++;
+            }
+          });
+          hasMatchingItem = block.items.some(i => i.name.toLowerCase().includes(CURRENT_SEARCH_STRING) || 
+                                                  (i.description && i.description.toLowerCase().includes(CURRENT_SEARCH_STRING)));
+        }
+
+        if(CURRENT_SEARCH_STRING !== "" && !catMatched && !hasMatchingItem) {
+          return; 
+        }
+
+        const isOpen = (CURRENT_ACTIVE_OPEN_ACCORDION_IDX === blockIndex) || (CURRENT_SEARCH_STRING !== "" && hasMatchingItem);
+        
         const blockElement = document.createElement("div");
-        blockElement.className = "category-block";
+        blockElement.className = `category-block ${isOpen ? 'open' : ''} ${block.hidden ? 'hidden-mask-dim' : ''}`;
+        blockElement.setAttribute("data-cat-index", blockIndex);
+        
+        blockElement.setAttribute("draggable", "true");
+        blockElement.addEventListener("dragstart", handleCategoryDragStart);
+        blockElement.addEventListener("dragover", handleCategoryDragOver);
+        blockElement.addEventListener("dragleave", handleCategoryDragLeave);
+        blockElement.addEventListener("drop", handleCategoryDrop);
         
         let headerContent = "";
         if (EDITING_CATEGORIES[blockIndex]) {
           headerContent = `
-            <div class="category-edit-form">
-              <input type="text" class="db-input" style="width:180px; font-family:'Oswald'; color:var(--accent-gold);" value="${block.superCategory}" placeholder="Sidebar Title" oninput="modifyCategoryMetadata(${blockIndex},'superCategory',this.value)">
-              <input type="text" class="db-input" style="width:200px;" value="${block.subCategoryName}" placeholder="Section Title" oninput="modifyCategoryMetadata(${blockIndex},'subCategoryName',this.value)">
-              <input type="text" class="db-input" style="flex:1; min-width:250px;" value="${block.subCategoryDesc || ''}" placeholder="Section Description" oninput="modifyCategoryMetadata(${blockIndex},'subCategoryDesc',this.value)">
-              <input type="text" class="db-input" style="width:120px;" value="${block.tag || ''}" placeholder="Sidebar Tag" oninput="modifyCategoryMetadata(${blockIndex},'tag',this.value)">
-              <select class="db-input" style="width:120px; height:33px;" onchange="modifyCategoryMetadata(${blockIndex},'originType',this.value)">
-                <option value="beverages" ${block.originType === 'beverages' ? 'selected' : ''}>Beverages</option>
-                <option value="eatables" ${block.originType === 'eatables' ? 'selected' : ''}>Eatables</option>
-              </select>
-            </div>
-            <div style="display:flex; gap:8px;">
-              <button class="btn-edit-header" style="color:var(--accent-gold); border-color:var(--accent-gold);" onclick="toggleCategoryEditMode(${blockIndex})">Done</button>
-              <button class="btn-delete" style="font-size:11px; padding:0 5px;" onclick="removeWholeCategoryBlock(${blockIndex})">Drop</button>
+            <div style="display:flex; flex-direction:column; width:100%;" onclick="event.stopPropagation()">
+              <div class="category-edit-grid-row">
+                <input type="text" class="db-input" style="font-family:'Oswald'; color:var(--accent-gold);" value="${block.superCategory}" placeholder="Sidebar Title" oninput="modifyCategoryMetadata(${blockIndex},'superCategory',this.value)">
+                <input type="text" class="db-input" value="${block.subCategoryName}" placeholder="Section Title" oninput="modifyCategoryMetadata(${blockIndex},'subCategoryName',this.value)">
+                <input type="text" class="db-input" value="${block.subCategoryDesc || ''}" placeholder="Section Description" title="${block.subCategoryDesc || ''}" oninput="modifyCategoryMetadata(${blockIndex},'subCategoryDesc',this.value)">
+                <input type="text" class="db-input" value="${block.tag || ''}" placeholder="Sidebar Tag" oninput="modifyCategoryMetadata(${blockIndex},'tag',this.value)">
+                <select class="db-input" style="height:33px;" onchange="modifyCategoryMetadata(${blockIndex},'originType',this.value)">
+                  <option value="beverages" ${block.originType === 'beverages' ? 'selected' : ''}>Beverages</option>
+                  <option value="eatables" ${block.originType === 'eatables' ? 'selected' : ''}>Eatables</option>
+                </select>
+              </div>
+              <div class="category-edit-actions-row">
+                <button class="btn-edit-header" style="color:var(--accent-gold); border-color:var(--accent-gold);" onclick="toggleCategoryEditMode(${blockIndex}, event)">SAVE</button>
+                <button class="btn-edit-header" onclick="cancelCategoryEditMode(${blockIndex}, event)">CANCEL</button>
+                <button class="btn-delete" onclick="removeWholeCategoryBlock(${blockIndex}, event)">DELETE</button>
+              </div>
             </div>
           `;
         } else {
+          let processedDesc = "";
+          if (block.subCategoryDesc && block.subCategoryDesc.trim() !== "") {
+            const cleanDesc = block.subCategoryDesc.trim();
+            if (cleanDesc.length > 80) {
+              processedDesc = cleanDesc.substring(0, 80) + "...";
+            } else {
+              processedDesc = cleanDesc;
+            }
+          }
+
           headerContent = `
             <div class="category-title-display">
-              <span style="color: var(--text-muted); font-size:11px; margin-right:5px;">[${block.originType.toUpperCase()}]</span>
-              <strong>${block.superCategory.toUpperCase()}</strong> 
+              <span class="drag-handle-pill" style="margin-right: 12px;">☰</span>
+              <span style="color: var(--text-muted); font-size:11px; margin-right:8px;">[${block.originType.toUpperCase()}]</span>
+              <strong style="text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:180px;">${block.superCategory.toUpperCase()}</strong> 
               <span style="color: var(--accent-gold); margin: 0 8px;">➔</span> 
-              ${block.subCategoryName}
-              ${block.subCategoryDesc ? `<span style="font-family:'Plus Jakarta Sans'; font-size:12px; color:var(--text-muted); font-weight:400; margin-left:15px; letter-spacing:0;">— ${block.subCategoryDesc}</span>` : ''}
+              <span style="text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:220px; font-weight:600;">${block.subCategoryName}</span>
+              ${processedDesc ? `<span style="font-family:'Plus Jakarta Sans'; font-size:12px; color:var(--text-muted); font-weight:400; margin-left:15px; letter-spacing:0;" title="${block.subCategoryDesc.replace(/"/g, '&quot;')}">${processedDesc}</span>` : ''}
             </div>
-            <button class="btn-edit-header" onclick="toggleCategoryEditMode(${blockIndex})">Edit Section Headers</button>
+            <div style="display:flex; gap:10px; align-items:center;" onclick="event.stopPropagation()">
+              <label class="switch-wrapper" title="Show/Hide Section">
+                <input type="checkbox" class="switch-input" ${!block.hidden ? 'checked' : ''} onchange="toggleCategoryVisibilityMask(${blockIndex}, event)">
+                <span class="switch-rail"><span class="switch-indicator"></span></span>
+              </label>
+              <button class="btn-edit-header" onclick="toggleCategoryEditMode(${blockIndex}, event)">EDIT HEADER</button>
+            </div>
+          `;
+        }
+
+        const isAddDisabled = ACTIVE_PENDING_NEW_ROW_MAP[blockIndex] === true ? "disabled" : "";
+
+        let tableInnerHtml = "";
+        if (visibleItemsCount === 0) {
+          tableInnerHtml = `
+            <div class="empty-section-notice">
+              There are no products configured in this section as of now. Click "+ Add Product" below to insert elements.
+            </div>
+            <table class="database-table">
+              <tbody id="tbody-cat-${blockIndex}" class="product-drop-zone" data-cat-id="${blockIndex}"></tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="8" style="text-align:right; padding:15px 20px; background-color:rgba(0,0,0,0.05); border-bottom:none;">
+                    <button class="btn-add-inline" ${isAddDisabled} onclick="insertNewRow(${blockIndex})">+ Add Product</button>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          `;
+        } else {
+          tableInnerHtml = `
+            <table class="database-table">
+              <thead>
+                <tr>
+                  <th class="col-drag"></th>
+                  <th class="col-name">Product Name</th>
+                  <th class="col-desc">Recipe & Description</th>
+                  <th class="col-size">Serving Size</th>
+                  <th class="col-price">Price</th>
+                  <th class="col-star">Recommended</th>
+                  <th class="col-vis">Visibility</th>
+                  <th class="col-ctrl" style="padding-right:20px; text-align:right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-cat-${blockIndex}" class="product-drop-zone" data-cat-id="${blockIndex}"></tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="8" style="text-align:right; padding:15px 20px; background-color:rgba(0,0,0,0.05);">
+                    <button class="btn-add-inline" ${isAddDisabled} onclick="insertNewRow(${blockIndex})">+ Add Product</button>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
           `;
         }
 
         blockElement.innerHTML = `
-          <div class="category-header">${headerContent}</div>
-          <table class="database-table">
-            <thead>
-              <tr>
-                <th style="width: 25%;">Product Name Field</th>
-                <th style="width: 45%;">Product Summary Lines</th>
-                <th class="width-medium">Serving Size</th>
-                <th class="width-small">Price (INR)</th>
-                <th class="width-toggle">Star Rec.</th>
-                <th class="width-small">Control</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-cat-${blockIndex}"></tbody>
-          </table>
-          <div style="padding: 15px; background: rgba(0,0,0,0.1);">
-            <button class="btn-add" onclick="insertNewRow(${blockIndex})">+ Append New Product Data Row</button>
+          <div class="category-header" onclick="toggleAccordionView(${blockIndex}, event)">${headerContent}</div>
+          <div class="accordion-content">
+            ${tableInnerHtml}
           </div>
         `;
         target.appendChild(blockElement);
 
         const tbody = document.getElementById(`tbody-cat-${blockIndex}`);
         (block.items || []).forEach((item, itemIndex) => {
+          if(CURRENT_SEARCH_STRING !== "" && !item.name.toLowerCase().includes(CURRENT_SEARCH_STRING) && !(item.description && item.description.toLowerCase().includes(CURRENT_SEARCH_STRING)) && !catMatched) {
+            return;
+          }
+
+          const isUnsavedNewItem = (item.isPendingNew === true);
           const row = document.createElement("tr");
+          row.className = `product-row-node ${item.hidden ? 'hidden-mask-dim' : ''} ${isUnsavedNewItem ? 'newly-created' : ''}`;
+          row.setAttribute("draggable", isUnsavedNewItem ? "false" : "true");
+          row.setAttribute("data-item-index", itemIndex);
+          row.setAttribute("data-parent-cat", blockIndex);
+          
+          if (!isUnsavedNewItem) {
+            row.addEventListener("dragstart", handleItemDragStart);
+            row.addEventListener("dragover", handleItemDragOver);
+            row.addEventListener("dragleave", handleItemDragLeave);
+            row.addEventListener("drop", handleItemDrop);
+          }
+
+          let actionBtnHtml = `<button class="btn-delete" onclick="deleteRow(${blockIndex},${itemIndex})">Delete</button>`;
+          if (isUnsavedNewItem) {
+            actionBtnHtml = `
+              <button class="btn-save-inline" onclick="savePendingInlineRow(${blockIndex},${itemIndex})">SAVE</button>
+              <button class="btn-delete" style="color:var(--text-muted);" onclick="cancelPendingNewRow(${blockIndex},${itemIndex})">Cancel</button>
+            `;
+          }
+
           row.innerHTML = `
-            <td><input type="text" class="db-input db-input-name" value="${item.name || ''}" oninput="modifyCell(${blockIndex},${itemIndex},'name',this.value)"></td>
-            <td><input type="text" class="db-input" style="width:100%;" value="${item.description || ''}" oninput="modifyCell(${blockIndex},${itemIndex},'description',this.value)"></td>
-            <td class="width-medium"><input type="text" class="db-input" style="width:100%;" value="${item.qty || ''}" oninput="modifyCell(${blockIndex},${itemIndex},'qty',this.value)"></td>
-            <td class="width-small"><input type="number" class="db-input" style="width:100%;" value="${item.price || ''}" oninput="modifyCell(${blockIndex},${itemIndex},'price',this.value)"></td>
-            <td class="width-toggle">
+            <td class="col-drag">${isUnsavedNewItem ? '<span style="color:var(--accent-gold); font-size:12px;">●</span>' : '<span class="drag-handle-pill">⋮⋮</span>'}</td>
+            <td><input type="text" class="db-input db-input-name" value="${item.name || ''}" placeholder="Item Name..." oninput="modifyCell(${blockIndex},${itemIndex},'name',this.value)"></td>
+            <td><input type="text" class="db-input" value="${item.description || ''}" placeholder="Description summary parameters..." title="${item.description || ''}" oninput="modifyCell(${blockIndex},${itemIndex},'description',this.value)"></td>
+            <td class="col-size"><input type="text" class="db-input" value="${item.qty || ''}" placeholder="500 ML" oninput="modifyCell(${blockIndex},${itemIndex},'qty',this.value)"></td>
+            <td class="col-price"><input type="text" class="db-input" value="${item.price || ''}" placeholder="199" oninput="modifyCell(${blockIndex},${itemIndex},'price',this.value)"></td>
+            <td style="text-align: center;">
               <label class="switch-wrapper">
                 <input type="checkbox" class="switch-input" ${item.featured ? 'checked' : ''} onchange="modifyCell(${blockIndex},${itemIndex},'featured',this.checked)">
                 <span class="switch-rail"><span class="switch-indicator"></span></span>
               </label>
             </td>
-            <td class="width-small"><button class="btn-delete" onclick="deleteRow(${blockIndex},${itemIndex})">Delete</button></td>
+            <td style="text-align: center;">
+              <label class="switch-wrapper" title="Show/Hide Item">
+                <input type="checkbox" class="switch-input" ${!item.hidden ? 'checked' : ''} onchange="toggleItemVisibilityMask(${blockIndex},${itemIndex})">
+                <span class="switch-rail"><span class="switch-indicator"></span></span>
+              </label>
+            </td>
+            <td style="text-align: right; padding-right:20px; white-space: nowrap;">
+              ${actionBtnHtml}
+            </td>
           `;
           tbody.appendChild(row);
         });
@@ -297,29 +775,179 @@
 
     function modifyCell(blockIndex, itemIndex, prop, value) {
       MASTER_DATABASE.categories[blockIndex].items[itemIndex][prop] = value;
+      setPendingChanges(true);
+    }
+
+    function savePendingInlineRow(blockIndex, itemIndex) {
+      const targetItem = MASTER_DATABASE.categories[blockIndex].items[itemIndex];
+      if(!targetItem.name.trim()) {
+        showCgsDialog("Validation Alert", "Please enter a valid product name configuration before saving.");
+        return;
+      }
+      delete targetItem.isPendingNew;
+      delete ACTIVE_PENDING_NEW_ROW_MAP[blockIndex];
+      setPendingChanges(true);
+      renderAdminDatabasePanel();
     }
 
     function insertNewRow(blockIndex) {
+      if (ACTIVE_PENDING_NEW_ROW_MAP[blockIndex] === true) return;
+
       if(!MASTER_DATABASE.categories[blockIndex].items) {
         MASTER_DATABASE.categories[blockIndex].items = [];
       }
+      
+      ACTIVE_PENDING_NEW_ROW_MAP[blockIndex] = true;
       MASTER_DATABASE.categories[blockIndex].items.push({
         id: "item_" + Math.random().toString(36).substr(2, 9),
-        name: "NEW CATALOG PRODUCT",
-        description: "Artisanal summary profile details fit here perfectly",
-        qty: "1 Unit", price: "150", featured: false
+        name: "",
+        description: "",
+        qty: "", 
+        price: "", 
+        featured: false, 
+        hidden: false,
+        isPendingNew: true
       });
       renderAdminDatabasePanel();
     }
 
-    function deleteRow(blockIndex, itemIndex) {
+    function cancelPendingNewRow(blockIndex, itemIndex) {
       MASTER_DATABASE.categories[blockIndex].items.splice(itemIndex, 1);
+      delete ACTIVE_PENDING_NEW_ROW_MAP[blockIndex];
       renderAdminDatabasePanel();
+    }
+
+    async function deleteRow(blockIndex, itemIndex) {
+      const confirmed = await showCgsDialog("Delete Item Configuration", "Permanently delete this product row layout from storage maps?", false);
+      if (confirmed) {
+        MASTER_DATABASE.categories[blockIndex].items.splice(itemIndex, 1);
+        setPendingChanges(true);
+        renderAdminDatabasePanel();
+      }
+    }
+
+    let draggedCategoryIdx = null;
+    let draggedItemIdx = null;
+    let draggedItemParentCatIdx = null;
+
+    function handleCategoryDragStart(e) {
+      const targetBlock = e.target.closest('.category-block');
+      if (!targetBlock || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+        e.preventDefault();
+        return;
+      }
+      
+      draggedCategoryIdx = parseInt(targetBlock.getAttribute("data-cat-index"));
+      draggedItemIdx = null; 
+      targetBlock.classList.add("is-dragging");
+      e.dataTransfer.effectAllowed = "move";
+    }
+    function handleCategoryDragOver(e) {
+      e.preventDefault();
+      const el = e.currentTarget.closest('.category-block');
+      if (el && draggedCategoryIdx !== null && parseInt(el.getAttribute("data-cat-index")) !== draggedCategoryIdx) {
+        el.classList.add("drag-over");
+      }
+    }
+    function handleCategoryDragLeave(e) {
+      const el = e.currentTarget.closest('.category-block');
+      if(el) el.classList.remove("drag-over");
+    }
+    async function handleCategoryDrop(e) {
+      e.preventDefault();
+      const el = e.currentTarget.closest('.category-block');
+      if(!el) return;
+      el.classList.remove("drag-over");
+      
+      const sourceBlock = document.querySelector('.category-block.is-dragging');
+      if(sourceBlock) sourceBlock.classList.remove("is-dragging");
+      
+      if (draggedCategoryIdx !== null) {
+        const targetCategoryIdx = parseInt(el.getAttribute("data-cat-index"));
+        if (draggedCategoryIdx === targetCategoryIdx) return;
+        
+        const confirmed = await showCgsDialog("Confirm Structural Reorder", CRITICAL_DRAG_WARNING, true);
+        if (confirmed) {
+          const removed = MASTER_DATABASE.categories.splice(draggedCategoryIdx, 1)[0];
+          MASTER_DATABASE.categories.splice(targetCategoryIdx, 0, removed);
+          CURRENT_ACTIVE_OPEN_ACCORDION_IDX = targetCategoryIdx; 
+          setPendingChanges(true);
+        }
+        draggedCategoryIdx = null;
+        renderAdminDatabasePanel();
+      }
+    }
+
+    function handleItemDragStart(e) {
+      e.stopPropagation();
+      const row = e.currentTarget.closest('tr');
+      draggedItemIdx = parseInt(row.getAttribute("data-item-index"));
+      draggedItemParentCatIdx = parseInt(row.getAttribute("data-parent-cat"));
+      draggedCategoryIdx = null;
+      row.classList.add("is-dragging");
+      e.dataTransfer.effectAllowed = "move";
+    }
+    function handleItemDragOver(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const row = e.currentTarget.closest('tr');
+      if (row && draggedItemIdx !== null) {
+        const tCat = parseInt(row.getAttribute("data-parent-cat"));
+        const tIdx = parseInt(row.getAttribute("data-item-index"));
+        if (!(draggedItemParentCatIdx === tCat && draggedItemIdx === tIdx)) {
+          row.classList.add("drag-active-indicator");
+        }
+      }
+    }
+    function handleItemDragLeave(e) {
+      e.preventDefault();
+      const row = e.currentTarget.closest('tr');
+      if(row) row.classList.remove("drag-active-indicator");
+    }
+    async function handleItemDrop(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const targetRow = e.currentTarget.closest('tr');
+      if(!targetRow) return;
+      targetRow.classList.remove("drag-active-indicator");
+      
+      const sourceRow = document.querySelector('tr.product-row-node.is-dragging');
+      if(sourceRow) sourceRow.classList.remove("is-dragging");
+      
+      const targetCatIdx = parseInt(targetRow.getAttribute("data-parent-cat"));
+      const targetItemIdx = parseInt(targetRow.getAttribute("data-item-index"));
+      
+      if (draggedItemIdx !== null && draggedItemParentCatIdx !== null) {
+        if (draggedItemParentCatIdx === targetCatIdx && draggedItemIdx === targetItemIdx) return;
+        
+        const confirmed = await showCgsDialog("Confirm Structural Reorder", CRITICAL_DRAG_WARNING, true);
+        if (confirmed) {
+          const movingItem = MASTER_DATABASE.categories[draggedItemParentCatIdx].items.splice(draggedItemIdx, 1)[0];
+          MASTER_DATABASE.categories[targetCatIdx].items.splice(targetItemIdx, 0, movingItem);
+          CURRENT_ACTIVE_OPEN_ACCORDION_IDX = targetCatIdx; 
+          setPendingChanges(true);
+        }
+        draggedItemIdx = null;
+        draggedItemParentCatIdx = null;
+        renderAdminDatabasePanel();
+      }
+    }
+
+    async function triggerPublishWorkflow() {
+      const confirmed = await showCgsDialog(
+        "Publish Changes To Production", 
+        "You are about to push this menu layout update live. This operation overrides active display data maps across all digital cafe panels instantly.",
+        true
+      );
+      if (confirmed) {
+        commitDatabaseToServer();
+      }
     }
 
     function commitDatabaseToServer() {
       const btn = document.getElementById("save-btn");
-      btn.innerText = "Processing Cloud Deploy...";
+      btn.innerText = "Syncing...";
       btn.disabled = true;
 
       const url = `https://api.github.com/repos/${GIT_USER}/${GIT_REPO}/contents/menu/menu-data.json`;
@@ -327,7 +955,7 @@
       const encodedContent = btoa(unescape(encodeURIComponent(jsonStringContent)));
 
       const requestPayload = {
-        message: `Production Menu Update [Scope: ${GIT_REPO}] via Admin Portal Engine`,
+        message: `Production Menu Update via CGS LIVE MENU MANAGER Engine`,
         content: encodedContent,
         sha: FILE_SHA
       };
@@ -341,17 +969,28 @@
         body: JSON.stringify(requestPayload)
       })
       .then(res => {
-        if(!res.ok) throw new Error("GitHub write API error. Verify token scope properties.");
+        if(!res.ok) throw new Error("GitHub synchronization layer rejected request parameters.");
         return res.json();
       })
       .then(data => {
         FILE_SHA = data.content.sha;
-        alert(`Success! Menu updates have been committed directly into the '${GIT_REPO}' branch environment successfully.`);
+        ACTIVE_PENDING_NEW_ROW_MAP = {};
+        setPendingChanges(false);
+        showCgsDialog("Sync Complete", "Menu layout successfully updated. Your changes are now live across all sections.", false);
+        renderAdminDatabasePanel();
       })
-      .catch(err => alert("Sync Error: " + err.message))
+      .catch(err => {
+        showCgsDialog("Sync Interruption", err.message);
+        btn.disabled = false; 
+      })
       .finally(() => {
-        btn.innerText = "⚡ Publish Live Updates";
-        btn.disabled = false;
+        if (!IS_UNPUBLISHED_CHANGES_PENDING) {
+          btn.innerHTML = `
+            <svg class="sync-icon" viewBox="0 0 24 24">
+              <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+            </svg>
+            Publish the revised menu`;
+        }
       });
     }
   </script>

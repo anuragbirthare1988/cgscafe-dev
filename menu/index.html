@@ -31,48 +31,37 @@
     .a5-landscape-sheet { width: 210mm; height: 148mm; background-color: var(--bg-card-color); border: 1px solid var(--border-color); position: relative; display: flex; flex-direction: row; padding: 14mm 8mm 14mm 0mm; margin-bottom: 35px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); overflow: hidden; }
     
     .vertical-sidebar-banner { width: 14mm; background-color: var(--bg-sidebar-color); border-right: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; flex-shrink: 0; height: 100%; }
-    
-    /* RESTORED SIDEBAR TITLE ALIGNMENT: Baseline aligned to match reference image cleanly */
     .sidebar-text-wrap { display: flex; align-items: baseline; justify-content: center; gap: 12px; transform: rotate(-90deg); white-space: nowrap; max-width: 120mm; }
     .sidebar-main-title { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 500; color: var(--accent-gold); letter-spacing: 6px; text-transform: uppercase; }
     .sidebar-subtitle { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 400; color: var(--text-darker); letter-spacing: 3.5px; text-transform: uppercase; }
     
-    .sidebar-text-wrap:has(.long-title-fallback) { gap: 10px; }
-    .long-title-fallback { font-size: 13.5px !important; letter-spacing: 4.5px !important; }
-
     .menu-page-content-pane { flex: 1; height: 120mm; display: flex; flex-direction: column; padding-left: 8mm; position: relative; }
-    
     .concept-wrapper { display: flex; flex-direction: column; justify-content: flex-start; height: 100%; padding-top: 10mm; padding-right: 15mm; padding-left: 5mm; }
     .concept-title { font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: 500; letter-spacing: 6px; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 24px; }
     .concept-body-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13.5px; color: #a3988c; line-height: 1.75; font-weight: 400; }
     .concept-body-text p { margin-bottom: 16px; }
-    .concept-body-text p:last-of-type { margin-bottom: 0; }
-    .concept-body-text strong { color: var(--text-main); font-weight: 600; }
-    .vertical-sidebar-banner .sidebar-main-title.philosophy-tracking { letter-spacing: 12px; font-size: 17px; }
     
     .section-horizontal-band { width: 100%; margin-bottom: 34px; display: flex; flex-direction: column; }
-    .section-horizontal-band:last-of-type { margin-bottom: 0; }
     .section-header-title { margin-bottom: 14px; border-bottom: 1px solid rgba(197, 168, 128, 0.08); padding-bottom: 6px; }
     .section-header-title h3 { font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 3px; color: var(--accent-gold); text-transform: uppercase; }
-    
     .section-header-desc { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; color: #9c8c7a; line-height: 1.45; margin-top: 4px; }
     
     .products-masonry-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 24px; width: 100%; }
-    .product-column-row { display: flex; flex-direction: column; }
-    .product-title-row { display: flex; align-items: center; margin-bottom: 4px; }
-    .product-title-text { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; color: var(--text-main); letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
-    .star-marker { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10px; color: var(--accent-gold); margin-left: 5px; }
-    .product-desc-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; color: var(--text-muted); line-height: 1.55; }
-    .price-tag-append { color: var(--text-muted); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; }
+    .product-column-row { display: flex; flex-direction: column; overflow: hidden; }
+    .product-title-row { display: flex; align-items: center; margin-bottom: 4px; width: 100%; gap: 6px; }
+    .product-title-text { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; color: var(--text-main); letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+    .star-marker { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10px; color: var(--accent-gold); flex-shrink: 0; line-height: 1; }
+    
+    .product-desc-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; color: var(--text-muted); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+    .embedded-metric-group { color: var(--text-muted); font-size: 11px; font-weight: 400; font-family: 'Plus Jakarta Sans', sans-serif; margin-left: 6px; white-space: nowrap; display: inline-block; }
     
     .footer-stamp-line { position: absolute; bottom: 6mm; left: 22mm; right: 8mm; font-family: 'Oswald', sans-serif; font-size: 11px; color: #3b332b; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(197, 168, 128, 0.04); padding-top: 6px; }
-    
+
     @media print {
       body { background-color: var(--bg-dark-color) !important; color: var(--text-main) !important; }
       .top-menu-selector-hub { display: none !important; }
       .canvas-container { padding: 0 !important; margin: 0 !important; max-width: none !important; }
       .a5-landscape-sheet { width: 210mm !important; height: 148mm !important; page-break-after: always !important; box-shadow: none !important; border: none !important; margin: 0 !important; padding: 14mm 8mm 14mm 0mm !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      .vertical-sidebar-banner { background-color: var(--bg-sidebar-color) !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     }
   </style>
 </head>
@@ -128,13 +117,12 @@
       generateProductionMenuLayout();
     }
 
-    // ... [Rest of your original layout builder engine functions remain completely unmodified]
     function generateProductionMenuLayout() {
       const target = document.getElementById("print-canvas-render-target");
       target.innerHTML = "";
       
       const activeDataSet = (MASTER_DATABASE.categories || []).filter(cat => {
-        return cat.originType === ACTIVE_CANVAS;
+        return cat.originType === ACTIVE_CANVAS && !cat.hidden;
       });
 
       if (activeDataSet.length === 0) {
@@ -146,40 +134,21 @@
 
       const conceptPage = document.createElement("div");
       conceptPage.className = "a5-landscape-sheet";
-      
-      if (ACTIVE_CANVAS === 'beverages') {
-        conceptPage.innerHTML = `
-          <div class="vertical-sidebar-banner">
-            <div class="sidebar-text-wrap"><span class="sidebar-main-title philosophy-tracking">THE PHILOSOPHY</span></div>
-          </div>
-          <div class="menu-page-content-pane">
-            <div class="concept-wrapper">
-              <h2 class="concept-title">Our Concept</h2>
-              <div class="concept-body-text">
-                <p>Welcome to <strong>Coffee, Grill & Shots</strong>—a premium, pure vegetarian sanctuary explicitly engineered to <strong>Jumpstart Your Mood</strong>.</p>
-                <p>From the intense micro-froth of our hand-whipped frappes to our vibrant, ice-cold flavor shots, every blend is crafted to serve as an emotional reset. Relax, take a sip, and let the craftsmanship fuel your conversation.</p>
-              </div>
+      conceptPage.innerHTML = `
+        <div class="vertical-sidebar-banner">
+          <div class="sidebar-text-wrap"><span class="sidebar-main-title">THE PHILOSOPHY</span></div>
+        </div>
+        <div class="menu-page-content-pane">
+          <div class="concept-wrapper">
+            <h2 class="concept-title">Our Concept</h2>
+            <div class="concept-body-text">
+              <p>Welcome to <strong>Coffee, Grill & Shots</strong>—a premium, pure vegetarian sanctuary explicitly engineered to <strong>Jumpstart Your Mood</strong>.</p>
+              <p>Every element on our savory canvas, from the gold-crisp edges of our slow-pressed artisanal melts to our rich skillet creations, is precision-paired to anchor your lounge experience.</p>
             </div>
           </div>
-          <div class="footer-stamp-line"><span></span><span>${pageCount}</span></div>
-        `;
-      } else {
-        conceptPage.innerHTML = `
-          <div class="vertical-sidebar-banner">
-            <div class="sidebar-text-wrap"><span class="sidebar-main-title philosophy-tracking">THE PHILOSOPHY</span></div>
-          </div>
-          <div class="menu-page-content-pane">
-            <div class="concept-wrapper">
-              <h2 class="concept-title">Our Concept</h2>
-              <div class="concept-body-text">
-                <p>Welcome to <strong>Coffee, Grill & Shots</strong>—a custom-engineered culinary sanctuary explicitly curated to <strong>Elevate Your Cravings</strong>.</p>
-                <p>Every element on our savory canvas, from the gold-crisp edges of our slow-pressed artisanal melts to our rich skillet creations, is precision-paired to anchor your lounge experience. Take a bite and savor the moment.</p>
-              </div>
-            </div>
-          </div>
-          <div class="footer-stamp-line"><span></span><span>${pageCount}</span></div>
-        `;
-      }
+        </div>
+        <div class="footer-stamp-line"><span></span><span>${pageCount}</span></div>
+      `;
       target.appendChild(conceptPage);
       pageCount++;
 
@@ -190,23 +159,22 @@
       let previousSuperCategory = "";
 
       activeDataSet.forEach(subCatGroup => {
+        const visibleItems = (subCatGroup.items || []).filter(i => !i.hidden);
+        if (visibleItems.length === 0) return;
+
         let costHeaderBlock = 54;
         const columnsHeightTracker = [0, 0, 0];
         
-        subCatGroup.items.forEach((item, index) => {
-          const textLengthScore = (item.description || "").trim().length + (item.price || "").length + 4;
-          const overflowLineMultiplier = Math.max(0, Math.ceil(textLengthScore / 34) - 1);
+        visibleItems.forEach((item, index) => {
+          const textLengthScore = (item.description || "").trim().length + (item.price || "").length + 12;
+          const overflowLineMultiplier = Math.max(0, Math.ceil(textLengthScore / 32) - 1);
           columnsHeightTracker[index % 3] += (26 + (overflowLineMultiplier * 18));
         });
         
         const totalCalculatedBlockFootprint = costHeaderBlock + Math.max(...columnsHeightTracker) + 36;
-
         let targetCategoryChangeBreak = (previousSuperCategory !== "" && previousSuperCategory !== subCatGroup.superCategory);
 
-        if (!pageFrameElement || 
-            (currentAllocatedHeight + totalCalculatedBlockFootprint > MAXIMUM_PAGE_BUG_HEIGHT) || 
-            targetCategoryChangeBreak) {
-          
+        if (!pageFrameElement || (currentAllocatedHeight + totalCalculatedBlockFootprint > MAXIMUM_PAGE_BUG_HEIGHT) || targetCategoryChangeBreak) {
           pageFrameElement = buildPageStructuralShell(pageCount, subCatGroup.superCategory, subCatGroup.tag || "");
           contentPaneWindow = pageFrameElement.querySelector(".menu-page-content-pane");
           target.appendChild(pageFrameElement);
@@ -226,7 +194,7 @@
         const masonryGrid = document.createElement("div");
         masonryGrid.className = "products-masonry-grid";
 
-        subCatGroup.items.forEach(item => {
+        visibleItems.forEach(item => {
           const itemCol = document.createElement("div");
           itemCol.className = "product-column-row";
           const recommendMarker = item.featured ? `<span class="star-marker">✦</span>` : "";
@@ -234,13 +202,20 @@
           let cleanDescription = (item.description || "").trim();
           if (cleanDescription.endsWith('.')) { cleanDescription = cleanDescription.slice(0, -1); }
 
+          let metricsLine = "";
+          if (item.qty && item.qty.trim() !== "") {
+            metricsLine += `${item.qty.trim()} · ${item.price}`;
+          } else {
+            metricsLine += `${item.price}`;
+          }
+
           itemCol.innerHTML = `
             <div class="product-title-row">
               <span class="product-title-text">${item.name}</span>
               ${recommendMarker}
             </div>
             <div class="product-desc-text">
-              ${cleanDescription} <span class="price-tag-append">. ${item.price}</span>
+              ${cleanDescription}<span class="embedded-metric-group">${metricsLine}</span>
             </div>
           `;
           masonryGrid.appendChild(itemCol);
@@ -257,18 +232,15 @@
       const frame = document.createElement("div");
       frame.className = "a5-landscape-sheet";
       
-      const isLongTitle = mainTitleText.length > 28 ? " long-title-fallback" : "";
-      
       let formattedSubtitle = "";
       if (tagSubtitleText) {
-         const cleanText = tagSubtitleText.replace(/^\(|\)$/g, ''); 
-         formattedSubtitle = `<span class="sidebar-subtitle">(${cleanText})</span>`;
+         formattedSubtitle = `<span class="sidebar-subtitle">(${tagSubtitleText.replace(/^\(|\)$/g, '')})</span>`;
       }
 
       frame.innerHTML = `
         <div class="vertical-sidebar-banner">
           <div class="sidebar-text-wrap">
-            <span class="sidebar-main-title${isLongTitle}">${mainTitleText}</span>
+            <span class="sidebar-main-title">${mainTitleText}</span>
             ${formattedSubtitle}
           </div>
         </div>
