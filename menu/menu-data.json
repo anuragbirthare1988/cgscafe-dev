@@ -15,7 +15,7 @@
           "qty": "250 ml",
           "price": "299",
           "featured": true,
-          "hidden": true
+          "hidden": false
         },
         {
           "id": "item_ddkhubg5j",
