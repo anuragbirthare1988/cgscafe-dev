@@ -32,7 +32,7 @@
           "description": "Summary for the newly added product",
           "qty": "350 ml",
           "price": "249",
-          "featured": false,
+          "featured": true,
           "hidden": false
         }
       ]
