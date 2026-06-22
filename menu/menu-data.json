@@ -584,23 +584,6 @@
     {
       "superCategory": "HARVEST BOARDS",
       "tag": "(BOTANICALS)",
-      "subCategoryName": "CHEF'S SPECIAL",
-      "subCategoryDesc": "Bespoke social platters curated for slow conversations.",
-      "originType": "eatables",
-      "items": [
-        {
-          "name": "THE GOURMET BOARD",
-          "description": "A luxury board of fine cheese, rich berries, nuts, and gourmet jam",
-          "price": "269",
-          "featured": true,
-          "hidden": false
-        }
-      ],
-      "hidden": false
-    },
-    {
-      "superCategory": "HARVEST BOARDS",
-      "tag": "(BOTANICALS)",
       "subCategoryName": "BOTANICAL SALADS",
       "subCategoryDesc": "Chilled, crisp, nutrient-dense compositions crafted daily.",
       "originType": "eatables",
@@ -624,6 +607,23 @@
           "description": "Tender daintily diced root vegetables bound in sweet cream",
           "price": "199",
           "featured": false,
+          "hidden": false
+        }
+      ],
+      "hidden": false
+    },
+    {
+      "superCategory": "HARVEST BOARDS",
+      "tag": "(BOTANICALS)",
+      "subCategoryName": "CHEF'S SPECIAL",
+      "subCategoryDesc": "Bespoke social platters curated for slow conversations.",
+      "originType": "eatables",
+      "items": [
+        {
+          "name": "THE GOURMET BOARD",
+          "description": "A luxury board of fine cheese, rich berries, nuts, and gourmet jam",
+          "price": "269",
+          "featured": true,
           "hidden": false
         }
       ],
