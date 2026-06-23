@@ -152,20 +152,6 @@
     <button class="btn-rollback-action" onclick="triggerRollbackWorkflow()">↩ Discard Changes & Reload</button>
   </div>
 
-  <div class="login-box" id="auth-gate">
-    <h2>CGS Terminal Gate</h2>
-    <p>Authentication setup via protected secure scoping domain parameters.</p>
-    
-    <div style="margin-bottom: 12px;">
-      <label style="font-size: 11px; color: var(--text-muted); display:block; margin-bottom:4px; text-transform: uppercase;">Active Workspace environment</label>
-      <div id="env-badge-display" class="env-badge">Detecting...</div>
-    </div>
-
-    <input type="text" id="gh-username" class="db-input" placeholder="GitHub Username" style="margin-bottom: 12px;">
-    <input type="password" id="gh-token" class="db-input" placeholder="GitHub Personal Access Token (classic)" style="margin-bottom: 20px;">
-    <button class="primary-btn" style="width: 100%;" onclick="initializeDatabaseConnection()">Establish Connection</button>
-  </div>
-
   <div class="admin-container" id="admin-panel">
     <div class="admin-header">
       <div>
@@ -284,7 +270,7 @@
         badge.innerText = "Default Core Target [cgscafe-dev]";
         subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
       }
-      checkForSavedSession();
+      initializeDatabaseConnection();
     });
 
     function setPendingChanges(stateValue) {
@@ -348,17 +334,6 @@
       setOriginContextFilter(contextKey);
     }
 
-    function checkForSavedSession() {
-      const savedUser = localStorage.getItem("cgs_gh_username");
-      const savedToken = localStorage.getItem("cgs_gh_token");
-
-      if (savedUser && savedToken) {
-        document.getElementById("gh-username").value = savedUser;
-        document.getElementById("gh-token").value = savedToken;
-        initializeDatabaseConnection(true);
-      }
-    }
-
     function clearSavedSession() {
       localStorage.removeItem("cgs_gh_username");
       localStorage.removeItem("cgs_gh_token");
@@ -403,52 +378,31 @@
       }
     }
 
-    function initializeDatabaseConnection(isAutoConnect = false) {
-      GIT_USER = document.getElementById("gh-username").value.trim();
-      GIT_TOKEN = document.getElementById("gh-token").value.trim();
-
-      if(!GIT_USER || !GIT_TOKEN) {
-        showCgsDialog("Missing Fields", "Please complete credentials inputs to target authentication scopes.");
-        return;
-      }
-
-      const url = `https://api.github.com/repos/${GIT_USER}/${GIT_REPO}/contents/menu/menu-data.json`;
-      
-      fetch(url, {
-        headers: { "Authorization": `token ${GIT_TOKEN}`, "Accept": "application/vnd.github.v3+json" }
-      })
-      .then(res => {
-        if(!res.ok) throw new Error("Authentication failed. Check access scope definitions mapping keys.");
-        return res.json();
-      })
-      .then(data => {
-        FILE_SHA = data.sha;
-        MASTER_DATABASE = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-        
-        if (!MASTER_DATABASE.categories) MASTER_DATABASE.categories = [];
-        
-        MASTER_DATABASE.categories.forEach(cat => {
-          if (cat.hidden === undefined) cat.hidden = false;
-          if (cat.items) {
-            cat.items.forEach(i => { if (i.hidden === undefined) i.hidden = false; });
-          }
-        });
-
-        localStorage.setItem("cgs_gh_username", GIT_USER);
-        localStorage.setItem("cgs_gh_token", GIT_TOKEN);
-
-        document.getElementById("auth-gate").style.display = "none";
-        document.getElementById("admin-panel").style.display = "block";
-        setPendingChanges(false);
-        renderAdminDatabasePanel();
-      })
-      .catch(err => {
-        if (isAutoConnect) {
-          localStorage.removeItem("cgs_gh_username");
-          localStorage.removeItem("cgs_gh_token");
+    async function initializeDatabaseConnection(isAutoConnect = false) {
+        try {
+            MASTER_DATABASE = await loadMenuFromSupabase();
+            if (!MASTER_DATABASE.categories) {
+                MASTER_DATABASE.categories = [];
+            }
+            MASTER_DATABASE.categories.forEach(cat => {
+                if (cat.hidden === undefined) cat.hidden = false;
+                if (cat.items) {
+                    cat.items.forEach(item => {
+                        if (item.hidden === undefined) item.hidden = false;
+                    });
+                }
+            });
+            const authGate = document.getElementById("auth-gate");
+            if (authGate) {
+                authGate.style.display = "none";
+            }
+            document.getElementById("admin-panel").style.display = "block";
+            setPendingChanges(false);
+            renderAdminDatabasePanel();
+        } catch (err) {
+            showCgsDialog("Database Connection Failed", err.message);
+            console.error(err);
         }
-        showCgsDialog("Auth Connection Interrupted", err.message);
-      });
     }
 
     function setOriginContextFilter(contextKey) {
