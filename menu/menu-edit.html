@@ -244,28 +244,6 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       const hostname = window.location.hostname;
-
-      if (hostname === "localhost" || hostname === "127.0.0.1") {
-        GIT_REPO = "cgscafe-dev";
-        badge.innerText = "Studio Local Sandbox [cgscafe-dev]";
-        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
-      } else if (hostname === "dev.cgscafe.in") {
-        GIT_REPO = "cgscafe-dev";
-        badge.innerText = "Development Sandbox [cgscafe-dev]";
-        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
-      } else if (hostname === "qa.cgscafe.in") {
-        GIT_REPO = "cgscafe-qa";
-        badge.innerText = "Quality Assurance Suite [cgscafe-qa]";
-        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-QA";
-      } else if (hostname === "cgscafe.in" || hostname === "www.cgscafe.in") {
-        GIT_REPO = "cgscafe";
-        badge.innerText = "Production Master Cluster [cgscafe]";
-        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE";
-      } else {
-        GIT_REPO = "cgscafe-dev";
-        badge.innerText = "Default Core Target [cgscafe-dev]";
-        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
-      }
       initializeDatabaseConnection();
     });
 
