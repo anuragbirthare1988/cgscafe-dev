@@ -85,30 +85,15 @@
     let ACTIVE_CANVAS = 'beverages';
     let MASTER_DATABASE = { categories: [] };
 
-    window.addEventListener("load", () => {
-      const githubUsername = "anuragbirthare1988"; 
-      const hostname = window.location.hostname;
-      let dataUrl = "";
-
-      if (hostname === "localhost" || hostname === "127.0.0.1") {
-        dataUrl = '/menu/menu-data.json'; 
-      } else {
-        let repoName = hostname.includes("dev.cgscafe.in") ? "cgscafe-dev" : "cgscafe";
-        dataUrl = `https://raw.githubusercontent.com/${githubUsername}/${repoName}/main/menu/menu-data.json`;
-      }
-      
-      fetch(dataUrl + '?cb=' + Date.now())
-        .then(res => {
-          if(!res.ok) throw new Error("Target menu data configuration source could not be resolved.");
-          return res.json();
-        })
-        .then(data => {
-          MASTER_DATABASE = data;
-          generateProductionMenuLayout();
-        })
-        .catch(err => {
-          document.getElementById("print-canvas-render-target").innerText = "Menu Dynamic Synchronization Failed: " + err.message;
-        });
+    window.addEventListener("load", async () => {
+        try {
+            const data = await loadMenuFromSupabase();
+            MASTER_DATABASE = data;
+            generateProductionMenuLayout();
+        } catch (err) {
+            document.getElementById("print-canvas-render-target").innerText = "Menu Dynamic Synchronization Failed: " + err.message;
+            console.error(err);
+        }
     });
 
     function switchCanvasTab(canvasKey) {
@@ -258,6 +243,8 @@
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./supabase-config.js"></script>
+  <script src="./supabase-loader.js"></script>
 </body>
 </html>
