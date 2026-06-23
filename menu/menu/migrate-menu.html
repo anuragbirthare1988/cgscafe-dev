@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CGS Migration</title>
+</head>
+<body>
+
+<h2>CGS Menu Migration</h2>
+<button id="migrateBtn">Start Migration</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-config.js"></script>
+
+<script>
+
+async function migrateMenu() {
+
+    const response = await fetch('./mock-data.json');
+    const data = await response.json();
+
+    for (let categoryIndex = 0; categoryIndex < data.categories.length; categoryIndex++) {
+
+        const category = data.categories[categoryIndex];
+
+        const { data: insertedCategory, error: categoryError } =
+            await supabaseClient
+                .from('categories')
+                .insert({
+                    super_category: category.superCategory || '',
+                    sub_category_name: category.subCategoryName || '',
+                    sub_category_desc: category.subCategoryDesc || '',
+                    origin_type: category.originType || '',
+                    tag: category.tag || '',
+                    is_hidden: category.hidden || false,
+                    sort_order: categoryIndex,
+                    legacy_index: categoryIndex
+                })
+                .select()
+                .single();
+
+        if (categoryError) {
+            console.error(categoryError);
+            continue;
+        }
+
+        for (let itemIndex = 0; itemIndex < category.items.length; itemIndex++) {
+
+            const item = category.items[itemIndex];
+
+            const { error: itemError } =
+                await supabaseClient
+                    .from('items')
+                    .insert({
+                        category_id: insertedCategory.id,
+                        name: item.name || '',
+                        description: item.description || '',
+                        qty: item.qty || '',
+                        price: parseFloat(item.price || 0),
+                        is_featured: item.featured || false,
+                        is_hidden: item.hidden || false,
+                        sort_order: itemIndex,
+                        legacy_index: itemIndex
+                    });
+
+            if (itemError) {
+                console.error(itemError);
+            }
+        }
+    }
+
+    alert('Migration Complete');
+}
+
+document
+    .getElementById('migrateBtn')
+    .addEventListener('click', migrateMenu);
+
+</script>
+
+</body>
+</html>
