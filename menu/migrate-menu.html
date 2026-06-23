@@ -15,7 +15,7 @@
 
 async function migrateMenu() {
 
-    const response = await fetch('./mock-data.json');
+    const response = await fetch('./menu-data.json');
     const data = await response.json();
 
     for (let categoryIndex = 0; categoryIndex < data.categories.length; categoryIndex++) {
