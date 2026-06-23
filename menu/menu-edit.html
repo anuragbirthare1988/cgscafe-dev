@@ -77,7 +77,6 @@
     .category-edit-grid-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; width: 100%; margin-bottom: 14px; }
     .category-edit-actions-row { display: flex; gap: 12px; justify-content: flex-end; align-items: center; width: 100%; }
 
-    .env-badge { display: inline-block; background-color: #161311; border: 1px solid var(--border-color); padding: 6px 12px; font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 1px; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 15px; border-radius: 2px; }
     .btn-edit-header { background: none; border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 14px; font-family: 'Oswald', sans-serif; font-size: 11px; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: all 0.2s; white-space: nowrap; }
     .btn-edit-header:hover { border-color: var(--accent-gold); color: var(--accent-gold); background-color: rgba(255,255,255,0.01); }
 
@@ -156,7 +155,6 @@
     <div class="admin-header">
       <div>
         <h2>CGS LIVE MENU MANAGER</h2>
-        <p id="admin-scope-desc">LIVE MENU SOURCE - LOADING...</p>
       </div>
       <div class="action-group" style="display: flex; gap: 15px; align-items: center;">
         <button class="btn-edit-header" style="color: #ff6b6b; border-color: rgba(255,107,107,0.3);" onclick="handleSignOutRequest()">Sign Out</button>
@@ -246,8 +244,6 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       const hostname = window.location.hostname;
-      const badge = document.getElementById("env-badge-display");
-      const subdesc = document.getElementById("admin-scope-desc");
 
       if (hostname === "localhost" || hostname === "127.0.0.1") {
         GIT_REPO = "cgscafe-dev";
@@ -959,8 +955,6 @@
       });
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./supabase-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./supabase-config.js"></script>
   <script src="./supabase-loader.js"></script>
