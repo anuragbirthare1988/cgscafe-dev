@@ -309,13 +309,7 @@
     }
 
     function clearSavedSession() {
-      localStorage.removeItem("cgs_gh_username");
-      localStorage.removeItem("cgs_gh_token");
-      document.getElementById("gh-username").value = "";
-      document.getElementById("gh-token").value = "";
-      document.getElementById("admin-panel").style.display = "none";
-      document.getElementById("auth-gate").style.display = "block";
-      setPendingChanges(false);
+        localStorage.clear();
     }
 
     function showCgsDialog(title, message, isDoubleConfirm = false) {
