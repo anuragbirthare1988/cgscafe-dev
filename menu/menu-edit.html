@@ -878,53 +878,29 @@
       }
     }
 
-    function commitDatabaseToServer() {
-      const btn = document.getElementById("save-btn");
-      btn.innerText = "Syncing...";
-      btn.disabled = true;
-
-      const url = `https://api.github.com/repos/${GIT_USER}/${GIT_REPO}/contents/menu/menu-data.json`;
-      const jsonStringContent = JSON.stringify(MASTER_DATABASE, null, 2);
-      const encodedContent = btoa(unescape(encodeURIComponent(jsonStringContent)));
-
-      const requestPayload = {
-        message: `Production Menu Update via CGS LIVE MENU MANAGER Engine`,
-        content: encodedContent,
-        sha: FILE_SHA
-      };
-
-      fetch(url, {
-        method: "PUT",
-        headers: {
-          "Authorization": `token ${GIT_TOKEN}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(requestPayload)
-      })
-      .then(res => {
-        if(!res.ok) throw new Error("GitHub synchronization layer rejected request parameters.");
-        return res.json();
-      })
-      .then(data => {
-        FILE_SHA = data.content.sha;
-        ACTIVE_PENDING_NEW_ROW_MAP = {};
-        setPendingChanges(false);
-        showCgsDialog("Sync Complete", "Menu layout successfully updated. Your changes are now live across all sections.", false);
-        renderAdminDatabasePanel();
-      })
-      .catch(err => {
-        showCgsDialog("Sync Interruption", err.message);
-        btn.disabled = false; 
-      })
-      .finally(() => {
-        if (!IS_UNPUBLISHED_CHANGES_PENDING) {
-          btn.innerHTML = `
-            <svg class="sync-icon" viewBox="0 0 24 24">
-              <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
-            </svg>
-            Publish the revised menu`;
+    async function commitDatabaseToServer() {
+        for (const category of MASTER_DATABASE.categories) {
+            await supabaseClient.from('categories').update({
+                super_category: category.superCategory,
+                sub_category_name: category.subCategoryName,
+                sub_category_desc: category.subCategoryDesc,
+                origin_type: category.originType,
+                tag: category.tag,
+                is_hidden: category.hidden,
+                sort_order: category.sortOrder
+            }).eq('id', category.id);
+            for (const item of category.items) {
+                await supabaseClient.from('items').update({
+                    name: item.name,
+                    description: item.description,
+                    qty: item.qty,
+                    price: item.price,
+                    is_featured: item.featured,
+                    is_hidden: item.hidden,
+                    sort_order: item.sortOrder
+                }).eq('id', item.id);
+            }
         }
-      });
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
