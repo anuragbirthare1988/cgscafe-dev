@@ -31,21 +31,30 @@ async function loadMenuFromSupabase() {
         const categoryItems = items
             .filter(i => i.category_id === cat.id)
             .map(i => ({
+                id: i.id,
+                categoryId: i.category_id,
+                sortOrder: i.sort_order,
+            
                 name: i.name,
                 description: i.description,
                 qty: i.qty,
                 price: i.price,
+            
                 featured: i.is_featured,
                 hidden: i.is_hidden
             }));
 
         result.categories.push({
+            id: cat.id,
+            sortOrder: cat.sort_order,
+        
             superCategory: cat.super_category,
             subCategoryName: cat.sub_category_name,
             subCategoryDesc: cat.sub_category_desc,
             originType: cat.origin_type,
             tag: cat.tag,
             hidden: cat.is_hidden,
+        
             items: categoryItems
         });
     });
