@@ -883,16 +883,33 @@
         try {
             btn.innerText = "Syncing...";
             btn.disabled = true;
+            document.body.style.pointerEvents = "none";
+            document.body.style.opacity = "0.7";
+            btn.style.pointerEvents = "auto";
             for (const category of MASTER_DATABASE.categories) {
-                await supabaseClient.from('categories').update({
+                const categoryPayload = {
                     super_category: category.superCategory,
                     sub_category_name: category.subCategoryName,
                     sub_category_desc: category.subCategoryDesc,
                     origin_type: category.originType,
                     tag: category.tag,
                     is_hidden: category.hidden,
-                    sort_order: category.sortOrder
-                }).eq('id', category.id);
+                    sort_order: category.sortOrder || 0
+                };
+                const isNewCategory = !category.id || String(category.id).startsWith("cat_");
+                if (isNewCategory) {
+                    const {
+                        data,
+                        error
+                    } = await supabaseClient.from('categories').insert(categoryPayload).select().single();
+                    if (error) throw error;
+                    category.id = data.id;
+                } else {
+                    const {
+                        error
+                    } = await supabaseClient.from('categories').update(categoryPayload).eq('id', category.id);
+                    if (error) throw error;
+                };
                 for (const item of category.items) {
                     const payload = {
                         category_id: category.id,
@@ -922,6 +939,10 @@
             }
             ACTIVE_PENDING_NEW_ROW_MAP = {};
             setPendingChanges(false);
+            const saveBtn = document.getElementById("save-btn");
+            if(saveBtn){
+                saveBtn.disabled = true;
+            }
             MASTER_DATABASE = await loadMenuFromSupabase();
             renderAdminDatabasePanel();
             await showCgsDialog("Publish Complete", "Menu changes were successfully published. Latest data has been reloaded from Supabase.");
