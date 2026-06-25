@@ -401,13 +401,15 @@
       const originType = document.getElementById("new-cat-origin").value;
 
       MASTER_DATABASE.categories.unshift({
-        superCategory: superTitle,
-        subCategoryName: subTitle,
-        subCategoryDesc: description,
-        originType: originType,
-        tag: tagStr,
-        hidden: false,
-        items: []
+          id: "cat_" + Date.now(),
+          sortOrder: 0,
+          superCategory: superTitle,
+          subCategoryName: subTitle,
+          subCategoryDesc: description,
+          originType: originType,
+          tag: tagStr,
+          hidden: false,
+          items: []
       });
 
       closeTopCreationRow();
@@ -950,6 +952,8 @@
             console.error(err);
             showCgsDialog("Publish Failed", err.message || "Unknown error occurred.");
         } finally {
+            document.body.style.pointerEvents = "";
+            document.body.style.opacity = "";
             btn.disabled = false;
             btn.innerHTML = `
                 <svg class="sync-icon" viewBox="0 0 24 24">
