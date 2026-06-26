@@ -965,10 +965,10 @@
 
     async function commitDatabaseToServer() {
         const btn = document.getElementById("save-btn");
+        const overlay = document.getElementById("publish-overlay");
         try {
             btn.innerText = "Publishing...";
             btn.disabled = true;
-            const overlay = document.getElementById("publish-overlay");
             overlay.style.display = "flex";
             document.getElementById("publish-status").innerText = "Synchronizing menu with Supabase...";
             document.body.style.pointerEvents = "none";
@@ -1043,7 +1043,6 @@
             }
           document.body.style.pointerEvents = "";
           document.body.style.opacity = "";
-          const overlay = document.getElementById("publish-overlay");
           if (overlay) {
               overlay.style.display = "none";
           }
@@ -1054,7 +1053,6 @@
         } finally {
             document.body.style.pointerEvents = "";
             document.body.style.opacity = "";
-            const overlay = document.getElementById("publish-overlay");
             overlay.style.display = "none";
             btn.innerHTML = `
                 <svg class="sync-icon" viewBox="0 0 24 24">
