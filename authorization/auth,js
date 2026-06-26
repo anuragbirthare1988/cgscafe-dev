@@ -1,0 +1,17 @@
+async function login() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const error = document.getElementById("error");
+    error.innerHTML = "";
+    const {
+        error: loginError
+    } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+    });
+    if (loginError) {
+        error.innerHTML = loginError.message;
+        return;
+    }
+    window.location.href = "../menu/menu-edit.html";
+}
