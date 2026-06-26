@@ -374,7 +374,7 @@
                 throw error;
             }
             clearSavedSession();
-            window.location.href = "/admin/";
+            window.location.replace("/authorization/login.html");
         } catch (err) {
             console.error(err);
             showCgsDialog("Sign Out Failed", err.message || "Unable to sign out.");
@@ -434,6 +434,7 @@
     async function initializeDatabaseConnection(isAutoConnect = false) {
         try {
             MASTER_DATABASE = await loadMenuFromSupabase();
+          
             if (!MASTER_DATABASE.categories) {
                 MASTER_DATABASE.categories = [];
             }
@@ -997,7 +998,8 @@
                     origin_type: category.originType,
                     tag: category.tag,
                     is_hidden: category.hidden,
-                    sort_order: category.sortOrder || 0
+                    sort_order: category.sortOrder || 0,
+                    legacy_index: category.sortOrder || 0
                 };
                 const isNewCategory = !category.id || String(category.id).startsWith("cat_");
                 if (isNewCategory) {
@@ -1022,7 +1024,8 @@
                         price: item.price,
                         is_featured: item.featured,
                         is_hidden: item.hidden,
-                        sort_order: item.sortOrder || 0
+                        sort_order: item.sortOrder || 0,
+                        legacy_index: item.sortOrder || 0
                     };
                     const isNewItem = !item.id || String(item.id).startsWith("item_");
                     if (isNewItem) {
@@ -1053,8 +1056,8 @@
             if (emptyCategories.length > 0) {
                 successMessage +=
                     "\n\nNote:\n" +
-                    "One or more categories do not contain any products yet.\n\n" +
-                    "Add at least one product before they can appear on the live menu.";
+                    "One or more categories were published successfully but remain hidden from the Live Menu because they do not contain any products.\n\n" +
+                    "Add at least one product and publish again to make those categories visible to customers.";
             }
           document.body.style.pointerEvents = "";
           document.body.style.opacity = "";
