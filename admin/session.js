@@ -1,0 +1,7 @@
+getCurrentUser()
+
+logout()
+
+requireLogin()
+
+isAdmin()
