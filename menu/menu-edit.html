@@ -38,7 +38,10 @@
 
     .pulse-publish-btn { animation: pulseButton 2s infinite ease-in-out; border: 1px solid var(--accent-gold) !important; }
     @keyframes pulseButton { 0% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(197, 168, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0); } }
-
+    @keyframes cgsSpin{
+        from{transform:rotate(0deg);}
+        to{transform:rotate(360deg);}
+    }
     .login-box { max-width: 450px; margin: 100px auto; background: var(--admin-bg); border: 1px solid var(--border-color); padding: 40px; border-radius: 4px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
     .login-box h2 { font-family: 'Oswald', sans-serif; font-size: 24px; color: var(--accent-gold); letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
     .login-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
@@ -218,6 +221,52 @@
         <button class="primary-btn" id="modal-confirm-btn" style="padding:8px 20px; font-size:12px;" onclick="closeCgsDialog(true)">Confirm</button>
       </div>
     </div>
+  </div>
+  <!-- CGS Publishing Overlay -->
+  <div id="publish-overlay" style="
+     display:none;
+     position:fixed;
+     top:0;
+     left:0;
+     width:100%;
+     height:100%;
+     background:rgba(8,8,8,.75);
+     backdrop-filter:blur(4px);
+     z-index:999999;
+     align-items:center;
+     justify-content:center;
+     ">
+     <div style="
+        width:420px;
+        background:#141414;
+        border:1px solid rgba(255,193,7,.35);
+        border-radius:18px;
+        padding:35px;
+        text-align:center;
+        box-shadow:0 0 45px rgba(0,0,0,.45);">
+        <div style="
+           width:58px;
+           height:58px;
+           margin:auto;
+           border:5px solid rgba(255,193,7,.18);
+           border-top:5px solid #FFC107;
+           border-radius:50%;
+           animation:cgsSpin .9s linear infinite;"></div>
+        <h2 style="
+           margin-top:25px;
+           color:#FFC107;
+           font-family:Oswald;
+           letter-spacing:1px;">
+           Publishing Menu
+        </h2>
+        <p id="publish-status"
+           style="
+           color:#DDD;
+           margin-top:15px;
+           line-height:1.7;">
+           Synchronizing menu with Supabase...
+        </p>
+     </div>
   </div>
 
   <script>
@@ -577,9 +626,22 @@
               ${processedDesc ? `<span style="font-family:'Plus Jakarta Sans'; font-size:12px; color:var(--text-muted); font-weight:400; margin-left:15px; letter-spacing:0;" title="${block.subCategoryDesc.replace(/"/g, '&quot;')}">${processedDesc}</span>` : ''}
             </div>
             <div style="display:flex; gap:10px; align-items:center;" onclick="event.stopPropagation()">
-              <label class="switch-wrapper" title="Show/Hide Section">
-                <input type="checkbox" class="switch-input" ${!block.hidden ? 'checked' : ''} onchange="toggleCategoryVisibilityMask(${blockIndex}, event)">
-                <span class="switch-rail"><span class="switch-indicator"></span></span>
+              <label
+                 class="switch-wrapper"
+                 title="${(!block.items || block.items.length === 0)
+                 ? 'Add at least one product before making this section visible.'
+                 : 'Show/Hide Section'}">
+              <input
+              type="checkbox"
+              class="switch-input"
+              ${(!block.items || block.items.length === 0) ? "disabled" : ""}
+              ${(!block.items || block.items.length === 0)
+              ? ""
+              : (!block.hidden ? "checked" : "")}
+              onchange="toggleCategoryVisibilityMask(${blockIndex}, event)">
+              <span class="switch-rail">
+                <span class="switch-indicator"></span>
+                </span>
               </label>
               <button class="btn-edit-header" onclick="toggleCategoryEditMode(${blockIndex}, event)">EDIT HEADER</button>
             </div>
@@ -883,8 +945,11 @@
     async function commitDatabaseToServer() {
         const btn = document.getElementById("save-btn");
         try {
-            btn.innerText = "Syncing...";
+            btn.innerText = "Publishing...";
             btn.disabled = true;
+            const overlay = document.getElementById("publish-overlay");
+            overlay.style.display = "flex";
+            document.getElementById("publish-status").innerText = "Synchronizing menu with Supabase...";
             document.body.style.pointerEvents = "none";
             document.body.style.opacity = "0.7";
             btn.style.pointerEvents = "auto";
@@ -940,26 +1005,36 @@
                 }
             }
             ACTIVE_PENDING_NEW_ROW_MAP = {};
-            setPendingChanges(false);
-            const saveBtn = document.getElementById("save-btn");
-            if(saveBtn){
-                saveBtn.disabled = true;
-            }
+            document.getElementById("publish-status").innerText =
+            "Reloading latest menu...";
             MASTER_DATABASE = await loadMenuFromSupabase();
+            setPendingChanges(false);
             renderAdminDatabasePanel();
-            await showCgsDialog("Publish Complete", "Menu changes were successfully published. Latest data has been reloaded from Supabase.");
+            const emptyCategories = MASTER_DATABASE.categories.filter(cat => !cat.items || cat.items.length === 0);
+            let successMessage =
+            "Menu changes were successfully published.\n\n" +
+            "The latest menu has been reloaded from Supabase.";
+            if (emptyCategories.length > 0) {
+                successMessage +=
+                    "\n\nNote:\n" +
+                    "One or more categories do not contain any products yet.\n\n" +
+                    "Add at least one product before they can appear on the live menu.";
+            }
+            await showCgsDialog("Publish Complete", successMessage);
         } catch (err) {
             console.error(err);
             showCgsDialog("Publish Failed", err.message || "Unknown error occurred.");
         } finally {
             document.body.style.pointerEvents = "";
             document.body.style.opacity = "";
-            btn.disabled = false;
+            const overlay = document.getElementById("publish-overlay");
+            overlay.style.display = "none";
             btn.innerHTML = `
                 <svg class="sync-icon" viewBox="0 0 24 24">
                   <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
                 </svg>
                 Publish the revised menu`;
+            setPendingChanges(IS_UNPUBLISHED_CHANGES_PENDING);
         }
     }
   </script>
