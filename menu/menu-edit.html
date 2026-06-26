@@ -362,15 +362,23 @@
     }
 
     async function handleSignOutRequest() {
-      if (IS_UNPUBLISHED_CHANGES_PENDING) {
-        const leave = await showCgsDialog(
-          "Unsaved Changes Alert",
-          "You have unpublished modifications. Signing out now will completely discard all current work. Do you still want to exit?",
-          true
-        );
-        if (!leave) return;
-      }
-      clearSavedSession();
+        if (IS_UNPUBLISHED_CHANGES_PENDING) {
+            const leave = await showCgsDialog("Unsaved Changes Alert", "You have unpublished modifications. Signing out now will completely discard all current work. Do you still want to exit?", true);
+            if (!leave) return;
+        }
+        try {
+            const {
+                error
+            } = await supabaseClient.auth.signOut();
+            if (error) {
+                throw error;
+            }
+            clearSavedSession();
+            window.location.href = "/admin/";
+        } catch (err) {
+            console.error(err);
+            showCgsDialog("Sign Out Failed", err.message || "Unable to sign out.");
+        }
     }
 
     async function handleOriginContextSwitch(contextKey) {
