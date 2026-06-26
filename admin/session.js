@@ -23,7 +23,7 @@ async function logout() {
     await supabaseClient.auth.signOut();
     localStorage.clear();
     sessionStorage.clear();
-    window.location.replace("/authorization/login.html");
+    window.location.href = "/authorization/login.html";
 }
 async function isAdmin() {
     const user = await getCurrentUser();
