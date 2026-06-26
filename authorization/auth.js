@@ -13,5 +13,5 @@ async function login() {
         error.innerHTML = loginError.message;
         return;
     }
-    window.location.href = "../menu/menu-edit.html";
+    window.location.href="/admin/";
 }
