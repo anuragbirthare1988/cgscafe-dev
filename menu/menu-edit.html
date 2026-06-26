@@ -168,6 +168,9 @@
           </svg>
           Publish the revised menu
         </button>
+        <a href="index.html" class="btn-nav-master">
+            📖 Live Menu
+        </a>
       </div>
     </div>
 
@@ -237,36 +240,52 @@
      justify-content:center;
      ">
      <div style="
-        width:420px;
-        background:#141414;
-        border:1px solid rgba(255,193,7,.35);
-        border-radius:18px;
-        padding:35px;
-        text-align:center;
-        box-shadow:0 0 45px rgba(0,0,0,.45);">
-        <div style="
-           width:58px;
-           height:58px;
-           margin:auto;
-           border:5px solid rgba(255,193,7,.18);
-           border-top:5px solid #FFC107;
-           border-radius:50%;
-           animation:cgsSpin .9s linear infinite;"></div>
-        <h2 style="
-           margin-top:25px;
-           color:#FFC107;
-           font-family:Oswald;
-           letter-spacing:1px;">
-           Publishing Menu
-        </h2>
-        <p id="publish-status"
-           style="
-           color:#DDD;
-           margin-top:15px;
-           line-height:1.7;">
-           Synchronizing menu with Supabase...
-        </p>
-     </div>
+       width:460px;
+       background:linear-gradient(180deg,#1b1b1b,#111);
+       border:1px solid rgba(212,175,55,.45);
+       border-radius:20px;
+       padding:40px;
+       text-align:center;
+       box-shadow:0 20px 70px rgba(0,0,0,.6);
+       ">
+       <div style="
+          font-family:'Oswald';
+          color:#D4AF37;
+          font-size:30px;
+          letter-spacing:3px;
+          margin-bottom:6px;">
+          CGS
+       </div>
+       <div style="
+          color:#888;
+          font-size:13px;
+          letter-spacing:2px;
+          margin-bottom:30px;">
+          LIVE MENU MANAGER
+       </div>
+       <div style="
+          width:64px;
+          height:64px;
+          margin:auto;
+          border:5px solid rgba(212,175,55,.18);
+          border-top:5px solid #D4AF37;
+          border-radius:50%;
+          animation:cgsSpin .8s linear infinite;">
+       </div>
+       <h2 style="
+          color:#fff;
+          font-family:'Oswald';
+          margin-top:28px;">
+          Publishing Menu
+       </h2>
+       <p id="publish-status"
+          style="
+          color:#bdbdbd;
+          margin-top:12px;
+          line-height:1.7;">
+          Synchronizing menu with Supabase...
+       </p>
+    </div>
   </div>
 
   <script>
@@ -1020,6 +1039,12 @@
                     "One or more categories do not contain any products yet.\n\n" +
                     "Add at least one product before they can appear on the live menu.";
             }
+          document.body.style.pointerEvents = "";
+          document.body.style.opacity = "";
+          const overlay = document.getElementById("publish-overlay");
+          if (overlay) {
+              overlay.style.display = "none";
+          }
             await showCgsDialog("Publish Complete", successMessage);
         } catch (err) {
             console.error(err);
