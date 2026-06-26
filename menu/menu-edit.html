@@ -433,8 +433,18 @@
 
     async function initializeDatabaseConnection(isAutoConnect = false) {
         try {
+            // Check authentication first
+            const {
+                data: {
+                    session
+                }
+            } = await supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.replace("/authorization/login.html");
+                return;
+            }
+            // Load latest menu from Supabase
             MASTER_DATABASE = await loadMenuFromSupabase();
-          
             if (!MASTER_DATABASE.categories) {
                 MASTER_DATABASE.categories = [];
             }
@@ -454,8 +464,8 @@
             setPendingChanges(false);
             renderAdminDatabasePanel();
         } catch (err) {
-            showCgsDialog("Database Connection Failed", err.message);
             console.error(err);
+            showCgsDialog("Database Connection Failed", err.message);
         }
     }
 
