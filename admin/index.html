@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>CGS Admin Portal</title>
+      <link rel="stylesheet" href="admin.css">
+      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+      <script src="/menu/supabase.js"></script>
+      <script src="session.js"></script>
+      <script src="admin.js" defer></script>
+   </head>
+   <body>
+      <header>
+         <h1>CGS ADMIN PORTAL</h1>
+         <p>Coffee • Grill • Shots Cafe</p>
+         <button onclick="logout()">Sign Out</button>
+      </header>
+      <div class="grid">
+         <div class="tile active" onclick="location.href='/menu/menu-edit.html'">
+            <h2>🍽 Live Menu Master</h2>
+            <p>Manage categories, products and publish the live menu.</p>
+         </div>
+         <div class="tile">
+            <h2>📖 Recipe Management</h2>
+            <p>Coming Soon</p>
+         </div>
+         <div class="tile">
+            <h2>💰 Cost & Price Management</h2>
+            <p>Coming Soon</p>
+         </div>
+         <div class="tile">
+            <h2>📦 Inventory Management</h2>
+            <p>Coming Soon</p>
+         </div>
+         <div class="tile">
+            <h2>🛒 Billing / POS</h2>
+            <p>Coming Soon</p>
+         </div>
+         <div class="tile">
+            <h2>👥 Customer Records</h2>
+            <p>Coming Soon</p>
+         </div>
+         <div class="tile">
+            <h2>📊 Reports & Analytics</h2>
+            <p>Coming Soon</p>
+         </div>
+         <div class="tile">
+            <h2>⚙ Settings</h2>
+            <p>Coming Soon</p>
+         </div>
+      </div>
+   </body>
+</html>
