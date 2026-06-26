@@ -25,7 +25,7 @@
     .nav-toggle-cluster { display: flex; background: #0c0a08; padding: 4px; border-radius: 4px; border: 1px solid var(--border-color); }
     .toggle-view-btn { background: none; border: none; color: var(--text-muted); font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; padding: 8px 24px; cursor: pointer; transition: all 0.3s; }
     .toggle-view-btn.active { background-color: var(--accent-gold); color: var(--bg-dark-color); }
-    .btn-action { background-color: var(--accent-gold); color: var(--bg-dark-color); border: none; padding: 10px 28px; font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; cursor: pointer; }
+    .btn-print-action { background-color: var(--accent-gold); color: var(--bg-dark-color); border: none; padding: 10px 28px; font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; cursor: pointer; }
     
     .canvas-container { width: 100%; max-width: 1400px; margin: 40px auto; display: flex; flex-direction: column; align-items: center; }
     .a5-landscape-sheet { width: 210mm; height: 148mm; background-color: var(--bg-card-color); border: 1px solid var(--border-color); position: relative; display: flex; flex-direction: row; padding: 14mm 8mm 14mm 0mm; margin-bottom: 35px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); overflow: hidden; }
@@ -37,11 +37,11 @@
     
     .menu-page-content-pane { flex: 1; height: 120mm; display: flex; flex-direction: column; padding-left: 8mm; position: relative; }
     .concept-wrapper { display: flex; flex-direction: column; justify-content: flex-start; height: 100%; padding-top: 10mm; padding-right: 15mm; padding-left: 5mm; }
-    .concept-title { font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: 500; letter-spacing: 6px; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 24px; }
-    .concept-body-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13.5px; color: #a3988c; line-height: 1.75; font-weight: 400; }
-    .concept-body-text p { margin-bottom: 16px; }
+    .concept-title { font-family: 'Oswald', sans-serif; font-size: 26px; font-weight: 500; letter-spacing: 5px; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 24px; }
+    .concept-body-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12.5px; color: #8e8479; line-height: 1.8; font-weight: 400; }
+    .concept-body-text p { margin-bottom: 18px; }
+    .highlight-white { color: #fcfaf7; font-weight: 500; }
     
-    .section-horizontal-band { width: 100%; margin-bottom: 34px; display: flex; flex-direction: column; }
     .section-horizontal-band { width: 100%; margin-bottom: 34px; display: flex; flex-direction: column; }
     .section-header-title { margin-bottom: 14px; border-bottom: 1px solid rgba(197, 168, 128, 0.08); padding-bottom: 6px; }
     .section-header-title h3 { font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 3px; color: var(--accent-gold); text-transform: uppercase; }
@@ -64,8 +64,6 @@
       .canvas-container { padding: 0 !important; margin: 0 !important; max-width: none !important; }
       .a5-landscape-sheet { width: 210mm !important; height: 148mm !important; page-break-after: always !important; box-shadow: none !important; border: none !important; margin: 0 !important; padding: 14mm 8mm 14mm 0mm !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     }
-    .btn-nav-menu { background: #d4a84b; color: #1c1412; text-decoration: none; }
-    .btn-nav-menu:hover { background: transparent; color: #d2a54b; box-shadow: 0 0 20px hsla(39, 48%, 57%, .35); }
   </style>
 </head>
 <body>
@@ -76,10 +74,7 @@
       <button id="tab-bev" class="toggle-view-btn active" onclick="switchCanvasTab('beverages')">Beverages</button>
       <button id="tab-eat" class="toggle-view-btn" onclick="switchCanvasTab('eatables')">Eatables</button>
     </div>
-    <button class="btn-action" onclick="window.print()">Review & Print Menu</button>
-    <a href="menu-edit.html" class="btn-action btn-nav-menu">
-        ⚙ Manage Menu
-    </a>
+    <button class="btn-print-action" onclick="window.print()">Review & Print Menu</button>
   </header>
 
   <main class="canvas-container">
@@ -90,15 +85,30 @@
     let ACTIVE_CANVAS = 'beverages';
     let MASTER_DATABASE = { categories: [] };
 
-    window.addEventListener("load", async () => {
-        try {
-            const data = await loadMenuFromSupabase();
-            MASTER_DATABASE = data;
-            generateProductionMenuLayout();
-        } catch (err) {
-            document.getElementById("print-canvas-render-target").innerText = "Menu Dynamic Synchronization Failed: " + err.message;
-            console.error(err);
-        }
+    window.addEventListener("load", () => {
+      const githubUsername = "anuragbirthare1988"; 
+      const hostname = window.location.hostname;
+      let dataUrl = "";
+
+      if (hostname === "localhost" || hostname === "127.0.0.1") {
+        dataUrl = '/menu/menu-data.json'; 
+      } else {
+        let repoName = hostname.includes("dev.cgscafe.in") ? "cgscafe-dev" : "cgscafe";
+        dataUrl = `https://raw.githubusercontent.com/${githubUsername}/${repoName}/main/menu/menu-data.json`;
+      }
+      
+      fetch(dataUrl + '?cb=' + Date.now())
+        .then(res => {
+          if(!res.ok) throw new Error("Target menu data configuration source could not be resolved.");
+          return res.json();
+        })
+        .then(data => {
+          MASTER_DATABASE = data;
+          generateProductionMenuLayout();
+        })
+        .catch(err => {
+          document.getElementById("print-canvas-render-target").innerText = "Menu Dynamic Synchronization Failed: " + err.message;
+        });
     });
 
     function switchCanvasTab(canvasKey) {
@@ -123,6 +133,19 @@
 
       let pageCount = 1;
 
+      let conceptHTML = "";
+      if (ACTIVE_CANVAS === 'beverages') {
+        conceptHTML = `
+          <p>Welcome to <span class="highlight-white">Coffee, Grill & Shots</span>—a custom-engineered culinary sanctuary explicitly curated to <span class="highlight-white">Jumpstart Your Mood</span>.</p>
+          <p>Every element on our beverage canvas, from the intense micro-froth of our hand-whipped frappes to the vibrant clarity of our cold-pressed flavor drops, has been precision-designed to elevate your day. No distractions, no noise. Just pure vegetarian craftsmanship designed to clear your mind.</p>
+        `;
+      } else {
+        conceptHTML = `
+          <p>Welcome to <span class="highlight-white">Coffee, Grill & Shots</span>—a custom culinary sanctuary explicitly curated to <span class="highlight-white">Elevate Your Cravings</span>.</p>
+          <p>Every element on our savory canvas, from the crisp, golden crusts of our slow-pressed melts to the richness of our skillet crafts, has been precision-built to complement your pour. Just pure vegetarian craftsmanship to anchor your conversations.</p>
+        `;
+      }
+
       const conceptPage = document.createElement("div");
       conceptPage.className = "a5-landscape-sheet";
       conceptPage.innerHTML = `
@@ -131,10 +154,9 @@
         </div>
         <div class="menu-page-content-pane">
           <div class="concept-wrapper">
-            <h2 class="concept-title">Our Concept</h2>
+            <h2 class="concept-title">OUR CONCEPT</h2>
             <div class="concept-body-text">
-              <p>Welcome to <strong>Coffee, Grill & Shots</strong>—a premium, pure vegetarian sanctuary explicitly engineered to <strong>Jumpstart Your Mood</strong>.</p>
-              <p>Every element on our savory canvas, from the gold-crisp edges of our slow-pressed artisanal melts to our rich skillet creations, is precision-paired to anchor your lounge experience.</p>
+              ${conceptHTML}
             </div>
           </div>
         </div>
@@ -150,7 +172,6 @@
       let previousSuperCategory = "";
 
       activeDataSet.forEach(subCatGroup => {
-        // Fix: Don't render hidden category sections on the master view layout
         if (subCatGroup.hidden) return;
 
         const visibleItems = (subCatGroup.items || []).filter(i => !i.hidden);
@@ -247,9 +268,5 @@
       return frame;
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./supabase-config.js"></script>
-  <script src="./supabase-loader.js"></script>
 </body>
 </html>
