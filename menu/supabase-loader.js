@@ -34,6 +34,7 @@ async function loadMenuFromSupabase() {
                 id: i.id,
                 categoryId: i.category_id,
                 sortOrder: i.sort_order,
+                legacyIndex: i.legacy_index,
             
                 name: i.name,
                 description: i.description,
@@ -47,6 +48,7 @@ async function loadMenuFromSupabase() {
         result.categories.push({
             id: cat.id,
             sortOrder: cat.sort_order,
+            legacyIndex: cat.legacy_index,
         
             superCategory: cat.super_category,
             subCategoryName: cat.sub_category_name,
