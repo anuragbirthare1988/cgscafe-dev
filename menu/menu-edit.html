@@ -305,6 +305,12 @@
     const CRITICAL_DRAG_WARNING = "⚠️ CRITICAL WARNING: Moving items or sections may alter page heights, causing text overflows, misalignments, or unexpected page breaks on the live/printed menu layout. Check on the lower environment before making this change as this change may cause page misalignment and page breaks for the live menu.";
     let dialogResolvePointer = null;
 
+    window.addEventListener("load", async () => {
+        const ok = await requireAdminLogin();
+        if (!ok) return;
+        initializeDatabaseConnection();
+    });
+
     window.addEventListener("beforeunload", (event) => {
       if (IS_UNPUBLISHED_CHANGES_PENDING) {
         event.preventDefault();
@@ -1066,6 +1072,7 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./supabase-config.js"></script>
+  <script src="../authorization/auth-guard.js"></script>
   <script src="./supabase-loader.js"></script>
 </body>
 </html>
