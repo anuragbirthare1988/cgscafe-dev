@@ -432,6 +432,7 @@
     }
 
     async function initializeDatabaseConnection(isAutoConnect = false) {
+      if (!(await requireLogin())) return;
         try {
             // Check authentication first
             const {
