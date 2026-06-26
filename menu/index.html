@@ -25,7 +25,7 @@
     .nav-toggle-cluster { display: flex; background: #0c0a08; padding: 4px; border-radius: 4px; border: 1px solid var(--border-color); }
     .toggle-view-btn { background: none; border: none; color: var(--text-muted); font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; padding: 8px 24px; cursor: pointer; transition: all 0.3s; }
     .toggle-view-btn.active { background-color: var(--accent-gold); color: var(--bg-dark-color); }
-    .btn-print-action { background-color: var(--accent-gold); color: var(--bg-dark-color); border: none; padding: 10px 28px; font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; cursor: pointer; }
+    .btn-action { background-color: var(--accent-gold); color: var(--bg-dark-color); border: none; padding: 10px 28px; font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; cursor: pointer; }
     
     .canvas-container { width: 100%; max-width: 1400px; margin: 40px auto; display: flex; flex-direction: column; align-items: center; }
     .a5-landscape-sheet { width: 210mm; height: 148mm; background-color: var(--bg-card-color); border: 1px solid var(--border-color); position: relative; display: flex; flex-direction: row; padding: 14mm 8mm 14mm 0mm; margin-bottom: 35px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); overflow: hidden; }
@@ -64,7 +64,7 @@
       .canvas-container { padding: 0 !important; margin: 0 !important; max-width: none !important; }
       .a5-landscape-sheet { width: 210mm !important; height: 148mm !important; page-break-after: always !important; box-shadow: none !important; border: none !important; margin: 0 !important; padding: 14mm 8mm 14mm 0mm !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     }
-    .btn-nav-menu { background: #d4a84b; color: #1c1412; font-family: Montserrat,sans-serif; font-weight: 400; letter-spacing: .15em; text-transform: uppercase; font-size: .75rem; padding: .875rem 2.5rem; border: 1px solid hsl(var(--gold)); transition: all .3s ease;cursor: pointer; display: inline-block; text-decoration: none; }
+    .btn-nav-menu { background: #d4a84b; color: #1c1412; }
     .btn-nav-menu:hover { background: transparent; color: #d2a54b; box-shadow: 0 0 20px hsla(39, 48%, 57%, .35); }
   </style>
 </head>
@@ -76,8 +76,8 @@
       <button id="tab-bev" class="toggle-view-btn active" onclick="switchCanvasTab('beverages')">Beverages</button>
       <button id="tab-eat" class="toggle-view-btn" onclick="switchCanvasTab('eatables')">Eatables</button>
     </div>
-    <button class="btn-print-action" onclick="window.print()">Review & Print Menu</button>
-    <a href="menu-edit.html" class="btn-nav-menu">
+    <button class="btn-action" onclick="window.print()">Review & Print Menu</button>
+    <a href="menu-edit.html" class="btn-action btn-nav-menu">
         ⚙ Manage Menu
     </a>
   </header>
