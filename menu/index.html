@@ -86,14 +86,22 @@
   <main class="canvas-container">
     <div id="print-canvas-render-target">Establishing data canvas synchronization pipeline...</div>
   </main>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
   <script>
     let ACTIVE_CANVAS = 'beverages';
     let MASTER_DATABASE = { categories: [] };
 
+    const CONNECTION_REGISTRY = {};
+
+    CONNECTION_REGISTRY["development"] = defaultSupabaseClient;
+    CONNECTION_REGISTRY["qa"] = defaultSupabaseClient;
+    CONNECTION_REGISTRY["production"] = defaultSupabaseClient;
+
     window.addEventListener("load", async () => {
         try {
             MASTER_DATABASE = await loadMenuData();
+            console.log("MASTER_DATABASE:", MASTER_DATABASE);
             generateProductionMenuLayout();
         } catch (err) {
             document.getElementById("print-canvas-render-target").innerText = "Menu Dynamic Synchronization Failed: " + err.message;
@@ -102,19 +110,31 @@
 
     async function loadMenuData() {
         const source = await getConfiguredDataSource();
+        console.log("Data Source:", source);
         switch (source.type) {
-            case "supabase":
-                return loadMenuFromSupabase(source.environment);
+            case "supabase": {
+                const connection = createDataConnection(source);
+                return await loadMenuFromSupabase(connection);
+            }
             case "github":
-                return loadMenuFromGitHub(source.repository, source.branch);
+                return await loadMenuFromGitHub(source.repository, source.branch);
             case "local":
-                return loadMenuFromLocalFile();
+                return await loadMenuFromLocalFile();
+            default:
+                throw new Error("Unsupported data source.");
         }
     }
 
+    function createDataConnection(profile) {
+        const connection = CONNECTION_REGISTRY[profile.environment];
+        if (!connection) {
+            throw new Error(`No data connection registered for '${profile.environment}'.`);
+        }
+        return connection;
+    }
+    
     async function getConfiguredDataSource() {
         const hostname = window.location.hostname;
-        // Localhost defaults to Dev Supabase.
         if (hostname === "localhost" || hostname === "127.0.0.1") {
             return {
                 type: "supabase",
@@ -139,15 +159,15 @@
         };
     }
 
-    async function loadMenuFromSupabase(environment) {
-        switch (environment) {
-            case "development":
-                // Dev project
-            case "qa":
-                // QA project
-            case "production":
-                // Production project
+    async function loadMenuFromSupabase(client) {
+        const {
+            data,
+            error
+        } = await client.from("live_menu").select("*").single();
+        if (error) {
+            throw error;
         }
+        return data.menu_json;
     }
     
     function switchCanvasTab(canvasKey) {
