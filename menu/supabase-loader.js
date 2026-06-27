@@ -1,7 +1,7 @@
 async function loadMenuFromSupabase() {
 
     const { data: categories, error: catError } =
-        await supabaseClient
+        await defaultSupabaseClient
             .from('categories')
             .select('*')
             .order('sort_order');
@@ -12,7 +12,7 @@ async function loadMenuFromSupabase() {
     }
 
     const { data: items, error: itemError } =
-        await supabaseClient
+        await defaultSupabaseClient
             .from('items')
             .select('*')
             .order('sort_order');
