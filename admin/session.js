@@ -4,7 +4,7 @@ async function getCurrentUser() {
         data: {
             user
         }
-    } = await supabaseClient.auth.getUser();
+    } = await defaultSupabaseClient.auth.getUser();
     return user;
 }
 async function requireLogin() {
@@ -12,7 +12,7 @@ async function requireLogin() {
         data: {
             session
         }
-    } = await supabaseClient.auth.getSession();
+    } = await defaultSupabaseClient.auth.getSession();
     if (!session) {
         window.location.replace("/authorization/login.html");
         return false;
@@ -20,7 +20,7 @@ async function requireLogin() {
     return true;
 }
 async function logout() {
-    await supabaseClient.auth.signOut();
+    await defaultSupabaseClient.auth.signOut();
     localStorage.clear();
     sessionStorage.clear();
     window.location.href = "/authorization/login.html";
