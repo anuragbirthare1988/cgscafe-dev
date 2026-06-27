@@ -374,7 +374,7 @@
         try {
             const {
                 error
-            } = await supabaseClient.auth.signOut();
+            } = await defaultSupabaseClient.auth.signOut();
             if (error) {
                 throw error;
             }
@@ -444,7 +444,7 @@
                 data: {
                     session
                 }
-            } = await supabaseClient.auth.getSession();
+            } = await defaultSupabaseClient.auth.getSession();
             if (!session) {
                 window.location.replace("/authorization/login.html");
                 return;
@@ -1022,13 +1022,13 @@
                     const {
                         data,
                         error
-                    } = await supabaseClient.from('categories').insert(categoryPayload).select().single();
+                    } = await defaultSupabaseClient.from('categories').insert(categoryPayload).select().single();
                     if (error) throw error;
                     category.id = data.id;
                 } else {
                     const {
                         error
-                    } = await supabaseClient.from('categories').update(categoryPayload).eq('id', category.id);
+                    } = await defaultSupabaseClient.from('categories').update(categoryPayload).eq('id', category.id);
                     if (error) throw error;
                 };
                 for (const item of category.items) {
@@ -1048,13 +1048,13 @@
                         const {
                             data,
                             error
-                        } = await supabaseClient.from('items').insert(payload).select().single();
+                        } = await defaultSupabaseClient.from('items').insert(payload).select().single();
                         if (error) throw error;
                         item.id = data.id;
                     } else {
                         const {
                             error
-                        } = await supabaseClient.from('items').update(payload).eq('id', item.id);
+                        } = await defaultSupabaseClient.from('items').update(payload).eq('id', item.id);
                         if (error) throw error;
                     }
                 }
