@@ -91,32 +91,65 @@
     let ACTIVE_CANVAS = 'beverages';
     let MASTER_DATABASE = { categories: [] };
 
-    window.addEventListener("load", () => {
-      const githubUsername = "anuragbirthare1988"; 
-      const hostname = window.location.hostname;
-      let dataUrl = "";
-
-      if (hostname === "localhost" || hostname === "127.0.0.1") {
-        dataUrl = '/menu/menu-data.json'; 
-      } else {
-        let repoName = hostname.includes("dev.cgscafe.in") ? "cgscafe-dev" : "cgscafe";
-        dataUrl = `https://raw.githubusercontent.com/${githubUsername}/${repoName}/main/menu/menu-data.json`;
-      }
-      
-      fetch(dataUrl + '?cb=' + Date.now())
-        .then(res => {
-          if(!res.ok) throw new Error("Target menu data configuration source could not be resolved.");
-          return res.json();
-        })
-        .then(data => {
-          MASTER_DATABASE = data;
-          generateProductionMenuLayout();
-        })
-        .catch(err => {
-          document.getElementById("print-canvas-render-target").innerText = "Menu Dynamic Synchronization Failed: " + err.message;
-        });
+    window.addEventListener("load", async () => {
+        try {
+            MASTER_DATABASE = await loadMenuData();
+            generateProductionMenuLayout();
+        } catch (err) {
+            document.getElementById("print-canvas-render-target").innerText = "Menu Dynamic Synchronization Failed: " + err.message;
+        }
     });
 
+    async function loadMenuData() {
+        const source = await getConfiguredDataSource();
+        switch (source.type) {
+            case "supabase":
+                return loadMenuFromSupabase(source.environment);
+            case "github":
+                return loadMenuFromGitHub(source.repository, source.branch);
+            case "local":
+                return loadMenuFromLocalFile();
+        }
+    }
+
+    async function getConfiguredDataSource() {
+        const hostname = window.location.hostname;
+        // Localhost defaults to Dev Supabase.
+        if (hostname === "localhost" || hostname === "127.0.0.1") {
+            return {
+                type: "supabase",
+                environment: "development"
+            };
+        }
+        if (hostname.includes("dev.cgscafe.in")) {
+            return {
+                type: "supabase",
+                environment: "development"
+            };
+        }
+        if (hostname.includes("qa")) {
+            return {
+                type: "supabase",
+                environment: "qa"
+            };
+        }
+        return {
+            type: "supabase",
+            environment: "production"
+        };
+    }
+
+    async function loadMenuFromSupabase(environment) {
+        switch (environment) {
+            case "development":
+                // Dev project
+            case "qa":
+                // QA project
+            case "production":
+                // Production project
+        }
+    }
+    
     function switchCanvasTab(canvasKey) {
       ACTIVE_CANVAS = canvasKey;
       document.getElementById("tab-bev").classList.toggle("active", canvasKey === 'beverages');
