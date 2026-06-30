@@ -1014,6 +1014,13 @@
         const btn = document.getElementById("save-btn");
         const overlay = document.getElementById("publish-overlay");
         try {
+            // Normalize category & product ordering before saving
+            MASTER_DATABASE.categories.forEach((category, categoryIndex) => {
+                category.sortOrder = categoryIndex + 1;
+                category.items.forEach((item, itemIndex) => {
+                    item.sortOrder = itemIndex + 1;
+                });
+            });
             btn.innerText = "Publishing...";
             btn.disabled = true;
             overlay.style.display = "flex";
