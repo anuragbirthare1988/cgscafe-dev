@@ -1044,6 +1044,12 @@
             }
             document.body.style.opacity = "0.7";
             btn.style.pointerEvents = "auto";
+            MASTER_DATABASE.categories.forEach((category, categoryIndex) => {
+                category.sortOrder = categoryIndex + 1;
+                category.items.forEach((item, itemIndex) => {
+                    item.sortOrder = itemIndex + 1;
+                });
+            });
             for (const category of MASTER_DATABASE.categories) {
                 const categoryPayload = {
                     super_category: category.superCategory,
