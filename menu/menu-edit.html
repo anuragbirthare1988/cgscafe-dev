@@ -1021,6 +1021,8 @@
             document.body.style.pointerEvents = "none";
             // Delete products removed by the user
             if (DELETED_ITEM_IDS.length > 0) {
+              console.log("DELETED_ITEM_IDS:", DELETED_ITEM_IDS);
+              console.log("DELETED_CATEGORY_IDS:", DELETED_CATEGORY_IDS);
                 const {
                     error
                 } = await defaultSupabaseClient.from("items").delete().in("id", DELETED_ITEM_IDS);
