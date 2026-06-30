@@ -1061,8 +1061,22 @@
             }
             ACTIVE_PENDING_NEW_ROW_MAP = {};
             document.getElementById("publish-status").innerText =
-            "Reloading latest menu...";
+                "Reloading latest menu...";
             MASTER_DATABASE = await loadMenuFromSupabase();
+            document.getElementById("publish-status").innerText =
+                "Generating Live Menu snapshot...";
+            
+            const { error: snapshotError } =
+                await defaultSupabaseClient
+                    .from("live_menu")
+                    .upsert({
+                        id: 1,
+                        menu_json: MASTER_DATABASE,
+                        updated_at: new Date().toISOString()
+                    });
+            if (snapshotError) {
+                throw snapshotError;
+            }
             setPendingChanges(false);
             renderAdminDatabasePanel();
             const emptyCategories = MASTER_DATABASE.categories.filter(cat => !cat.items || cat.items.length === 0);
