@@ -300,11 +300,13 @@
     let MASTER_DATABASE = { categories: [] };
     let FILE_SHA = "";
     let GIT_USER, GIT_REPO, GIT_TOKEN;
-    let EDITING_CATEGORIES = {}; 
+    let EDITING_CATEGORIES = {};
     let CURRENT_ACTIVE_OPEN_ACCORDION_IDX = null;
     let CURRENT_SEARCH_STRING = "";
-    let CURRENT_ORIGIN_FILTER = "all"; 
-    let ACTIVE_PENDING_NEW_ROW_MAP = {}; 
+    let CURRENT_ORIGIN_FILTER = "all";
+    let ACTIVE_PENDING_NEW_ROW_MAP = {};
+    let DELETED_CATEGORY_IDS = [];
+    let DELETED_ITEM_IDS = [];
     let IS_UNPUBLISHED_CHANGES_PENDING = false;
 
     const CRITICAL_DRAG_WARNING = "⚠️ CRITICAL WARNING: Moving items or sections may alter page heights, causing text overflows, misalignments, or unexpected page breaks on the live/printed menu layout. Check on the lower environment before making this change as this change may cause page misalignment and page breaks for the live menu.";
@@ -579,6 +581,15 @@
         true
       );
       if (confirmed) {
+        const category = MASTER_DATABASE.categories[blockIndex];
+        if (category.id && !String(category.id).startsWith("cat_")) {
+            DELETED_CATEGORY_IDS.push(category.id);
+        }
+        category.items.forEach(item => {
+            if (item.id && !String(item.id).startsWith("item_")) {
+                DELETED_ITEM_IDS.push(item.id);
+            }
+        });
         MASTER_DATABASE.categories.splice(blockIndex, 1);
         if (CURRENT_ACTIVE_OPEN_ACCORDION_IDX === blockIndex) CURRENT_ACTIVE_OPEN_ACCORDION_IDX = null;
         setPendingChanges(true);
@@ -856,9 +867,13 @@
     async function deleteRow(blockIndex, itemIndex) {
       const confirmed = await showCgsDialog("Delete Item Configuration", "Permanently delete this product row layout from storage maps?", false);
       if (confirmed) {
-        MASTER_DATABASE.categories[blockIndex].items.splice(itemIndex, 1);
-        setPendingChanges(true);
-        renderAdminDatabasePanel();
+          const item = MASTER_DATABASE.categories[blockIndex].items[itemIndex];
+          if (item.id && !String(item.id).startsWith("item_")) {
+              DELETED_ITEM_IDS.push(item.id);
+          }
+          MASTER_DATABASE.categories[blockIndex].items.splice(itemIndex, 1);
+          setPendingChanges(true);
+          renderAdminDatabasePanel();
       }
     }
 
