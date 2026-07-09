@@ -298,7 +298,9 @@
   <script src="../authorization/auth-guard.js"></script>
   <script src="./supabase-loader.js"></script>
   <script>
-    let MASTER_DATABASE = { categories: [] };
+    if (typeof MASTER_DATABASE === 'undefined') {
+      var MASTER_DATABASE = { categories: [] };
+    };
     let FILE_SHA = "";
     let EDITING_CATEGORIES = {};
     let CURRENT_ACTIVE_OPEN_ACCORDION_IDX = null;
@@ -308,9 +310,6 @@
     let DELETED_CATEGORY_IDS = [];
     let DELETED_ITEM_IDS = [];
     let IS_UNPUBLISHED_CHANGES_PENDING = false;
-    let MASTER_DATABASE = {
-        categories: []
-    };
 
     const CRITICAL_DRAG_WARNING = "⚠️ CRITICAL WARNING: Moving items or sections may alter page heights, causing text overflows, misalignments, or unexpected page breaks on the live/printed menu layout. Check on the lower environment before making this change as this change may cause page misalignment and page breaks for the live menu.";
     const CURRENT_ENVIRONMENT = getCurrentEnvironment();
@@ -326,7 +325,31 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       const hostname = window.location.hostname;
-      initializeDatabaseConnection();
+      const badge = document.getElementById("env-badge-display");
+      const subdesc = document.getElementById("admin-scope-desc");
+
+      if (hostname === "localhost" || hostname === "127.0.0.1") {
+        GIT_REPO = "cgscafe-dev";
+        badge.innerText = "Studio Local Sandbox [cgscafe-dev]";
+        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
+      } else if (hostname === "dev.cgscafe.in") {
+        GIT_REPO = "cgscafe-dev";
+        badge.innerText = "Development Sandbox [cgscafe-dev]";
+        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
+      } else if (hostname === "qa.cgscafe.in") {
+        GIT_REPO = "cgscafe-qa";
+        badge.innerText = "Quality Assurance Suite [cgscafe-qa]";
+        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-QA";
+      } else if (hostname === "cgscafe.in" || hostname === "www.cgscafe.in") {
+        GIT_REPO = "cgscafe";
+        badge.innerText = "Production Master Cluster [cgscafe]";
+        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE";
+      } else {
+        GIT_REPO = "cgscafe-dev";
+        badge.innerText = "Default Core Target [cgscafe-dev]";
+        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
+      }
+      checkForSavedSession();
     });
 
     function setPendingChanges(stateValue) {
