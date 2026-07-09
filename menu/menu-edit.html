@@ -159,6 +159,8 @@
 
   <div class="admin-container" id="admin-panel">
     <div class="admin-header">
+      <div id="env-badge-display"></div>
+      <div id="admin-scope-desc"></div>
       <div>
         <h2>CGS LIVE MENU MANAGER</h2>
       </div>
@@ -324,10 +326,17 @@
     });
 
     window.addEventListener("DOMContentLoaded", () => {
-      const hostname = window.location.hostname;
       const badge = document.getElementById("env-badge-display");
       const subdesc = document.getElementById("admin-scope-desc");
-
+    
+      // Safety check: Only proceed if both elements exist
+      if (!badge || !subdesc) {
+        console.error("Critical UI elements not found in the DOM.");
+        return;
+      }
+    
+      const hostname = window.location.hostname;
+      
       if (hostname === "localhost" || hostname === "127.0.0.1") {
         GIT_REPO = "cgscafe-dev";
         badge.innerText = "Studio Local Sandbox [cgscafe-dev]";
@@ -349,6 +358,7 @@
         badge.innerText = "Default Core Target [cgscafe-dev]";
         subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
       }
+      
       checkForSavedSession();
     });
 
