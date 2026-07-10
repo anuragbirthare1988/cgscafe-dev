@@ -502,6 +502,15 @@
             renderAdminDatabasePanel();
         } catch (err) {
             console.error(err);
+            // Ensure the user can try logging in again if the connection fails
+            const authGate = document.getElementById("auth-gate");
+            if (authGate) {
+                authGate.style.display = "block";
+            }
+            const adminPanel = document.getElementById("admin-panel");
+            if (adminPanel) {
+                adminPanel.style.display = "none";
+            }
             showCgsDialog("Database Connection Failed", err.message);
         }
     }
