@@ -468,23 +468,18 @@
     }
 
     async function initializeDatabaseConnection(isAutoConnect = false) {
-        console.log("1. Starting initialization..."); // Add this
         if (!(await requireLogin())) return;
         
         try {
-            console.log("2. Checking session..."); // Add this
             const { data: { session } } = await defaultSupabaseClient.auth.getSession();
             
             if (!session) {
-                console.log("3. No session found."); // Add this
                 window.location.replace("/authorization/login.html");
                 return;
             }
     
-            console.log("3. Fetching menu..."); // Add this
             MASTER_DATABASE = await loadMenuFromSupabase();
             
-            console.log("4. Data loaded, attempting to show admin panel"); // The line that wasn't printing
             // Load latest menu from Supabase
             MASTER_DATABASE = await loadMenuFromSupabase();
             if (!MASTER_DATABASE.categories) {
@@ -502,7 +497,6 @@
             if (authGate) {
                 authGate.style.display = "none";
             }
-            console.log("Attempting to show admin panel");
             document.getElementById("admin-panel").style.display = "block";
             setPendingChanges(false);
             renderAdminDatabasePanel();
@@ -520,9 +514,6 @@
             showCgsDialog("Database Connection Failed", err.message);
         }
     }
-
-    console.log("Checking if function is about to be called...");
-    initializeDatabaseConnection(true); // Call the function here
 
     function setOriginContextFilter(contextKey) {
       CURRENT_ORIGIN_FILTER = contextKey;
@@ -1075,8 +1066,6 @@
             document.body.style.pointerEvents = "none";
             // Delete products removed by the user
             if (DELETED_ITEM_IDS.length > 0) {
-              console.log("DELETED_ITEM_IDS:", DELETED_ITEM_IDS);
-              console.log("DELETED_CATEGORY_IDS:", DELETED_CATEGORY_IDS);
                 const {
                     error
                 } = await defaultSupabaseClient.from("items").delete().in("id", DELETED_ITEM_IDS);
@@ -1203,8 +1192,6 @@
             setPendingChanges(IS_UNPUBLISHED_CHANGES_PENDING);
         }
     }
-    console.log("TEST: Script is executing.");
-    alert("If you see this, the script is running.");
   </script>
 </body>
 </html>
