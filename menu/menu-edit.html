@@ -468,18 +468,23 @@
     }
 
     async function initializeDatabaseConnection(isAutoConnect = false) {
-      if (!(await requireLogin())) return;
+        console.log("1. Starting initialization..."); // Add this
+        if (!(await requireLogin())) return;
+        
         try {
-            // Check authentication first
-            const {
-                data: {
-                    session
-                }
-            } = await defaultSupabaseClient.auth.getSession();
+            console.log("2. Checking session..."); // Add this
+            const { data: { session } } = await defaultSupabaseClient.auth.getSession();
+            
             if (!session) {
+                console.log("3. No session found."); // Add this
                 window.location.replace("/authorization/login.html");
                 return;
             }
+    
+            console.log("3. Fetching menu..."); // Add this
+            MASTER_DATABASE = await loadMenuFromSupabase();
+            
+            console.log("4. Data loaded, attempting to show admin panel"); // The line that wasn't printing
             // Load latest menu from Supabase
             MASTER_DATABASE = await loadMenuFromSupabase();
             if (!MASTER_DATABASE.categories) {
