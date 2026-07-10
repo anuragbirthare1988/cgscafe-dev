@@ -521,6 +521,9 @@
         }
     }
 
+    console.log("Checking if function is about to be called...");
+    initializeDatabaseConnection(true); // Call the function here
+
     function setOriginContextFilter(contextKey) {
       CURRENT_ORIGIN_FILTER = contextKey;
       document.getElementById("filter-btn-all").classList.toggle("active", contextKey === 'all');
