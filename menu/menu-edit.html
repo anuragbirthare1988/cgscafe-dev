@@ -325,10 +325,13 @@
       }
     });
 
-    window.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("DOMContentLoaded", async () => {
+    // 1. Setup environment variables
+      const hostname = window.location.hostname;
       const badge = document.getElementById("env-badge-display");
       const subdesc = document.getElementById("admin-scope-desc");
-    
+
+      await initializeDatabaseConnection(true);
       // Safety check: Only proceed if both elements exist
       if (!badge || !subdesc) {
         console.error("Critical UI elements not found in the DOM.");
