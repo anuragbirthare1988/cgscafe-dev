@@ -497,6 +497,7 @@
             if (authGate) {
                 authGate.style.display = "none";
             }
+            console.log("Attempting to show admin panel");
             document.getElementById("admin-panel").style.display = "block";
             setPendingChanges(false);
             renderAdminDatabasePanel();
@@ -1194,8 +1195,6 @@
             setPendingChanges(IS_UNPUBLISHED_CHANGES_PENDING);
         }
     }
-    console.log("TEST: Script is executing.");
-    alert("If you see this, the script is running.");
   </script>
 </body>
 </html>
