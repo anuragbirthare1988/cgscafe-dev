@@ -3,69 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CGS - Coffee Grill & Shots</title>
-    <!-- Load Supabase Client from CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; line-height: 1.6; color: #333; }
-        header { text-align: center; margin-bottom: 30px; }
-        .menu-item { border-bottom: 1px solid #eee; padding: 15px 0; }
-        .menu-item h3 { margin: 0; color: #000; }
-        .price { font-weight: bold; color: #d35400; }
-        #menu-container { max-width: 600px; margin: 0 auto; }
-    </style>
-</head>
-<body>
-
-    <header>
-        <h1>CGS - Jumpstart Your Mood</h1>
-    </header>
-
-    <main id="menu-container">
-        <p>Loading menu...</p>
-    </main>
-
+    <title>CGS Menu | Jumpstart Your Mood</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Configuration
-        const SUPABASE_URL = 'https://aastenbsntpdxknonyyr.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhc3RlbmJzbnRwZHhrbm9ueXlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjk4MTEsImV4cCI6MjA5NzgwNTgxMX0.C0lfo9Xawq5jvDetw1V-fozdr2jkfwB2Ulk3JMyBhps';
-        
-        // Rename 'supabase' to 'cgsClient' to avoid conflict with the library
-        const cgsClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        async function loadMenu() {
-            const container = document.getElementById('menu-container');
-            
-            try {
-                // Use 'cgsClient' to fetch from 'products' table
-                const { data, error } = await cgsClient
-                    .from('items')
-                    .select('*');
-
-                if (error) throw error;
-
-                if (!data || data.length === 0) {
-                    container.innerHTML = '<p>No items found.</p>';
-                    return;
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#ffffff',
+                        foreground: '#1a1a1a',
+                        gold: '#d4af37',
+                        espresso: '#2d1b10',
+                        border: '#e5e5e5'
+                    },
+                    fontFamily: {
+                        montserrat: ['Montserrat', 'sans-serif']
+                    }
                 }
-
-                // Rendering items
-                container.innerHTML = data.map(item => `
-                    <div class="menu-item">
-                        <h3>${item.name}</h3>
-                        <p>${item.description || ''}</p>
-                        <p class="price">₹${item.price}</p>
-                    </div>
-                `).join('');
-
-            } catch (err) {
-                console.error('Error loading menu:', err.message);
-                container.innerHTML = '<p>Unable to load the menu at this moment.</p>';
             }
         }
+    </script>
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .tab-btn.active { border-color: #d4af37 !important; color: #d4af37 !important; }
+        .menu-item { border: 1px solid #e5e5e5; padding: 1.5rem; position: relative; }
+        .signature-block { border: 1px solid #d4af37; }
+    </style>
+</head>
+<body class="bg-white">
 
-        // Initialize on load
-        loadMenu();
+    <!-- CGS Menu Container -->
+    <div class="container mx-auto px-6 py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold font-montserrat">CGS</h1>
+            <p class="text-gold uppercase tracking-widest mt-2">Jumpstart Your Mood</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tabs sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-border mb-8">
+            <div class="flex justify-center gap-2 py-4">
+                <button class="tab-btn active font-montserrat text-xs tracking-widest uppercase px-6 py-2.5 border transition-all duration-300 bg-transparent text-gray-500 border-gray-300 hover:border-gold hover:text-gold" data-tab="beverages">Beverages</button>
+                <button class="tab-btn font-montserrat text-xs tracking-widest uppercase px-6 py-2.5 border transition-all duration-300 bg-transparent text-gray-500 border-gray-300 hover:border-gold hover:text-gold" data-tab="bites">Bites</button>
+            </div>
+        </div>
+
+        <!-- Dynamic Menu Injection Point -->
+        <div id="dynamic-menu-root">
+            <p class="text-center py-20 text-gray-400">Loading your menu...</p>
+        </div>
+    </div>
+
+    <!-- Integrated Logic -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        const supabase = createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY');
+
+        async function loadMenu() {
+            const root = document.getElementById('dynamic-menu-root');
+            const { data: items, error } = await supabase.from('menu_items').select('*');
+            
+            if (error || !items) {
+                root.innerHTML = '<p class="text-center text-red-500">Error loading menu data.</p>';
+                return;
+            }
+
+            const categories = ['beverages', 'bites'];
+            let htmlContent = '';
+
+            categories.forEach(cat => {
+                const catItems = items.filter(i => i.category.toLowerCase() === cat);
+                const subcategories = [...new Set(catItems.map(i => i.subcategory))];
+
+                htmlContent += `<div class="tab-content ${cat === 'beverages' ? 'active' : ''}" id="tab-${cat}">`;
+                
+                subcategories.forEach(sub => {
+                    htmlContent += `
+                        <div class="mt-10">
+                            <h2 class="text-3xl font-montserrat font-bold mb-6 border-b pb-2">${sub}</h2>
+                            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                ${catItems.filter(i => i.subcategory === sub).map(item => `
+                                    <div class="menu-item ${item.is_signature ? 'signature-block' : ''}">
+                                        ${item.is_signature ? '<div class="absolute -top-3 -right-3 bg-gold text-white px-2 py-0.5 text-[10px] font-bold">★</div>' : ''}
+                                        <h3 class="font-bold text-lg">${item.name}</h3>
+                                        <p class="text-gray-600 text-sm mt-1">${item.description}</p>
+                                        <span class="block text-xs text-gray-400 mt-3 uppercase tracking-wider">${item.serving_size}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>`;
+                });
+                htmlContent += `</div>`;
+            });
+            
+            root.innerHTML = htmlContent;
+
+            // Tab Switch Logic
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadMenu);
     </script>
 </body>
 </html>
