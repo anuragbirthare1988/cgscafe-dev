@@ -39,7 +39,7 @@
             try {
                 // Use 'cgsClient' to fetch from 'products' table
                 const { data, error } = await cgsClient
-                    .from('products')
+                    .from('items')
                     .select('*');
 
                 if (error) throw error;
