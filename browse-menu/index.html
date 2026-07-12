@@ -144,15 +144,15 @@
     
       async function loadDynamicMenu() {
         try {
-          // Use 'client' here instead of 'supabase'
-          const { data, error } = await client.from("live_menu").select("menu_json").single();
-          if (error) throw error;
-          
-          const menu = data.menu_json;
-          renderCategories(menu.categories);
-        } catch (err) {
-          console.error("Menu fetch error:", err);
-        }
+			const { data, error } = await client.from("live_menu").select("menu_json").single();
+			if (error) throw error;
+			
+			const menu = data.menu_json;
+			// Pass the categories array from your menu object here
+			renderCategories(menu.categories); 
+		} catch (err) {
+			console.error("Menu fetch error:", err);
+		}
       }
     
       categories.forEach(cat => {
