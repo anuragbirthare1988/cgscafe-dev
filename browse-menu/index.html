@@ -27,61 +27,72 @@
         <div id="render-bites"></div>
     </div>
 
-    <!-- Load Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../js/supabase-config.js"></script>
-
     <script>
-        async function fetchAndRenderMenu() {
-            try {
-                // Fetch from Supabase
-                const { data, error } = await defaultSupabaseClient
-                    .from("live_menu")
-                    .select("*")
-                    .single();
-                
-                if (error) throw error;
-
-                const menu = data.menu_json.categories;
-                renderMenu(menu);
-            } catch (err) {
-                console.error("Error loading menu:", err);
-            }
+      // Initialize Supabase Client
+      const SUPABASE_URL = 'https://aastenbsntpdxknonyyr.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhc3RlbmJzbnRwZHhrbm9ueXlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjk4MTEsImV4cCI6MjA5NzgwNTgxMX0.C0lfo9Xawq5jvDetw1V-fozdr2jkfwB2Ulk3JMyBhps';
+      const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+      async function loadDynamicMenu() {
+        try {
+          const { data, error } = await supabase.from("live_menu").select("menu_json").single();
+          if (error) throw error;
+          
+          const menu = data.menu_json;
+          renderCategories(menu.categories);
+        } catch (err) {
+          console.error("Menu fetch error:", err);
         }
-
-        function renderMenu(categories) {
-            const bevTarget = document.getElementById("render-beverages");
-            const bitesTarget = document.getElementById("render-bites");
-
-            // Clear previous content
-            bevTarget.innerHTML = '';
-            bitesTarget.innerHTML = '';
-
-            categories.forEach(cat => {
-                const container = cat.originType === 'beverages' ? bevTarget : bitesTarget;
-                
-                const section = document.createElement("div");
-                section.className = "reveal menuDishHeader";
-                section.innerHTML = `
-                    <div class="flex items-center gap-4 mb-3">
-                        <h2 class="category-name text-3xl md:text-4xl">${cat.subCategoryName}</h2>
+      }
+    
+      function renderCategories(categories) {
+        const bevTarget = document.getElementById('tab-beverages');
+        const bitesTarget = document.getElementById('tab-bites');
+        
+        // Clear static content
+        bevTarget.innerHTML = '';
+        bitesTarget.innerHTML = '';
+    
+        categories.forEach(cat => {
+          // Determine destination based on originType
+          const container = cat.originType === 'beverages' ? bevTarget : bitesTarget;
+          
+          const section = document.createElement('div');
+          section.className = 'reveal menuDishHeader mb-12';
+          section.innerHTML = `
+            <div class="flex items-center gap-4 mb-3">
+              <div class="w-12 h-12 border border-gold/40 flex items-center justify-center text-coffee-brown">
+                 <!-- SVG Icon placeholder or logic here -->
+              </div>
+              <div>
+                <h2 class="category-name text-3xl md:text-4xl">${cat.subCategoryName}</h2>
+                <p class="font-cormorant italic text-muted-foreground text-xl">${cat.subCategoryDesc || ''}</p>
+              </div>
+            </div>
+            <span class="gold-divider mb-8 ml-16"></span>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              ${cat.items.map(item => `
+                <div class="reveal group menu-item regular-block">
+                  <div class="flex items-start justify-between gap-3 mb-3">
+                    <h3 class="font-montserrat font-bold tracking-wide text-foreground group-hover:text-gold">${item.name}</h3>
+                    ${item.featured ? '<span class="flex-shrink-0 w-2 h-2 rounded-full border border-gold/40 bg-gold"></span>' : ''}
+                  </div>
+                  <div class="product-info">
+                    <div class="product-summary">${item.description || ''}</div>
+                    <div class="product-quantity flex items-center gap-3 flex-wrap mt-2">
+                       <span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">${item.price}</span>
                     </div>
-                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                        ${cat.items.map(item => `
-                            <div class="reveal group menu-item ${item.featured ? 'signature-block' : 'regular-block'}">
-                                <h3 class="font-montserrat font-bold">${item.name}</h3>
-                                <p>${item.description}</p>
-                                <span>${item.price}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                container.appendChild(section);
-            });
-        }
-
-        // Initialize on load
-        window.addEventListener("load", fetchAndRenderMenu);
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `;
+          container.appendChild(section);
+        });
+      }
+    
+      window.addEventListener("DOMContentLoaded", loadDynamicMenu);
     </script>
 </body>
 </html>
