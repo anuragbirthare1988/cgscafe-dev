@@ -169,8 +169,7 @@
 
 				// Create the category container
 				const section = document.createElement('div');
-				// Apply animate-fade-up for bites, reveal for beverages based on your structure
-				section.className = isBeverage ? 'reveal menuDishHeader' : 'animate-fade-up';
+				section.className = isBeverage ? 'menuDishHeader' : 'animate-fade-up';
 				
 				section.innerHTML = `
 				<div class="flex items-center gap-4 mb-3">
@@ -186,7 +185,7 @@
 				<span class="gold-divider ${isBeverage ? 'mb-8 ml-16' : 'ml-16'}"></span>
 				<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 ${isBeverage ? '' : 'mt-8'}">
 					${cat.items.map(item => `
-					<div class="reveal group menu-item regular-block">
+					<div class="group menu-item regular-block">
 						<div class="flex items-start justify-between gap-3 mb-3">
 						<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">${item.name}</h3>
 						${item.featured ? '<span class="flex-shrink-0 w-2 h-2 rounded-full border transition-all duration-300 mt-1.5 border-gold/40 group-hover:bg-gold"></span>' : ''}
