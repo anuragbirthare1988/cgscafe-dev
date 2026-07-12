@@ -32,11 +32,14 @@
       // Initialize Supabase Client
       const SUPABASE_URL = 'https://aastenbsntpdxknonyyr.supabase.co';
       const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhc3RlbmJzbnRwZHhrbm9ueXlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjk4MTEsImV4cCI6MjA5NzgwNTgxMX0.C0lfo9Xawq5jvDetw1V-fozdr2jkfwB2Ulk3JMyBhps';
-      const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+      // Use the global 'supabase' directly to create the client
+      const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
       async function loadDynamicMenu() {
         try {
-          const { data, error } = await supabase.from("live_menu").select("menu_json").single();
+          // Use 'client' here instead of 'supabase'
+          const { data, error } = await client.from("live_menu").select("menu_json").single();
           if (error) throw error;
           
           const menu = data.menu_json;
