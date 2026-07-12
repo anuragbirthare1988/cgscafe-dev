@@ -187,28 +187,29 @@
 					<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 ${isBeverage ? '' : 'mt-8'}">
 						${cat.items.map(item => `
 						<!-- Added conditional border and shadow for signature items -->
-						<div class="group menu-item regular-block p-4 transition-all ${item.featured ? 'border border-gold/30 shadow-[0_0_15px_rgba(197,168,128,0.15)] bg-gold/5' : 'border border-transparent'}">
-							<div class="flex items-start justify-between gap-3 mb-3">
-								<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">${item.name}</h3>
-								
-								<!-- Modified to a coffee-themed filled circle for signature items -->
-								${item.featured ? `
-									<div class="w-3 h-3 rounded-full bg-coffee-brown border border-gold flex-shrink-0 mt-1"></div>
-								` : ''}
-							</div>
-							<div class="product-info">
-								<div class="product-summary">${item.description || ''}</div>
-								
-								<div class="flex items-center justify-between mt-2">
-									<div class="product-quantity flex items-center gap-3">
-										${item.qty ? `<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">${item.qty}</span>` : ''}
-									</div>
+						<div class="group menu-item regular-block p-4 transition-all flex flex-col justify-between ${item.featured ? 'border border-gold/30 shadow-[0_0_15px_rgba(197,168,128,0.15)] bg-gold/5' : 'border border-transparent'}">
+							<div>
+								<div class="flex items-start justify-between gap-3 mb-3">
+									<h3 class="font-montserrat font-bold tracking-wide transition-colors duration-300 text-foreground group-hover:text-gold">${item.name}</h3>
 									
-									${item.price ? `<span class="price-tag font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-3 py-1 bg-transparent text-foreground">${item.price}</span>` : ''}
+									<!-- Filled circle for signature items -->
+									${item.featured ? `
+										<div class="w-3 h-3 rounded-full bg-gold border border-gold flex-shrink-0 mt-1"></div>
+									` : ''}
+								</div>
+								<div class="product-summary">${item.description || ''}</div>
+							</div>
+
+							<!-- Container for Qty and Price with consistent vertical spacing -->
+							<div class="flex items-end justify-between mt-6">
+								<div class="product-quantity flex items-center gap-3">
+									${item.qty ? `<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">${item.qty}</span>` : ''}
 								</div>
 								
-								${item.note ? `<p class="font-montserrat text-xxs font-medium text-gold tracking-wide flex items-center gap-1.5 mt-2"><span class="inline-block w-1 h-1 rounded-full bg-gold"></span>${item.note}</p>` : ''}
+								${item.price ? `<span class="price-tag font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-3 py-1 bg-transparent text-foreground">${item.price}</span>` : ''}
 							</div>
+							
+							${item.note ? `<p class="font-montserrat text-xxs font-medium text-gold tracking-wide flex items-center gap-1.5 mt-2"><span class="inline-block w-1 h-1 rounded-full bg-gold"></span>${item.note}</p>` : ''}
 						</div>
 						`).join('')}
 					</div>
