@@ -193,15 +193,19 @@
 							</div>
 							<div class="product-info">
 								<div class="product-summary">${item.description || ''}</div>
-								<div class="product-quantity flex items-center gap-3 flex-wrap mt-2">
-									<!-- Qty: Only renders if it exists -->
-									${item.qty ? `<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">${item.qty}</span>` : ''}
+								
+								<!-- Container to align Qty left and Price right -->
+								<div class="flex items-center justify-between mt-2">
+									<div class="product-quantity flex items-center gap-3">
+										<!-- Qty: Only renders if it exists -->
+										${item.qty ? `<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">${item.qty}</span>` : ''}
+									</div>
 									
-									<!-- Price: Rendered to the right of Qty -->
-									${item.price ? `<span class="price-tag font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5 bg-gold text-black">${item.price}</span>` : ''}
-									
-									${item.note ? `<p class="font-montserrat text-xxs font-medium text-gold tracking-wide flex items-center gap-1.5"><span class="inline-block w-1 h-1 rounded-full bg-gold"></span>${item.note}</p>` : ''}
+									<!-- Price: Moved to the right, opaque block, mild border -->
+									${item.price ? `<span class="price-tag font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-3 py-1 bg-transparent text-foreground">${item.price}</span>` : ''}
 								</div>
+								
+								${item.note ? `<p class="font-montserrat text-xxs font-medium text-gold tracking-wide flex items-center gap-1.5 mt-2"><span class="inline-block w-1 h-1 rounded-full bg-gold"></span>${item.note}</p>` : ''}
 							</div>
 						</div>
 						`).join('')}
