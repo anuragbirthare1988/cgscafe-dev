@@ -1,10 +1,77 @@
-body { margin: 0; background: #0f1116; font-family: 'Segoe UI', Arial, sans-serif; color: white; }
-header { padding: 30px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; }
-header h1 { margin: 0; color: #d4af37; font-size: 1.5rem; }
-.grid { padding: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-.tile { background: #1a1d23; border: 1px solid #2c3138; border-radius: 18px; padding: 30px; transition: 0.3s; cursor: pointer; }
-.tile:hover { transform: translateY(-5px); border-color: #d4af37; }
-.tile.active { border: 2px solid #d4af37; }
-.tile h2 { margin-top: 0; color: #d4af37; font-size: 1.25rem; }
-.tile p { color: #bfbfbf; margin-bottom: 0; }
-button { background: #d4af37; border: none; padding: 12px 22px; cursor: pointer; font-weight: bold; border-radius: 8px; color: #0f1116; }
+body {
+    margin: 0;
+    background: #fdfaf6; /* Creamy background from snapshot */
+    font-family: 'Georgia', serif; /* Matching the elegant serif in your design */
+    color: #2b2b2b;
+}
+
+header {
+    padding: 40px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e0dcd5;
+}
+
+header h1 {
+    margin: 0;
+    color: #2b2b2b;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+}
+
+header p {
+    color: #8c8273;
+    font-size: 0.9rem;
+}
+
+button {
+    background: #2b2b2b;
+    color: #d4af37;
+    border: 1px solid #d4af37;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px; /* Matches standard high-end UI */
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #d4af37;
+    color: #fff;
+}
+
+.grid {
+    padding: 60px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+}
+
+.tile {
+    background: #ffffff;
+    border: 1px solid #e8e4de;
+    border-radius: 12px;
+    padding: 40px;
+    transition: 0.3s;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.tile:hover {
+    transform: translateY(-8px);
+    border-color: #d4af37;
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.15);
+}
+
+.tile h2 {
+    color: #2b2b2b;
+    margin-top: 0;
+    font-size: 1.4rem;
+}
+
+.tile p {
+    color: #8c8273;
+    line-height: 1.6;
+}
