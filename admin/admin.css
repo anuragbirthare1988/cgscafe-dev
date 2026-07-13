@@ -1,44 +1,57 @@
 body {
     margin: 0;
-    background: #fdfaf6;
+    background: #fdfaf6; /* Soft cream base for high contrast */
     font-family: 'Georgia', serif;
     color: #2b2b2b;
 }
 
 header {
-    padding: 20px 40px; /* Reduced vertical padding */
+    padding: 20px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #e0dcd5;
+    background-color: #23201f; /* Logo dark background color */
+    border-bottom: 4px solid #d4af37; /* Gold accent line */
 }
 
-header h1 { font-size: 1.4rem; color: #2b2b2b; }
+button {
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid #d4af37;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #d4af37;
+    color: #23201f;
+}
 
 .grid {
-    padding: 30px 40px; /* Tighter containment */
+    padding: 40px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* More columns per row */
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
 }
 
 .tile {
     background: #ffffff;
-    border: 1px solid #e8e4de;
-    border-radius: 8px;
-    padding: 20px; /* Compact padding */
+    border: 1px solid #e0dcd5;
+    border-left: 4px solid #d4af37; /* Gold branding accent */
+    border-radius: 4px;
+    padding: 25px;
     transition: 0.3s;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .tile:hover {
-    border-color: #d4af37;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.1);
 }
 
-.tile .icon { font-size: 1.8rem; }
-.tile h2 { margin: 0; font-size: 1.1rem; color: #2b2b2b; }
-.tile p { margin: 0; font-size: 0.85rem; color: #8c8273; }
+.tile h2 { margin: 0 0 5px 0; font-size: 1.1rem; color: #23201f; }
+.tile p { margin: 0; font-size: 0.85rem; color: #555; }
