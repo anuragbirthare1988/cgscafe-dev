@@ -43,6 +43,28 @@ document.addEventListener("DOMContentLoaded", async () => {
       const mobileMenuClose = document.getElementById('mobileMenuClose');
       const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
 
+      function initAdminHeader() {
+          // Hide public navigation links
+          const publicNav = document.getElementById('public-nav');
+          if (publicNav) {
+              publicNav.style.display = 'none';
+          }
+          
+          // Show the Sign Out button
+          const logoutBtn = document.getElementById('logout-btn');
+          if (logoutBtn) {
+              logoutBtn.style.display = 'block';
+          }
+      }
+      
+      // Update your existing admin.js onload:
+      window.onload = async () => {
+          if (!(await requireLogin())) return;
+          
+          initAdminHeader(); // Apply the toggle
+          renderDashboard(); // Render your tiles
+      };
+
       function openMobileMenu() {
             mobileMenu.classList.add('open');
             mobileMenuOverlay.classList.add('open');
