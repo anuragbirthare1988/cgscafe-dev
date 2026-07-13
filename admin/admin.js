@@ -1,6 +1,12 @@
 window.onload = async () => {
     if (!(await requireLogin())) return;
-    renderDashboard();
+    
+    // Check if ADMIN_MODULES is loaded to prevent the ReferenceError
+    if (typeof ADMIN_MODULES !== 'undefined') {
+        renderDashboard();
+    } else {
+        console.error("Dashboard data (ADMIN_MODULES) failed to load.");
+    }
 };
 
 function renderDashboard() {
