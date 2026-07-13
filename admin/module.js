@@ -1,39 +1,8 @@
 const ADMIN_MODULES = [
-{
-    title: "Live Menu Master",
-    subtitle: "Manage Live Menu",
-    icon: "🍽️",
-    status: "active",
-    url: "/menu/menu-edit.html"
-},
-{
-    title: "Recipe Management",
-    subtitle: "Recipe Library",
-    icon: "📖",
-    status: "planned"
-},
-{
-    title: "Inventory",
-    subtitle: "Stock & Purchases",
-    icon: "📦",
-    status: "planned"
-},
-{
-    title: "Billing & POS",
-    subtitle: "Orders & Receipts",
-    icon: "🧾",
-    status: "planned"
-},
-{
-    title: "Customers",
-    subtitle: "CRM",
-    icon: "👥",
-    status: "planned"
-},
-{
-    title: "Reports",
-    subtitle: "Analytics",
-    icon: "📊",
-    status: "planned"
-}
+    { title: "Live Menu Master", subtitle: "Manage categories, products and publish the live menu.", icon: "🍽️", url: "/menu/menu-edit.html", active: true },
+    { title: "Recipe Management", subtitle: "Recipe Library", icon: "📖", url: "#", active: false },
+    { title: "Inventory", subtitle: "Stock & Purchases", icon: "📦", url: "#", active: false },
+    { title: "Billing & POS", subtitle: "Orders & Receipts", icon: "🧾", url: "#", active: false },
+    { title: "Customers", subtitle: "CRM", icon: "👥", url: "#", active: false },
+    { title: "Reports", subtitle: "Analytics", icon: "📊", url: "#", active: false }
 ];
