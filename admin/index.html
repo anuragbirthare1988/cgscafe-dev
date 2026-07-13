@@ -7,15 +7,19 @@
       <link rel="stylesheet" href="admin.css">
       <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
       <script src="../js/supabase-config.js"></script>
-      <script src="module.js"></script>
       <script src="session.js"></script>
       <script src="admin.js" defer></script>
    </head>
    <body>
-      <header>
-         <img src="../images/cgs-logo.webp" alt="CGS Logo" style="height: 60px;">
-         <button onclick="logout()">Sign Out</button>
-      </header>
+      <!-- Header Section -->
+	   <header id="header"></header>
       <main id="admin-grid" class="grid"></main>
+      <!-- Footer Section -->
+      <footer class="site-footer" id="footer"></footer>
+      <!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
+      <div id="preloader"></div>
+
+      <script src="/js/custom.js"></script>
+      <script src="/js/animations.js"></script>
    </body>
 </html>
