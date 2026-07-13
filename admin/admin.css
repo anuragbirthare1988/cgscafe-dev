@@ -25,11 +25,6 @@ button {
     transition: 0.3s;
 }
 
-button:hover {
-    background: #d4af37;
-    color: #23201f;
-}
-
 /* Ensure the grid doesn't get hidden behind the fixed header */
 .grid {
     margin-top: 70px; /* Default for laptops */
