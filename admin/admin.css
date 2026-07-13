@@ -30,11 +30,21 @@ button:hover {
     color: #23201f;
 }
 
+/* Ensure the grid doesn't get hidden behind the fixed header */
 .grid {
+    margin-top: 70px; /* Default for laptops */
     padding: 40px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 25px;
+}
+
+/* Responsive adjustment for tablets/mobiles */
+@media (max-width: 768px) {
+    .grid {
+        margin-top: 50px; /* Slightly smaller margin for mobile devices */
+        padding: 20px;
+    }
 }
 
 .tile {
