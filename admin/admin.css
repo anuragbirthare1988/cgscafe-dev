@@ -5,15 +5,6 @@ body {
     color: #2b2b2b;
 }
 
-header {
-    padding: 20px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #23201f; /* Logo dark background color */
-    border-bottom: 4px solid #d4af37; /* Gold accent line */
-}
-
 button {
     background: transparent;
     color: #ffffff;
@@ -27,7 +18,7 @@ button {
 
 /* Ensure the grid doesn't get hidden behind the fixed header */
 .grid {
-    margin-top: 70px; /* Default for laptops */
+    margin-top: 100px; /* Default for laptops */
     padding: 40px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -37,7 +28,7 @@ button {
 /* Responsive adjustment for tablets/mobiles */
 @media (max-width: 768px) {
     .grid {
-        margin-top: 50px; /* Slightly smaller margin for mobile devices */
+        margin-top: 120px; /* Slightly smaller margin for mobile devices */
         padding: 20px;
     }
 }
