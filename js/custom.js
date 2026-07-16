@@ -61,18 +61,26 @@ document.addEventListener("DOMContentLoaded", async () => {
           const logoutBtn = document.getElementById('admin-signout-btn');
           const publicNav = document.getElementById('public-nav');
       
+          // Only proceed if Supabase is initialized[cite: 2]
           if (typeof defaultSupabaseClient === 'undefined') return;
       
-          // Use getSession() to check state without forcing a redirect
-          const { data: { session } } = await defaultSupabaseClient.auth.getSession();
-          
-          if (session) {
-              if (logoutBtn) logoutBtn.style.display = 'block';
-              if (window.location.pathname.startsWith('/admin') && publicNav) {
-                  publicNav.style.display = 'none';
+          try {
+              const { data: { session } } = await defaultSupabaseClient.auth.getSession();
+              
+              if (session) {
+                  if (logoutBtn) logoutBtn.style.display = 'block';
+                  
+                  // Hide public links if on admin page
+                  if (window.location.pathname.startsWith('/admin') && publicNav) {
+                      publicNav.style.display = 'none';
+                  }
               }
+          } catch (error) {
+              console.error("Header state error:", error);
           }
       }
+      
+      // Use DOMContentLoaded to ensure the element exists before trying to hide it[cite: 4]
       window.addEventListener('DOMContentLoaded', manageHeaderState);
 
       function openMobileMenu() {
