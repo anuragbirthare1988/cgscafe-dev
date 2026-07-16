@@ -60,36 +60,27 @@ document.addEventListener("DOMContentLoaded", async () => {
       async function manageHeaderState() {
           const logoutBtn = document.getElementById('admin-signout-btn');
           const publicNav = document.getElementById('public-nav');
-          
-          // Fail-safe: Check if Supabase client is defined
-          if (typeof defaultSupabaseClient === 'undefined') {
-              console.warn("Supabase client not loaded yet.");
-              return;
-          }
+      
+          // Ensure client is loaded before calling auth[cite: 2]
+          if (typeof defaultSupabaseClient === 'undefined') return;
       
           try {
-              // Fetch session
               const { data: { session } } = await defaultSupabaseClient.auth.getSession();
-              const isAdminPage = window.location.pathname.startsWith('/admin');
-      
+              
+              // Show Sign Out only if session exists[cite: 2]
               if (session) {
-                  // User is logged in: Show Sign Out[cite: 2]
                   if (logoutBtn) logoutBtn.style.display = 'block';
                   
-                  // If on Admin page, hide public nav links
-                  if (isAdminPage && publicNav) {
+                  // Only hide nav links if on an admin route
+                  if (window.location.pathname.startsWith('/admin') && publicNav) {
                       publicNav.style.display = 'none';
                   }
-              } else {
-                  // Force hidden if no session
-                  if (logoutBtn) logoutBtn.style.display = 'none';
               }
           } catch (error) {
-              console.error("Error checking session:", error);
+              console.error("Auth check failed:", error);
           }
       }
       
-      // Ensure the header is updated after the DOM is fully loaded[cite: 4]
       window.addEventListener('DOMContentLoaded', manageHeaderState);
       
       // Update your existing admin.js onload:
