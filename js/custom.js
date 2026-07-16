@@ -61,26 +61,18 @@ document.addEventListener("DOMContentLoaded", async () => {
           const logoutBtn = document.getElementById('admin-signout-btn');
           const publicNav = document.getElementById('public-nav');
       
-          // Ensure client is loaded before calling auth[cite: 2]
           if (typeof defaultSupabaseClient === 'undefined') return;
       
-          try {
-              const { data: { session } } = await defaultSupabaseClient.auth.getSession();
-              
-              // Show Sign Out only if session exists[cite: 2]
-              if (session) {
-                  if (logoutBtn) logoutBtn.style.display = 'block';
-                  
-                  // Only hide nav links if on an admin route
-                  if (window.location.pathname.startsWith('/admin') && publicNav) {
-                      publicNav.style.display = 'none';
-                  }
+          // Use getSession() to check state without forcing a redirect
+          const { data: { session } } = await defaultSupabaseClient.auth.getSession();
+          
+          if (session) {
+              if (logoutBtn) logoutBtn.style.display = 'block';
+              if (window.location.pathname.startsWith('/admin') && publicNav) {
+                  publicNav.style.display = 'none';
               }
-          } catch (error) {
-              console.error("Auth check failed:", error);
           }
       }
-      
       window.addEventListener('DOMContentLoaded', manageHeaderState);
       
       // Update your existing admin.js onload:
