@@ -56,6 +56,31 @@ document.addEventListener("DOMContentLoaded", async () => {
               logoutBtn.style.display = 'block';
           }
       }
+
+      async function manageHeaderState() {
+          const logoutBtn = document.getElementById('admin-signout-btn');
+          const publicNav = document.getElementById('public-nav');
+          
+          // Check if user is logged in via Supabase (or your existing auth check)
+          const { data: { session } } = await defaultSupabaseClient.auth.getSession();
+          const isAdminPage = window.location.pathname.startsWith('/admin');
+      
+          if (session) {
+              // User is logged in: Show Sign Out[cite: 2]
+              if (logoutBtn) logoutBtn.style.display = 'block';
+              
+              // If on Admin page, hide public nav links as discussed
+              if (isAdminPage && publicNav) {
+                  publicNav.style.display = 'none';
+              }
+          } else {
+              // User is not logged in: Ensure Sign Out is hidden
+              if (logoutBtn) logoutBtn.style.display = 'none';
+          }
+      }
+      
+      // Run when the header component is loaded
+      window.addEventListener('DOMContentLoaded', manageHeaderState);
       
       // Update your existing admin.js onload:
       window.onload = async () => {
