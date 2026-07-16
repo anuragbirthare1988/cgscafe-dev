@@ -74,14 +74,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
       }
       window.addEventListener('DOMContentLoaded', manageHeaderState);
-      
-      // Update your existing admin.js onload:
-      window.onload = async () => {
-          if (!(await requireLogin())) return;
-          
-          initAdminHeader(); // Apply the toggle
-          renderDashboard(); // Render your tiles
-      };
 
       function openMobileMenu() {
             mobileMenu.classList.add('open');
