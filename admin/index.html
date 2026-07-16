@@ -10,13 +10,22 @@
       <link rel="stylesheet" href="../css/custom.css">
       <link rel="stylesheet" href="../css/main.css">
       <meta name="theme-color" content="#1B1412">
-      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-      <script src="../js/supabase-config.js"></script>
-      <!-- 1. Load the data source first -->
-      <script src="module.js"></script> 
-      <!-- 2. Load the logic next -->
-      <script src="session.js"></script>
-      <script src="admin.js" defer></script>
+
+		<!-- Dependencies First -->
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+		<script src="../js/supabase-config.js"></script>
+		
+		<!-- Admin-Specific Logic -->
+		<script src="module.js"></script> 
+		<script src="session.js"></script>
+		
+		<!-- Global Scripts (Load these before admin.js so they are ready) -->
+		<script src="../js/custom.js"></script>
+		<script src="../js/animations.js"></script>
+		
+		<!-- Admin logic executes last -->
+		<script src="admin.js" defer></script>
+	   
    </head>
    <body>
       <!-- Header Section -->
@@ -26,8 +35,5 @@
       <footer class="site-footer" id="footer"></footer>
       <!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
       <div id="preloader"></div>
-
-      <script src="../js/custom.js"></script>
-      <script src="../js/animations.js"></script>
    </body>
 </html>
