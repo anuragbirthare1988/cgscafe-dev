@@ -61,25 +61,35 @@ document.addEventListener("DOMContentLoaded", async () => {
           const logoutBtn = document.getElementById('admin-signout-btn');
           const publicNav = document.getElementById('public-nav');
           
-          // Check if user is logged in via Supabase (or your existing auth check)
-          const { data: { session } } = await defaultSupabaseClient.auth.getSession();
-          const isAdminPage = window.location.pathname.startsWith('/admin');
+          // Fail-safe: Check if Supabase client is defined
+          if (typeof defaultSupabaseClient === 'undefined') {
+              console.warn("Supabase client not loaded yet.");
+              return;
+          }
       
-          if (session) {
-              // User is logged in: Show Sign Out[cite: 2]
-              if (logoutBtn) logoutBtn.style.display = 'block';
-              
-              // If on Admin page, hide public nav links as discussed
-              if (isAdminPage && publicNav) {
-                  publicNav.style.display = 'none';
+          try {
+              // Fetch session
+              const { data: { session } } = await defaultSupabaseClient.auth.getSession();
+              const isAdminPage = window.location.pathname.startsWith('/admin');
+      
+              if (session) {
+                  // User is logged in: Show Sign Out[cite: 2]
+                  if (logoutBtn) logoutBtn.style.display = 'block';
+                  
+                  // If on Admin page, hide public nav links
+                  if (isAdminPage && publicNav) {
+                      publicNav.style.display = 'none';
+                  }
+              } else {
+                  // Force hidden if no session
+                  if (logoutBtn) logoutBtn.style.display = 'none';
               }
-          } else {
-              // User is not logged in: Ensure Sign Out is hidden
-              if (logoutBtn) logoutBtn.style.display = 'none';
+          } catch (error) {
+              console.error("Error checking session:", error);
           }
       }
       
-      // Run when the header component is loaded
+      // Ensure the header is updated after the DOM is fully loaded[cite: 4]
       window.addEventListener('DOMContentLoaded', manageHeaderState);
       
       // Update your existing admin.js onload:
