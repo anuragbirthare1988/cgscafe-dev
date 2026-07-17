@@ -74,7 +74,11 @@
 </div>
 <script>
     window.addEventListener('configLoaded', () => {
-        const addr = `${window.SITE_CONFIG.address_street}, ${window.SITE_CONFIG.address_area}`;
-        document.getElementById('display-address').innerText = addr;
+        const addrElement = document.getElementById('display-address');
+        if (addrElement && window.SITE_CONFIG) {
+            // Use <br> for the line breaks you want
+            const formattedAddr = `${window.SITE_CONFIG.address_street}<br>${window.SITE_CONFIG.address_area}`;
+            addrElement.innerHTML = formattedAddr;
+        }
     });
 </script>
