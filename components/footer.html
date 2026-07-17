@@ -74,11 +74,30 @@
 </div>
 <script>
     window.addEventListener('configLoaded', () => {
+        console.log("Event 'configLoaded' received.");
+        console.log("Current SITE_CONFIG:", window.SITE_CONFIG);
+        
         const addrElement = document.getElementById('display-address');
-        if (addrElement && window.SITE_CONFIG) {
-            // Use <br> for the line breaks you want
-            const formattedAddr = `${window.SITE_CONFIG.address_street}<br>${window.SITE_CONFIG.address_area}`;
-            addrElement.innerHTML = formattedAddr;
+        const street = window.SITE_CONFIG.address_street;
+        const area = window.SITE_CONFIG.address_area;
+        
+        if (!addrElement) {
+            console.error("Element #display-address not found in the DOM.");
+            return;
+        }
+
+        if (street && area) {
+            addrElement.innerHTML = `${street}<br>${area}`;
+            console.log("Address updated successfully.");
+        } else {
+            console.warn("Address data is missing in SITE_CONFIG. Check your database keys.");
         }
     });
+
+    // Fallback: Check if data was already loaded before the listener was attached
+    if (window.SITE_CONFIG && window.SITE_CONFIG.address_street) {
+        console.log("Config already loaded, triggering manual update.");
+        const addr = `${window.SITE_CONFIG.address_street}<br>${window.SITE_CONFIG.address_area}`;
+        document.getElementById('display-address').innerHTML = addr;
+    }
 </script>
