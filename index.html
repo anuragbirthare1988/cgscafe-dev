@@ -70,6 +70,13 @@
 
 	gtag('config', 'G-679J8EPNWJ');
 	</script>
+	<!-- Dependencies First -->
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+	<script src="../js/supabase-config.js"></script>
+	
+	<!-- Global Scripts (Load these before admin.js so they are ready) -->
+	<script src="../js/custom.js"></script>
+	<script src="../js/animations.js"></script>
 </head>
 <body>
 	<!-- 
@@ -174,8 +181,5 @@
     <footer class="footer" id="footer"></footer>
 	<!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
 	<div id="preloader"></div>
-
-	<script src="/js/custom.js"></script>
-	<script src="/js/animations.js"></script>
 </body>
 </html>
