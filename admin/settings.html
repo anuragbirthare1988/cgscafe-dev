@@ -40,13 +40,34 @@
             // Save new settings
             document.getElementById('settings-form').onsubmit = async (e) => {
                 e.preventDefault();
-                // Simplified update logic
-                await defaultSupabaseClient.from('site_settings').upsert([
+            
+                const updates = [
                     { key: 'address_street', value: document.getElementById('address_street').value },
                     { key: 'address_area', value: document.getElementById('address_area').value },
                     { key: 'phone', value: document.getElementById('phone').value }
-                ]);
-                alert("Settings updated!");
+                ];
+            
+                let hasError = false;
+            
+                for (const item of updates) {
+                    const { error } = await defaultSupabaseClient
+                        .from('site_settings')
+                        .upsert(item, { onConflict: 'key' });
+            
+                    if (error) {
+                        console.error(`Error updating ${item.key}:`, error);
+                        hasError = true;
+                        // Break early or continue, depending on your preference
+                        break; 
+                    }
+                }
+            
+                // Only alert success if no errors occurred
+                if (hasError) {
+                    alert("Some settings failed to update. Please check the console for details.");
+                } else {
+                    alert("Settings updated successfully!");
+                }
             };
         
             window.onload = loadSettings;
