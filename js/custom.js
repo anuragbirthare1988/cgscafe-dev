@@ -116,6 +116,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
       }
 
+      window.SITE_CONFIG = {};
+      async function loadGlobalConfig() {
+          try {
+              const { data } = await defaultSupabaseClient.from('site_settings').select('key, value');
+              if (data) {
+                  data.forEach(item => {
+                      window.SITE_CONFIG[item.key] = item.value;
+                  });
+                  // Trigger an event so your footer/header updates once data is ready
+                  window.dispatchEvent(new Event('configLoaded'));
+              }
+          } catch (e) {
+              console.error("Error loading config:", e);
+          }
+      }
+
       function initPageFeatures(){
             initReveal(); // Initialize animations
             initTabs(); // Initialize tabs
@@ -360,5 +376,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             window.scrollTo(0,0); // Resetting scroll to land at top of page, when navigating
             initPageFeatures();
             initScrollButtons();
+            loadGlobalConfig();
       })();
 });
