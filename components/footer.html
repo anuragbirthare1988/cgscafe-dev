@@ -78,7 +78,9 @@
 </div>
 <script>
     window.addEventListener('configLoaded', () => {
+         console.log(SITE_CONFIG);
         const addr = `${window.SITE_CONFIG.address_street}, ${window.SITE_CONFIG.address_area}`;
+          console.log(addr);
         document.getElementById('display-address').innerText = addr;
     });
 </script>
