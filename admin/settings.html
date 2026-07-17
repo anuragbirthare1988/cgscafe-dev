@@ -1,38 +1,51 @@
-<!-- admin/settings.html -->
-<div class="settings-container">
-    <h2>Update Business Info</h2>
-    <form id="settings-form">
-        <label>Street:</label>
-        <input type="text" id="address_street" name="address_street">
-        
-        <label>Area:</label>
-        <input type="text" id="address_area" name="address_area">
-        
-        <button type="submit">Update Settings</button>
-    </form>
-</div>
-
-<script>
-    // Load existing settings when page opens
-    async function loadSettings() {
-        const { data } = await defaultSupabaseClient.from('site_settings').select('*');
-        data.forEach(item => {
-            if(document.getElementById(item.key)) {
-                document.getElementById(item.key).value = item.value;
-            }
-        });
-    }
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>CGS Site Settings</title>
+        <!-- 1. Dependencies MUST come first -->
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+        <script src="../js/supabase-config.js"></script>
+    </head>
+    <body>
+        <!-- admin/settings.html -->
+        <div class="settings-container">
+            <h2>Update Business Info</h2>
+            <form id="settings-form">
+                <label>Street:</label>
+                <input type="text" id="address_street" name="address_street">
+                
+                <label>Area:</label>
+                <input type="text" id="address_area" name="address_area">
+                
+                <button type="submit">Update Settings</button>
+            </form>
+        </div>
     
-    // Save new settings
-    document.getElementById('settings-form').onsubmit = async (e) => {
-        e.preventDefault();
-        // Simplified update logic
-        await defaultSupabaseClient.from('site_settings').upsert([
-            { key: 'address_street', value: document.getElementById('address_street').value },
-            { key: 'address_area', value: document.getElementById('address_area').value }
-        ]);
-        alert("Settings updated!");
-    };
-
-    window.onload = loadSettings;
-</script>
+        <script>
+             // Load existing settings when page opens
+            async function loadSettings() {
+                const { data } = await defaultSupabaseClient.from('site_settings').select('*');
+                data.forEach(item => {
+                    if(document.getElementById(item.key)) {
+                        document.getElementById(item.key).value = item.value;
+                    }
+                });
+            }
+            
+            // Save new settings
+            document.getElementById('settings-form').onsubmit = async (e) => {
+                e.preventDefault();
+                // Simplified update logic
+                await defaultSupabaseClient.from('site_settings').upsert([
+                    { key: 'address_street', value: document.getElementById('address_street').value },
+                    { key: 'address_area', value: document.getElementById('address_area').value }
+                ]);
+                alert("Settings updated!");
+            };
+        
+            window.onload = loadSettings;
+        </script>
+    </body>
+</html>
