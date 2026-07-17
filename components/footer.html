@@ -36,11 +36,7 @@
       <!-- Find Us -->
       <div class="footer-column">
          <h5 class="footer-heading">Find Us</h5>
-         <p id="display-address" class="footer-text">
-            Shop No 3, Krishna Enclave<br>
-            Opp. Sahaj Greens Society<br>
-            Scheme 103, Indore
-         </p>
+         <p id="display-address" class="footer-text"></p>
          <div class="footer-actions">
             <a href="https://maps.app.goo.gl/kahRsD8Bb74BB3KJ8" target="_blank" class="bold underline" title="Click to Navigate">Get Directions</a>
          <br>
@@ -78,9 +74,7 @@
 </div>
 <script>
     window.addEventListener('configLoaded', () => {
-         console.log(SITE_CONFIG);
         const addr = `${window.SITE_CONFIG.address_street}, ${window.SITE_CONFIG.address_area}`;
-          console.log(addr);
         document.getElementById('display-address').innerText = addr;
     });
 </script>
