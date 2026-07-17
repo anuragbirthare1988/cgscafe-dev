@@ -18,6 +18,9 @@
                 
                 <label>Area:</label>
                 <input type="text" id="address_area" name="address_area">
+               
+                <label>Phone:</label>
+                <input type="text" id="phone" name="phone">
                 
                 <button type="submit">Update Settings</button>
             </form>
@@ -40,7 +43,8 @@
                 // Simplified update logic
                 await defaultSupabaseClient.from('site_settings').upsert([
                     { key: 'address_street', value: document.getElementById('address_street').value },
-                    { key: 'address_area', value: document.getElementById('address_area').value }
+                    { key: 'address_area', value: document.getElementById('address_area').value },
+                    { key: 'phone', value: document.getElementById('phone').value }
                 ]);
                 alert("Settings updated!");
             };
