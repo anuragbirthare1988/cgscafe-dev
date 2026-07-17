@@ -116,22 +116,43 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
       }
 
-      window.SITE_CONFIG = {};
-      async function loadGlobalConfig() {
+     async function loadGlobalConfig() {
+          // 1. Wait for Supabase
+          if (typeof defaultSupabaseClient === 'undefined') {
+              console.log("Waiting for Supabase client...");
+              setTimeout(loadGlobalConfig, 100);
+              return;
+          }
+      
           try {
-              const { data } = await defaultSupabaseClient.from('site_settings').select('key, value');
-              if (data) {
+              console.log("Attempting to fetch site_settings...");
+              
+              // 2. Fetch the data
+              const { data, error } = await defaultSupabaseClient
+                  .from('site_settings')
+                  .select('key, value');
+      
+              // 3. Log results
+              if (error) {
+                  console.error("Supabase Query Error:", error);
+              } else if (!data || data.length === 0) {
+                  console.warn("Query succeeded, but no data found in 'site_settings' table.");
+              } else {
+                  console.log("Data successfully fetched:", data);
+                  
+                  window.SITE_CONFIG = {};
                   data.forEach(item => {
                       window.SITE_CONFIG[item.key] = item.value;
                   });
-                  // Trigger an event so your footer/header updates once data is ready
+                  
+                  // Dispatch event for components waiting for this data
                   window.dispatchEvent(new Event('configLoaded'));
+                  console.log("configLoaded event dispatched.");
               }
           } catch (e) {
-              console.error("Error loading config:", e);
+              console.error("Critical error in loadGlobalConfig:", e);
           }
-      }
-      // Start the check
+      }      
       loadGlobalConfig();
 
       function initPageFeatures(){
