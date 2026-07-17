@@ -131,6 +131,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               console.error("Error loading config:", e);
           }
       }
+      // Start the check
+      loadGlobalConfig();
 
       function initPageFeatures(){
             initReveal(); // Initialize animations
@@ -376,6 +378,5 @@ document.addEventListener("DOMContentLoaded", async () => {
             window.scrollTo(0,0); // Resetting scroll to land at top of page, when navigating
             initPageFeatures();
             initScrollButtons();
-            loadGlobalConfig();
       })();
 });
