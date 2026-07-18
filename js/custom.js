@@ -116,45 +116,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
       }
 
-     async function loadGlobalConfig() {
-          // 1. Wait for Supabase
-          if (typeof defaultSupabaseClient === 'undefined') {
-              console.log("Waiting for Supabase client...");
-              setTimeout(loadGlobalConfig, 100);
-              return;
-          }
-      
-          try {
-              console.log("Attempting to fetch site_settings...");
-              
-              // 2. Fetch the data
-              const { data, error } = await defaultSupabaseClient
-                  .from('site_settings')
-                  .select('key, value');
-      
-              // 3. Log results
-              if (error) {
-                  console.error("Supabase Query Error:", error);
-              } else if (!data || data.length === 0) {
-                  console.warn("Query succeeded, but no data found in 'site_settings' table.");
-              } else {
-                  console.log("Data successfully fetched:", data);
-                  
-                  window.SITE_CONFIG = {};
-                  data.forEach(item => {
-                      window.SITE_CONFIG[item.key] = item.value;
-                  });
-                  
-                  // Dispatch event for components waiting for this data
-                  window.dispatchEvent(new Event('configLoaded'));
-                  console.log("configLoaded event dispatched.");
-              }
-          } catch (e) {
-              console.error("Critical error in loadGlobalConfig:", e);
-          }
-      }      
-      loadGlobalConfig();
-
       function initPageFeatures(){
             initReveal(); // Initialize animations
             initTabs(); // Initialize tabs
