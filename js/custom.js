@@ -362,27 +362,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       (async function () {
-        // 1. Wait for HTML components
-        await Promise.all([
-            loadComponent("header", "/components/header.html"),
-            loadComponent("footer", "/components/footer.html"),
-            loadComponent("preloader", "/components/preloader.html")
-        ]);
-
-        // 2. WAIT for the configuration data to be ready
-        // Check if the global config already exists, or wait for it
-        if (typeof window.SITE_CONFIG !== 'undefined' && window.SITE_CONFIG) {
-            populateUI();
-        } else {
-            // If not ready, add a listener to trigger it once the config arrives
-            window.addEventListener('configLoaded', () => {
-                populateUI();
-                console.log("UI populated after data arrived.");
-            });
-        }
-
-        window.scrollTo(0, 0);
-        initPageFeatures();
-        initScrollButtons();
-    })();
+          // 1. Wait for HTML components ONLY
+          await Promise.all([
+              loadComponent("header", "/components/header.html"),
+              loadComponent("footer", "/components/footer.html"),
+              loadComponent("preloader", "/components/preloader.html")
+          ]);
+      
+          // 2. DO NOT call populateUI() here. 
+          // It is handled by the event listener in components.js automatically.
+          
+          // 3. Initialize page features that don't depend on Supabase data
+          window.scrollTo(0, 0);
+          initPageFeatures();
+          initScrollButtons();
+      })();
 });
