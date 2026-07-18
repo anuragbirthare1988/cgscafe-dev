@@ -1,20 +1,15 @@
 document.addEventListener("DOMContentLoaded", async () => {
-      async function loadComponent(id, file) {  // Load the header, footer and miscellaneous UI blocks dynamically to all the pages 
-      const el = document.getElementById(id);
-      // console.log(document.getElementById(id));
-      if (el) {
-            const res = await fetch(file);
-            el.innerHTML = await res.text();
-            // Dispatch an event so other scripts know THIS component is ready
+      async function loadComponent(id, file) {
+          const el = document.getElementById(id);
+          if (el) {
+              const res = await fetch(file);
+              el.innerHTML = await res.text();
+              
+              // Dispatch an event so other scripts know THIS component is ready
               const event = new CustomEvent('componentLoaded', { detail: { id: id } });
               document.dispatchEvent(event);
-            }
+          }
       }
-      await Promise.all([
-            loadComponent("header", "/components/header.html"),
-            loadComponent("footer", "/components/footer.html"),
-            loadComponent("preloader", "/components/preloader.html")
-      ]);
 
       let loadedComponents = new Set();
 
