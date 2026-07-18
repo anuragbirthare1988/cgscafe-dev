@@ -25,25 +25,34 @@ async function loadGlobalConfig() {
     }
 }
 
-function updateUIComponents() {
-    if (!window.SITE_CONFIG) return;
-
-    const footerAddr = document.getElementById('display-address');
-    if (footerAddr) {
-        const l1 = window.SITE_CONFIG.addr_line1 || '';
-        const l2 = window.SITE_CONFIG.addr_line2 || '';
-        const city = window.SITE_CONFIG.addr_line3 || '';
-        const state = window.SITE_CONFIG.state || '';
-        const zip = window.SITE_CONFIG.zip || '';
-
-        // Updated format: City (State) - Zip
-        footerAddr.innerHTML = `${l1},<br>${l2},<br>${city} (${state}) - ${zip}`;
-        console.log("Footer address updated to: City (State) - ZIP format.");
-    }
+// Function to safely get config values
+function getSiteConfig(key) {
+    return window.SITE_CONFIG ? (window.SITE_CONFIG[key] || '') : '';
 }
 
-// 1. Listen for the event
-window.addEventListener('configLoaded', updateUIComponents);
+// Function to populate elements by ID
+function populateUI() {
+    if (!window.SITE_CONFIG) return;
 
-// 2. Start the fetch
+    // 1. Footer Address (3-line format)
+    const footerAddr = document.getElementById('display-address');
+    if (footerAddr) {
+        footerAddr.innerHTML = `${getSiteConfig('addr_line1')},<br>${getSiteConfig('addr_line2')},<br>${getSiteConfig('addr_line3')} (${getSiteConfig('state')}) - ${getSiteConfig('zip')}`;
+    }
+
+    // 2. Sticky Header / Other Pages
+    // Simply select elements by ID on ANY page
+    const phoneEl = document.getElementById('display-phone');
+    if (phoneEl) phoneEl.textContent = getSiteConfig('phone');
+
+    const timingEl = document.getElementById('display-timings');
+    if (timingEl) timingEl.textContent = getSiteConfig('timings');
+    
+    console.log("Global UI components populated.");
+}
+
+// Ensure this runs when config is loaded
+window.addEventListener('configLoaded', populateUI);
+
+// Start the fetch
 loadGlobalConfig();
