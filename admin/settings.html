@@ -29,74 +29,88 @@
     <div class="calc-container">
         <h1 class="calc-title">Site Settings</h1>
         <form id="settings-form" class="compact-card">
-            <!-- Address Fields -->
-            <div class="field-group"><label class="compact-label">Address Line 1</label><input type="text" id="addr_line1" class="compact-control" required></div>
-            <div class="field-group"><label class="compact-label">Address Line 2</label><input type="text" id="addr_line2" class="compact-control" required></div>
-            <div class="field-group"><label class="compact-label">City</label><input type="text" id="addr_line3" class="compact-control" required></div>
-            
-            <!-- New Fields -->
-            <div class="field-group">
-                <label class="compact-label">State</label>
-                <select id="state" class="compact-control" required>
-                    <option value="">Select State</option>
-                    <option value="Madhya Pradesh">Madhya Pradesh</option>
-                </select>
-            </div>
-            <div class="field-group"><label class="compact-label">ZIP Code</label><input type="text" id="zip" class="compact-control" required></div>
-            <div class="field-group"><label class="compact-label">Phone</label><input type="text" id="phone" class="compact-control" required></div>
-            
-            <button type="submit" id="submit-btn" disabled>Update Settings</button>
-        </form>
+    <!-- ... (Keep addr_line1, addr_line2, addr_line3 inputs) ... -->
+    
+    <div class="field-group">
+        <label class="compact-label">State</label>
+        <select id="state" class="compact-control" required>
+            <option value="">Select State</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="Delhi">Delhi</option>
+        </select>
     </div>
+    
+    <!-- Restrict ZIP to 6 digits -->
+    <div class="field-group">
+        <label class="compact-label">ZIP Code</label>
+        <input type="text" id="zip" class="compact-control" 
+               pattern="\d{6}" maxlength="6" 
+               placeholder="6-digit code" required>
+    </div>
+    
+    <div class="field-group"><label class="compact-label">Phone</label><input type="text" id="phone" class="compact-control" required></div>
+    
+    <button type="submit" id="submit-btn" disabled>Update Settings</button>
+</form>
 
-    <script>
-        const form = document.getElementById('settings-form');
-        const submitBtn = document.getElementById('submit-btn');
-        let initialValues = {};
+<script>
+    const form = document.getElementById('settings-form');
+    const submitBtn = document.getElementById('submit-btn');
+    let initialValues = {};
 
-        async function loadSettings() {
-            const { data } = await defaultSupabaseClient.from('site_settings').select('*');
-            if (data) {
-                data.forEach(item => {
-                    const el = document.getElementById(item.key);
-                    if(el) {
-                        el.value = item.value;
-                        initialValues[item.key] = item.value;
-                    }
-                });
-                validateForm();
-            }
-        }
-
-        function validateForm() {
-            const inputs = form.querySelectorAll('input, select');
-            let allFilled = true;
-            let hasChanged = false;
-
-            inputs.forEach(input => {
-                if (!input.value.trim()) allFilled = false;
-                if (input.value !== (initialValues[input.id] || "")) hasChanged = true;
+    async function loadSettings() {
+        const { data } = await defaultSupabaseClient.from('site_settings').select('*');
+        if (data) {
+            data.forEach(item => {
+                const el = document.getElementById(item.key);
+                if(el) {
+                    el.value = item.value;
+                    initialValues[item.key] = item.value;
+                }
             });
-
-            submitBtn.disabled = !(allFilled && hasChanged);
+            // Force validation after data is loaded
+            validateForm();
         }
+    }
 
-        form.addEventListener('input', validateForm);
+    function validateForm() {
+        const inputs = form.querySelectorAll('input, select');
+        let allFilled = true;
+        let hasChanged = false;
 
-        form.onsubmit = async (e) => {
-            e.preventDefault();
-            if (!confirm("Are you sure you want to update these settings?")) return;
+        inputs.forEach(input => {
+            // Check if empty
+            if (!input.value.trim()) allFilled = false;
+            
+            // Check if changed
+            if (input.value !== (initialValues[input.id] || "")) hasChanged = true;
+        });
 
-            const fields = ['addr_line1', 'addr_line2', 'addr_line3', 'state', 'zip', 'phone'];
-            for (const key of fields) {
-                await defaultSupabaseClient.from('site_settings').upsert({ key, value: document.getElementById(key).value }, { onConflict: 'key' });
-            }
-            alert("Settings updated successfully!");
-            initialValues = {}; // Reset tracking
-            location.reload();
-        };
+        // Ensure ZIP is exactly 6 digits if it's not empty
+        const zipVal = document.getElementById('zip').value;
+        const zipValid = /^\d{6}$/.test(zipVal);
 
-        window.onload = loadSettings;
-    </script>
+        submitBtn.disabled = !(allFilled && hasChanged && zipValid);
+    }
+
+    // Add event listeners for both input and change (for dropdown)
+    form.addEventListener('input', validateForm);
+    form.addEventListener('change', validateForm);
+
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        if (!confirm("Are you sure you want to update these settings?")) return;
+
+        const fields = ['addr_line1', 'addr_line2', 'addr_line3', 'state', 'zip', 'phone'];
+        for (const key of fields) {
+            await defaultSupabaseClient.from('site_settings').upsert({ key, value: document.getElementById(key).value }, { onConflict: 'key' });
+        }
+        alert("Settings updated successfully!");
+        location.reload();
+    };
+
+    window.onload = loadSettings;
+</script>
 </body>
 </html>
