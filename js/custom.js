@@ -7,6 +7,11 @@ document.addEventListener("DOMContentLoaded", async () => {
               await new Promise(resolve => setTimeout(resolve, 50)); // Wait 50ms
               el = document.getElementById(id);
           }
+            await Promise.all([
+                  loadComponent("header", "/components/header.html"),
+                  loadComponent("footer", "/components/footer.html"),
+                  loadComponent("preloader", "/components/preloader.html")
+            ]);
       
           // Now that we are sure it exists:
           const res = await fetch(file);
