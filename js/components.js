@@ -34,32 +34,35 @@ function getSiteConfig(key) {
 function populateUI() {
     if (!window.SITE_CONFIG) return;
 
-    // 1. Footer Address (3-line format)
-    const footerAddr = document.getElementById('display-address');
-    if (footerAddr) {
-        footerAddr.innerHTML = `${getSiteConfig('addr_line1')},<br>${getSiteConfig('addr_line2')},<br>${getSiteConfig('addr_line3')} (${getSiteConfig('state')}) - ${getSiteConfig('zip')}`;
-    }
+    // Mapping of HTML IDs to Config Keys
+    const mappings = {
+        'display-address': 'addr_line1', // Footer
+        'display-address-full': 'addr_line1', // Assuming this is your tile ID
+        'display-phone': 'phone',
+        'display-timings': 'timings',
+        'display-short-address': 'short_address'
+    };
 
-    // 2. Sticky Header / Other Pages
-    // Add the new shortcut address mapping
-    const shortAddrEl = document.getElementById('display-short-address');
-    if (shortAddrEl) {
-        shortAddrEl.textContent = getSiteConfig('short_address');
-    }
-    // Simply select elements by ID on ANY page
-    const phoneEl = document.getElementById('display-phone');
-    if (phoneEl) phoneEl.textContent = getSiteConfig('phone');
+    // Universal Updater
+    Object.keys(mappings).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            if (id === 'display-address') {
+                // Special 3-line format for Footer
+                el.innerHTML = `${getSiteConfig('addr_line1')},<br>${getSiteConfig('addr_line2')},<br>${getSiteConfig('addr_line3')} (${getSiteConfig('state')}) - ${getSiteConfig('zip')}`;
+            } else {
+                el.textContent = getSiteConfig(mappings[id]);
+            }
+        }
+    });
 
-    const timingEl = document.getElementById('display-timings');
-    if (timingEl) timingEl.textContent = getSiteConfig('timings');
-    
     console.log("Global UI components populated.");
 }
 
 // Ensure this runs when config is loaded
 window.addEventListener('configLoaded', populateUI);
 
-// Start the fetch
-loadGlobalConfig().then(() => {
-    populateUI();
+// Use 'DOMContentLoaded' to ensure the page is ready before running
+document.addEventListener('DOMContentLoaded', () => {
+    loadGlobalConfig();
 });
