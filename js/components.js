@@ -36,7 +36,9 @@ function updateUIComponents() {
         const state = window.SITE_CONFIG.state || '';
         const zip = window.SITE_CONFIG.zip || '';
 
-        footerAddr.innerHTML = `${l1},<br>${l2},<br>${city} - ${zip}, ${state}`;
+        // Updated format: City (State) - Zip
+        footerAddr.innerHTML = `${l1},<br>${l2},<br>${city} (${state}) - ${zip}`;
+        console.log("Footer address updated to: City (State) - ZIP format.");
     }
 }
 
