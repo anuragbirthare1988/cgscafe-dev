@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             el.innerHTML = await res.text();
             }
       }
+      
+      // Use a path that works regardless of sub-folders
+      const componentsPath = window.location.origin + "/components";
       await Promise.all([
             loadComponent("header", "/components/header.html"),
             loadComponent("footer", "/components/footer.html"),
