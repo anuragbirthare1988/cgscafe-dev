@@ -7,20 +7,31 @@ document.addEventListener("DOMContentLoaded", async () => {
               el.innerHTML = html; // This injects your header/footer/preloader
           }
       }
-      async function initPage() {
-          // Load all components
+      // 1. Define the population function globally
+      async function runPopulation() {
+          if (typeof window.populateUI === 'function') {
+              window.populateUI();
+              console.log("UI successfully populated after component load.");
+          } else {
+              // If populateUI isn't ready, wait 50ms and try again
+              setTimeout(runPopulation, 50);
+          }
+      }
+      
+      // 2. Load components and trigger population
+      async function initSite() {
           await Promise.all([
               loadComponent("header", "/components/header.html"),
               loadComponent("footer", "/components/footer.html"),
               loadComponent("preloader", "/components/preloader.html")
           ]);
-      
-          // NOW that components exist, populate the data
-          if (typeof window.populateUI === 'function') {
-              window.populateUI();
-          }
+          
+          // Now call the population runner
+          runPopulation();
       }
-      initPage();
+      
+      // 3. Start everything
+      initSite();
       
       // Get the current year for copyright note
       const yearEl = document.getElementById("currentYear");
