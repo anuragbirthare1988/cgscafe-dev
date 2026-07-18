@@ -7,16 +7,33 @@ document.addEventListener("DOMContentLoaded", async () => {
             el.innerHTML = await res.text();
             }
       }
-      await Promise.all([
-            loadComponent("header", "/components/header.html"),
-            loadComponent("footer", "/components/footer.html"),
-            loadComponent("preloader", "/components/preloader.html")
-      ]);
+      async function initializeSite() {
+          await Promise.all([
+              loadComponent("header", "/components/header.html"),
+              loadComponent("footer", "/components/footer.html"),
+              loadComponent("preloader", "/components/preloader.html")
+          ]);
+      
+          console.log("Components loaded. Triggering UI population...");
+          
+          // Now that the elements definitely exist, call the populate function
+          if (typeof window.populateUI === 'function') {
+              window.populateUI();
+          } else {
+              console.error("populateUI is not defined yet.");
+          }
+      }
+      initializeSite();
+      
       // This ensures that as soon as the HTML components are injected, 
       // the data is fetched and populated into them.
-      if (typeof window.populateUI === 'function') {
-          window.populateUI();
-      }
+      setTimeout(() => {
+          if (typeof window.populateUI === 'function') {
+              window.populateUI();
+              console.log("UI populated after delay.");
+          }
+      }, 100);
+      
       document.getElementById("currentYear").innerHTML = new Date().getFullYear(); // Get the current year for copyright note
       initAllAnimations(); // from animations.js
 
