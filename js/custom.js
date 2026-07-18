@@ -362,17 +362,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       (async function () {
-          // 1. Wait for HTML components ONLY
+          // 1. Wait for HTML components
           await Promise.all([
               loadComponent("header", "/components/header.html"),
               loadComponent("footer", "/components/footer.html"),
               loadComponent("preloader", "/components/preloader.html")
           ]);
       
-          // 2. DO NOT call populateUI() here. 
-          // It is handled by the event listener in components.js automatically.
-          
-          // 3. Initialize page features that don't depend on Supabase data
+          // 2. FORCE check: If config is already in memory, populate NOW.
+          if (window.SITE_CONFIG) {
+              populateUI();
+              console.log("Forced manual populateUI trigger");
+          }
+      
+          // 3. Page initialization
           window.scrollTo(0, 0);
           initPageFeatures();
           initScrollButtons();
