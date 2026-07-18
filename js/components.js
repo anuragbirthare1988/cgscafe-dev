@@ -39,7 +39,6 @@ function updateUIComponents() {
         footerAddr.innerHTML = `${l1},<br>${l2},<br>${city} - ${zip}, ${state}`;
     }
 }
-}
 
 // 1. Listen for the event
 window.addEventListener('configLoaded', updateUIComponents);
