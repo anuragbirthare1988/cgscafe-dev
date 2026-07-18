@@ -8,13 +8,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
       }
       
-      // Use a path that works regardless of sub-folders
-      const componentsPath = window.location.origin + "/components"; 
-      
       await Promise.all([
-          loadComponent("header", componentsPath + "/header.html"),
-          loadComponent("footer", componentsPath + "/footer.html"),
-          loadComponent("preloader", "/components/preloader.html") // Or keep root-relative
+            loadComponent("header", "/components/header.html"),
+            loadComponent("footer", "/components/footer.html"),
+            loadComponent("preloader", "/components/preloader.html")
       ]);
       
       document.getElementById("currentYear").innerHTML = new Date().getFullYear(); // Get the current year for copyright note
