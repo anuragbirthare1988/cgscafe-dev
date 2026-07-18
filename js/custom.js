@@ -12,6 +12,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             loadComponent("footer", "/components/footer.html"),
             loadComponent("preloader", "/components/preloader.html")
       ]);
+      // This ensures that as soon as the HTML components are injected, 
+      // the data is fetched and populated into them.
+      if (typeof window.populateUI === 'function') {
+          window.populateUI();
+      }
       document.getElementById("currentYear").innerHTML = new Date().getFullYear(); // Get the current year for copyright note
       initAllAnimations(); // from animations.js
 
