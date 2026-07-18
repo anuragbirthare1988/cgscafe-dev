@@ -34,16 +34,9 @@ function populateUI() {
 
     requestAnimationFrame(() => {
         // 1. Footer Address
-        const footerEl = document.getElementById('display-address');
-        if (footerEl) {
-            // Log exactly what we are trying to inject
-            const addressString = `${window.SITE_CONFIG['addr_line1'] || 'MISSING'},<br>${window.SITE_CONFIG['addr_line2'] || 'MISSING'},<br>${window.SITE_CONFIG['addr_line3'] || 'MISSING'}`;
-            console.log("Injecting into display-address:", addressString);
-            footerEl.innerHTML = addressString;
-        } else {
-            console.error("Could not find element: display-address");
-        }
-
+        document.querySelectorAll('[id="display-address"]').forEach(el => {
+            el.innerHTML = `${window.SITE_CONFIG['addr_line1'] || ''},<br>${window.SITE_CONFIG['addr_line2'] || ''},<br>${window.SITE_CONFIG['addr_line3'] || ''} (${window.SITE_CONFIG['state'] || ''}) - ${window.SITE_CONFIG['zip'] || ''}`;
+        });
         // 2. Other fields
         const elements = {
             'display-short-address': window.SITE_CONFIG['short_address'],
