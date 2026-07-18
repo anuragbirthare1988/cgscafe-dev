@@ -389,16 +389,30 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
       }
 
-      (async function () { 
-        // Now you can use await here
-        await Promise.all([
-            loadComponent("header", "/components/header.html"),
-            loadComponent("footer", "/components/footer.html"),
-            loadComponent("preloader", "/components/preloader.html")
-        ]);
-        
-        window.scrollTo(0, 0);
-        initPageFeatures();
-        initScrollButtons();
-    })();
+      (async function () {
+          // 1. Load components AND wait for Config simultaneously
+          await Promise.all([
+              Promise.all([
+                  loadComponent("header", "/components/header.html"),
+                  loadComponent("footer", "/components/footer.html"),
+                  loadComponent("preloader", "/components/preloader.html")
+              ]),
+              // This ensures we wait for the Supabase data
+              new Promise((resolve) => {
+                  if (window.CONFIG_READY) resolve();
+                  else window.addEventListener('configLoaded', resolve);
+              })
+          ]);
+      
+          // 2. NOW it is safe to populate
+          if (typeof window.populateUI === 'function') {
+              window.populateUI();
+              console.log("UI populated after components AND data were ready.");
+          }
+      
+          // 3. Page initialization
+          window.scrollTo(0, 0);
+          initPageFeatures();
+          initScrollButtons();
+      })();
 });
