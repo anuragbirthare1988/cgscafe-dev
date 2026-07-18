@@ -91,18 +91,23 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
       });
 
-      // Smooth scroll for navigation links
+      // Smooth scroll for navigation links - ONLY for actual internal anchors
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-            target.scrollIntoView({
-                  behavior: 'smooth',
-                  block: 'start'
-            });
-            }
-      });
+          anchor.addEventListener('click', function (e) {
+              const href = this.getAttribute('href');
+              
+              // Only prevent default and scroll if the href is longer than just "#"
+              if (href !== "#") {
+                  const target = document.querySelector(href);
+                  if (target) {
+                      e.preventDefault();
+                      target.scrollIntoView({
+                          behavior: 'smooth',
+                          block: 'start'
+                      });
+                  }
+              }
+          });
       });
 
       // Deploying Environment Badge
