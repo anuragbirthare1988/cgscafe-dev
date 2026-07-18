@@ -73,34 +73,20 @@
    </div>
 </div>
 <script>
-    function updateFooter() {
-        console.log("Attempting to update footer with:", window.SITE_CONFIG);
+    console.log("Footer script is running!"); // Check if this appears in console
+
+    window.addEventListener('configLoaded', () => {
+        console.log("Footer received configLoaded event!");
         
-        if (window.SITE_CONFIG && window.SITE_CONFIG.address_street) {
-            const addrElement = document.getElementById('display-address');
-            if (addrElement) {
-                addrElement.innerHTML = `${window.SITE_CONFIG.address_street}<br>${window.SITE_CONFIG.address_area}`;
-                console.log("Footer address updated successfully.");
-            }
+        // Use a direct approach to get data
+        const addr = window.SITE_CONFIG.address_street + "<br>" + window.SITE_CONFIG.address_area;
+        const el = document.getElementById('display-address');
+        
+        if (el) {
+            el.innerHTML = addr;
+            console.log("Footer text updated to:", addr);
         } else {
-            console.warn("SITE_CONFIG is not ready yet.");
+            console.error("Element #display-address not found!");
         }
-    }
-
-    // 1. Listen for the event (for when it loads later)
-    window.addEventListener('configLoaded', updateFooter);
-
-    // 2. Immediate check (for when the event has already fired)
-    if (window.SITE_CONFIG && window.SITE_CONFIG.address_street) {
-        updateFooter();
-    } else {
-        // 3. Final safety net: poll for 1 second if data isn't there yet
-        const interval = setInterval(() => {
-            if (window.SITE_CONFIG && window.SITE_CONFIG.address_street) {
-                updateFooter();
-                clearInterval(interval);
-            }
-        }, 200);
-        setTimeout(() => clearInterval(interval), 2000);
-    }
+    });
 </script>
