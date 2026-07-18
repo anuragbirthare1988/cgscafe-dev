@@ -88,15 +88,12 @@ e<!DOCTYPE html>
         
             async function loadSettings() {
                 const { data } = await defaultSupabaseClient.from('site_settings').select('*');
-                console.log("Data loaded from Supabase:", data); // DEBUG: Check if data is actually coming back
                 if (data) {
                     data.forEach(item => {
                         const el = document.getElementById(item.key);
-                        if(el) {
+                        if (el) {
                             el.value = item.value;
                             initialValues[item.key] = item.value;
-                        } else {
-                            console.warn("No HTML element found for key:", item.key); // DEBUG: Find missing IDs
                         }
                     });
                     validateForm();
@@ -109,21 +106,16 @@ e<!DOCTYPE html>
                 let hasChanged = false;
         
                 inputs.forEach(input => {
-                    // Check if empty
                     if (!input.value.trim()) allFilled = false;
-                    
-                    // Check if changed
                     if (input.value !== (initialValues[input.id] || "")) hasChanged = true;
                 });
         
-                // Ensure ZIP is exactly 6 digits if it's not empty
                 const zipVal = document.getElementById('zip').value;
                 const zipValid = /^\d{6}$/.test(zipVal);
         
                 submitBtn.disabled = !(allFilled && hasChanged && zipValid);
             }
         
-            // Add event listeners for both input and change (for dropdown)
             form.addEventListener('input', validateForm);
             form.addEventListener('change', validateForm);
         
@@ -131,6 +123,7 @@ e<!DOCTYPE html>
                 e.preventDefault();
                 if (!confirm("Are you sure you want to update these settings?")) return;
         
+                // UPDATED: All fields are now included here
                 const fields = [
                     'addr_line1', 
                     'addr_line2', 
@@ -138,11 +131,19 @@ e<!DOCTYPE html>
                     'state', 
                     'zip', 
                     'phone', 
-                    'timings',       // Added this
-                    'short_address'  // Added this
+                    'timings', 
+                    'short_address',
+                    'maps_url',
+                    'whatsapp_number'
                 ];
+        
                 for (const key of fields) {
-                    await defaultSupabaseClient.from('site_settings').upsert({ key, value: document.getElementById(key).value }, { onConflict: 'key' });
+                    const el = document.getElementById(key);
+                    if (el) {
+                        await defaultSupabaseClient
+                            .from('site_settings')
+                            .upsert({ key: key, value: el.value }, { onConflict: 'key' });
+                    }
                 }
                 alert("Settings updated successfully!");
                 location.reload();
