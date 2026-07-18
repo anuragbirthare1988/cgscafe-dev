@@ -12,6 +12,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             loadComponent("footer", "/components/footer.html"),
             loadComponent("preloader", "/components/preloader.html")
       ]);
+
+      let loadedComponents = new Set();
+
+      document.addEventListener('componentLoaded', (e) => {
+          loadedComponents.add(e.detail.id);
+          
+          // Check if header, footer, and preloader are all here
+          if (loadedComponents.has('header') && 
+              loadedComponents.has('footer') && 
+              loadedComponents.has('preloader')) {
+              
+              console.log("All components loaded! Populating data...");
+              populateUI(); // This function from your other file
+          }
+      });
+      
       document.getElementById("currentYear").innerHTML = new Date().getFullYear(); // Get the current year for copyright note
       initAllAnimations(); // from animations.js
 
