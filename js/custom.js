@@ -1,43 +1,18 @@
 document.addEventListener("DOMContentLoaded", async () => {
-      async function loadComponent(id, file) {
-          const el = document.getElementById(id);
-          if (el) {
-              const res = await fetch(file);
-              const html = await res.text();
-              el.innerHTML = html; // This injects your header/footer/preloader
-          }
+      async function loadComponent(id, file) {  // Load the header, footer and miscellaneous UI blocks dynamically to all the pages 
+      const el = document.getElementById(id);
+      // console.log(document.getElementById(id));
+      if (el) {
+            const res = await fetch(file);
+            el.innerHTML = await res.text();
+            }
       }
-      // 1. Define the population function globally
-      async function runPopulation() {
-          if (typeof window.populateUI === 'function') {
-              window.populateUI();
-              console.log("UI successfully populated after component load.");
-          } else {
-              // If populateUI isn't ready, wait 50ms and try again
-              setTimeout(runPopulation, 50);
-          }
-      }
-      
-      // 2. Load components and trigger population
-      async function initSite() {
-          await Promise.all([
-              loadComponent("header", "/components/header.html"),
-              loadComponent("footer", "/components/footer.html"),
-              loadComponent("preloader", "/components/preloader.html")
-          ]);
-          
-          // Now call the population runner
-          runPopulation();
-      }
-      
-      // 3. Start everything
-      initSite();
-      
-      // Get the current year for copyright note
-      const yearEl = document.getElementById("currentYear");
-      if (yearEl) {
-          yearEl.innerHTML = new Date().getFullYear();
-      }
+      await Promise.all([
+            loadComponent("header", "/components/header.html"),
+            loadComponent("footer", "/components/footer.html"),
+            loadComponent("preloader", "/components/preloader.html")
+      ]);
+      document.getElementById("currentYear").innerHTML = new Date().getFullYear(); // Get the current year for copyright note
       initAllAnimations(); // from animations.js
 
       // Remove selection on (Esc) key
