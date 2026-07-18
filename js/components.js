@@ -28,13 +28,16 @@ async function loadGlobalConfig() {
 function updateUIComponents() {
     if (!window.SITE_CONFIG) return;
 
-    // Update Footer safely
     const footerAddr = document.getElementById('display-address');
     if (footerAddr) {
-    const l1 = window.SITE_CONFIG.addr_line1 || '';
-    const l2 = window.SITE_CONFIG.addr_line2 || '';
-    const l3 = window.SITE_CONFIG.addr_line3 || '';
-    footerAddr.innerHTML = `${l1},<br>${l2},<br>${l3}`;
+        const l1 = window.SITE_CONFIG.addr_line1 || '';
+        const l2 = window.SITE_CONFIG.addr_line2 || '';
+        const city = window.SITE_CONFIG.addr_line3 || '';
+        const state = window.SITE_CONFIG.state || '';
+        const zip = window.SITE_CONFIG.zip || '';
+
+        footerAddr.innerHTML = `${l1},<br>${l2},<br>${city} - ${zip}, ${state}`;
+    }
 }
 }
 
