@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (el) {
             const res = await fetch(file);
             el.innerHTML = await res.text();
+            // Dispatch an event so other scripts know THIS component is ready
+              const event = new CustomEvent('componentLoaded', { detail: { id: id } });
+              document.dispatchEvent(event);
             }
       }
       await Promise.all([
