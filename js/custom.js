@@ -8,12 +8,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
       }
       
-      await Promise.all([
-            loadComponent("header", "/components/header.html"),
-            loadComponent("footer", "/components/footer.html"),
-            loadComponent("preloader", "/components/preloader.html")
-      ]);
-      
       document.getElementById("currentYear").innerHTML = new Date().getFullYear(); // Get the current year for copyright note
       initAllAnimations(); // from animations.js
 
@@ -362,8 +356,19 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
       }
 
-      (function () {    // Immediately Invoked Function Expression (IIFE) for automatically activating the scrolling effect for content revealing feature
-            // console.log('Auto-scrolled for content revealing feature');
+      (async function () {
+            // Wait for components to finish loading
+            await Promise.all([
+                  loadComponent("header", "/components/header.html"),
+                  loadComponent("footer", "/components/footer.html"),
+                  loadComponent("preloader", "/components/preloader.html")
+            ]);
+            
+            // Now that HTML exists, safely populate the data
+            if (typeof populateUI === 'function') {
+                  populateUI();
+                  console.log("UI populated successfully");
+            }
             window.scrollTo(0,0); // Resetting scroll to land at top of page, when navigating
             initPageFeatures();
             initScrollButtons();
