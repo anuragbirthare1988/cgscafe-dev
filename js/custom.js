@@ -1,14 +1,19 @@
 document.addEventListener("DOMContentLoaded", async () => {
       async function loadComponent(id, file) {
-          const el = document.getElementById(id);
-          if (el) {
-              const res = await fetch(file);
-              el.innerHTML = await res.text();
-              
-              // Dispatch an event so other scripts know THIS component is ready
-              const event = new CustomEvent('componentLoaded', { detail: { id: id } });
-              document.dispatchEvent(event);
+            console.log("Attempting to load:", id); // Add this
+          // Wait until the element exists in the DOM
+          let el = document.getElementById(id);
+          while (!el) {
+              await new Promise(resolve => setTimeout(resolve, 50)); // Wait 50ms
+              el = document.getElementById(id);
           }
+      
+          // Now that we are sure it exists:
+          const res = await fetch(file);
+          el.innerHTML = await res.text();
+          
+          // Dispatch event
+          document.dispatchEvent(new CustomEvent('componentLoaded', { detail: { id: id } }));
       }
 
       let loadedComponents = new Set();
