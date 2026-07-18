@@ -31,8 +31,11 @@ function updateUIComponents() {
     // Update Footer safely
     const footerAddr = document.getElementById('display-address');
     if (footerAddr) {
-        footerAddr.innerHTML = `${window.SITE_CONFIG.address_street || ''}<br>${window.SITE_CONFIG.address_area || ''}`;
-    }
+    const l1 = window.SITE_CONFIG.addr_line1 || '';
+    const l2 = window.SITE_CONFIG.addr_line2 || '';
+    const l3 = window.SITE_CONFIG.addr_line3 || '';
+    footerAddr.innerHTML = `${l1},<br>${l2},<br>${l3}`;
+}
 }
 
 // 1. Listen for the event
