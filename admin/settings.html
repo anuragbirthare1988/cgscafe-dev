@@ -1,76 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>CGS Site Settings</title>
-        <!-- 1. Dependencies MUST come first -->
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-        <script src="../js/supabase-config.js"></script>
-    </head>
-    <body>
-        <!-- admin/settings.html -->
-        <div class="settings-container">
-            <h2>Update Business Info</h2>
-            <form id="settings-form">
-                <label>Street:</label>
-                <input type="text" id="address_street" name="address_street">
-                
-                <label>Area:</label>
-                <input type="text" id="address_area" name="address_area">
-               
-                <label>Phone:</label>
-                <input type="text" id="phone" name="phone">
-                
-                <button type="submit">Update Settings</button>
-            </form>
-        </div>
-    
-        <script>
-             // Load existing settings when page opens
-            async function loadSettings() {
-                const { data } = await defaultSupabaseClient.from('site_settings').select('*');
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CGS Site Settings</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="../js/supabase-config.js"></script>
+    <style>
+        :root {
+            --bg-outer: #f4eae1; --bg-card: #282220; --text-gold: #dabba0;
+            --brand-orange: #d17533; --input-bg: #1e1917; --input-border: #3a3230;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--bg-outer); font-family: 'Montserrat', sans-serif; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px; }
+        .calc-container { width: 100%; max-width: 460px; }
+        .calc-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--text-gold); text-align: center; margin-bottom: 1.5rem; }
+        .compact-card { background-color: var(--bg-card); border-radius: 8px; padding: 1.5rem; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25); display: flex; flex-direction: column; gap: 1rem; }
+        .field-group { display: flex; flex-direction: column; gap: 0.4rem; }
+        .compact-label { color: var(--text-gold); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; }
+        .compact-control { width: 100%; background-color: var(--input-bg); border: 1px solid var(--input-border); color: #ffffff; padding: 0.65rem 0.85rem; border-radius: 6px; font-size: 0.95rem; }
+        .compact-control:focus { outline: none; border-color: var(--brand-orange); }
+        button { margin-top: 0.5rem; background-color: var(--brand-orange); color: white; border: none; padding: 0.8rem; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="calc-container">
+        <h1 class="calc-title">Business Settings</h1>
+        <form id="settings-form" class="compact-card">
+            <div class="field-group">
+                <label class="compact-label">Address Line 1</label>
+                <input type="text" id="addr_line1" class="compact-control">
+            </div>
+            <div class="field-group">
+                <label class="compact-label">Address Line 2</label>
+                <input type="text" id="addr_line2" class="compact-control">
+            </div>
+            <div class="field-group">
+                <label class="compact-label">Address Line 3</label>
+                <input type="text" id="addr_line3" class="compact-control">
+            </div>
+            <div class="field-group">
+                <label class="compact-label">Phone</label>
+                <input type="text" id="phone" class="compact-control">
+            </div>
+            <button type="submit">Update Settings</button>
+        </form>
+    </div>
+
+    <script>
+        async function loadSettings() {
+            const { data } = await defaultSupabaseClient.from('site_settings').select('*');
+            if (data) {
                 data.forEach(item => {
-                    if(document.getElementById(item.key)) {
-                        document.getElementById(item.key).value = item.value;
-                    }
+                    const el = document.getElementById(item.key);
+                    if(el) el.value = item.value;
                 });
             }
-            
-            // Save new settings
-            document.getElementById('settings-form').onsubmit = async (e) => {
-                e.preventDefault();
-            
-                const updates = [
-                    { key: 'address_street', value: document.getElementById('address_street').value },
-                    { key: 'address_area', value: document.getElementById('address_area').value },
-                    { key: 'phone', value: document.getElementById('phone').value }
-                ];
-            
-                let hasError = false;
-            
-                for (const item of updates) {
-                    const { error } = await defaultSupabaseClient
-                        .from('site_settings')
-                        .upsert(item, { onConflict: 'key' });
-            
-                    if (error) {
-                        console.error(`Error updating ${item.key}:`, error);
-                        hasError = true;
-                        // Break early or continue, depending on your preference
-                        break; 
-                    }
-                }
-            
-                // Only alert success if no errors occurred
-                if (hasError) {
-                    alert("Some settings failed to update. Please check the console for details.");
-                } else {
-                    alert("Settings updated successfully!");
-                }
-            };
-        
-            window.onload = loadSettings;
-        </script>
-    </body>
+        }
+
+        document.getElementById('settings-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const updates = [
+                { key: 'addr_line1', value: document.getElementById('addr_line1').value },
+                { key: 'addr_line2', value: document.getElementById('addr_line2').value },
+                { key: 'addr_line3', value: document.getElementById('addr_line3').value },
+                { key: 'phone', value: document.getElementById('phone').value }
+            ];
+
+            for (const item of updates) {
+                await defaultSupabaseClient.from('site_settings').upsert(item, { onConflict: 'key' });
+            }
+            alert("Settings updated successfully!");
+        };
+
+        window.onload = loadSettings;
+    </script>
+</body>
 </html>
