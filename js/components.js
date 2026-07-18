@@ -25,16 +25,26 @@ async function loadGlobalConfig() {
 
 // 2. Populate UI
 function populateUI() {
-    if (!window.SITE_CONFIG) return;
+    if (!window.SITE_CONFIG) {
+        console.warn("populateUI called, but window.SITE_CONFIG is empty!");
+        return;
+    }
+
+    console.log("Populating UI with data:", window.SITE_CONFIG);
 
     requestAnimationFrame(() => {
-        // 1. Footer Address (Full)
+        // 1. Footer Address
         const footerEl = document.getElementById('display-address');
         if (footerEl) {
-            footerEl.innerHTML = `${window.SITE_CONFIG['addr_line1'] || ''},<br>${window.SITE_CONFIG['addr_line2'] || ''},<br>${window.SITE_CONFIG['addr_line3'] || ''} (${window.SITE_CONFIG['state'] || ''}) - ${window.SITE_CONFIG['zip'] || ''}`;
+            // Log exactly what we are trying to inject
+            const addressString = `${window.SITE_CONFIG['addr_line1'] || 'MISSING'},<br>${window.SITE_CONFIG['addr_line2'] || 'MISSING'},<br>${window.SITE_CONFIG['addr_line3'] || 'MISSING'}`;
+            console.log("Injecting into display-address:", addressString);
+            footerEl.innerHTML = addressString;
+        } else {
+            console.error("Could not find element: display-address");
         }
 
-        // 2. Tiles & Simple Fields
+        // 2. Other fields
         const elements = {
             'display-short-address': window.SITE_CONFIG['short_address'],
             'display-timings': window.SITE_CONFIG['timings'],
@@ -43,24 +53,13 @@ function populateUI() {
 
         Object.keys(elements).forEach(id => {
             const el = document.getElementById(id);
-            if (el) el.innerText = elements[id] || "";
+            if (el) {
+                console.log(`Injecting into ${id}:`, elements[id]);
+                el.innerText = elements[id] || "DATA_MISSING";
+            } else {
+                console.warn(`Could not find element: ${id}`);
+            }
         });
-
-        // 3. Links & Interactive Elements
-        const mapLink = document.getElementById('map-link');
-        if (mapLink && window.SITE_CONFIG['maps_url']) {
-            mapLink.setAttribute('href', window.SITE_CONFIG['maps_url']);
-        }
-
-        const callLink = document.getElementById('call-link');
-        if (callLink && window.SITE_CONFIG['phone']) {
-            callLink.setAttribute('href', `tel:${window.SITE_CONFIG['phone'].replace(/[^0-9+]/g, '')}`);
-        }
-
-        const waLink = document.getElementById('whatsapp-link');
-        if (waLink && window.SITE_CONFIG['whatsapp_number']) {
-            waLink.setAttribute('href', `https://wa.me/${window.SITE_CONFIG['whatsapp_number'].replace(/[^0-9]/g, '')}?text=Hi,%20I%20am%20inquiring%20about%20CGS.`);
-        }
     });
 }
 // 3. Execution
