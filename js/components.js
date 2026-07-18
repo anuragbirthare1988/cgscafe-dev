@@ -66,3 +66,4 @@ function populateUI() {
 // 3. Execution
 window.addEventListener('configLoaded', populateUI);
 document.addEventListener('DOMContentLoaded', loadGlobalConfig);
+window.populateUI = populateUI;
