@@ -72,21 +72,3 @@
       </div>
    </div>
 </div>
-<script>
-    console.log("Footer script is running!"); // Check if this appears in console
-
-    window.addEventListener('configLoaded', () => {
-        console.log("Footer received configLoaded event!");
-        
-        // Use a direct approach to get data
-        const addr = window.SITE_CONFIG.address_street + "<br>" + window.SITE_CONFIG.address_area;
-        const el = document.getElementById('display-address');
-        
-        if (el) {
-            el.innerHTML = addr;
-            console.log("Footer text updated to:", addr);
-        } else {
-            console.error("Element #display-address not found!");
-        }
-    });
-</script>
