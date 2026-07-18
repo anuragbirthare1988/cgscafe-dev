@@ -24,7 +24,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
       });
       
-      document.getElementById("currentYear").innerHTML = new Date().getFullYear(); // Get the current year for copyright note
+      // Get the current year for copyright note
+      const yearEl = document.getElementById("currentYear");
+      if (yearEl) {
+          yearEl.innerHTML = new Date().getFullYear();
+      }
       initAllAnimations(); // from animations.js
 
       // Remove selection on (Esc) key
