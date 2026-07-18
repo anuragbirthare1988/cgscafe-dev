@@ -49,6 +49,7 @@ function populateUI() {
     update('display-short-address', window.SITE_CONFIG['short_address']);
     update('display-timings', window.SITE_CONFIG['timings']);
     update('display-phone', window.SITE_CONFIG['phone']);
+    console.log("PHONE NUMBER IS :: ", window.SITE_CONFIG['phone']);
 
     // C. Links
     if (window.SITE_CONFIG['maps_url']) document.getElementById('map-link')?.setAttribute('href', window.SITE_CONFIG['maps_url']);
