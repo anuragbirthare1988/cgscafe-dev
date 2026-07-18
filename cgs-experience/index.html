@@ -56,6 +56,15 @@
    <meta property="og:description" content="Discover what makes CGS Cafe special.">
    <meta property="og:url" content="https://cgscafe.in/cgs-experience/">
    <meta property="og:image" content="https://cgscafe.in/images/cgs-preview.webp">
+
+	<!-- Dependencies First -->
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+	<script src="../js/supabase-config.js"></script>
+	
+	<!-- Global Scripts (Load these before admin.js so they are ready) -->
+	<script src="../js/custom.js"></script>
+	<script src="../js/components.js"></script> <!-- Updates the UI -->
+	<script src="../js/animations.js"></script>
 </head>
 <body>
    <!-- Header Section -->
@@ -173,7 +182,5 @@
 	<!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
 	<div id="preloader"></div>
 
-	<script src="../js/custom.js"></script>
-	<script src="../js/animations.js"></script>
 </body>
 </html>
