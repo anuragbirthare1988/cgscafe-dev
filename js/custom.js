@@ -136,7 +136,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             //   console.log(params, isDevEnv);
             const devParam = params.get("dev");
             if (isDevEnv) {
-                  document.getElementById("dev-badge").style.display = "block";
+                  const devBadge = document.getElementById("dev-badge");
+                  if (devBadge) {
+                      devBadge.style.display = "block";
+                  } else {
+                      console.warn("Element 'dev-badge' not found in DOM yet.");
+                  }
             }
       }
 
