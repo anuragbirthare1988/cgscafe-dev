@@ -391,8 +391,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       (function () {    // Immediately Invoked Function Expression (IIFE) for automatically activating the scrolling effect for content revealing feature
             // console.log('Auto-scrolled for content revealing feature');
+            await Promise.all([
+              loadComponent("header", "/components/header.html"),
+              loadComponent("footer", "/components/footer.html"),
+              loadComponent("preloader", "/components/preloader.html")
+            ]);
             window.scrollTo(0,0); // Resetting scroll to land at top of page, when navigating
             initPageFeatures();
             initScrollButtons();
+            if (typeof populateUI === 'function') {
+              populateUI();
+            }
       })();
 });
