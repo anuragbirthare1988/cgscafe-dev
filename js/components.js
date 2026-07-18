@@ -1,4 +1,3 @@
-// Add a status flag
 window.CONFIG_READY = false;
 
 async function loadGlobalConfig() {
@@ -12,44 +11,28 @@ async function loadGlobalConfig() {
             .from('site_settings')
             .select('key, value');
 
-        if (error) {
-            console.error("Supabase Query Error:", error);
-        } else if (!data || data.length === 0) {
-            console.warn("No data found in 'site_settings'.");
-        } else {
+        if (data) {
             window.SITE_CONFIG = {};
-            data.forEach(item => {
-                window.SITE_CONFIG[item.key] = item.value;
-            });
-            window.CONFIG_READY = true; // Set flag to true
+            data.forEach(item => { window.SITE_CONFIG[item.key] = item.value; });
+            window.CONFIG_READY = true;
             window.dispatchEvent(new Event('configLoaded'));
         }
     } catch (e) {
-        console.error("Critical error in loadGlobalConfig:", e);
+        console.error("Config Load Error:", e);
     }
-}
-
-function getSiteConfig(key) {
-    return (window.SITE_CONFIG && window.SITE_CONFIG[key]) ? window.SITE_CONFIG[key] : '';
 }
 
 function populateUI() {
-    // Check our new flag instead of checking the object itself
-    if (!window.CONFIG_READY) {
-        console.log("Config not ready, retrying...");
-        setTimeout(populateUI, 300); // Retry slightly slower to allow data to land
-        return;
-    }
+    // If not ready, stop and wait for the event
+    if (!window.CONFIG_READY) return;
 
-    console.log("Populating UI with:", window.SITE_CONFIG);
-
-    // Footer Address
+    // A. Footer
     const footerAddr = document.getElementById('display-address');
     if (footerAddr) {
-        footerAddr.innerHTML = `${getSiteConfig('addr_line1')},<br>${getSiteConfig('addr_line2')},<br>${getSiteConfig('addr_line3')} (${getSiteConfig('state')}) - ${getSiteConfig('zip')}`;
+        footerAddr.innerHTML = `${window.SITE_CONFIG['addr_line1']},<br>${window.SITE_CONFIG['addr_line2']},<br>${window.SITE_CONFIG['addr_line3']} (${window.SITE_CONFIG['state']}) - ${window.SITE_CONFIG['zip']}`;
     }
 
-    // Tiles (ID Mapping)
+    // B. Tiles
     const elements = {
         'display-short-address': 'short_address',
         'display-timings': 'timings',
@@ -58,29 +41,28 @@ function populateUI() {
 
     Object.keys(elements).forEach(id => {
         const el = document.getElementById(id);
-        if (el) {
-            const val = getSiteConfig(elements[id]);
-            if (val) el.textContent = val;
+        if (el && window.SITE_CONFIG[elements[id]]) {
+            el.textContent = window.SITE_CONFIG[elements[id]];
         }
     });
 
-    // Links
+    // C. Links
     const mapLink = document.getElementById('map-link');
-    if (mapLink && getSiteConfig('maps_url')) mapLink.setAttribute('href', getSiteConfig('maps_url'));
+    if (mapLink && window.SITE_CONFIG['maps_url']) mapLink.setAttribute('href', window.SITE_CONFIG['maps_url']);
 
     const callLink = document.getElementById('call-link');
-    if (callLink && getSiteConfig('phone')) {
-        callLink.setAttribute('href', `tel:${getSiteConfig('phone').replace(/[^0-9+]/g, '')}`);
+    if (callLink && window.SITE_CONFIG['phone']) {
+        callLink.setAttribute('href', `tel:${window.SITE_CONFIG['phone'].replace(/[^0-9+]/g, '')}`);
     }
 
     const waLink = document.getElementById('whatsapp-link');
-    if (waLink && getSiteConfig('whatsapp_number')) {
-        waLink.setAttribute('href', `https://wa.me/${getSiteConfig('whatsapp_number').replace(/[^0-9]/g, '')}?text=Hi, I am inquiring about CGS.`);
+    if (waLink && window.SITE_CONFIG['whatsapp_number']) {
+        waLink.setAttribute('href', `https://wa.me/${window.SITE_CONFIG['whatsapp_number'].replace(/[^0-9]/g, '')}?text=Hi,%20I%20am%20inquiring%20about%20CGS.`);
     }
 }
 
-// Ensure init happens
-document.addEventListener('DOMContentLoaded', () => {
-    loadGlobalConfig();
-    populateUI(); 
-});
+// Listen ONLY for the event to ensure we don't fire early
+window.addEventListener('configLoaded', populateUI);
+
+// Trigger Load
+loadGlobalConfig();
