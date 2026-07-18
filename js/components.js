@@ -41,6 +41,11 @@ function populateUI() {
     }
 
     // 2. Sticky Header / Other Pages
+    // Add the new shortcut address mapping
+    const shortAddrEl = document.getElementById('display-short-address');
+    if (shortAddrEl) {
+        shortAddrEl.textContent = getSiteConfig('short_address');
+    }
     // Simply select elements by ID on ANY page
     const phoneEl = document.getElementById('display-phone');
     if (phoneEl) phoneEl.textContent = getSiteConfig('phone');
