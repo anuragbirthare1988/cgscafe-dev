@@ -18,52 +18,52 @@ async function loadGlobalConfig() {
         data.forEach(item => { window.SITE_CONFIG[item.key] = item.value; });
         window.CONFIG_READY = true;
         console.log("Config loaded into memory:", window.SITE_CONFIG);
+        // Dispatch to trigger populate
         window.dispatchEvent(new Event('configLoaded'));
     }
 }
 
-// 2. Populate UI (Revised for Persistence)
+// 2. Populate UI
 function populateUI() {
     if (!window.SITE_CONFIG) return;
 
-    // A. Footer Address (Full)
-    const footerEl = document.getElementById('display-address');
-    if (footerEl && footerEl.innerHTML.trim() === "") {
-        footerEl.innerHTML = `${window.SITE_CONFIG['addr_line1'] || ''},<br>${window.SITE_CONFIG['addr_line2'] || ''},<br>${window.SITE_CONFIG['addr_line3'] || ''} (${window.SITE_CONFIG['state'] || ''}) - ${window.SITE_CONFIG['zip'] || ''}`;
-    }
+    requestAnimationFrame(() => {
+        // 1. Footer Address (Full)
+        const footerEl = document.getElementById('display-address');
+        if (footerEl) {
+            footerEl.innerHTML = `${window.SITE_CONFIG['addr_line1'] || ''},<br>${window.SITE_CONFIG['addr_line2'] || ''},<br>${window.SITE_CONFIG['addr_line3'] || ''} (${window.SITE_CONFIG['state'] || ''}) - ${window.SITE_CONFIG['zip'] || ''}`;
+        }
 
-    // B. Tiles & Simple Fields
-    const elements = {
-        'display-short-address': window.SITE_CONFIG['short_address'],
-        'display-timings': window.SITE_CONFIG['timings'],
-        'display-phone': window.SITE_CONFIG['phone']
-    };
+        // 2. Tiles & Simple Fields
+        const elements = {
+            'display-short-address': window.SITE_CONFIG['short_address'],
+            'display-timings': window.SITE_CONFIG['timings'],
+            'display-phone': window.SITE_CONFIG['phone']
+        };
 
-    Object.keys(elements).forEach(id => {
-        const el = document.getElementById(id);
-        if (el && el.innerText.trim() === "") {
-            el.innerText = elements[id] || "";
+        Object.keys(elements).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerText = elements[id] || "";
+        });
+
+        // 3. Links & Interactive Elements
+        const mapLink = document.getElementById('map-link');
+        if (mapLink && window.SITE_CONFIG['maps_url']) {
+            mapLink.setAttribute('href', window.SITE_CONFIG['maps_url']);
+        }
+
+        const callLink = document.getElementById('call-link');
+        if (callLink && window.SITE_CONFIG['phone']) {
+            callLink.setAttribute('href', `tel:${window.SITE_CONFIG['phone'].replace(/[^0-9+]/g, '')}`);
+        }
+
+        const waLink = document.getElementById('whatsapp-link');
+        if (waLink && window.SITE_CONFIG['whatsapp_number']) {
+            waLink.setAttribute('href', `https://wa.me/${window.SITE_CONFIG['whatsapp_number'].replace(/[^0-9]/g, '')}?text=Hi,%20I%20am%20inquiring%20about%20CGS.`);
         }
     });
-
-    // C. Links
-    const mapLink = document.getElementById('map-link');
-    if (mapLink) mapLink.setAttribute('href', window.SITE_CONFIG['maps_url'] || '#');
-
-    const callLink = document.getElementById('call-link');
-    if (callLink) callLink.setAttribute('href', `tel:${(window.SITE_CONFIG['phone'] || '').replace(/[^0-9+]/g, '')}`);
-
-    const waLink = document.getElementById('whatsapp-link');
-    if (waLink) waLink.setAttribute('href', `https://wa.me/${(window.SITE_CONFIG['whatsapp_number'] || '').replace(/[^0-9]/g, '')}?text=Hi,%20I%20am%20inquiring%20about%20CGS.`);
 }
-
-// 3. The Observer (Prevents content from staying empty if components reload)
-const observer = new MutationObserver(() => {
-    if (window.CONFIG_READY) populateUI();
-});
-observer.observe(document.body, { childList: true, subtree: true });
-
-// 4. Execution
+// 3. Execution
 window.addEventListener('configLoaded', populateUI);
 document.addEventListener('DOMContentLoaded', loadGlobalConfig);
 window.populateUI = populateUI;
