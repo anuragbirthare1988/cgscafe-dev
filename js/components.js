@@ -1,6 +1,7 @@
 window.CONFIG_READY = false;
 
 async function loadGlobalConfig() {
+    // Wait for Supabase client
     if (typeof defaultSupabaseClient === 'undefined') {
         setTimeout(loadGlobalConfig, 100);
         return;
@@ -11,24 +12,32 @@ async function loadGlobalConfig() {
             .from('site_settings')
             .select('key, value');
 
+        if (error) {
+            console.error("Supabase Query Error:", error);
+            return;
+        }
+
         if (data) {
             window.SITE_CONFIG = {};
             data.forEach(item => { window.SITE_CONFIG[item.key] = item.value; });
             window.CONFIG_READY = true;
+            console.log("Config loaded successfully.");
             window.dispatchEvent(new Event('configLoaded'));
         }
     } catch (e) {
-        console.error("Config Load Error:", e);
+        console.error("Critical Config Load Error:", e);
     }
 }
 
 function populateUI() {
-    // If not ready, stop and wait for the event
+    // If not ready, stop (the event listener will trigger this again later)
     if (!window.CONFIG_READY) return;
 
-    // A. Footer
+    console.log("Populating UI elements...");
+
+    // A. Footer Address
     const footerAddr = document.getElementById('display-address');
-    if (footerAddr) {
+    if (footerAddr && window.SITE_CONFIG['addr_line1']) {
         footerAddr.innerHTML = `${window.SITE_CONFIG['addr_line1']},<br>${window.SITE_CONFIG['addr_line2']},<br>${window.SITE_CONFIG['addr_line3']} (${window.SITE_CONFIG['state']}) - ${window.SITE_CONFIG['zip']}`;
     }
 
@@ -41,8 +50,11 @@ function populateUI() {
 
     Object.keys(elements).forEach(id => {
         const el = document.getElementById(id);
-        if (el && window.SITE_CONFIG[elements[id]]) {
-            el.textContent = window.SITE_CONFIG[elements[id]];
+        if (el) {
+            const val = window.SITE_CONFIG[elements[id]];
+            if (val) el.textContent = val;
+        } else {
+            console.warn(`Element with ID '${id}' not found in DOM.`);
         }
     });
 
@@ -61,8 +73,13 @@ function populateUI() {
     }
 }
 
-// Listen ONLY for the event to ensure we don't fire early
+// 1. Listen for the custom event
 window.addEventListener('configLoaded', populateUI);
 
-// Trigger Load
+// 2. Initial trigger
 loadGlobalConfig();
+
+// 3. Safety Fallback: Populate if data arrives after DOM load
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.CONFIG_READY) populateUI();
+});
