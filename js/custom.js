@@ -1,42 +1,18 @@
 document.addEventListener("DOMContentLoaded", async () => {
-      async function loadComponent(id, file) {
-            console.log("Attempting to load:", id); // Add this
-          // Wait until the element exists in the DOM
-          let el = document.getElementById(id);
-          while (!el) {
-              await new Promise(resolve => setTimeout(resolve, 50)); // Wait 50ms
-              el = document.getElementById(id);
-          }
-      
-          // Now that we are sure it exists:
-          const res = await fetch(file);
-          el.innerHTML = await res.text();
-          
-          // Dispatch event
-          document.dispatchEvent(new CustomEvent('componentLoaded', { detail: { id: id } }));
+      async function loadComponent(id, file) {  // Load the header, footer and miscellaneous UI blocks dynamically to all the pages 
+      const el = document.getElementById(id);
+      // console.log(document.getElementById(id));
+      if (el) {
+            const res = await fetch(file);
+            el.innerHTML = await res.text();
+            }
       }
-
-      let loadedComponents = new Set();
-
-      document.addEventListener('componentLoaded', (e) => {
-          loadedComponents.add(e.detail.id);
-          
-          // Check if header, footer, and preloader are all here
-          if (loadedComponents.has('header') && 
-              loadedComponents.has('footer') && 
-              loadedComponents.has('preloader')) {
-              
-              console.log("All components loaded! Populating data...");
-              populateUI(); // This function from your other file
-          }
-      });
-      
-      // Get the current year for copyright note
-      const yearEl = document.getElementById("currentYear");
-      if (yearEl) {
-            yearEl.innerHTML = new Date().getFullYear();
-      }
-
+      await Promise.all([
+            loadComponent("header", "/components/header.html"),
+            loadComponent("footer", "/components/footer.html"),
+            loadComponent("preloader", "/components/preloader.html")
+      ]);
+      document.getElementById("currentYear").innerHTML = new Date().getFullYear(); // Get the current year for copyright note
       initAllAnimations(); // from animations.js
 
       // Remove selection on (Esc) key
@@ -141,12 +117,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             //   console.log(params, isDevEnv);
             const devParam = params.get("dev");
             if (isDevEnv) {
-                  const devBadge = document.getElementById("dev-badge");
-                  if (devBadge) {
-                      devBadge.style.display = "block";
-                  } else {
-                      console.warn("Element 'dev-badge' not found in DOM yet.");
-                  }
+                  document.getElementById("dev-badge").style.display = "block";
             }
       }
 
@@ -389,30 +360,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
       }
 
-      (async function () {
-          // 1. Load components AND wait for Config simultaneously
-          await Promise.all([
-              Promise.all([
-                  loadComponent("header", "/components/header.html"),
-                  loadComponent("footer", "/components/footer.html"),
-                  loadComponent("preloader", "/components/preloader.html")
-              ]),
-              // This ensures we wait for the Supabase data
-              new Promise((resolve) => {
-                  if (window.CONFIG_READY) resolve();
-                  else window.addEventListener('configLoaded', resolve);
-              })
-          ]);
-      
-          // 2. NOW it is safe to populate
-          if (typeof window.populateUI === 'function') {
-              window.populateUI();
-              console.log("UI populated after components AND data were ready.");
-          }
-      
-          // 3. Page initialization
-          window.scrollTo(0, 0);
-          initPageFeatures();
-          initScrollButtons();
+      (function () {    // Immediately Invoked Function Expression (IIFE) for automatically activating the scrolling effect for content revealing feature
+            // console.log('Auto-scrolled for content revealing feature');
+            window.scrollTo(0,0); // Resetting scroll to land at top of page, when navigating
+            initPageFeatures();
+            initScrollButtons();
       })();
 });
