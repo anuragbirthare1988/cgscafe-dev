@@ -1,11 +1,8 @@
-/**
- * Global Configuration & UI Management for CGS Cafe
- */
+// Add a status flag
+window.CONFIG_READY = false;
 
-// 1. Fetch data from Supabase
 async function loadGlobalConfig() {
     if (typeof defaultSupabaseClient === 'undefined') {
-        // Wait if Supabase is still loading
         setTimeout(loadGlobalConfig, 100);
         return;
     }
@@ -24,7 +21,7 @@ async function loadGlobalConfig() {
             data.forEach(item => {
                 window.SITE_CONFIG[item.key] = item.value;
             });
-            // Dispatch event so UI knows data is ready
+            window.CONFIG_READY = true; // Set flag to true
             window.dispatchEvent(new Event('configLoaded'));
         }
     } catch (e) {
@@ -32,26 +29,27 @@ async function loadGlobalConfig() {
     }
 }
 
-// 2. Safely retrieve values
 function getSiteConfig(key) {
-    return window.SITE_CONFIG ? (window.SITE_CONFIG[key] || '') : '';
+    return (window.SITE_CONFIG && window.SITE_CONFIG[key]) ? window.SITE_CONFIG[key] : '';
 }
 
-// 3. Populate UI with retry mechanism to prevent "Loading..." hanging
 function populateUI() {
-    // Retry if data hasn't arrived yet
-    if (!window.SITE_CONFIG) {
-        setTimeout(populateUI, 200);
+    // Check our new flag instead of checking the object itself
+    if (!window.CONFIG_READY) {
+        console.log("Config not ready, retrying...");
+        setTimeout(populateUI, 300); // Retry slightly slower to allow data to land
         return;
     }
 
-    // A. Footer Address
+    console.log("Populating UI with:", window.SITE_CONFIG);
+
+    // Footer Address
     const footerAddr = document.getElementById('display-address');
     if (footerAddr) {
         footerAddr.innerHTML = `${getSiteConfig('addr_line1')},<br>${getSiteConfig('addr_line2')},<br>${getSiteConfig('addr_line3')} (${getSiteConfig('state')}) - ${getSiteConfig('zip')}`;
     }
 
-    // B. Tiles
+    // Tiles (ID Mapping)
     const elements = {
         'display-short-address': 'short_address',
         'display-timings': 'timings',
@@ -60,45 +58,29 @@ function populateUI() {
 
     Object.keys(elements).forEach(id => {
         const el = document.getElementById(id);
-        const val = getSiteConfig(elements[id]);
-        if (el && val) el.textContent = val;
+        if (el) {
+            const val = getSiteConfig(elements[id]);
+            if (val) el.textContent = val;
+        }
     });
 
-    // C. Dynamic Links
+    // Links
     const mapLink = document.getElementById('map-link');
-    if (mapLink) {
-        const url = getSiteConfig('maps_url');
-        if (url) mapLink.setAttribute('href', url);
-    }
+    if (mapLink && getSiteConfig('maps_url')) mapLink.setAttribute('href', getSiteConfig('maps_url'));
 
     const callLink = document.getElementById('call-link');
-    if (callLink) {
-        const phone = getSiteConfig('phone');
-        if (phone) {
-            // Clean phone: keep only numbers and +
-            const phoneRaw = phone.replace(/[^0-9+]/g, '');
-            callLink.setAttribute('href', `tel:${phoneRaw}`);
-        }
+    if (callLink && getSiteConfig('phone')) {
+        callLink.setAttribute('href', `tel:${getSiteConfig('phone').replace(/[^0-9+]/g, '')}`);
     }
 
     const waLink = document.getElementById('whatsapp-link');
-    if (waLink) {
-        const waNum = getSiteConfig('whatsapp_number');
-        if (waNum) {
-            // Clean waNum: keep only numbers
-            const cleanWa = waNum.replace(/[^0-9]/g, '');
-            waLink.setAttribute('href', `https://wa.me/${cleanWa}?text=Hi,%20I%20am%20inquiring%20about%20CGS.`);
-        }
+    if (waLink && getSiteConfig('whatsapp_number')) {
+        waLink.setAttribute('href', `https://wa.me/${getSiteConfig('whatsapp_number').replace(/[^0-9]/g, '')}?text=Hi, I am inquiring about CGS.`);
     }
-
-    console.log("Global UI components fully populated.");
 }
 
-// 4. Initialization
-window.addEventListener('configLoaded', populateUI);
-
+// Ensure init happens
 document.addEventListener('DOMContentLoaded', () => {
     loadGlobalConfig();
-    // Also trigger attempt to populate (in case config was already loaded)
-    populateUI();
+    populateUI(); 
 });
