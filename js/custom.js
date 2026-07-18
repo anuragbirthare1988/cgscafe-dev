@@ -1,25 +1,28 @@
 document.addEventListener("DOMContentLoaded", async () => {
-      async function loadComponent(id, file) {  // Load the header, footer and miscellaneous UI blocks dynamically to all the pages 
-      const el = document.getElementById(id);
-      // console.log(document.getElementById(id));
-      if (el) {
-            const res = await fetch(file);
-            el.innerHTML = await res.text();
-            }
+      async function loadComponent(id, file) {
+          const el = document.getElementById(id);
+          if (el) {
+              const res = await fetch(file);
+              el.innerHTML = await res.text();
+              
+              // Dispatch an event so other scripts know THIS component is ready
+              const event = new CustomEvent('componentLoaded', { detail: { id: id } });
+              document.dispatchEvent(event);
+          }
       }
-      async function loadComponent(id, file) {  // Load the header, footer and miscellaneous UI blocks dynamically to all the pages 
-      const el = document.getElementById(id);
-      // console.log(document.getElementById(id));
-      if (el) {
-            const res = await fetch(file);
-            el.innerHTML = await res.text();
-            }
-      }
-      await Promise.all([
-            loadComponent("header", "/components/header.html"),
-            loadComponent("footer", "/components/footer.html"),
-            loadComponent("preloader", "/components/preloader.html")
-      ]);
+      let loadedComponents = new Set();
+      document.addEventListener('componentLoaded', (e) => {
+          loadedComponents.add(e.detail.id);
+          
+          // Check if header, footer, and preloader are all here
+          if (loadedComponents.has('header') && 
+              loadedComponents.has('footer') && 
+              loadedComponents.has('preloader')) {
+              
+              console.log("All components loaded! Populating data...");
+              populateUI(); // This function from your other file
+          }
+      });
       
       document.getElementById("currentYear").innerHTML = new Date().getFullYear(); // Get the current year for copyright note
       initAllAnimations(); // from animations.js
