@@ -60,4 +60,6 @@ function populateUI() {
 window.addEventListener('configLoaded', populateUI);
 
 // Start the fetch
-loadGlobalConfig();
+loadGlobalConfig().then(() => {
+    populateUI();
+});
