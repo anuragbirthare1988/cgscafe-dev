@@ -32,7 +32,6 @@ function updateUIComponents() {
     const footerAddr = document.getElementById('display-address');
     if (footerAddr) {
         footerAddr.innerHTML = `${window.SITE_CONFIG.address_street || ''}<br>${window.SITE_CONFIG.address_area || ''}`;
-        console.log("Footer updated via components.js");
     }
 }
 
