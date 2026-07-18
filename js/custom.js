@@ -3,26 +3,24 @@ document.addEventListener("DOMContentLoaded", async () => {
           const el = document.getElementById(id);
           if (el) {
               const res = await fetch(file);
-              el.innerHTML = await res.text();
-              
-              // Dispatch an event so other scripts know THIS component is ready
-              const event = new CustomEvent('componentLoaded', { detail: { id: id } });
-              document.dispatchEvent(event);
+              const html = await res.text();
+              el.innerHTML = html; // This injects your header/footer/preloader
           }
       }
-      let loadedComponents = new Set();
-      document.addEventListener('componentLoaded', (e) => {
-          loadedComponents.add(e.detail.id);
-          
-          // Check if header, footer, and preloader are all here
-          if (loadedComponents.has('header') && 
-              loadedComponents.has('footer') && 
-              loadedComponents.has('preloader')) {
-              
-              console.log("All components loaded! Populating data...");
-              populateUI(); // This function from your other file
+      async function initPage() {
+          // Load all components
+          await Promise.all([
+              loadComponent("header", "/components/header.html"),
+              loadComponent("footer", "/components/footer.html"),
+              loadComponent("preloader", "/components/preloader.html")
+          ]);
+      
+          // NOW that components exist, populate the data
+          if (typeof window.populateUI === 'function') {
+              window.populateUI();
           }
-      });
+      }
+      initPage();
       
       // Get the current year for copyright note
       const yearEl = document.getElementById("currentYear");
