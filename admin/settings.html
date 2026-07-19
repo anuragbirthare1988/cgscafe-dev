@@ -51,6 +51,18 @@
             overflow: auto;
         }
         
+        /* ADD THIS MOBILE STACKING LOGIC */
+        @media (max-width: 768px) {
+            .compact-card { 
+                grid-template-columns: 1fr !important; /* Forces 1 column */
+            }
+            .full-width, 
+            .field-group, 
+            button { 
+                grid-column: span 1 !important; /* Forces elements to span only 1 cell */
+            }
+        }
+        
         /* Spanning and Spacing */
         .full-width { grid-column: span 3; }
         
