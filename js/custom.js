@@ -369,14 +369,16 @@ document.addEventListener("DOMContentLoaded", async () => {
               loadComponent("preloader", "/components/preloader.html")
           ]);
       
-          // 2. Ensure populateUI triggers if data is already loaded
-          // Or if it arrives shortly after this, the 'configLoaded' event 
-          // listener in components.js will pick it up automatically.
-          if (window.SITE_CONFIG) {
+          // 2. Add a tiny delay to ensure the browser has finished rendering the new HTML
+          await new Promise(resolve => setTimeout(resolve, 50));
+      
+          // 3. Populate now that all elements (Header, Footer, Page) are in the DOM
+          if (typeof populateUI === 'function') {
               populateUI();
+              console.log("UI populated after components loaded.");
           }
       
-          // 3. Page initialization
+          // 4. Page initialization
           window.scrollTo(0, 0);
           initPageFeatures();
           initScrollButtons();
