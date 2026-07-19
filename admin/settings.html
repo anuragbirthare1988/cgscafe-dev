@@ -48,6 +48,7 @@ e<!DOCTYPE html>
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
             gap: 1rem; 
+            overflow: auto;
         }
         
         /* Spanning and Spacing */
@@ -69,46 +70,46 @@ e<!DOCTYPE html>
         <form id="settings-form" class="compact-card">
             <!-- ADDRESS FIELDS -->
             <div class="field-group">
-                <label class="compact-label" id="addr_line1">Address Line 1</label>
+                <label class="compact-label" for="addr_line1">Address Line 1</label>
                 <input type="text" id="addr_line1" class="compact-control" required>
             </div>
             <div class="field-group">
-                <label class="compact-label" id="addr_line2">Address Line 2</label>
+                <label class="compact-label" for="addr_line2">Address Line 2</label>
                 <input type="text" id="addr_line2" class="compact-control" required>
             </div>
             <div class="field-group">
-                <label class="compact-label" id="short_address">Short Address (For Header/Quick View)</label>
+                <label class="compact-label" for="short_address">Short Address (For Header/Quick View)</label>
                 <input type="text" id="short_address" class="compact-control" placeholder="e.g. Scheme 59, Indore" required>
             </div>
             <div class="field-group">
-                <label class="compact-label" id="addr_line3">City</label>
+                <label class="compact-label" for="addr_line3">City</label>
                 <input type="text" id="addr_line3" class="compact-control" required>
             </div>
         
             <!-- NEW FIELDS -->
             <div class="field-group">
-                <label class="compact-label" id="state">State</label>
+                <label class="compact-label" for="state">State</label>
                 <select id="state" class="compact-control" required>
                     <option value="">Select State</option>
                     <option value="Madhya Pradesh">Madhya Pradesh</option>
                 </select>
             </div>
             <div class="field-group">
-                <label class="compact-label" id="zip">ZIP Code</label>
+                <label class="compact-label" for="zip">ZIP Code</label>
                 <input type="text" id="zip" class="compact-control" 
                        pattern="\d{6}" maxlength="6" 
                        placeholder="6-digit code" required>
             </div>
             <div class="field-group">
-                <label class="compact-label" id="maps_url">Google Maps URL</label>
+                <label class="compact-label" for="maps_url">Google Maps URL</label>
                 <input type="url" id="maps_url" class="compact-control" placeholder="https://maps.app.goo.gl/...">
             </div>
             <div class="field-group">
-                <label class="compact-label" id="phone">Phone</label>
+                <label class="compact-label" for="phone">Phone</label>
                 <input type="text" id="phone" class="compact-control" required>
             </div>
             <div class="field-group">
-                <label class="compact-label" id="whatsapp_number">WhatsApp Number (with country code, no symbols)</label>
+                <label class="compact-label" for="whatsapp_number">WhatsApp Number (with country code, no symbols)</label>
                 <input type="text" id="whatsapp_number" class="compact-control" placeholder="918390540094">
             </div>
             <div class="setting-field">
@@ -116,7 +117,7 @@ e<!DOCTYPE html>
                 <textarea id="whatsapp_message" class="compact-control" name="whatsapp_message" rows="4" placeholder="Hi!&#10;I just visited your website and want to connect to explore CGS..."></textarea>
             </div>
             <div class="field-group">
-                <label class="compact-label" id="timings">Business Timings</label>
+                <label class="compact-label" for="timings">Business Timings</label>
                 <input type="text" id="timings" class="compact-control" placeholder="e.g. 10:00 AM - 11:00 PM" required>
             </div>
             
