@@ -382,12 +382,13 @@ document.addEventListener("DOMContentLoaded", async () => {
           } catch (error) {
               console.error("Initialization failed:", error);
           } finally {
-              // 3. FORCE REMOVAL: This runs whether the code succeeds or fails
-              const preloader = document.getElementById('preloader');
-              if (preloader) {
-                  preloader.style.display = 'none'; // Or your specific hide class
-                  preloader.remove(); 
-              }
+            // 3. FORCE HIDE: Keep the element in the DOM but hide it
+            const preloader = document.getElementById('preloader');
+            if (preloader) {
+              // Use your existing hide logic if you have one (e.g., preloader.classList.add('hidden'))
+              // Or default to display: none
+              preloader.style.display = 'none'; 
+            }
           }
       })();
 });
