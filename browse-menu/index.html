@@ -141,17 +141,12 @@
    <footer class="footer" id="footer"></footer>
 	<!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
 	<div id="preloader"></div>
-
-	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	
     <script>
-		// 1. Initialize Supabase Client
-		const SUPABASE_URL = 'https://aastenbsntpdxknonyyr.supabase.co';
-		const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhc3RlbmJzbnRwZHhrbm9ueXlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjk4MTEsImV4cCI6MjA5NzgwNTgxMX0.C0lfo9Xawq5jvDetw1V-fozdr2jkfwB2Ulk3JMyBhps';
-		
 		// Use the global 'supabase' provided by the script tag
 		const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-		// 2. Data Loading Function
+		// Data Loading Function
 		async function loadDynamicMenu() {
 			try {
 				const { data, error } = await client.from("live_menu").select("menu_json").single();
@@ -165,7 +160,7 @@
 			}
 		}
 
-		// 3. Rendering Function
+		// Rendering Function
 		function renderCategories(categories) {
 			const bevTarget = document.getElementById('tab-beverages');
 			const bitesTarget = document.getElementById('tab-bites');
@@ -226,7 +221,7 @@
 			});
 		}
 
-		// 4. Initialize
+		// Initialize
 		window.addEventListener("DOMContentLoaded", loadDynamicMenu);
 	</script>
 
