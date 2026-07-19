@@ -7,6 +7,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             el.innerHTML = await res.text();
             }
       }
+
+      await Promise.all([
+            loadComponent("header", "/components/header.html"),
+            loadComponent("footer", "/components/footer.html"),
+            loadComponent("preloader", "/components/preloader.html")
+      ]);
       
       // Get the current year for copyright note
       const yearEl = document.getElementById("currentYear");
@@ -364,16 +370,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
       }
 
-      (async function () {
-            // 1. Wait for HTML components
-            await Promise.all([
-                  loadComponent("header", "/components/header.html"),
-                  loadComponent("footer", "/components/footer.html"),
-                  loadComponent("preloader", "/components/preloader.html")
-            ]);
-            
-            // 2. Page initialization
-            window.scrollTo(0, 0);
+      (async function () {      // Immediately Invoked Function Expression (IIFE) for automatically activating the scrolling effect for content revealing feature
+            window.scrollTo(0, 0); // Resetting scroll to land at top of page, when navigating
             initPageFeatures();
             initScrollButtons();
       })();
