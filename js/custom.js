@@ -365,30 +365,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       (async function () {
-          try {
-              // 1. Wait for HTML components
-              await Promise.all([
+            // 1. Wait for HTML components
+            await Promise.all([
                   loadComponent("header", "/components/header.html"),
                   loadComponent("footer", "/components/footer.html"),
                   loadComponent("preloader", "/components/preloader.html")
-              ]);
-      
-              // 2. Page initialization
-              window.scrollTo(0, 0);
-              initPageFeatures();
-              initScrollButtons();
-              
-              console.log("Initialization complete.");
-          } catch (error) {
-              console.error("Initialization failed:", error);
-          } finally {
-            // 3. FORCE HIDE: Keep the element in the DOM but hide it
-            const preloader = document.getElementById('preloader');
-            if (preloader) {
-              // Use your existing hide logic if you have one (e.g., preloader.classList.add('hidden'))
-              // Or default to display: none
-              preloader.style.display = 'none'; 
-            }
-          }
+            ]);
+            
+            // 2. Page initialization
+            window.scrollTo(0, 0);
+            initPageFeatures();
+            initScrollButtons();
       })();
 });
