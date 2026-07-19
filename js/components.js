@@ -17,7 +17,6 @@ async function loadGlobalConfig() {
         window.SITE_CONFIG = {};
         data.forEach(item => { window.SITE_CONFIG[item.key] = item.value; });
         window.CONFIG_READY = true;
-        console.log("Config loaded into memory:", window.SITE_CONFIG);
         // Dispatch to trigger populate
         window.dispatchEvent(new Event('configLoaded'));
     }
@@ -67,8 +66,6 @@ function populateUI() {
                 link.setAttribute('href', window.SITE_CONFIG['maps_url']);
             }
         });
-        
-        console.log("UI elements populated across all components.");
     });
 }
 
