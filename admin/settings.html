@@ -1,4 +1,4 @@
-e<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -48,7 +48,6 @@ e<!DOCTYPE html>
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
             gap: 1rem; 
-            overflow: auto;
         }
         
         /* Spanning and Spacing */
@@ -68,7 +67,7 @@ e<!DOCTYPE html>
     </div>
     <div class="scroll-wrapper">
         <form id="settings-form" class="compact-card">
-            <!-- ADDRESS FIELDS -->
+            <!-- ROW 1 -->
             <div class="field-group">
                 <label class="compact-label" for="addr_line1">Address Line 1</label>
                 <input type="text" id="addr_line1" class="compact-control" required>
@@ -81,12 +80,12 @@ e<!DOCTYPE html>
                 <label class="compact-label" for="short_address">Short Address (For Header/Quick View)</label>
                 <input type="text" id="short_address" class="compact-control" placeholder="e.g. Scheme 59, Indore" required>
             </div>
+        
+            <!-- ROW 2 -->
             <div class="field-group">
                 <label class="compact-label" for="addr_line3">City</label>
                 <input type="text" id="addr_line3" class="compact-control" required>
             </div>
-        
-            <!-- NEW FIELDS -->
             <div class="field-group">
                 <label class="compact-label" for="state">State</label>
                 <select id="state" class="compact-control" required>
@@ -100,6 +99,8 @@ e<!DOCTYPE html>
                        pattern="\d{6}" maxlength="6" 
                        placeholder="6-digit code" required>
             </div>
+
+            <!-- ROW 3 -->
             <div class="field-group">
                 <label class="compact-label" for="maps_url">Google Maps URL</label>
                 <input type="url" id="maps_url" class="compact-control" placeholder="https://maps.app.goo.gl/...">
@@ -108,17 +109,24 @@ e<!DOCTYPE html>
                 <label class="compact-label" for="phone">Phone</label>
                 <input type="text" id="phone" class="compact-control" required>
             </div>
+            <!-- SWAPPED: Timings is now here -->
+            <div class="field-group">
+                <label class="compact-label" for="timings">Business Timings</label>
+                <input type="text" id="timings" class="compact-control" placeholder="e.g. 10:00 AM - 11:00 PM" required>
+            </div>
+            
+            <!-- ROW 4 -->
+            <!-- SWAPPED: WhatsApp Number is now here -->
             <div class="field-group">
                 <label class="compact-label" for="whatsapp_number">WhatsApp Number (with country code, no symbols)</label>
                 <input type="text" id="whatsapp_number" class="compact-control" placeholder="918390540094">
             </div>
-            <div class="setting-field">
+
+            <!-- ROW 5 -->
+            <!-- FIXED: Added 'full-width' class to make this span all 3 columns -->
+            <div class="field-group full-width">
                 <label class="compact-label" for="whatsapp_message">WhatsApp Greeting Message:</label>
                 <textarea id="whatsapp_message" class="compact-control" name="whatsapp_message" rows="4" placeholder="Hi!&#10;I just visited your website and want to connect to explore CGS..."></textarea>
-            </div>
-            <div class="field-group">
-                <label class="compact-label" for="timings">Business Timings</label>
-                <input type="text" id="timings" class="compact-control" placeholder="e.g. 10:00 AM - 11:00 PM" required>
             </div>
             
             <button type="submit" id="submit-btn" disabled>Update Settings</button>
@@ -134,7 +142,7 @@ e<!DOCTYPE html>
             try {
                 const { data, error } = await defaultSupabaseClient.from('site_settings').select('*');
                 if (error) throw error;
-                
+
                 if (data) {
                     data.forEach(item => {
                         const el = document.getElementById(item.key);
@@ -151,16 +159,13 @@ e<!DOCTYPE html>
         }
     
         function validateForm() {
-            // FIXED: Added 'textarea' to this selector
+            // FIXED: Added textarea so the WhatsApp message is tracked and validated
             const inputs = form.querySelectorAll('input, select, textarea');
             let allFilled = true;
             let hasChanged = false;
     
             inputs.forEach(input => {
-                // Only check 'required' inputs for empty values
                 if (input.hasAttribute('required') && !input.value.trim()) allFilled = false;
-                
-                // Compare current value with initial value
                 if (input.value !== (initialValues[input.id] || "")) hasChanged = true;
             });
     
@@ -178,8 +183,17 @@ e<!DOCTYPE html>
             if (!confirm("Are you sure you want to update these settings?")) return;
     
             const fields = [
-                'addr_line1', 'addr_line2', 'addr_line3', 'state', 'zip', 
-                'phone', 'timings', 'short_address', 'maps_url', 'whatsapp_number', 'whatsapp_message'
+                'addr_line1', 
+                'addr_line2', 
+                'addr_line3', 
+                'state', 
+                'zip', 
+                'phone', 
+                'timings', 
+                'short_address',
+                'maps_url',
+                'whatsapp_number',
+                'whatsapp_message'
             ];
     
             for (const key of fields) {
