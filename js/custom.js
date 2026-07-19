@@ -365,16 +365,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       (async function () {
-          // 1. Wait for HTML components
-          await Promise.all([
-              loadComponent("header", "/components/header.html"),
-              loadComponent("footer", "/components/footer.html"),
-              loadComponent("preloader", "/components/preloader.html")
-          ]);
-            
-          // 2. Page initialization
-          window.scrollTo(0, 0);
-          initPageFeatures();
-          initScrollButtons();
+          try {
+              // 1. Wait for HTML components
+              await Promise.all([
+                  loadComponent("header", "/components/header.html"),
+                  loadComponent("footer", "/components/footer.html"),
+                  loadComponent("preloader", "/components/preloader.html")
+              ]);
+      
+              // 2. Page initialization
+              window.scrollTo(0, 0);
+              initPageFeatures();
+              initScrollButtons();
+              
+              console.log("Initialization complete.");
+          } catch (error) {
+              console.error("Initialization failed:", error);
+          } finally {
+              // 3. FORCE REMOVAL: This runs whether the code succeeds or fails
+              const preloader = document.getElementById('preloader');
+              if (preloader) {
+                  preloader.style.display = 'none'; // Or your specific hide class
+                  preloader.remove(); 
+              }
+          }
       })();
 });
