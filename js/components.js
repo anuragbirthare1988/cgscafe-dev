@@ -51,7 +51,7 @@ function populateUI() {
         // 2. Interactive Links
         document.querySelectorAll('.whatsapp-link').forEach(link => {
             if (window.SITE_CONFIG['whatsapp_number']) {
-                link.setAttribute('href', `https://wa.me/${window.SITE_CONFIG['whatsapp_number'].replace(/[^0-9]/g, '')}?text=Hi,%20I%20am%20inquiring%20about%20CGS.`);
+                link.setAttribute('href', `https://wa.me/${window.SITE_CONFIG['whatsapp_number'].replace(/[^0-9]/g, '')}?text=Hi!%0AI%20just%20visited%20your%20website%20and%20want%20to%20inquire%20about%20CGS.%20Let's%20connect.`);
             }
         });
 
