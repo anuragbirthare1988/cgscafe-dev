@@ -92,23 +92,26 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
       });
 
-      // Smooth scroll for navigation links - ONLY for actual internal anchors
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-          anchor.addEventListener('click', function (e) {
-              const href = this.getAttribute('href');
-              
-              // Only prevent default and scroll if the href is longer than just "#"
-              if (href !== "#") {
-                  const target = document.querySelector(href);
-                  if (target) {
-                      e.preventDefault();
-                      target.scrollIntoView({
-                          behavior: 'smooth',
-                          block: 'start'
-                      });
-                  }
+      document.addEventListener('click', function(e) {
+          const targetLink = e.target.closest('a');
+          if (!targetLink) return;
+      
+          const href = targetLink.getAttribute('href');
+          
+          // ADD THIS GUARD CLAUSE:
+          // Only proceed if it's an internal anchor starting with #
+          if (!href || !href.startsWith('#')) return; 
+      
+          // Now it's safe to run querySelector
+          try {
+              const target = document.querySelector(href);
+              if (target) {
+                  e.preventDefault();
+                  target.scrollIntoView({ behavior: 'smooth' });
               }
-          });
+          } catch (err) {
+              console.warn("Skipping invalid selector:", href);
+          }
       });
 
       // Deploying Environment Badge
