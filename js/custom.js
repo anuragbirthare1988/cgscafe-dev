@@ -369,10 +369,11 @@ document.addEventListener("DOMContentLoaded", async () => {
               loadComponent("preloader", "/components/preloader.html")
           ]);
       
-          // 2. FORCE check: If config is already in memory, populate NOW.
+          // 2. Ensure populateUI triggers if data is already loaded
+          // Or if it arrives shortly after this, the 'configLoaded' event 
+          // listener in components.js will pick it up automatically.
           if (window.SITE_CONFIG) {
               populateUI();
-              console.log("Forced manual populateUI trigger");
           }
       
           // 3. Page initialization
