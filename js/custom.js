@@ -7,12 +7,19 @@ document.addEventListener("DOMContentLoaded", async () => {
             el.innerHTML = await res.text();
             }
       }
+
       await Promise.all([
             loadComponent("header", "/components/header.html"),
             loadComponent("footer", "/components/footer.html"),
             loadComponent("preloader", "/components/preloader.html")
       ]);
-      document.getElementById("currentYear").innerHTML = new Date().getFullYear(); // Get the current year for copyright note
+      
+      // Get the current year for copyright note
+      const yearEl = document.getElementById("currentYear");
+      if (yearEl) {
+          yearEl.innerHTML = new Date().getFullYear();
+      }
+            
       initAllAnimations(); // from animations.js
 
       // Remove selection on (Esc) key
@@ -42,6 +49,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
       const mobileMenuClose = document.getElementById('mobileMenuClose');
       const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
+
+      function initAdminHeader() {
+          // Hide public navigation links
+          const publicNav = document.getElementById('public-nav');
+          if (publicNav) {
+              publicNav.style.display = 'none';
+          }
+          
+          // Show the Sign Out button
+          const logoutBtn = document.getElementById('logout-btn');
+          if (logoutBtn) {
+              logoutBtn.style.display = 'block';
+          }
+      }
 
       function openMobileMenu() {
             mobileMenu.classList.add('open');
@@ -77,18 +98,26 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
       });
 
-      // Smooth scroll for navigation links
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-            target.scrollIntoView({
-                  behavior: 'smooth',
-                  block: 'start'
-            });
-            }
-      });
+      document.addEventListener('click', function(e) {
+          const targetLink = e.target.closest('a');
+          if (!targetLink) return;
+      
+          const href = targetLink.getAttribute('href');
+          
+          // ADD THIS GUARD CLAUSE:
+          // Only proceed if it's an internal anchor starting with #
+          if (!href || !href.startsWith('#')) return; 
+      
+          // Now it's safe to run querySelector
+          try {
+              const target = document.querySelector(href);
+              if (target) {
+                  e.preventDefault();
+                  target.scrollIntoView({ behavior: 'smooth' });
+              }
+          } catch (err) {
+              console.warn("Skipping invalid selector:", href);
+          }
       });
 
       // Deploying Environment Badge
@@ -341,9 +370,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
       }
 
-      (function () {    // Immediately Invoked Function Expression (IIFE) for automatically activating the scrolling effect for content revealing feature
-            // console.log('Auto-scrolled for content revealing feature');
-            window.scrollTo(0,0); // Resetting scroll to land at top of page, when navigating
+      (async function () {      // Immediately Invoked Function Expression (IIFE) for automatically activating the scrolling effect for content revealing feature
+            window.scrollTo(0, 0); // Resetting scroll to land at top of page, when navigating
             initPageFeatures();
             initScrollButtons();
       })();

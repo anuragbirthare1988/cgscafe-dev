@@ -50,6 +50,15 @@
 	<meta property="og:description" content="Answers to common queries about CGS Cafe.">
 	<meta property="og:url" content="https://cgscafe.in/faq/">
 	<meta property="og:image" content="https://cgscafe.in/images/cgs-preview.webp">
+
+	<!-- Dependencies First -->
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+	<script src="../js/supabase-config.js"></script>
+	
+	<!-- Global Scripts (Load these before admin.js so they are ready) -->
+	<script src="../js/custom.js"></script>
+	<script src="../js/components.js"></script> <!-- Updates the UI -->
+	<script src="../js/animations.js"></script>
 </head>
 <body>
    <!-- Header Section -->
@@ -87,7 +96,7 @@
 							What are your operating hours?
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
 							</button>
-							<div class="accordion-content"><p>We're open daily from 9:00 AM – 11:00 PM! Find our full schedule and contact info right <a href="/find-us/" class="bold underline">here</a>.</p></div>
+							<div class="accordion-content"><p>We're open daily from <span class="display-timings"></span>! Find our full schedule and contact info right <a href="/find-us/" class="bold underline">here</a>.</p></div>
 						</div>
 					</div>
 				</div>
@@ -186,8 +195,5 @@
    <footer class="footer" id="footer"></footer>
 	<!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
 	<div id="preloader"></div>
-
-	<script src="../js/custom.js"></script>
-	<script src="../js/animations.js"></script>
 </body>
 </html>

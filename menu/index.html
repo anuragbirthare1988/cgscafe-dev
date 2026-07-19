@@ -37,11 +37,11 @@
     
     .menu-page-content-pane { flex: 1; height: 120mm; display: flex; flex-direction: column; padding-left: 8mm; position: relative; }
     .concept-wrapper { display: flex; flex-direction: column; justify-content: flex-start; height: 100%; padding-top: 10mm; padding-right: 15mm; padding-left: 5mm; }
-    .concept-title { font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: 500; letter-spacing: 6px; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 24px; }
-    .concept-body-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13.5px; color: #a3988c; line-height: 1.75; font-weight: 400; }
-    .concept-body-text p { margin-bottom: 16px; }
+    .concept-title { font-family: 'Oswald', sans-serif; font-size: 26px; font-weight: 500; letter-spacing: 5px; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 24px; }
+    .concept-body-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12.5px; color: #8e8479; line-height: 1.8; font-weight: 400; }
+    .concept-body-text p { margin-bottom: 18px; }
+    .highlight-white { color: #fcfaf7; font-weight: 500; }
     
-    .section-horizontal-band { width: 100%; margin-bottom: 34px; display: flex; flex-direction: column; }
     .section-horizontal-band { width: 100%; margin-bottom: 34px; display: flex; flex-direction: column; }
     .section-header-title { margin-bottom: 14px; border-bottom: 1px solid rgba(197, 168, 128, 0.08); padding-bottom: 6px; }
     .section-header-title h3 { font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 3px; color: var(--accent-gold); text-transform: uppercase; }
@@ -64,6 +64,9 @@
       .canvas-container { padding: 0 !important; margin: 0 !important; max-width: none !important; }
       .a5-landscape-sheet { width: 210mm !important; height: 148mm !important; page-break-after: always !important; box-shadow: none !important; border: none !important; margin: 0 !important; padding: 14mm 8mm 14mm 0mm !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     }
+    .btn-action { background-color: var(--accent-gold); color: var(--bg-dark-color); border: none; padding: 10px 28px; font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; cursor: pointer; }
+    .btn-nav-menu { background: #d4a84b; color: #1c1412; text-decoration: none; }
+    .btn-nav-menu:hover { background: transparent; color: #d2a54b; box-shadow: 0 0 20px hsla(39, 48%, 57%, .35); }
   </style>
 </head>
 <body>
@@ -74,43 +77,99 @@
       <button id="tab-bev" class="toggle-view-btn active" onclick="switchCanvasTab('beverages')">Beverages</button>
       <button id="tab-eat" class="toggle-view-btn" onclick="switchCanvasTab('eatables')">Eatables</button>
     </div>
-    <button class="btn-print-action" onclick="window.print()">Review & Print Menu</button>
+    <button class="btn-action" onclick="window.print()">Review & Print Menu</button>
+    <a href="menu-edit.html" class="btn-action btn-nav-menu" target="_blank">
+      ⚙ Manage Menu 
+    </a>
   </header>
 
   <main class="canvas-container">
     <div id="print-canvas-render-target">Establishing data canvas synchronization pipeline...</div>
   </main>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
   <script>
     let ACTIVE_CANVAS = 'beverages';
     let MASTER_DATABASE = { categories: [] };
 
-    window.addEventListener("load", () => {
-      const githubUsername = "anuragbirthare1988"; 
-      const hostname = window.location.hostname;
-      let dataUrl = "";
+    const CONNECTION_REGISTRY = {};
 
-      if (hostname === "localhost" || hostname === "127.0.0.1") {
-        dataUrl = '/menu/menu-data.json'; 
-      } else {
-        let repoName = hostname.includes("dev.cgscafe.in") ? "cgscafe-dev" : "cgscafe";
-        dataUrl = `https://raw.githubusercontent.com/${githubUsername}/${repoName}/main/menu/menu-data.json`;
-      }
-      
-      fetch(dataUrl + '?cb=' + Date.now())
-        .then(res => {
-          if(!res.ok) throw new Error("Target menu data configuration source could not be resolved.");
-          return res.json();
-        })
-        .then(data => {
-          MASTER_DATABASE = data;
-          generateProductionMenuLayout();
-        })
-        .catch(err => {
-          document.getElementById("print-canvas-render-target").innerText = "Menu Dynamic Synchronization Failed: " + err.message;
-        });
+    CONNECTION_REGISTRY["development"] = defaultSupabaseClient;
+    CONNECTION_REGISTRY["qa"] = defaultSupabaseClient;
+    CONNECTION_REGISTRY["production"] = defaultSupabaseClient;
+
+    window.addEventListener("load", async () => {
+        try {
+            MASTER_DATABASE = await loadMenuData();
+            console.log("MASTER_DATABASE:", MASTER_DATABASE);
+            generateProductionMenuLayout();
+        } catch (err) {
+            document.getElementById("print-canvas-render-target").innerText = "Menu Dynamic Synchronization Failed: " + err.message;
+        }
     });
 
+    async function loadMenuData() {
+        const source = await getConfiguredDataSource();
+        console.log("Data Source:", source);
+        switch (source.type) {
+            case "supabase": {
+                const connection = createDataConnection(source);
+                return await loadMenuFromSupabase(connection);
+            }
+            case "github":
+                return await loadMenuFromGitHub(source.repository, source.branch);
+            case "local":
+                return await loadMenuFromLocalFile();
+            default:
+                throw new Error("Unsupported data source.");
+        }
+    }
+
+    function createDataConnection(profile) {
+        const connection = CONNECTION_REGISTRY[profile.environment];
+        if (!connection) {
+            throw new Error(`No data connection registered for '${profile.environment}'.`);
+        }
+        return connection;
+    }
+    
+    async function getConfiguredDataSource() {
+        const hostname = window.location.hostname;
+        if (hostname === "localhost" || hostname === "127.0.0.1") {
+            return {
+                type: "supabase",
+                environment: "development"
+            };
+        }
+        if (hostname.includes("dev.cgscafe.in")) {
+            return {
+                type: "supabase",
+                environment: "development"
+            };
+        }
+        if (hostname.includes("qa")) {
+            return {
+                type: "supabase",
+                environment: "qa"
+            };
+        }
+        return {
+            type: "supabase",
+            environment: "production"
+        };
+    }
+
+    async function loadMenuFromSupabase(client) {
+        const {
+            data,
+            error
+        } = await client.from("live_menu").select("*").single();
+        if (error) {
+            throw error;
+        }
+        return data.menu_json;
+    }
+    
     function switchCanvasTab(canvasKey) {
       ACTIVE_CANVAS = canvasKey;
       document.getElementById("tab-bev").classList.toggle("active", canvasKey === 'beverages');
@@ -133,6 +192,19 @@
 
       let pageCount = 1;
 
+      let conceptHTML = "";
+      if (ACTIVE_CANVAS === 'beverages') {
+        conceptHTML = `
+          <p>Welcome to <span class="highlight-white">Coffee, Grill & Shots</span>—a custom-engineered culinary sanctuary explicitly curated to <span class="highlight-white">Jumpstart Your Mood</span>.</p>
+          <p>Every element on our beverage canvas, from the intense micro-froth of our hand-whipped frappes to the vibrant clarity of our cold-pressed flavor drops, has been precision-designed to elevate your day. No distractions, no noise. Just pure vegetarian craftsmanship designed to clear your mind.</p>
+        `;
+      } else {
+        conceptHTML = `
+          <p>Welcome to <span class="highlight-white">Coffee, Grill & Shots</span>—a custom culinary sanctuary explicitly curated to <span class="highlight-white">Elevate Your Cravings</span>.</p>
+          <p>Every element on our savory canvas, from the crisp, golden crusts of our slow-pressed melts to the richness of our skillet crafts, has been precision-built to complement your pour. Just pure vegetarian craftsmanship to anchor your conversations.</p>
+        `;
+      }
+
       const conceptPage = document.createElement("div");
       conceptPage.className = "a5-landscape-sheet";
       conceptPage.innerHTML = `
@@ -141,10 +213,9 @@
         </div>
         <div class="menu-page-content-pane">
           <div class="concept-wrapper">
-            <h2 class="concept-title">Our Concept</h2>
+            <h2 class="concept-title">OUR CONCEPT</h2>
             <div class="concept-body-text">
-              <p>Welcome to <strong>Coffee, Grill & Shots</strong>—a premium, pure vegetarian sanctuary explicitly engineered to <strong>Jumpstart Your Mood</strong>.</p>
-              <p>Every element on our savory canvas, from the gold-crisp edges of our slow-pressed artisanal melts to our rich skillet creations, is precision-paired to anchor your lounge experience.</p>
+              ${conceptHTML}
             </div>
           </div>
         </div>
@@ -160,7 +231,6 @@
       let previousSuperCategory = "";
 
       activeDataSet.forEach(subCatGroup => {
-        // Fix: Don't render hidden category sections on the master view layout
         if (subCatGroup.hidden) return;
 
         const visibleItems = (subCatGroup.items || []).filter(i => !i.hidden);

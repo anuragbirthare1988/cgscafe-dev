@@ -50,6 +50,15 @@
 	<meta property="og:description" content="Plan your events with CGS Cafe.">
 	<meta property="og:url" content="https://cgscafe.in/orders/">
 	<meta property="og:image" content="https://cgscafe.in/images/cgs-preview.webp">
+
+	<!-- Dependencies First -->
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+	<script src="../js/supabase-config.js"></script>
+	
+	<!-- Global Scripts (Load these before admin.js so they are ready) -->
+	<script src="../js/custom.js"></script>
+	<script src="../js/components.js"></script> <!-- Updates the UI -->
+	<script src="../js/animations.js"></script>
 </head>
 <body>
    <!-- Header Section -->
@@ -164,10 +173,10 @@
 				<p class="font-montserrat text-sm text-muted-foreground font-light leading-relaxed mb-10 max-w-lg mx-auto">Share your requirements and we'll get back to you at the earliest.</p>
 				<div class="grid md:grid-cols-2 lg:grid-cols-2 gap-2">
 					<div class="flex flex-col">
-						<a href="https://wa.me/918390540094?text=Hi%2C%20%0AEvent/Bulk%20Order%20Inquiry" class="cgs-btn-gold" title="Enquire on WhatsApp" target="_blank">WhatsApp</a>
+						<a class="whatsapp-link cgs-btn-gold" href="#" target="_blank" title="Click to Chat">WhatsApp</a>
 					</div>
 					<div class="flex flex-col">
-						<a href="tel:+918390540094" class="cgs-btn-gold" title="Click to Call">Call</a>
+						<a class="call-link cgs-btn-gold" href="#" title="Click to Call">Call</a>
 					</div>
 				</div>
 			</div>
@@ -178,7 +187,5 @@
 	<!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
 	<div id="preloader"></div>
 
-	<script src="../js/custom.js"></script>
-	<script src="../js/animations.js"></script>
 </body>
 </html>
