@@ -368,17 +368,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               loadComponent("footer", "/components/footer.html"),
               loadComponent("preloader", "/components/preloader.html")
           ]);
-      
-          // 2. Add a tiny delay to ensure the browser has finished rendering the new HTML
-          await new Promise(resolve => setTimeout(resolve, 50));
-      
-          // 3. Populate now that all elements (Header, Footer, Page) are in the DOM
-          if (typeof populateUI === 'function') {
-              populateUI();
-              console.log("UI populated after components loaded.");
-          }
-      
-          // 4. Page initialization
+            
+          // 2. Page initialization
           window.scrollTo(0, 0);
           initPageFeatures();
           initScrollButtons();
