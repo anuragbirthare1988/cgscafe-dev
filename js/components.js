@@ -30,31 +30,54 @@ function populateUI() {
         return;
     }
 
-    console.log("Populating UI with data:", window.SITE_CONFIG);
-
     requestAnimationFrame(() => {
-        // 1. Footer Address
-        document.querySelectorAll('[id="display-address"]').forEach(el => {
-            el.innerHTML = `${window.SITE_CONFIG['addr_line1'] || ''},<br>${window.SITE_CONFIG['addr_line2'] || ''},<br>${window.SITE_CONFIG['addr_line3'] || ''} (${window.SITE_CONFIG['state'] || ''}) - ${window.SITE_CONFIG['zip'] || ''}`;
-        });
-        // 2. Other fields
-        const elements = {
-            'display-short-address': window.SITE_CONFIG['short_address'],
-            'display-timings': window.SITE_CONFIG['timings'],
-            'display-phone': window.SITE_CONFIG['phone']
+        // 1. Text Fields (Using Classes)
+        const textFields = {
+            '.display-address': 'addr_line1', // Note: Special handling below
+            '.display-short-address': 'short_address',
+            '.display-timings': 'timings',
+            '.display-phone': 'phone'
         };
 
-        Object.keys(elements).forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                console.log(`Injecting into ${id}:`, elements[id]);
-                el.innerText = elements[id] || "DATA_MISSING";
-            } else {
-                console.warn(`Could not find element: ${id}`);
+        // Update standard text fields
+        Object.keys(textFields).forEach(className => {
+            if (className === '.display-address') return; // Handled separately
+            
+            document.querySelectorAll(className).forEach(el => {
+                el.innerText = window.SITE_CONFIG[textFields[className]] || "";
+            });
+        });
+
+        // Special handling for the full address block
+        document.querySelectorAll('.display-address').forEach(el => {
+            el.innerHTML = `${window.SITE_CONFIG['addr_line1'] || ''},<br>${window.SITE_CONFIG['addr_line2'] || ''},<br>${window.SITE_CONFIG['addr_line3'] || ''} (${window.SITE_CONFIG['state'] || ''}) - ${window.SITE_CONFIG['zip'] || ''}`;
+        });
+
+        // 2. Interactive Links (Using Classes)
+        
+        // WhatsApp Links
+        document.querySelectorAll('.whatsapp-link').forEach(link => {
+            if (window.SITE_CONFIG['whatsapp_number']) {
+                link.setAttribute('href', `https://wa.me/${window.SITE_CONFIG['whatsapp_number'].replace(/[^0-9]/g, '')}?text=Hi,%20I%20am%20inquiring%20about%20CGS.`);
+            }
+        });
+
+        // Call Links
+        document.querySelectorAll('.call-link').forEach(link => {
+            if (window.SITE_CONFIG['phone']) {
+                link.setAttribute('href', `tel:${window.SITE_CONFIG['phone'].replace(/[^0-9+]/g, '')}`);
+            }
+        });
+
+        // Map Links
+        document.querySelectorAll('.map-link').forEach(link => {
+            if (window.SITE_CONFIG['maps_url']) {
+                link.setAttribute('href', window.SITE_CONFIG['maps_url']);
             }
         });
     });
 }
+
 // 3. Execution
 window.addEventListener('configLoaded', populateUI);
 document.addEventListener('DOMContentLoaded', loadGlobalConfig);
