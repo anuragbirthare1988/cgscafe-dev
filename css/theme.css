@@ -478,14 +478,14 @@ p {
   padding: var(--space-2) var(--container-pad);
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Distribute elements evenly */
-  flex-wrap: nowrap; /* Prevent wrapping to a second line */
-  gap: var(--space-2);
-  font-size: 10px; /* Slightly tighter font for mobile */
+  justify-content: center; /* Centers the content items horizontally */
+  flex-wrap: nowrap; /* Keeps everything on a single line */
+  gap: var(--space-4); /* Space between timing, location, and phone */
+  font-size: 10px;
   color: var(--color-text-inverse-muted);
-  white-space: nowrap; /* Keep text items on a single line */
-  overflow-x: auto; /* Fallback to allow smooth swipe if screen is too narrow */
-  scrollbar-width: none; /* Hide scrollbar for clean look */
+  white-space: nowrap;
+  overflow-x: auto; /* Allows smooth swipe if the screen is too narrow */
+  scrollbar-width: none;
 }
 
 /* Hide scrollbar for Chrome/Safari */
@@ -1217,8 +1217,8 @@ footer .logo-brand {
 /* Dev environment badge — hidden by default, shown via JS on non-prod hosts */
 #dev-badge {
   position: fixed;
-  top: 140px;
-  left: -28px;
+  top: 80px;
+  left: -8px;
   transform: rotate(-30deg);
   background: rgba(181, 98, 47, 0.15);
   color: var(--color-tertiary-accent);
