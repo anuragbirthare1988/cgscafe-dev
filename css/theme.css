@@ -475,7 +475,7 @@ p {
 .info-bar__inner {
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: var(--space-1) var(--container-pad);
+  padding: var(--space-2) var(--container-pad);
   display: flex;
   align-items: center;
   justify-content: space-between; /* Distribute elements evenly */
@@ -2680,7 +2680,6 @@ footer .logo-brand {
 }
 
 @media (max-width: 640px) {
-  .theme-clip { top: 96px; }
   .theme-clip__option { padding: 7px var(--space-3) 7px var(--space-2); font-size: 9px; }
 }
 
@@ -3032,5 +3031,5 @@ footer .logo-brand {
 }
 
 @media (max-width: 640px) {
-  .autoscroll-toggle { top: 96px; width: 32px; height: 32px; }
+  .autoscroll-toggle { width: 32px; height: 32px; }
 }
