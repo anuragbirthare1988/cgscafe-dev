@@ -475,6 +475,7 @@ p {
 .info-bar__inner {
   max-width: var(--container-max);
   margin: 0 auto;
+  /* Use a CSS variable or transition the padding smoothly */
   padding: var(--space-2) var(--container-pad);
   display: flex;
   align-items: center;
@@ -483,6 +484,13 @@ p {
   gap: var(--space-4);
   font-size: var(--text-2xs);
   color: var(--color-text-inverse-muted);
+  transition: padding 0.3s ease; /* Smooth transition */
+}
+
+/* When the page is scrolled, reduce the vertical padding */
+body.is-scrolled .info-bar__inner {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .info-bar__item {
@@ -522,11 +530,6 @@ a.info-bar__item:hover {
   align-items: center;
   justify-content: space-between;
   transition: padding 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.nav.scrolled .nav-inner {
-  padding-top: var(--space-2);
-  padding-bottom: var(--space-2);
 }
 
 /* Collapse the info bar smoothly once the nav reports the page has scrolled */

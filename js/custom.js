@@ -128,6 +128,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                   }
             }
       });
+
+      // Add a lightweight scroll listener
+      window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+            document.body.classList.add('is-scrolled');
+            } else {
+            document.body.classList.remove('is-scrolled');
+            }
+      });
+
       // Header Menu Navigation scroll effect
       const navbar = document.getElementById('navbar');
             if(navbar){
