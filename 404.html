@@ -1,57 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-	<script type="application/ld+json">
-		{
-		"@context": "https://schema.org",
-		"@type": "CafeOrCoffeeShop",
-		"name": "CGS Cafe - Coffee, Grill & Shots",
-		"url": "https://cgscafe.in/",
-  		"logo": "https://cgscafe.in/images/cgs-logo.webp",
-		"image": "https://cgscafe.in/images/cgs-preview.webp",
-		"description": "CGS Cafe in Scheme No 103, Indore offering premium coffee, grill items, mocktail shots and refreshing beverages. A modern boutique cafe experience. Jumpstart Your Mood.",
-		"address": {
-			"@type": "PostalAddress",
-			"streetAddress": "Scheme No 103",
-			"addressLocality": "Indore",
-			"addressRegion": "MP",
-			"postalCode": "452012",
-			"addressCountry": "IN"
-		},
-		"areaServed": {
-			"@type": "City",
-			"name": "Indore"
-		},
-		"geo": {
-			"@type": "GeoCoordinates",
-			"latitude": 22.676278,
-			"longitude": 75.841528
-		},
-		"telephone": "+91-8390540094",
-		"openingHours": "Mo-Su 08:00-23:00",
-		"servesCuisine": ["Cafe", "Coffee", "Fast Food", "Beverages"],
-		"priceRange": "₹₹"
-		}
-	</script>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script>(function(){try{var t=localStorage.getItem('cgs-theme');if(t==='botanica')document.documentElement.setAttribute('data-theme','botanica');}catch(e){}})();</script>
+   <title>CGS Café Indore | Coffee, Grill & Mocktail Shots | Scheme No 59</title>
+
+	<meta name="description" content="Premium café in Scheme No 59, Indore serving premium coffee, frappes, grilled sandwiches, signature shakes, mocktails & refreshing beverages.">
+	<link rel="canonical" href="https://cgscafe.in/">	<!-- This tells Google which URL is the official one -->
+
+	<meta name="google-site-verification" content="fd40eee476e539a8" />
 	<link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any">
     <link rel="stylesheet" href="/fonts/local-fonts.css">
+		<link rel="preconnect" href="https://gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/theme.css">
-	<meta name="theme-color" content="#1B1412">
-	<meta name="google-site-verification" content="fd40eee476e539a8" />
+	<meta name="theme-color" content="#3b2a1a">
 
-	<title>Page Not Found | CGS Cafe Indore</title>
-	<meta name="description" content="The page you're looking for could not be found.">
-	<link rel="canonical" href="https://cgscafe.in/404/">
-
-	<meta property="og:type" content="website">
-	<meta property="og:title" content="Page Not Found | CGS Cafe Indore">
-	<meta property="og:description" content="The page you're looking for could not be found.">
-	<meta property="og:url" content="https://cgscafe.in/404/">
-	<meta property="og:image" content="https://cgscafe.in/images/cgs-preview.webp">
-	<meta name="robots" content="noindex">
+	<!-- Dependencies First -->
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+	<script src="../js/supabase-config.js"></script>
+	
+	<!-- Global Scripts (Load these before admin.js so they are ready) -->
+	<script src="../js/custom.js"></script>
+	<script src="../js/components.js"></script> <!-- Updates the UI -->
+	<script src="../js/animations.js"></script>
 </head>
 <body>
    <!-- Header Section -->
@@ -75,8 +48,5 @@
    <footer class="site-footer" id="footer"></footer>
 	<!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
 	<div id="preloader"></div>
-
-	<script src="/js/custom.js"></script>
-	<script src="/js/animations.js"></script>
 </body>
 </html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>(function(){try{var t=localStorage.getItem('cgs-theme');if(t==='botanica')document.documentElement.setAttribute('data-theme','botanica');}catch(e){}})();</script>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any">
+    <link rel="stylesheet" href="/fonts/local-fonts.css">
+		<link rel="preconnect" href="https://gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/theme.css">
+    <meta name="theme-color" content="#1B1412">
+    <title>CGS Site Settings</title>
+
+    <!-- Dependencies First -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="../js/supabase-config.js"></script>
+		
+    <!-- Admin-Specific Logic -->
+    <script src="module.js"></script> 
+    <script src="session.js"></script>
+		
+    <!-- Global Scripts (Load these before admin.js so they are ready) -->
+    <script src="../js/custom.js"></script>
+    <script src="../js/components.js"></script> <!-- Updates the UI -->
+    <script src="../js/animations.js"></script>
+
+    <style>
+        :root {
+            --bg-outer: #f4eae1; --bg-card: #282220; --text-gold: #dabba0;
+            --brand-orange: #d17533; --input-bg: #1e1917; --input-border: #3a3230;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            background-color: var(--bg-outer); 
+            font-family: 'Montserrat', sans-serif; 
+            height: 100vh; 
+        }
+
+        .settingsContent {
+            margin-top: 120px;
+        }
+
+        /* Fixed Header Area */
+        .header-container { 
+            padding: 20px; 
+            text-align: center; 
+            background: var(--bg-outer); 
+            z-index: 10; 
+        }
+        .calc-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: #444; }
+
+        /* Scrollable Grid Area */
+        .scroll-wrapper { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 15px; 
+            display: flex; 
+            justify-content: center; 
+        }
+        .calc-container { width: 100%; max-width: 900px; }
+        
+        .compact-card { 
+            background-color: var(--bg-card); 
+            border-radius: 8px; 
+            padding: 1.5rem; 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 1rem; 
+            overflow: auto;
+        }
+
+        .phone-input-wrapper {
+            display: flex;
+            align-items: center;
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .phone-input-wrapper:focus-within {
+            border-color: var(--brand-orange);
+        }
+        .phone-prefix {
+            background-color: #3a3230; /* Darker brown shade */
+            color: var(--text-gold);
+            padding: 0.65rem 0.75rem;
+            font-size: 0.95rem;
+            user-select: none; /* Prevents text selection */
+            border-right: 1px solid var(--input-border);
+        }
+        .phone-input-wrapper input {
+            border: none;
+            background: transparent;
+            flex: 1;
+            color: #fff;
+            padding: 0.65rem 0.85rem;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        
+        /* ADD THIS MOBILE STACKING LOGIC */
+        @media (max-width: 768px) {
+            .compact-card { 
+                grid-template-columns: 1fr !important; /* Forces 1 column */
+            }
+            .full-width, 
+            .field-group, 
+            button { 
+                grid-column: span 1 !important; /* Forces elements to span only 1 cell */
+            }
+        }
+        
+        /* Spanning and Spacing */
+        .full-width { grid-column: span 3; }
+        
+        .field-group { display: flex; flex-direction: column; gap: 0.4rem; }
+        .compact-label { color: var(--text-gold); font-size: 0.72rem; text-transform: uppercase; }
+        .compact-control { width: 100%; background-color: var(--input-bg); border: 1px solid var(--input-border); color: #fff; padding: 0.65rem; border-radius: 6px; }
+        
+        .settingsContent button { grid-column: span 3; background-color: var(--brand-orange); color: white; border: none; padding: 1rem; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .settingsContent button:disabled { background-color: #555; cursor: not-allowed; opacity: 0.6; }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header id="header"></header>
+    
+    <!-- Main Content -->
+    <div class="settingsContent">
+        <div class="header-container">
+            <h1 class="calc-title">Site Settings</h1>
+        </div>
+        <div class="scroll-wrapper">
+            <form id="settings-form" class="compact-card">
+                <!-- ROW 1 -->
+                <div class="field-group">
+                    <label class="compact-label" for="addr_line1">Address Line 1</label>
+                    <input type="text" id="addr_line1" class="compact-control" required>
+                </div>
+                <div class="field-group">
+                    <label class="compact-label" for="addr_line2">Address Line 2</label>
+                    <input type="text" id="addr_line2" class="compact-control" required>
+                </div>
+                <div class="field-group">
+                    <label class="compact-label" for="short_address">Short Address (For Header/Quick View)</label>
+                    <input type="text" id="short_address" class="compact-control" placeholder="e.g. Scheme 59, Indore" required>
+                </div>
+            
+                <!-- ROW 2 -->
+                <div class="field-group">
+                    <label class="compact-label" for="addr_line3">City</label>
+                    <input type="text" id="addr_line3" class="compact-control" required>
+                </div>
+                <div class="field-group">
+                    <label class="compact-label" for="state">State</label>
+                    <select id="state" class="compact-control" required>
+                        <option value="">Select State</option>
+                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label class="compact-label" for="zip">ZIP Code</label>
+                    <input type="text" id="zip" class="compact-control" 
+                        pattern="\d{6}" maxlength="6" 
+                        placeholder="6-digit code" required>
+                </div>
+
+                <!-- ROW 3 -->
+                <div class="field-group">
+                    <label class="compact-label" for="maps_url">Google Maps URL</label>
+                    <input type="url" id="maps_url" class="compact-control" placeholder="https://maps.app.goo.gl/...">
+                </div>
+                <div class="field-group">
+                    <label class="compact-label" for="timings">Business Timings</label>
+                    <input type="text" id="timings" class="compact-control" placeholder="e.g. 10:00 AM - 11:00 PM" required>
+                </div>
+                <div class="field-group">
+                    <label class="compact-label" for="phone">Phone</label>
+                    <div class="phone-input-wrapper">
+                        <span class="phone-prefix">+91</span>
+                        <input type="text" id="phone" class="phone-digits" maxlength="10" placeholder="10-digit number" required>
+                    </div>
+                </div>
+                
+                <!-- ROW 4 -->
+                <div class="field-group">
+                    <label class="compact-label" for="whatsapp_number">WhatsApp Number</label>
+                    <div class="phone-input-wrapper">
+                        <span class="phone-prefix">+91</span>
+                        <input type="text" id="whatsapp_number" class="phone-digits" maxlength="10" placeholder="10-digit number" required>
+                    </div>
+                </div>
+
+                <!-- ROW 5 -->
+                <!-- FIXED: Added 'full-width' class to make this span all 3 columns -->
+                <div class="field-group full-width">
+                    <label class="compact-label" for="whatsapp_message">WhatsApp Greeting Message:</label>
+                    <textarea id="whatsapp_message" class="compact-control" name="whatsapp_message" rows="4" placeholder="Hi!&#10;I just visited your website and want to connect to explore CGS..."></textarea>
+                </div>
+                
+                <button type="submit" id="submit-btn" disabled>Update Settings</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="site-footer" id="footer"></footer>
+    <!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
+    <div id="preloader"></div>
+
+    <script>
+        const form = document.getElementById('settings-form');
+        const submitBtn = document.getElementById('submit-btn');
+        let initialValues = {};
+        
+        async function loadSettings() {
+            try {
+                const { data, error } = await defaultSupabaseClient.from('site_settings').select('*');
+                if (error) throw error;
+
+                if (data) {
+                    data.forEach(item => {
+                        if (item.key === 'phone' || item.key === 'whatsapp_number') {
+                            // Strip +91 or 91 if it exists in the DB so only the 10 digits show in the input box
+                            let cleanNum = item.value.replace(/^(\+91|91)/, '').replace(/\D/g, '');
+                            const el = document.getElementById(item.key);
+                            if (el) {
+                                el.value = cleanNum;
+                                initialValues[item.key] = cleanNum;
+                            }
+                        } else {
+                            const el = document.getElementById(item.key);
+                            if (el) {
+                                el.value = item.value;
+                                initialValues[item.key] = item.value;
+                            }
+                        }
+                    });
+                    validateForm();
+                }
+            } catch (err) {
+                console.error("Error loading settings:", err);
+            }
+        }
+
+        function validateForm() {
+            const inputs = form.querySelectorAll('input, select, textarea');
+            let allFilled = true;
+            let hasChanged = false;
+
+            inputs.forEach(input => {
+                if (input.hasAttribute('required') && !input.value.trim()) allFilled = false;
+                if (input.value !== (initialValues[input.id] || "")) hasChanged = true;
+            });
+
+            // Validation Checks
+            const zipVal = document.getElementById('zip').value;
+            const zipValid = /^\d{6}$/.test(zipVal);
+
+            // Strict 10-digit validation for phone and whatsapp
+            const phoneVal = document.getElementById('phone').value.replace(/\D/g, '');
+            const waVal = document.getElementById('whatsapp_number').value.replace(/\D/g, '');
+            const phoneValid = /^\d{10}$/.test(phoneVal);
+            const waValid = /^\d{10}$/.test(waVal);
+
+            submitBtn.disabled = !(allFilled && hasChanged && zipValid && phoneValid && waValid);
+        }
+
+        // Restrict phone inputs to digits only
+        document.querySelectorAll('.phone-digits').forEach(input => {
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+                validateForm();
+            });
+        });
+
+        form.addEventListener('input', validateForm);
+        form.addEventListener('change', validateForm);
+    
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            if (!confirm("Are you sure you want to update these settings?")) return;
+    
+            const fields = [
+                'addr_line1', 
+                'addr_line2', 
+                'addr_line3', 
+                'state', 
+                'zip', 
+                'phone', 
+                'timings', 
+                'short_address',
+                'maps_url',
+                'whatsapp_number',
+                'whatsapp_message'
+            ];
+    
+            for (const key of fields) {
+                const el = document.getElementById(key);
+                if (el) {
+                    let valueToSave = el.value;
+                    
+                    // Save with the standard +91- prefix format
+                    if (key === 'phone' || key === 'whatsapp_number') {
+                        let digits = el.value.replace(/\D/g, '');
+                        valueToSave = `+91-${digits}`;
+                    }
+
+                    await defaultSupabaseClient
+                        .from('site_settings')
+                        .upsert({ key: key, value: valueToSave }, { onConflict: 'key' });
+                }
+            }
+            alert("Settings updated successfully!");
+            location.reload();
+        };
+    
+        window.onload = loadSettings;
+    </script>
+</body>
+</html>

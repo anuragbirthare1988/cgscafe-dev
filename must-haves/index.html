@@ -8,10 +8,10 @@
 		"url": "https://cgscafe.in/",
   		"logo": "https://cgscafe.in/images/cgs-logo.webp",
 		"image": "https://cgscafe.in/images/cgs-preview.webp",
-		"description": "CGS Cafe in Scheme No 103, Indore offering premium coffee, grill items, mocktail shots and refreshing beverages. A modern boutique cafe experience. Jumpstart Your Mood.",
+		"description": "CGS Cafe in Scheme No 59, Indore offering premium coffee, grill items, mocktail shots and refreshing beverages. A modern boutique cafe experience. Jumpstart Your Mood.",
 		"address": {
 			"@type": "PostalAddress",
-			"streetAddress": "Scheme No 103",
+			"streetAddress": "Scheme No 59",
 			"addressLocality": "Indore",
 			"addressRegion": "MP",
 			"postalCode": "452012",
@@ -23,8 +23,8 @@
 		},
 		"geo": {
 			"@type": "GeoCoordinates",
-			"latitude": 22.676278, 
-			"longitude": 75.841528
+			"latitude": 22.6783187402986, 
+			"longitude": 75.85015334973336
 		},
 		"telephone": "+91-8390540094",
 		"openingHours": "Mo-Su 08:00-23:00",
@@ -32,251 +32,191 @@
 		"priceRange": "₹₹"
 		}
 	</script>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any">	
-    <link rel="stylesheet" href="/css/custom.css">
-    <link rel="stylesheet" href="/css/main.css">
-    <link href="/fonts/google-fonts.css" rel="stylesheet">
-	<meta name="theme-color" content="#3b2a1a">
-	<meta name="google-site-verification" content="fd40eee476e539a8" />
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script>(function(){try{var t=localStorage.getItem('cgs-theme');if(t==='botanica')document.documentElement.setAttribute('data-theme','botanica');}catch(e){}})();</script>
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any">
+		<link rel="stylesheet" href="/fonts/local-fonts.css">
+		<link rel="preconnect" href="https://gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="/css/theme.css">
+		<meta name="theme-color" content="#1B1412">
+		<meta name="google-site-verification" content="fd40eee476e539a8" />
 
-	<title>Must Try Dishes | CGS Cafe Indore</title>
-	<meta name="description" content="Explore the must-try coffee, sandwiches and signature dishes at CGS Cafe Indore.">
-	<link rel="canonical" href="https://cgscafe.in/must-haves/">
+		<title>Must Try Dishes | CGS Cafe Indore</title>
+		<meta name="description" content="Discover our most-loved signature picks — chillers, hot drinks, pasta and sandwiches at CGS Cafe Indore.">
+		<link rel="canonical" href="https://cgscafe.in/must-haves/">
 
-	<meta property="og:title" content="Must Try at CGS Cafe">
-	<meta property="og:description" content="Top picks and customer favorites at CGS Cafe.">
-	<meta property="og:url" content="https://cgscafe.in/must-haves/">
-	<meta property="og:image" content="https://cgscafe.in/images/cgs-preview.webp">
-</head>
-<body>
-   <!-- Header Section -->
-	<header id="header"></header>
-	<section class="content-section must-haves" id="must-haves">
-		<div class="container">
-			<div class="reveal section-header">
-				<span class="gold-divider mx-auto mb-6"></span>
-				<div class="section-label font-display text-4xl text-gold mb-4">Signature Picks</div>
-				<p class="font-cormorant text-xl text-muted-foreground leading-loose italic">Sip, bite, and shot – your daily dose of delight</p>
-			</div>
+		<meta property="og:type" content="website">
+		<meta property="og:title" content="Signature Picks | Must Try at CGS Cafe">
+		<meta property="og:description" content="Discover our most-loved signature picks — chillers, hot drinks, pasta and sandwiches at CGS Cafe Indore.">
+		<meta property="og:url" content="https://cgscafe.in/must-haves/">
+		<meta property="og:image" content="https://cgscafe.in/images/cgs-preview.webp">
 
-			<div class="reveal tabs border-b border-border">
-				<div class="max-w-7xl mx-auto px-6 py-4 flex auto-scroll  gap-1">
-						<button class="tab-btn text-xs uppercase px-6 py-2.5 transition-all duration-300 border-border hover:border-gold hover:text-gold active" data-tab="chillers">Chillers</button>
-						<button class="tab-btn text-xs uppercase px-6 py-2.5 transition-all duration-300 border-border hover:border-gold hover:text-gold" data-tab="hot-drinks">Hot Drinks</button>
-						<button class="tab-btn text-xs uppercase px-6 py-2.5 transition-all duration-300 border-border hover:border-gold hover:text-gold" data-tab="refreshing-drinks">Refreshing Drinks</button>
-						<button class="tab-btn text-xs uppercase px-6 py-2.5 transition-all duration-300 border-border hover:border-gold hover:text-gold" data-tab="pasta">Pasta</button>
-						<button class="tab-btn text-xs uppercase px-6 py-2.5 transition-all duration-300 border-border hover:border-gold hover:text-gold" data-tab="sandwiches">Sandwiches</button>
-				</div>
-			</div>
+		<!-- Dependencies First -->
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+		<script src="../js/supabase-config.js"></script>
+		
+		<!-- Global Scripts (Load these before admin.js so they are ready) -->
+		<script src="../js/custom.js"></script>
+		<script src="../js/components.js"></script> <!-- Updates the UI -->
+		<script src="../js/animations.js"></script>
+	</head>
+	<body>
+		<!-- Header Section -->
+		<header id="header"></header>
+		<section class="page-hero page-hero--tight">
+			<span class="eyebrow">Fan Favourites</span>
+			<h1 class="page-hero__title">Signature Picks</h1>
+			<div class="divider"></div>
+			<p class="page-hero__subtitle">Sip, bite, and shot – your daily dose of delight</p>
+		</section>
 
-			<!-- Chillers Tab -->
-			<div class="tab-content active" id="tab-chillers">
-				<div class="reveal product-card">
-					<div class="product-image">
-						<img src="/images/gallery/signature-frozen-coffee.webp" alt="Frozen Coffee Slush">
-						<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
+		<section class="section" style="padding-top:0;">
+			<div class="container">
+				<div class="menu-tabs">
+					<button class="tab-btn active" data-tab="chillers">Chillers</button>
+					<button class="tab-btn" data-tab="hot-drinks">Hot Drinks</button>
+					<button class="tab-btn" data-tab="refreshing-drinks">Refreshing Drinks</button>
+					<button class="tab-btn" data-tab="pasta">Pasta</button>
+					<button class="tab-btn" data-tab="sandwiches">Sandwiches</button>
+				</div>
+				<div class="tab-content active" id="tab-chillers">
+					<div class="product-grid">
+					<div class="product-card">
+						<div class="product-card__image">
+							<img src="/images/gallery/signature-frozen-coffee.webp" alt="Frozen Coffee Slush" loading="lazy" onclick="openLightbox('/images/gallery/signature-frozen-coffee.webp','Frozen Coffee Slush')">
+							<span class="product-card__badge">&#10022; Signature</span>
+						</div>
+						<div class="product-card__info">
+							<h3 class="product-card__name">Frozen Coffee Slush</h3>
+							<p class="product-card__desc">Sun-kissed crema swirled in icy velvet with a rich caramel heart — a gilded arctic bliss.</p>
+							<div class="product-card__meta">300ml 420ml</div>
+						</div>
 					</div>
-					<div class="product-info">
-						<h3 class="product-name">Frozen Coffee Slush</h3>
-						<div class="product-summary">
-							Sun-kissed crema swirled in icy velvet with a rich caramel heart — a gilded arctic bliss.
+					<div class="product-card">
+						<div class="product-card__image">
+							<img src="/images/gallery/hazelnut-cold-coffee.webp" alt="Hazelnut Cold Coffee" loading="lazy" onclick="openLightbox('/images/gallery/hazelnut-cold-coffee.webp','Hazelnut Cold Coffee')">
+							<span class="product-card__badge">&#10022; Signature</span>
 						</div>
-						<div class="product-quantity flex items-center gap-3 flex-wrap">
-							<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">300ml</span>
-							<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">420ml</span>
+						<div class="product-card__info">
+							<h3 class="product-card__name">Hazelnut Cold Coffee</h3>
+							<p class="product-card__desc">Nutty, chilled, and luxuriously smooth — roasted hazelnut folded into golden frost that lingers.</p>
+							<div class="product-card__meta">300ml 420ml</div>
 						</div>
+					</div>
+					<div class="product-card">
+						<div class="product-card__image">
+							<img src="/images/gallery/honey-cinnamon-iced-coffee.webp" alt="Honey Cinnamon Coffee" loading="lazy" onclick="openLightbox('/images/gallery/honey-cinnamon-iced-coffee.webp','Honey Cinnamon Coffee')">
+							<span class="product-card__badge">&#10022; Signature</span>
+						</div>
+						<div class="product-card__info">
+							<h3 class="product-card__name">Honey Cinnamon Coffee</h3>
+							<p class="product-card__desc">Soft honey sweetness layered with gentle cinnamon warmth — a comforting slow-morning blend.</p>
+							<div class="product-card__meta">300ml 420ml</div>
+						</div>
+					</div>
+					<div class="product-card">
+						<div class="product-card__image">
+							<img src="/images/gallery/freddo-frappe.webp" alt="Freddo Frappe" loading="lazy" onclick="openLightbox('/images/gallery/freddo-frappe.webp','Freddo Frappe')">
+							<span class="product-card__badge">&#10022; Signature</span>
+						</div>
+						<div class="product-card__info">
+							<h3 class="product-card__name">Freddo Frappe</h3>
+							<p class="product-card__desc">Bold yet refined — chilled coffee crowned with airy froth and a lingering finish.</p>
+							<div class="product-card__meta">300ml 420ml</div>
+						</div>
+					</div>
 					</div>
 				</div>
-				<div class="reveal product-card">
-					<div class="product-image">
-						<img src="/images/gallery/hazelnut-cold-coffee.webp" alt="Hazelnut Cold Coffee">
-						<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
-					</div>
-					<div class="product-info">
-						<h3 class="product-name">Hazelnut Cold Coffee</h3>
-						<div class="product-summary">
-							Nutty, chilled, and luxuriously smooth — roasted hazelnut folded into golden frost that lingers.
+				<div class="tab-content" id="tab-hot-drinks">
+					<div class="product-grid">
+					<div class="product-card">
+						<div class="product-card__image">
+							<img src="/images/gallery/dark-hot-chocolate.webp" alt="Classic Dark Hot Chocolate" loading="lazy" onclick="openLightbox('/images/gallery/dark-hot-chocolate.webp','Classic Dark Hot Chocolate')">
+							<span class="product-card__badge">&#10022; Signature</span>
 						</div>
-						<div class="product-quantity flex items-center gap-3 flex-wrap">
-							<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">300ml</span>
-							<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">420ml</span>
+						<div class="product-card__info">
+							<h3 class="product-card__name">Classic Dark Hot Chocolate</h3>
+							<p class="product-card__desc">Deep cocoa intensity wrapped in molten velvet with a hint of cinnamon — comforting warmth.</p>
+							<div class="product-card__meta">320ml</div>
 						</div>
 					</div>
-				</div>
-				<div class="reveal product-card">
-					<div class="product-image">
-						<img src="/images/gallery/honey-cinnamon-iced-coffee.webp" alt="Honey Cinnamon Coffee">
-						<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
+					<div class="product-card">
+						<div class="product-card__image">
+							<img src="/images/gallery/white-hot-chocolate.webp" alt="Silky White Hot Chocolate" loading="lazy" onclick="openLightbox('/images/gallery/white-hot-chocolate.webp','Silky White Hot Chocolate')">
+							<span class="product-card__badge">&#10022; Signature</span>
+						</div>
+						<div class="product-card__info">
+							<h3 class="product-card__name">Silky White Hot Chocolate</h3>
+							<p class="product-card__desc">Silken white chocolate folded into gentle warmth with a subtle cinnamon touch — indulgent.</p>
+							<div class="product-card__meta">320ml</div>
+						</div>
 					</div>
-					<div class="product-info">
-						<h3 class="product-name">Honey Cinnamon Coffee</h3>
-						<div class="product-summary">
-							Soft honey sweetness layered with gentle cinnamon warmth — a comforting slow-morning blend.
-						</div>
-						<div class="product-quantity flex items-center gap-3 flex-wrap">
-							<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">300ml</span>
-							<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">420ml</span>
-						</div>
 					</div>
 				</div>
-				<div class="reveal product-card">
-					<div class="product-image">
-						<img src="/images/gallery/freddo-frappe.webp" alt="Freddo Frappe">
-						<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
-					</div>
-					<div class="product-info">
-						<h3 class="product-name">Freddo Frappe</h3>
-						<div class="product-summary">
-							Bold yet refined — chilled coffee crowned with airy froth and a lingering finish.
+				<div class="tab-content" id="tab-refreshing-drinks">
+					<div class="product-grid">
+					<div class="product-card">
+						<div class="product-card__image">
+							<img src="/images/gallery/blue-lagoon.webp" alt="Blue Lagoon" loading="lazy" onclick="openLightbox('/images/gallery/blue-lagoon.webp','Blue Lagoon')">
+							<span class="product-card__badge">&#10022; Signature</span>
 						</div>
-						<div class="product-quantity flex items-center gap-3 flex-wrap">
-							<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">300ml</span>
-							<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">420ml</span>
+						<div class="product-card__info">
+							<h3 class="product-card__name">Blue Lagoon</h3>
+							<p class="product-card__desc">Ocean brilliance, a sharp citrus tang and botanical sweetness — an arctic refreshment.</p>
+							<div class="product-card__meta">320ml</div>
 						</div>
 					</div>
-				</div>
-				<!-- <div class="reveal product-card">
-					<div class="product-image">
-						<img src="/images/gallery/lotus-biscoff-shake.webp" alt="Lotus Biscoff Shake">
-						<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
-					</div>
-					<div class="product-info">
-						<h3 class="product-name">Lotus Biscoff Shake</h3>
-						<div class="product-summary">
-							Cold, whipped, irresistibly smooth — our signature caramel-biscoff indulgence sip after sip.
-						</div>
-						<div class="product-quantity flex items-center gap-3 flex-wrap">
-							<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">300ml</span>
-							<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">420ml</span>
-						</div>
-					</div>
-				</div> -->
-			</div>
-			
-			<!-- Hot Drinks Tab -->
-			<div class="tab-content" id="tab-hot-drinks">
-				<div class="reveal product-card">
-					<div class="product-image">
-						<img src="/images/gallery/dark-hot-chocolate.webp" alt="Classic Dark Hot Chocolate">
-						<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
-					</div>
-					<div class="product-info">
-						<h3 class="product-name">Classic Dark Hot Chocolate</h3>
-						<div class="product-summary">
-							Deep cocoa intensity wrapped in molten velvet with a hint of cinnamon — comforting warmth.
-						</div>
-						<div class="product-quantity flex items-center gap-3 flex-wrap">
-							<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">320ml</span>
-						</div>
 					</div>
 				</div>
-				<div class="reveal product-card">
-					<div class="product-image">
-						<img src="/images/gallery/white-hot-chocolate.webp" alt="Silky White Hot Chocolate">
-						<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
+				<div class="tab-content" id="tab-pasta">
+					<div class="product-grid">
+					<div class="product-card">
+						<div class="product-card__image">
+							<img src="/images/gallery/alfredo-pasta.webp" alt="Alfredo Pasta" loading="lazy" onclick="openLightbox('/images/gallery/alfredo-pasta.webp','Alfredo Pasta')">
+							<span class="product-card__badge">&#10022; Signature</span>
+						</div>
+						<div class="product-card__info">
+							<h3 class="product-card__name">Alfredo Pasta</h3>
+							<p class="product-card__desc">Velvety cream folded into melted golden cheese with a hint of garlic — a silken masterpiece.</p>
+							
+						</div>
 					</div>
-					<div class="product-info">
-						<h3 class="product-name">Silky White Hot Chocolate</h3>
-						<div class="product-summary">
-							Silken white chocolate folded into gentle warmth with a subtle cinnamon touch — indulgent.
-						</div>
-						<div class="product-quantity flex items-center gap-3 flex-wrap">
-							<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">320ml</span>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Refreshing Drinks Tab -->
-			<div class="tab-content" id="tab-refreshing-drinks">
-				<div class="reveal product-card">
-					<div class="product-image">
-						<img src="/images/gallery/blue-lagoon.webp" alt="Blue Lagoon">
-						<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
-					</div>
-					<div class="product-info">
-						<h3 class="product-name">Blue Lagoon</h3>
-						<div class="product-summary">
-							Ocean brilliance, a sharp citrus tang and botanical sweetness — an arctic refreshment.
-						</div>
-						<div class="product-quantity flex items-center gap-3 flex-wrap">
-							<span class="serving-quantity font-montserrat text-[12px] tracking-wider uppercase border border-gold/20 px-2.5 py-0.5">320ml</span>
-						</div>
 					</div>
 				</div>
-			</div>
-
-			<!-- Pasta Tab -->
-			<div class="tab-content" id="tab-pasta">
-				<div class="reveal product-card">
-					<div class="product-image">
-						<img src="/images/gallery/alfredo-pasta.webp" alt="Alfredo Pasta">
-						<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
-					</div>
-					<div class="product-info">
-						<h3 class="product-name">Alfredo Pasta</h3>
-						<div class="product-summary">
-							Velvety cream folded into melted golden cheese with a hint of garlic — a silken masterpiece.
+				<div class="tab-content" id="tab-sandwiches">
+					<div class="product-grid">
+					<div class="product-card">
+						<div class="product-card__image">
+							<img src="/images/gallery/masala-sandwich.webp" alt="Masala Sandwich" loading="lazy" onclick="openLightbox('/images/gallery/masala-sandwich.webp','Masala Sandwich')">
+							<span class="product-card__badge">&#10022; Signature</span>
 						</div>
+						<div class="product-card__info">
+							<h3 class="product-card__name">Masala Sandwich</h3>
+							<p class="product-card__desc">Vibrant mint-coriander greens, crisp capsicum and juicy tomato in a creamy curd embrace.</p>
+							
+						</div>
+					</div>
+					<div class="product-card">
+						<div class="product-card__image">
+							<img src="/images/gallery/pizza-sandwich.webp" alt="Pizza Sandwich" loading="lazy" onclick="openLightbox('/images/gallery/pizza-sandwich.webp','Pizza Sandwich')">
+							<span class="product-card__badge">&#10022; Signature</span>
+						</div>
+						<div class="product-card__info">
+							<h3 class="product-card__name">Pizza Sandwich</h3>
+							<p class="product-card__desc">Tangy herb-infused marinara, molten cheese and crisp garden greens — a toasted Italian dream.</p>
+							
+						</div>
+					</div>
 					</div>
 				</div>
 			</div>
-
-			<!-- Sandwiches Tab -->
-			<div class="tab-content" id="tab-sandwiches">
-				<div class="reveal product-card">
-					<div class="product-image">
-						<img src="/images/gallery/masala-sandwich.webp" alt="Masala Sandwich">
-						<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
-					</div>
-					<div class="product-info">
-						<h3 class="product-name">Masala Sandwich</h3>
-						<div class="product-summary">
-							Vibrant mint-coriander greens, crisp capsicum and juicy tomato in a creamy curd embrace.
-						</div>
-					</div>
-				</div>
-				<div class="reveal product-card">
-					<div class="product-image">
-						<img src="/images/gallery/pizza-sandwich.webp" alt="Pizza Sandwich">
-						<div class="signature-dish-label border border-gold px-2 py-1"><span class="font-montserrat tracking-widest">✦ Signature</span></div>
-					</div>
-					<div class="product-info">
-						<h3 class="product-name">Pizza Sandwich</h3>
-						<div class="product-summary">
-							Tangy herb-infused marinara, molten cheese and crisp garden greens — a toasted Italian dream.
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="menu-crosslink-box">
-				<p class="menu-crosslink-text">
-					Loved these already?
-					<span class="highlight-text">There’s more to explore.</span>
-				</p>
-
-				<p class="menu-crosslink-subtext">
-					Dive into our complete 
-					<a href="/browse-menu/" class="menu-link highlight">
-					menu
-					</a>
-					to discover everything we have to offer — from comforting classics to refreshing blends, all crafted to elevate your 
-					<a href="/cafe-in-indore/" class="menu-link highlight">
-					cafe experience in Indore
-					</a>.
-				</p>
-			</div>
-		</div>
-	</section>
-   <!-- Footer Section -->
-   <footer class="footer" id="footer"></footer>
-	<!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
-	<div id="preloader"></div>
-
-	<script src="../js/custom.js"></script>
-	<script src="../js/animations.js"></script>
-</body>
+		</section>
+		<!-- Footer Section -->
+		<footer class="site-footer" id="footer"></footer>
+		<!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
+		<div id="preloader"></div>
+	</body>
 </html>

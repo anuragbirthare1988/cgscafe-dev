@@ -1,13 +1,38 @@
 <div class="miscellaneous">
-	<!-- Spinkling-shimmering effect on the canvas over body -->
+	<!-- Style switcher — a clip tab docked to the right edge, below the header -->
+	<!-- Auto-scroll toggle -->
+	<button class="autoscroll-toggle" id="autoscroll-toggle" onclick="toggleAutoScroll()" title="Toggle auto-scroll">
+		<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 6 5 5 5-5"></path><path d="m7 13 5 5 5-5"></path></svg>
+	</button>
+	<div class="theme-clip" role="group" aria-label="Theme">
+		<span class="theme-clip__label" title="Theme">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle>
+				<circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle>
+				<circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle>
+				<circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle>
+				<path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.688-1.688h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path>
+			</svg>
+		</span>
+		<span class="theme-clip__option" data-theme-option="roast" onclick="setCgsTheme('roast')">Roast</span>
+		<span class="theme-clip__option" data-theme-option="botanica" onclick="setCgsTheme('botanica')">Botanica</span>
+	</div>
+	<!-- Image Lightbox — click any dish photo to view full-screen -->
+	<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+		<button class="lightbox__close" aria-label="Close" onclick="closeLightbox()">
+			<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+		</button>
+		<img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+	</div>
+	<!-- Ambient dust-mote canvas, subtle and permanent -->
 	<canvas id="effect-canvas"></canvas>
 	<!-- Cursor trailing effect -->
 	<div class="cursor-trail-container"></div>
-	<!-- Deploying Environment Badge -->
+	<!-- Deploying Environment Badge (shown only on non-prod hosts via custom.js) -->
 	<div id="dev-badge">DEV</div>
 	<!-- Share Button -->
 	<button class="share-btn" onclick="shareWebsite()" title="Share with others">
-		<svg class="icon-share" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share2 w-5 h-5">
+		<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 			<circle cx="18" cy="5" r="3"></circle>
 			<circle cx="6" cy="12" r="3"></circle>
 			<circle cx="18" cy="19" r="3"></circle>
@@ -17,19 +42,19 @@
 	</button>
 	<!-- Scroll Buttons -->
 	<div id="scroll-buttons">
-		<button id="to-top" title="Scroll to Top" class="w-10 h-10 flex items-center justify-center border border-gold/40 bg-espresso/90 backdrop-blur-sm text-gold transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:bg-gold hover:enabled:text-espresso hover:enabled:shadow-[0_0_14px_hsla(39,48%,57%,0.4)] hover:enabled:scale-110">
-			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up w-5 h-5">
+		<button id="to-top" title="Scroll to Top">
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 				<path d="m18 15-6-6-6 6"></path>
 			</svg>
 		</button>
-		<button id="to-bottom" title="Scroll to Bottom" class="w-10 h-10 flex items-center justify-center border border-gold/40 bg-espresso/90 backdrop-blur-sm text-gold transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:bg-gold hover:enabled:text-espresso hover:enabled:shadow-[0_0_14px_hsla(39,48%,57%,0.4)] hover:enabled:scale-110">
-			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down w-5 h-5">
+		<button id="to-bottom" title="Scroll to Bottom">
+			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 				<path d="m6 9 6 6 6-6"></path>
 			</svg>
 		</button>
 	</div>
 	<!-- WhatsApp Chat -->
-	<a href="https://wa.me/918390540094?text=Hi,%0AI%20am%20writing%20to%20you%20to%20inquire%20about%20something."  class="whatsapp-icon" target="_blank">
+	<a class="whatsapp-link whatsapp-icon" target="_blank" title="Click to Chat">
 		<img src="../images/whatsapp.png" alt="whatsapp-icon" fetchpriority="high">
 	</a>
 	<!-- Overlay (Splash) screen -->
@@ -40,19 +65,18 @@
 		<div class="intro-particles" id="shotSplashes"></div>
 		<div class="intro-particles" id="drizzleLines"></div>
 		<div class="intro-particles" id="themedParticles"></div>
+		<div class="intro-particles" id="confettiBurst"></div>
 
 		<div class="intro-content">
 			<div class="intro-letters">
-				<span class="intro-letter" style="animation-delay:0.3s">C</span>
-				<span class="intro-letter" style="animation-delay:0.65s">G</span>
-				<span class="intro-letter" style="animation-delay:1s">S</span>
+				<span class="intro-letter" style="animation-delay:0.15s">C</span>
+				<span class="intro-letter" style="animation-delay:0.35s">G</span>
+				<span class="intro-letter" style="animation-delay:0.55s">S</span>
 			</div>
-			<p class="intro-tagline" style="animation-delay:2s">Coffee · Grill · Shots</p>
-			<div class="brand-divider" style="animation-delay:2s"></div>
-			<p class="brand-tagline" style="animation-delay:2s">Jumpstart Your Mood</p>
+			<p class="intro-tagline" style="animation-delay:1.1s">Coffee · Grill · Shots</p>
+			<div class="brand-divider" style="animation-delay:1.1s"></div>
+			<p class="brand-tagline" style="animation-delay:1.1s">Jumpstart Your Mood</p>
 		</div>
 		<div class="intro-glow"></div>
 	</div>
-	<!-- Custom Cursor Design -->
-		<div id="sparkle-container"></div>
 </div>

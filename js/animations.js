@@ -8,8 +8,6 @@ function initAllAnimations() {
         initCursorTrail();
         initShareFeature();
         initOverlay();
-        initPartyEffect();
-        initCustomCursor();
         initClickEffect();
         initCanvasEffect();
     } catch (e) {
@@ -61,9 +59,15 @@ function initOverlay() {
     var overlay = document.getElementById('intro-overlay');
     if (!overlay) return;
 
-    // Registering the overlay screen visibility for the first-load so that no redundant ovrlay screen is seen
-    if (sessionStorage.getItem('cgs-intro-seen')) {
+    // Show on a fresh tab/session (typed URL, new tab) or an explicit page
+    // refresh — but not on every internal link click within the same
+    // browsing session, since the visitor has already seen the welcome.
+    var navEntries = performance.getEntriesByType && performance.getEntriesByType('navigation');
+    var navType = (navEntries && navEntries[0]) ? navEntries[0].type : 'navigate';
+    var alreadySeen = sessionStorage.getItem('cgs-intro-seen');
+    if (navType !== 'reload' && alreadySeen) {
         overlay.remove();
+        if (typeof nudgeAutoScrollToggle === 'function') nudgeAutoScrollToggle();
         return;
     }
     sessionStorage.setItem('cgs-intro-seen', '1');
@@ -148,110 +152,56 @@ function initOverlay() {
         }
     }
 
-    setTimeout(() => overlay.classList.add('fade-out'), 3800);
-    setTimeout(() => overlay.remove(), 4800);
-    overlay.addEventListener('click', () => overlay.remove());
-}
-
-// Party effect for the all the screens
-function initPartyEffect() {
-    const canvas = document.createElement('canvas');
-    canvas.id = "party-canvas";
-    document.body.appendChild(canvas);
-
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    class Particle {
-        constructor(isStone) {
-            this.isStone = isStone;
-            this.x = isStone ? canvas.width / 2 : Math.random() * canvas.width;
-            this.y = isStone ? canvas.height / 2 : -10;
-            this.size = isStone ? Math.random() * 10 + 5 : Math.random() * 3 + 1;
-            this.speedX = (Math.random() - 0.5) * (isStone ? 15 : 2);
-            this.speedY = isStone ? (Math.random() - 0.5) * 15 : Math.random() * 3 + 2;
-            this.color = `hsl(${Math.random() * 360}, 80%, 60%)`;
-            this.rotation = Math.random() * 360;
-        }
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.isStone) this.rotation += 5;
-        }
-        draw() {
-            ctx.fillStyle = this.color;
-            ctx.beginPath();
-            if (this.isStone) {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.rotation * Math.PI / 180);
-                for(let i=0; i<5; i++) {
-                    ctx.lineTo(this.size * Math.cos(i * 2 * Math.PI / 5), this.size * Math.sin(i * 2 * Math.PI / 5));
-                }
-            } else {
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            }
-            ctx.fill();
-            ctx.restore();
+    // Colorful confetti burst — varied shapes and brand-adjacent hues for a
+    // more festive, welcoming feel than the muted coffee-themed particles alone
+    var confettiColors = ['#C9A24B', '#E0BC6E', '#B5622F', '#C97A45', '#7C8570', '#B97D74', '#F6EFE4', '#8C7EA6', '#6BAED6', '#52C77A', '#E85D75', '#F2C744'];
+    var confettiShapes = ['circle', 'square', 'triangle', 'diamond', 'star', 'pentagon'];
+    var confettiC = document.getElementById('confettiBurst');
+    if (confettiC) {
+        for (var i = 0; i < 55; i++) {
+            var d = document.createElement('div');
+            var shape = confettiShapes[i % confettiShapes.length];
+            d.className = 'confetti-piece confetti-piece--' + shape;
+            d.style.left = rand(2, 98) + '%';
+            d.style.setProperty('--confetti-color', confettiColors[i % confettiColors.length]);
+            d.style.setProperty('--confetti-size', rand(4, 10) + 'px');
+            d.style.setProperty('--confetti-rotate', rand(-180, 180) + 'deg');
+            d.style.setProperty('--confetti-drift', rand(-40, 40) + 'px');
+            d.style.animationDelay = rand(0, 0.6) + 's';
+            d.style.animationDuration = rand(1.8, 2.8) + 's';
+            confettiC.appendChild(d);
         }
     }
 
-    for (let i = 0; i < 40; i++) particles.push(new Particle(true));
-    for (let i = 0; i < 100; i++) particles.push(new Particle(false));
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(animate);
-    }
-    animate();
-
+    setTimeout(() => overlay.classList.add('fade-out'), 3200);
     setTimeout(() => {
-        canvas.classList.add('fade-out');
-        setTimeout(() => canvas.remove(), 1000);
-    }, 3000);
-}
-
-// Custom Cursor Design
-function initCustomCursor() {
-    document.addEventListener('mousemove', (e) => {
-        const sparkle = document.createElement('div');
-        sparkle.className = 'sparkle';
-
-        const colors = ['#FFD700', '#FF1493', '#00BFFF', '#7FFF00', '#FF4500'];
-        sparkle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-
-        sparkle.style.left = e.pageX + 'px';
-        sparkle.style.top = e.pageY + 'px';
-
-        document.body.appendChild(sparkle);
-        setTimeout(() => sparkle.remove(), 800);
-    });
+        overlay.remove();
+        if (typeof nudgeAutoScrollToggle === 'function') nudgeAutoScrollToggle();
+    }, 4000);
+    overlay.addEventListener('click', () => overlay.remove());
 }
 
 // Glittering Click Appearance
 function initClickEffect() {
+    const brandColors = ['#A67C3D', '#CDA765', '#B5622F', '#6E7A5C', '#B97D74'];
     document.addEventListener('mousedown', (e) => {
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 4; i++) {
             const prop = document.createElement('div');
             prop.className = 'party-prop';
 
-            const shapes = ['50%', '0%', '20%']; 
+            const shapes = ['50%', '20%'];
             prop.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)];
             prop.style.left = e.pageX + 'px';
             prop.style.top = e.pageY + 'px';
-            prop.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            prop.style.backgroundColor = brandColors[Math.floor(Math.random() * brandColors.length)];
 
-            const x = (Math.random() - 0.5) * 200;
-            const y = (Math.random() - 0.5) * 200;
+            const x = (Math.random() - 0.5) * 140;
+            const y = (Math.random() - 0.5) * 140;
             prop.style.setProperty('--x', `${x}px`);
             prop.style.setProperty('--y', `${y}px`);
 
             document.body.appendChild(prop);
-            setTimeout(() => prop.remove(), 1000);
+            setTimeout(() => prop.remove(), 900);
         }
     });
 }
@@ -264,7 +214,7 @@ function initCanvasEffect() {
     const ctx = canvas.getContext('2d');
     let particles = [];
     let flairs = [];
-    const colors = ['#FFFFFF', '#E0F7FA', '#C6A15B', '#FF8C00', '#783C14'];
+    const colors = ['#FBF7F0', '#CDA765', '#A67C3D', '#B5622F', '#C97A45', '#7C8570', '#B97D74', '#8C7EA6', '#241A16'];
 
     function resize() {
         canvas.width = window.innerWidth;
