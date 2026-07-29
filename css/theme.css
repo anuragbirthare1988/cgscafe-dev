@@ -475,16 +475,22 @@ p {
 .info-bar__inner {
   max-width: var(--container-max);
   margin: 0 auto;
-  /* Use a CSS variable or transition the padding smoothly */
-  padding: var(--space-2) var(--container-pad);
+  padding: var(--space-1) var(--container-pad);
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  font-size: var(--text-2xs);
+  justify-content: space-between; /* Distribute elements evenly */
+  flex-wrap: nowrap; /* Prevent wrapping to a second line */
+  gap: var(--space-2);
+  font-size: 10px; /* Slightly tighter font for mobile */
   color: var(--color-text-inverse-muted);
-  transition: padding 0.3s ease; /* Smooth transition */
+  white-space: nowrap; /* Keep text items on a single line */
+  overflow-x: auto; /* Fallback to allow smooth swipe if screen is too narrow */
+  scrollbar-width: none; /* Hide scrollbar for clean look */
+}
+
+/* Hide scrollbar for Chrome/Safari */
+.info-bar__inner::-webkit-scrollbar {
+  display: none;
 }
 
 /* When the page is scrolled, reduce the vertical padding */
