@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Deploying Environment Badge
       function showEnvironmentBadge() {
             const hostname = window.location.hostname.toLowerCase();
-            const domainSuffix = "3000";
+            const domainSuffix = ".cgscafe.in";
 
             // Check if the current hostname ends with our domain and has a prefix
             if (hostname.endsWith(domainSuffix) && hostname !== domainSuffix.substring(1)) {
@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         badgeElement.style.display = "none";
                   }
             }
-            }
+      }
 
       function initPageFeatures(){
             initReveal(); // Initialize animations
