@@ -2627,7 +2627,7 @@ footer .logo-brand {
 /* ---- Style switcher: a clip tab docked to the right edge, below header ---- */
 .theme-clip {
   position: fixed;
-  top: 200px;
+  top: 130px;
   right: 0;
   z-index: 900;
   display: flex;
@@ -2986,7 +2986,7 @@ footer .logo-brand {
 /* ---- Auto-scroll toggle — left edge, mirrors the theme-clip's docked style ---- */
 .autoscroll-toggle {
   position: fixed;
-  top: 200px;
+  top: 130px;
   left: 0;
   z-index: 900;
   width: 38px;
