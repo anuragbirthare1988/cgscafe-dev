@@ -295,8 +295,8 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="../js/supabase-config.js"></script>
   <script src="../js/environment.js"></script>
+  <script src="../js/supabase-config.js"></script>
   <script src="/admin/session.js"></script>
   <script src="../authorization/auth-guard.js"></script>
   <script src="./supabase-loader.js"></script>
@@ -407,7 +407,7 @@
         try {
             const {
                 error
-            } = await defaultSupabaseClient.auth.signOut();
+            } = await supabaseClient.auth.signOut();
             if (error) {
                 throw error;
             }
@@ -473,7 +473,7 @@
         if (!(await requireLogin())) return;
         
         try {
-            const { data: { session } } = await defaultSupabaseClient.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
             
             if (!session) {
                 window.location.replace("/authorization/login.html");
@@ -1070,14 +1070,14 @@
             if (DELETED_ITEM_IDS.length > 0) {
                 const {
                     error
-                } = await defaultSupabaseClient.from("items").delete().in("id", DELETED_ITEM_IDS);
+                } = await supabaseClient.from("items").delete().in("id", DELETED_ITEM_IDS);
                 if (error) throw error;
             }
             // Delete categories removed by the user
             if (DELETED_CATEGORY_IDS.length > 0) {
                 const {
                     error
-                } = await defaultSupabaseClient.from("categories").delete().in("id", DELETED_CATEGORY_IDS);
+                } = await supabaseClient.from("categories").delete().in("id", DELETED_CATEGORY_IDS);
                 if (error) throw error;
             }
             document.body.style.opacity = "0.7";
@@ -1104,13 +1104,13 @@
                     const {
                         data,
                         error
-                    } = await defaultSupabaseClient.from('categories').insert(categoryPayload).select().single();
+                    } = await supabaseClient.from('categories').insert(categoryPayload).select().single();
                     if (error) throw error;
                     category.id = data.id;
                 } else {
                     const {
                         error
-                    } = await defaultSupabaseClient.from('categories').update(categoryPayload).eq('id', category.id);
+                    } = await supabaseClient.from('categories').update(categoryPayload).eq('id', category.id);
                     if (error) throw error;
                 };
                 for (const item of category.items) {
@@ -1130,13 +1130,13 @@
                         const {
                             data,
                             error
-                        } = await defaultSupabaseClient.from('items').insert(payload).select().single();
+                        } = await supabaseClient.from('items').insert(payload).select().single();
                         if (error) throw error;
                         item.id = data.id;
                     } else {
                         const {
                             error
-                        } = await defaultSupabaseClient.from('items').update(payload).eq('id', item.id);
+                        } = await supabaseClient.from('items').update(payload).eq('id', item.id);
                         if (error) throw error;
                     }
                 }
@@ -1151,7 +1151,7 @@
                 "Generating Live Menu snapshot...";
             
             const { error: snapshotError } =
-                await defaultSupabaseClient
+                await supabaseClient
                     .from("live_menu")
                     .upsert({
                         id: 1,

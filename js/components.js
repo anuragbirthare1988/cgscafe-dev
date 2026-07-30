@@ -2,12 +2,12 @@ window.CONFIG_READY = false;
 
 // 1. Load Data
 async function loadGlobalConfig() {
-    if (typeof defaultSupabaseClient === 'undefined') {
+    if (typeof supabaseClient === 'undefined') {
         setTimeout(loadGlobalConfig, 100);
         return;
     }
 
-    const { data, error } = await defaultSupabaseClient
+    const { data, error } = await supabaseClient
         .from('site_settings')
         .select('key, value');
 

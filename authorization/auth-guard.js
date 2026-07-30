@@ -3,7 +3,7 @@ async function requireAdminLogin() {
         data: {
             session
         }
-    } = await defaultSupabaseClient.auth.getSession();
+    } = await supabaseClient.auth.getSession();
     if (!session) {
         window.location.href = "../authorization/login.html";
         return false;
