@@ -205,21 +205,35 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       // Deploying Environment Badge
-      function showDevBadge() {
-            const params = new URLSearchParams(window.location.search);
-            isDevEnv = window.location.href.toLowerCase().includes('dev');
-            //   console.log(params, isDevEnv);
-            const devParam = params.get("dev");
-            if (isDevEnv) {
-                  document.getElementById("dev-badge").style.display = "block";
+      function showEnvironmentBadge() {
+            const hostname = window.location.hostname.toLowerCase();
+            const domainSuffix = "3000";
+
+            // Check if the current hostname ends with our domain and has a prefix
+            if (hostname.endsWith(domainSuffix) && hostname !== domainSuffix.substring(1)) {
+                  // Remove the domain suffix to isolate the prefix (e.g., "qa.cgscafe.in" becomes "qa")
+                  const envPrefix = hostname.replace(domainSuffix, '');
+                  const envName = envPrefix.toUpperCase();
+
+                  const badgeElement = document.getElementById("env-badge");
+                  if (badgeElement) {
+                        badgeElement.textContent = envName; // Dynamically sets DEV, QA, UAT, STAGING, etc.
+                        badgeElement.style.display = "block";
+                  }
+            } else {
+                  // Production environment (cgscafe.in) - keep the badge hidden
+                  const badgeElement = document.getElementById("env-badge");
+                  if (badgeElement) {
+                        badgeElement.style.display = "none";
+                  }
             }
-      }
+            }
 
       function initPageFeatures(){
             initReveal(); // Initialize animations
             initTabs(); // Initialize tabs
             updateActiveMenu(); // Update the active navigation menu link
-            showDevBadge(); // Shows the badge as "Dev" if URL has dev word in it
+            showEnvironmentBadge(); // Shows the badge as "Dev" if URL has dev word in it
             accordionMenu();
             init404Page();    // Responsible for showing the dynamic messages on clicking on 404 page 
       }
@@ -290,7 +304,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
       // Initialize after DOM is loaded
       document.addEventListener("DOMContentLoaded", initReveal);
-      document.addEventListener("DOMContentLoaded", showDevBadge);
+      document.addEventListener("DOMContentLoaded", showEnvironmentBadge);
       // To run after every route's load, to trigger the active menu link
       document.addEventListener("DOMContentLoaded", updateActiveMenu);
       window.addEventListener("DOMContentLoaded", updateActiveMenu);

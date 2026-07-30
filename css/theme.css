@@ -454,15 +454,30 @@ p {
 
 /* Utility info strip (hours / location / phone) */
 .info-bar {
-  background: var(--color-bg-inverse-alt);
-  border-bottom: 1px solid var(--color-border-inverse);
-  display: grid;
-  grid-template-rows: 1fr;
-  opacity: 1;
-  transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.3s ease-in-out,
-              padding 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              border-bottom-color 0.3s ease-in-out;
+  width: 100%;
+  background-color: var(--color-bg-inverse, #1b1412);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.info-bar__inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  /* Adds breathing room on left/right so it never touches the screen edges */
+  padding: 6px 16px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--color-text-inverse-muted);
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.info-bar__inner::-webkit-scrollbar {
+  display: none;
 }
 
 .info-bar > div {
@@ -470,27 +485,6 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.info-bar__inner {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: var(--space-2) 0;
-  display: flex;
-  align-items: center;
-  justify-content: center; /* Centers the content items horizontally */
-  flex-wrap: nowrap; /* Keeps everything on a single line */
-  gap: var(--space-4); /* Space between timing, location, and phone */
-  font-size: 10px;
-  color: var(--color-text-inverse-muted);
-  white-space: nowrap;
-  overflow-x: auto; /* Allows smooth swipe if the screen is too narrow */
-  scrollbar-width: none;
-}
-
-/* Hide scrollbar for Chrome/Safari */
-.info-bar__inner::-webkit-scrollbar {
-  display: none;
 }
 
 /* When the page is scrolled, reduce the vertical padding */
@@ -536,6 +530,13 @@ a.info-bar__item:hover {
   align-items: center;
   justify-content: space-between;
   transition: padding 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.logo-brand__wordmark, 
+.logo-brand__tagline  { /* Use your exact selector for the logo text heading */
+  font-size: clamp(1.1rem, 4.5vw, 2rem); /* Scales smoothly down on mobile, scales up on desktop */
+  white-space: nowrap; /* Forces it to remain on a single line */
+  letter-spacing: 0.05em;
 }
 
 /* Collapse the info bar smoothly once the nav reports the page has scrolled */
@@ -1215,10 +1216,10 @@ footer .logo-brand {
 }
 
 /* Dev environment badge — hidden by default, shown via JS on non-prod hosts */
-#dev-badge {
+#env-badge {
   position: fixed;
-  top: 80px;
-  left: -8px;
+  top: 110px;
+  left: -5px;
   transform: rotate(-30deg);
   background: rgba(181, 98, 47, 0.15);
   color: var(--color-tertiary-accent);
