@@ -163,7 +163,7 @@
   /* ---- 1.8 Layout ---- */
   --container-max: 1200px;
   --container-pad: clamp(1.25rem, 4vw, 2.5rem);
-  --header-offset: 122px; /* full header height (info bar + nav row) — used to reserve space below the fixed header */
+  --header-offset: 145px; /* full header height (info bar + nav row) — used to reserve space below the fixed header */
   --header-offset-scrolled: 66px; /* collapsed header height once .scrolled — used by sticky elements below the header so they don't gap/overlap during the transition */
 
   /* ---- 1.9 Z-index scale ---- */
@@ -475,7 +475,7 @@ p {
 .info-bar__inner {
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: var(--space-2) var(--container-pad);
+  padding: var(--space-2) 0;
   display: flex;
   align-items: center;
   justify-content: center; /* Centers the content items horizontally */
@@ -2626,7 +2626,7 @@ footer .logo-brand {
 /* ---- Style switcher: a clip tab docked to the right edge, below header ---- */
 .theme-clip {
   position: fixed;
-  top: 140px;
+  top: 200px;
   right: 0;
   z-index: 900;
   display: flex;
@@ -2985,7 +2985,7 @@ footer .logo-brand {
 /* ---- Auto-scroll toggle — left edge, mirrors the theme-clip's docked style ---- */
 .autoscroll-toggle {
   position: fixed;
-  top: 140px;
+  top: 200px;
   left: 0;
   z-index: 900;
   width: 38px;
