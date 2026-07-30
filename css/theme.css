@@ -463,7 +463,7 @@ p {
   max-width: var(--container-max);
   margin: 0 auto;
   /* Adds breathing room on left/right so it never touches the screen edges */
-  padding: 6px 16px; 
+  padding: 6px 0; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -534,9 +534,9 @@ a.info-bar__item:hover {
 
 .logo-brand__wordmark, 
 .logo-brand__tagline  { /* Use your exact selector for the logo text heading */
-  font-size: clamp(1.1rem, 4.5vw, 2rem); /* Scales smoothly down on mobile, scales up on desktop */
-  white-space: nowrap; /* Forces it to remain on a single line */
-  letter-spacing: 0.05em;
+  font-size: clamp(0.9rem, 3.8vw, 1.8rem); /* Shrinks gracefully on smaller devices */
+  white-space: nowrap; /* Keeps it on a single line */
+  max-width: calc(100vw - 140px);
 }
 
 /* Collapse the info bar smoothly once the nav reports the page has scrolled */
@@ -1024,7 +1024,7 @@ footer .logo-brand {
 }
 
 .logo-brand__wordmark {
-  font-size: var(--text-lg);
+  font-size: clamp(1.3rem, 3.8vw, 1.8rem);
   letter-spacing: 0.08em;
   color: var(--color-text-inverse);
   line-height: 1;
@@ -1032,7 +1032,7 @@ footer .logo-brand {
 }
 
 .logo-brand__tagline {
-  font-family: var(--font-accent);
+  font-family: var(--font-display);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.22em;
@@ -2408,7 +2408,7 @@ footer .logo-brand {
 
   .info-bar__inner {
     font-size: 10px;
-    gap: var(--space-3);
+    gap: var(--space-2);
   }
 }
 
