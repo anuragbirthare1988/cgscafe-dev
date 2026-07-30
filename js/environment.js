@@ -1,8 +1,8 @@
 function getCurrentEnvironment() {
     const host = window.location.hostname.toLowerCase();
     
-    // 1. Explicitly define live production & staging-production domains
-    const productionDomains = ["cgscafe.in", "www.cgscafe.in", "dev.cgscafe.in"];
+    // 1. Only true production domains belong here (remove dev.cgscafe.in from this list)
+    const productionDomains = ["cgscafe.in", "www.cgscafe.in"];
     if (productionDomains.includes(host)) {
         return "production";
     }
@@ -13,10 +13,10 @@ function getCurrentEnvironment() {
         if (sub === 'qa') return 'qa';
         if (sub === 'uat') return 'uat';
         if (sub === 'staging') return 'staging';
-        if (sub === 'dev') return 'development'; // Explicitly map 'dev.' subdomain here if you want it to use the dev database
+        if (sub === 'dev') return 'development'; // Ensures dev.cgscafe.in maps to development
     }
 
-    // 3. Default fallback for local testing (localhost, 127.0.0.1)
+    // 3. Default fallback for local testing
     return "development";
 }
 
