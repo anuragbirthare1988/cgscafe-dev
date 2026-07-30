@@ -2986,7 +2986,7 @@ footer .logo-brand {
 /* ---- Auto-scroll toggle — left edge, mirrors the theme-clip's docked style ---- */
 .autoscroll-toggle {
   position: fixed;
-  top: 130px;
+  top: 160px;
   left: 0;
   z-index: 900;
   width: 38px;

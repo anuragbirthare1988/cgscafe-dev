@@ -45,6 +45,21 @@ window.addEventListener('load', () => {
   window.scrollTo(0, 0);
 });
 
+// Scrolling feature for the SCROLL button click on hero banner
+function scrollToFeatures() {
+    const container = document.querySelector('.container .section');
+    if (container) {
+        const headerOffset = 90; // Adjust this to match your sticky header's exact height in pixels
+        const elementPosition = container.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+    }
+}
+
 // Draws attention to the toggle once after load, without actually
 // starting to scroll — auto-scroll only begins once the visitor clicks it.
 function nudgeAutoScrollToggle() {
