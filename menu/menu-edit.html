@@ -146,6 +146,53 @@
     .btn-nav-menu { background: #d4a84b; color: #1c1412; text-decoration: none; }
     .btn-nav-menu:hover { background: transparent; color: #d2a54b; box-shadow: 0 0 20px hsla(39, 48%, 57%, .35); }
     #env-badge-display, #admin-scope-desc { display: none; }
+
+    /* Global display settings bar */
+    .global-settings-bar {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      flex-wrap: wrap;
+      background: linear-gradient(180deg, #16120e, #12100e);
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--accent-gold);
+      border-radius: 4px;
+      padding: 14px 20px;
+      margin-bottom: 22px;
+    }
+    .global-settings-bar__label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      margin-right: 10px;
+    }
+    .global-settings-bar__item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-main);
+      letter-spacing: 0.4px;
+    }
+    .global-settings-bar__hint {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .global-settings-bar__status {
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-darker);
+      min-width: 60px;
+      text-align: right;
+    }
+    .global-settings-bar__status.saved   { color: #7ac074; }
+    .global-settings-bar__status.saving  { color: var(--accent-gold); }
+    .global-settings-bar__status.error   { color: var(--danger-color); }
   </style>
 </head>
 <body>
@@ -188,6 +235,26 @@
         <button id="filter-btn-beverages" class="filter-pill-btn" onclick="handleOriginContextSwitch('beverages')">Beverages</button>
         <button id="filter-btn-eatables" class="filter-pill-btn" onclick="handleOriginContextSwitch('eatables')">Eatables</button>
       </div>
+    </div>
+
+    <div class="global-settings-bar" id="global-display-settings">
+      <span class="global-settings-bar__label">Global Display</span>
+      <label class="global-settings-bar__item">
+        <label class="switch-wrapper" title="Show or hide prices across the customer menu">
+          <input type="checkbox" class="switch-input" id="toggle-show-prices" onchange="handleGlobalSettingChange('show_prices', this.checked)">
+          <span class="switch-rail"><span class="switch-indicator"></span></span>
+        </label>
+        <span>Show Prices</span>
+      </label>
+      <label class="global-settings-bar__item">
+        <label class="switch-wrapper" title="Show or hide quantities across the customer menu">
+          <input type="checkbox" class="switch-input" id="toggle-show-quantities" onchange="handleGlobalSettingChange('show_quantities', this.checked)">
+          <span class="switch-rail"><span class="switch-indicator"></span></span>
+        </label>
+        <span>Show Quantities</span>
+      </label>
+      <span class="global-settings-bar__hint">Saves upon clicking "Publish the revised menu".</span>
+      <span class="global-settings-bar__status" id="global-settings-status">Synced</span>
     </div>
 
     <div id="top-creation-stage" class="top-creation-stage-panel">
@@ -317,6 +384,44 @@
     const CRITICAL_DRAG_WARNING = "⚠️ CRITICAL WARNING: Moving items or sections may alter page heights, causing text overflows, misalignments, or unexpected page breaks on the live/printed menu layout. Check on the lower environment before making this change as this change may cause page misalignment and page breaks for the live menu.";
     const CURRENT_ENVIRONMENT = getCurrentEnvironment();
     let dialogResolvePointer = null;
+    let APP_SETTINGS = { show_prices: true, show_quantities: true };
+
+    function setSettingsStatus(text, cls) {
+      const el = document.getElementById("global-settings-status");
+      if (!el) return;
+      el.className = "global-settings-bar__status " + (cls || "");
+      el.textContent = text;
+    }
+
+    async function loadAppSettings() {
+      try {
+        setSettingsStatus("Loading…", "");
+        const { data, error } = await supabaseClient
+          .from('app_settings')
+          .select('setting_key, value')
+          .in('setting_key', ['show_prices', 'show_quantities']);
+        if (error) throw error;
+        (data || []).forEach(row => {
+          const raw = row.value;
+          const isTrue = !(raw === false || raw === 'false' || raw === 0 || raw === '0' || raw === null);
+          APP_SETTINGS[row.setting_key] = isTrue;
+        });
+        const pEl = document.getElementById('toggle-show-prices');
+        const qEl = document.getElementById('toggle-show-quantities');
+        if (pEl) pEl.checked = !!APP_SETTINGS.show_prices;
+        if (qEl) qEl.checked = !!APP_SETTINGS.show_quantities;
+        setSettingsStatus("Synced", "saved");
+      } catch (err) {
+        console.error(err);
+        setSettingsStatus("Load failed", "error");
+      }
+    }
+
+    function handleGlobalSettingChange(key, checked) {
+      APP_SETTINGS[key] = !!checked;
+      setSettingsStatus("Modified", "saving");
+      setPendingChanges(true);
+    }
 
     window.addEventListener("beforeunload", (event) => {
       if (IS_UNPUBLISHED_CHANGES_PENDING) {
@@ -377,6 +482,7 @@
         document.body.style.paddingTop = "40px";
         pubBtn.classList.remove("pulse-publish-btn");
         pubBtn.disabled = true; 
+        setSettingsStatus("Synced", "saved");
       }
     }
 
@@ -481,9 +587,6 @@
             }
     
             MASTER_DATABASE = await loadMenuFromSupabase();
-            
-            // Load latest menu from Supabase
-            MASTER_DATABASE = await loadMenuFromSupabase();
             if (!MASTER_DATABASE.categories) {
                 MASTER_DATABASE.categories = [];
             }
@@ -502,9 +605,9 @@
             document.getElementById("admin-panel").style.display = "block";
             setPendingChanges(false);
             renderAdminDatabasePanel();
+            loadAppSettings();
         } catch (err) {
             console.error(err);
-            // Ensure the user can try logging in again if the connection fails
             const authGate = document.getElementById("auth-gate");
             if (authGate) {
                 authGate.style.display = "block";
@@ -781,7 +884,7 @@
                   <th class="col-desc">Recipe & Description</th>
                   <th class="col-size">Serving Size</th>
                   <th class="col-price">Price</th>
-                  <th class="col-star">Recommended</th>
+                  <th class="col-star">Featured</th>
                   <th class="col-vis">Visibility</th>
                   <th class="col-ctrl" style="padding-right:20px; text-align:right;">Action</th>
                 </tr>
@@ -991,7 +1094,6 @@
         const tCat = parseInt(row.getAttribute("data-parent-cat"));
         const tIdx = parseInt(row.getAttribute("data-item-index"));
         
-        // Auto-expand logic
         if (CURRENT_ACTIVE_OPEN_ACCORDION_IDX !== tCat) {
           CURRENT_ACTIVE_OPEN_ACCORDION_IDX = tCat;
           renderAdminDatabasePanel();
@@ -1054,7 +1156,6 @@
         const btn = document.getElementById("save-btn");
         const overlay = document.getElementById("publish-overlay");
         try {
-            // Normalize category & product ordering before saving
             MASTER_DATABASE.categories.forEach((category, categoryIndex) => {
                 category.sortOrder = categoryIndex + 1;
                 category.items.forEach((item, itemIndex) => {
@@ -1064,30 +1165,33 @@
             btn.innerText = "Publishing...";
             btn.disabled = true;
             overlay.style.display = "flex";
-            document.getElementById("publish-status").innerText = "Synchronizing menu with Supabase...";
+            document.getElementById("publish-status").innerText = "Synchronizing settings & menu with Supabase...";
             document.body.style.pointerEvents = "none";
-            // Delete products removed by the user
+
+            // 1. Commit Global Display Settings to app_settings table
+            const settingsToSave = [
+              { setting_key: 'show_prices', value: !!APP_SETTINGS.show_prices, updated_at: new Date().toISOString() },
+              { setting_key: 'show_quantities', value: !!APP_SETTINGS.show_quantities, updated_at: new Date().toISOString() }
+            ];
+            for (const setting of settingsToSave) {
+              const { error: settingsError } = await supabaseClient
+                .from('app_settings')
+                .upsert(setting, { onConflict: 'setting_key' });
+              if (settingsError) throw settingsError;
+            }
+
+            // 2. Delete products/categories removed by the user
             if (DELETED_ITEM_IDS.length > 0) {
-                const {
-                    error
-                } = await supabaseClient.from("items").delete().in("id", DELETED_ITEM_IDS);
+                const { error } = await supabaseClient.from("items").delete().in("id", DELETED_ITEM_IDS);
                 if (error) throw error;
             }
-            // Delete categories removed by the user
             if (DELETED_CATEGORY_IDS.length > 0) {
-                const {
-                    error
-                } = await supabaseClient.from("categories").delete().in("id", DELETED_CATEGORY_IDS);
+                const { error } = await supabaseClient.from("categories").delete().in("id", DELETED_CATEGORY_IDS);
                 if (error) throw error;
             }
             document.body.style.opacity = "0.7";
             btn.style.pointerEvents = "auto";
-            MASTER_DATABASE.categories.forEach((category, categoryIndex) => {
-                category.sortOrder = categoryIndex + 1;
-                category.items.forEach((item, itemIndex) => {
-                    item.sortOrder = itemIndex + 1;
-                });
-            });
+
             for (const category of MASTER_DATABASE.categories) {
                 const categoryPayload = {
                     super_category: category.superCategory,
@@ -1101,16 +1205,11 @@
                 };
                 const isNewCategory = !category.id || String(category.id).startsWith("cat_");
                 if (isNewCategory) {
-                    const {
-                        data,
-                        error
-                    } = await supabaseClient.from('categories').insert(categoryPayload).select().single();
+                    const { data, error } = await supabaseClient.from('categories').insert(categoryPayload).select().single();
                     if (error) throw error;
                     category.id = data.id;
                 } else {
-                    const {
-                        error
-                    } = await supabaseClient.from('categories').update(categoryPayload).eq('id', category.id);
+                    const { error } = await supabaseClient.from('categories').update(categoryPayload).eq('id', category.id);
                     if (error) throw error;
                 };
                 for (const item of category.items) {
@@ -1123,20 +1222,17 @@
                         is_featured: item.featured,
                         is_hidden: item.hidden,
                         sort_order: item.sortOrder || 0,
-                        legacy_index: item.sortOrder || 0
+                        legacy_index: item.sortOrder || 0,
+                        image_url: item.image_url || item.imageUrl || '',
+                        image_path: item.image_path || item.imagePath || ''
                     };
                     const isNewItem = !item.id || String(item.id).startsWith("item_");
                     if (isNewItem) {
-                        const {
-                            data,
-                            error
-                        } = await supabaseClient.from('items').insert(payload).select().single();
+                        const { data, error } = await supabaseClient.from('items').insert(payload).select().single();
                         if (error) throw error;
                         item.id = data.id;
                     } else {
-                        const {
-                            error
-                        } = await supabaseClient.from('items').update(payload).eq('id', item.id);
+                        const { error } = await supabaseClient.from('items').update(payload).eq('id', item.id);
                         if (error) throw error;
                     }
                 }
@@ -1144,11 +1240,9 @@
             ACTIVE_PENDING_NEW_ROW_MAP = {};
             DELETED_ITEM_IDS = [];
             DELETED_CATEGORY_IDS = [];
-            document.getElementById("publish-status").innerText =
-                "Reloading latest menu...";
+            document.getElementById("publish-status").innerText = "Reloading latest menu...";
             MASTER_DATABASE = await loadMenuFromSupabase();
-            document.getElementById("publish-status").innerText =
-                "Generating Live Menu snapshot...";
+            document.getElementById("publish-status").innerText = "Generating Live Menu snapshot...";
             
             const { error: snapshotError } =
                 await supabaseClient
@@ -1162,16 +1256,13 @@
                 throw snapshotError;
             }
             setPendingChanges(false);
+            loadAppSettings();
             renderAdminDatabasePanel();
+            
             const emptyCategories = MASTER_DATABASE.categories.filter(cat => !cat.items || cat.items.length === 0);
-            let successMessage =
-            "Menu changes were successfully published.\n\n" +
-            "The latest menu has been reloaded from Supabase.";
+            let successMessage = "Menu changes and global display settings were successfully published.\n\nThe latest menu has been reloaded from Supabase.";
             if (emptyCategories.length > 0) {
-                successMessage +=
-                    "\n\nNote:\n" +
-                    "One or more categories were published successfully but remain hidden from the Live Menu because they do not contain any products.\n\n" +
-                    "Add at least one product and publish again to make those categories visible to customers.";
+                successMessage += "\n\nNote:\nOne or more categories were published successfully but remain hidden from the Live Menu because they do not contain any products.";
             }
           document.body.style.pointerEvents = "";
           document.body.style.opacity = "";

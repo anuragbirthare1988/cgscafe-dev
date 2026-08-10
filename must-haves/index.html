@@ -32,6 +32,32 @@
 		"priceRange": "₹₹"
 		}
 	</script>
+	<style>
+		/* Container holding your category buttons */
+.category-tabs-container {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 12px;
+    padding: 10px 4px 15px 4px;
+    width: 100%;
+    scrollbar-width: none; /* Hides scrollbar on Firefox */
+    -ms-overflow-style: none; /* Hides scrollbar on IE/Edge */
+    -webkit-overflow-scrolling: touch; /* Smooth momentum scrolling on iOS */
+}
+
+/* Hides scrollbar for Chrome, Safari, and Opera */
+.category-tabs-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Ensure individual category buttons don't shrink or wrap */
+.category-tabs-container .tab-button, 
+.category-tabs-container button {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+	</style>
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,149 +101,198 @@
 		</section>
 
 		<section class="section" style="padding-top:0;">
-			<div class="container">
-				<div class="menu-tabs">
-					<button class="tab-btn active" data-tab="chillers">Chillers</button>
-					<button class="tab-btn" data-tab="hot-drinks">Hot Drinks</button>
-					<button class="tab-btn" data-tab="refreshing-drinks">Refreshing Drinks</button>
-					<button class="tab-btn" data-tab="pasta">Pasta</button>
-					<button class="tab-btn" data-tab="sandwiches">Sandwiches</button>
-				</div>
-				<div class="tab-content active" id="tab-chillers">
-					<div class="product-grid">
-					<div class="product-card">
-						<div class="product-card__image">
-							<img src="/images/gallery/signature-frozen-coffee.webp" alt="Frozen Coffee Slush" loading="lazy" onclick="openLightbox('/images/gallery/signature-frozen-coffee.webp','Frozen Coffee Slush')">
-							<span class="product-card__badge">&#10022; Signature</span>
-						</div>
-						<div class="product-card__info">
-							<h3 class="product-card__name">Frozen Coffee Slush</h3>
-							<p class="product-card__desc">Sun-kissed crema swirled in icy velvet with a rich caramel heart — a gilded arctic bliss.</p>
-							<div class="product-card__meta">300ml 420ml</div>
-						</div>
-					</div>
-					<div class="product-card">
-						<div class="product-card__image">
-							<img src="/images/gallery/hazelnut-cold-coffee.webp" alt="Hazelnut Cold Coffee" loading="lazy" onclick="openLightbox('/images/gallery/hazelnut-cold-coffee.webp','Hazelnut Cold Coffee')">
-							<span class="product-card__badge">&#10022; Signature</span>
-						</div>
-						<div class="product-card__info">
-							<h3 class="product-card__name">Hazelnut Cold Coffee</h3>
-							<p class="product-card__desc">Nutty, chilled, and luxuriously smooth — roasted hazelnut folded into golden frost that lingers.</p>
-							<div class="product-card__meta">300ml 420ml</div>
-						</div>
-					</div>
-					<div class="product-card">
-						<div class="product-card__image">
-							<img src="/images/gallery/honey-cinnamon-iced-coffee.webp" alt="Honey Cinnamon Coffee" loading="lazy" onclick="openLightbox('/images/gallery/honey-cinnamon-iced-coffee.webp','Honey Cinnamon Coffee')">
-							<span class="product-card__badge">&#10022; Signature</span>
-						</div>
-						<div class="product-card__info">
-							<h3 class="product-card__name">Honey Cinnamon Coffee</h3>
-							<p class="product-card__desc">Soft honey sweetness layered with gentle cinnamon warmth — a comforting slow-morning blend.</p>
-							<div class="product-card__meta">300ml 420ml</div>
-						</div>
-					</div>
-					<div class="product-card">
-						<div class="product-card__image">
-							<img src="/images/gallery/freddo-frappe.webp" alt="Freddo Frappe" loading="lazy" onclick="openLightbox('/images/gallery/freddo-frappe.webp','Freddo Frappe')">
-							<span class="product-card__badge">&#10022; Signature</span>
-						</div>
-						<div class="product-card__info">
-							<h3 class="product-card__name">Freddo Frappe</h3>
-							<p class="product-card__desc">Bold yet refined — chilled coffee crowned with airy froth and a lingering finish.</p>
-							<div class="product-card__meta">300ml 420ml</div>
-						</div>
-					</div>
-					</div>
-				</div>
-				<div class="tab-content" id="tab-hot-drinks">
-					<div class="product-grid">
-					<div class="product-card">
-						<div class="product-card__image">
-							<img src="/images/gallery/dark-hot-chocolate.webp" alt="Classic Dark Hot Chocolate" loading="lazy" onclick="openLightbox('/images/gallery/dark-hot-chocolate.webp','Classic Dark Hot Chocolate')">
-							<span class="product-card__badge">&#10022; Signature</span>
-						</div>
-						<div class="product-card__info">
-							<h3 class="product-card__name">Classic Dark Hot Chocolate</h3>
-							<p class="product-card__desc">Deep cocoa intensity wrapped in molten velvet with a hint of cinnamon — comforting warmth.</p>
-							<div class="product-card__meta">320ml</div>
-						</div>
-					</div>
-					<div class="product-card">
-						<div class="product-card__image">
-							<img src="/images/gallery/white-hot-chocolate.webp" alt="Silky White Hot Chocolate" loading="lazy" onclick="openLightbox('/images/gallery/white-hot-chocolate.webp','Silky White Hot Chocolate')">
-							<span class="product-card__badge">&#10022; Signature</span>
-						</div>
-						<div class="product-card__info">
-							<h3 class="product-card__name">Silky White Hot Chocolate</h3>
-							<p class="product-card__desc">Silken white chocolate folded into gentle warmth with a subtle cinnamon touch — indulgent.</p>
-							<div class="product-card__meta">320ml</div>
-						</div>
-					</div>
-					</div>
-				</div>
-				<div class="tab-content" id="tab-refreshing-drinks">
-					<div class="product-grid">
-					<div class="product-card">
-						<div class="product-card__image">
-							<img src="/images/gallery/blue-lagoon.webp" alt="Blue Lagoon" loading="lazy" onclick="openLightbox('/images/gallery/blue-lagoon.webp','Blue Lagoon')">
-							<span class="product-card__badge">&#10022; Signature</span>
-						</div>
-						<div class="product-card__info">
-							<h3 class="product-card__name">Blue Lagoon</h3>
-							<p class="product-card__desc">Ocean brilliance, a sharp citrus tang and botanical sweetness — an arctic refreshment.</p>
-							<div class="product-card__meta">320ml</div>
-						</div>
-					</div>
-					</div>
-				</div>
-				<div class="tab-content" id="tab-pasta">
-					<div class="product-grid">
-					<div class="product-card">
-						<div class="product-card__image">
-							<img src="/images/gallery/alfredo-pasta.webp" alt="Alfredo Pasta" loading="lazy" onclick="openLightbox('/images/gallery/alfredo-pasta.webp','Alfredo Pasta')">
-							<span class="product-card__badge">&#10022; Signature</span>
-						</div>
-						<div class="product-card__info">
-							<h3 class="product-card__name">Alfredo Pasta</h3>
-							<p class="product-card__desc">Velvety cream folded into melted golden cheese with a hint of garlic — a silken masterpiece.</p>
-							
-						</div>
-					</div>
-					</div>
-				</div>
-				<div class="tab-content" id="tab-sandwiches">
-					<div class="product-grid">
-					<div class="product-card">
-						<div class="product-card__image">
-							<img src="/images/gallery/masala-sandwich.webp" alt="Masala Sandwich" loading="lazy" onclick="openLightbox('/images/gallery/masala-sandwich.webp','Masala Sandwich')">
-							<span class="product-card__badge">&#10022; Signature</span>
-						</div>
-						<div class="product-card__info">
-							<h3 class="product-card__name">Masala Sandwich</h3>
-							<p class="product-card__desc">Vibrant mint-coriander greens, crisp capsicum and juicy tomato in a creamy curd embrace.</p>
-							
-						</div>
-					</div>
-					<div class="product-card">
-						<div class="product-card__image">
-							<img src="/images/gallery/pizza-sandwich.webp" alt="Pizza Sandwich" loading="lazy" onclick="openLightbox('/images/gallery/pizza-sandwich.webp','Pizza Sandwich')">
-							<span class="product-card__badge">&#10022; Signature</span>
-						</div>
-						<div class="product-card__info">
-							<h3 class="product-card__name">Pizza Sandwich</h3>
-							<p class="product-card__desc">Tangy herb-infused marinara, molten cheese and crisp garden greens — a toasted Italian dream.</p>
-							
-						</div>
-					</div>
-					</div>
-				</div>
+			<div class="container" id="category-nav-container">
+				<!-- Dynamic Tab Buttons will be injected here -->
+				<div class="menu-tabs" id="dynamic-menu-tabs"></div>
+
+				<!-- Dynamic Tab Content Grids will be injected here -->
+				<div id="dynamic-tab-contents"></div>
 			</div>
 		</section>
 		<!-- Footer Section -->
 		<footer class="site-footer" id="footer"></footer>
 		<!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
 		<div id="preloader"></div>
+		<script>
+    // Helper to convert category names into clean tab slugs
+    function slugify(text) {
+        return (text || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+
+    // Direct and bulletproof Supabase client initializer
+    async function getSupabaseClient() {
+        if (window.supabaseClient && typeof window.supabaseClient.from === 'function') {
+            return window.supabaseClient;
+        }
+        if (window.supabase && typeof window.supabase.from === 'function') {
+            return window.supabase;
+        }
+
+        if (typeof supabase !== 'undefined' && window.currentConfig && window.currentConfig.url && window.currentConfig.anonKey) {
+            try {
+                const client = supabase.createClient(window.currentConfig.url, window.currentConfig.anonKey);
+                window.supabaseClient = client;
+                return client;
+            } catch (e) {
+                console.error("Direct Supabase initialization failed:", e);
+            }
+        }
+        return null;
+    }
+
+    // Safe menu loader querying your live menu table
+    async function loadMenuFromSupabase() {
+        const client = await getSupabaseClient();
+        
+        if (!client || typeof client.from !== 'function') {
+            console.error("Supabase client is not initialized or '.from()' is unavailable.");
+            return { categories: [] };
+        }
+
+        try {
+            const { data, error } = await client
+                .from('live_menu')
+                .select('*')
+                .limit(1)
+                .single();
+
+            if (error) {
+                const { data: fallbackData, error: fallbackErr } = await client
+                    .from('menu_data')
+                    .select('*')
+                    .limit(1)
+                    .single();
+                if (fallbackErr) throw fallbackErr;
+                return fallbackData ? fallbackData.menu_json || fallbackData.content || fallbackData : { categories: [] };
+            }
+            
+            return data ? data.menu_json || data.content || data : { categories: [] };
+        } catch (err) {
+            console.error("Error loading menu from Supabase:", err);
+            return { categories: [] };
+        }
+    }
+
+    // Fully dynamic loader for categories, double-bordered thumbnail tabs, and items
+    async function initDynamicSignaturePicks() {
+        try {
+            const masterDb = await loadMenuFromSupabase();
+            if (!masterDb || !masterDb.categories) return;
+
+            const tabsContainer = document.getElementById('dynamic-menu-tabs');
+            const contentsContainer = document.getElementById('dynamic-tab-contents');
+            
+            if (!tabsContainer || !contentsContainer) return;
+
+            tabsContainer.innerHTML = '';
+            contentsContainer.innerHTML = '';
+
+            // Apply horizontal swipeable scroller styling to the tabs container dynamically
+            tabsContainer.className = 'category-thumbnails-slider';
+
+            let isFirstTab = true;
+
+            masterDb.categories.forEach((category, catIndex) => {
+                if (category.hidden) return;
+
+                const items = category.items || [];
+                if (items.length === 0) return;
+
+                // PRE-CHECK: Verify if the category has at least one visible, featured item
+                const hasFeaturedItems = items.some(item => !item.hidden && item.featured);
+                if (!hasFeaturedItems) return; // Skip this category completely if no featured items exist
+
+                const catName = category.subCategoryName || category.name || `Category ${catIndex + 1}`;
+                const catSlug = slugify(catName);
+
+                // Extract the real image from the first valid featured/visible item in the category
+                let categoryImage = 'assets/default-placeholder.jpg';
+                const itemWithImage = items.find(item => !item.hidden && item.featured && (item.image_url || item.image_path || item.imageUrl || item.imagePath));
+                if (itemWithImage) {
+                    categoryImage = itemWithImage.image_url || itemWithImage.image_path || itemWithImage.imageUrl || itemWithImage.imagePath;
+                }
+
+                // 1. Create Double-Bordered Square Thumbnail Tab Element
+                const thumbItem = document.createElement('div');
+                thumbItem.className = `category-thumb-item ${isFirstTab ? 'active' : ''}`;
+                thumbItem.setAttribute('data-tab', catSlug);
+                thumbItem.innerHTML = `
+                    <div class="category-thumb-box">
+                        <img src="${categoryImage}" alt="${catName}" loading="lazy">
+                    </div>
+                    <span class="category-thumb-name">${catName}</span>
+                `;
+
+                // Tab Click Interactivity
+                thumbItem.addEventListener('click', () => {
+                    document.querySelectorAll('.category-thumb-item').forEach(el => el.classList.remove('active'));
+                    thumbItem.classList.add('active');
+
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    const targetContent = document.getElementById(`tab-${catSlug}`);
+                    if (targetContent) targetContent.classList.add('active');
+                });
+
+                tabsContainer.appendChild(thumbItem);
+
+                // 2. Create Tab Content Panel dynamically
+                const tabContent = document.createElement('div');
+                tabContent.className = `tab-content ${isFirstTab ? 'active' : ''}`;
+                tabContent.id = `tab-${catSlug}`;
+
+                const productGrid = document.createElement('div');
+                productGrid.className = 'product-grid';
+
+                // 3. Populate product cards inside the category grid
+                items.forEach(item => {
+                    if (item.hidden || !item.featured) return;
+
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+
+                    const imageUrl = item.image_url || '';
+                    const itemName = item.name || '';
+                    const itemDesc = item.description || '';
+                    const showPrices = item.price;
+                    const showQty    = item.qty;
+                    const itemMeta = item.qty || item.price ? `${item.qty || ''} ${item.price ? '₹' + item.price : ''}`.trim() : '';
+
+                    card.innerHTML = `
+                        <div class="product-card__image">
+                            <img src="${imageUrl}" alt="${itemName}" loading="lazy">
+                            <span class="product-card__badge">&#10022; Signature</span>
+                        </div>
+                        <div class="product-card__info">
+                            <h3 class="product-card__name">${itemName}</h3>
+                            ${itemDesc ? `<p class="product-card__desc">${itemDesc}</p>` : ''}
+                            <span class="hidden">
+                                ${(showQty && item.qty) ? `<span class="menu-item__meta">${item.qty}</span>` : ''}
+                                ${(showPrices && item.price) ? `<span class="menu-item__meta">${item.price}</span>` : ''}
+                            </span>
+                        </div>
+                    `;
+                    
+                    card.querySelector('.product-card__image img').addEventListener('click', () => {
+                        openLightbox(imageUrl, itemName);
+                    });
+                    productGrid.appendChild(card);
+                });
+
+                tabContent.appendChild(productGrid);
+                contentsContainer.appendChild(tabContent);
+
+                // Set the first actually rendered tab as active
+                if (isFirstTab) {
+                    isFirstTab = false;
+                }
+            });
+
+        } catch (err) {
+            console.error("Failed to dynamically load signature tabs:", err);
+        }
+    }
+    
+    document.addEventListener("DOMContentLoaded", initDynamicSignaturePicks);
+</script>
 	</body>
 </html>

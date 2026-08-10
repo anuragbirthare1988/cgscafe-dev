@@ -53,7 +53,7 @@
     .product-title-text { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; color: var(--text-main); letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
     .star-marker { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10px; color: var(--accent-gold); flex-shrink: 0; line-height: 1; }
     
-    .product-desc-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; color: var(--text-muted); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+    .product-desc-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; color: var(--text-muted); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
     .embedded-metric-group { color: var(--text-muted); font-size: 11px; font-weight: 400; font-family: 'Plus Jakarta Sans', sans-serif; margin-left: 6px; white-space: nowrap; display: inline-block; }
     
     .footer-stamp-line { position: absolute; bottom: 6mm; left: 22mm; right: 8mm; font-family: 'Oswald', sans-serif; font-size: 11px; color: #3b332b; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(197, 168, 128, 0.04); padding-top: 6px; }
@@ -88,10 +88,29 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../js/environment.js"></script>
-		<script src="../js/supabase-config.js"></script>
+  <script src="../js/supabase-config.js"></script>
   <script>
     let ACTIVE_CANVAS = 'beverages';
     let MASTER_DATABASE = { categories: [] };
+    let DISPLAY_SETTINGS = { showPrices: true, showQuantities: true };
+
+    async function loadDisplaySettingsMaster() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('app_settings')
+          .select('setting_key, value')
+          .in('setting_key', ['show_prices', 'show_quantities']);
+        if (error) throw error;
+        (data || []).forEach(row => {
+          const raw = row.value;
+          const isTrue = !(raw === false || raw === 'false' || raw === 0 || raw === '0' || raw === null);
+          if (row.setting_key === 'show_prices')     DISPLAY_SETTINGS.showPrices = isTrue;
+          if (row.setting_key === 'show_quantities') DISPLAY_SETTINGS.showQuantities = isTrue;
+        });
+      } catch (err) {
+        console.warn('Display settings fetch failed, using defaults:', err);
+      }
+    }
 
     const CONNECTION_REGISTRY = {};
 
@@ -101,6 +120,7 @@
 
     window.addEventListener("load", async () => {
         try {
+            await loadDisplaySettingsMaster();
             MASTER_DATABASE = await loadMenuData();
             console.log("MASTER_DATABASE:", MASTER_DATABASE);
             generateProductionMenuLayout();
@@ -277,12 +297,16 @@
           let cleanDescription = (item.description || "").trim();
           if (cleanDescription.endsWith('.')) { cleanDescription = cleanDescription.slice(0, -1); }
 
+          // Respect global display settings for price and quantity
+          const showP = DISPLAY_SETTINGS.showPrices;
+          const showQ = DISPLAY_SETTINGS.showQuantities;
+          const hasQty   = item.qty && item.qty.trim() !== "";
+          const hasPrice = item.price && String(item.price).trim() !== "";
+          const qtyPart   = (showQ && hasQty) ? item.qty.trim() : "";
+          const pricePart = (showP && hasPrice) ? item.price : "";
           let metricsLine = "";
-          if (item.qty && item.qty.trim() !== "") {
-            metricsLine += `${item.qty.trim()} · ${item.price}`;
-          } else {
-            metricsLine += `${item.price}`;
-          }
+          if (qtyPart && pricePart) metricsLine = `${qtyPart} · ${pricePart}`;
+          else                      metricsLine = `${qtyPart}${pricePart}`;
 
           itemCol.innerHTML = `
             <div class="product-title-row">
@@ -330,3 +354,4 @@
   </script>
 </body>
 </html>
+
