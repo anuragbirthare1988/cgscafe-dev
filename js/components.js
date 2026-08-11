@@ -81,6 +81,11 @@ function populateUI() {
                 link.setAttribute('href', window.SITE_CONFIG['maps_url']);
             }
         });
+
+        // Reveal the info bar smoothly once populated
+        document.querySelectorAll('.info-bar__inner').forEach(bar => {
+            bar.classList.add('is-loaded');
+        });
     });
 }
 

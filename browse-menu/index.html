@@ -137,7 +137,18 @@
                                 const { data, error } = await client.from("live_menu").select("menu_json").single();
                                 if (error) throw error;
                                 
-                                globalCategories = data.menu_json.categories;
+                                // Filter out hidden categories, hidden items, AND categories with 0 visible items left
+                                globalCategories = (data.menu_json.categories || [])
+                                .filter(cat => {
+                                        if (cat.hidden === true) return false;
+                                        const visibleItems = (cat.items || []).filter(item => item.hidden !== true);
+                                        return visibleItems.length > 0; // Drops the category if all its children are hidden
+                                })
+                                .map(cat => ({
+                                        ...cat,
+                                        items: (cat.items || []).filter(item => item.hidden !== true)
+                                }));
+
                                 renderCategories(globalCategories); 
                         } catch (err) {
                                 console.error("Menu fetch error:", err);

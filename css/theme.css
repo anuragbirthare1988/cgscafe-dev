@@ -480,7 +480,12 @@ p {
   white-space: nowrap;
   overflow-x: auto;
   scrollbar-width: none;
-  transition: padding 0.3s var(--ease-organic, ease);
+  opacity: 0;
+  transition: opacity 0.25s ease-in-out;
+}
+
+.info-bar__inner.is-loaded {
+    opacity: 1;
 }
 
 .info-bar__inner::-webkit-scrollbar {
