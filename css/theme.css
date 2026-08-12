@@ -29,34 +29,42 @@
 :root {
 
   /* ---- 1.1 Base palette — raw values, referenced only inside :root ---- */
-  --palette-espresso-900:   #1B1412;
-  --palette-espresso-800:   #241A16;
-  --palette-espresso-700:   #2E211B;
-  --palette-coffee-500:     #6F4A2F;
-  --palette-terracotta-500: #B5622F;
-  --palette-terracotta-400: #C97A45;
-  --palette-gold-700:       #8A6530;
-  --palette-gold-600:       #A67C3D;
-  --palette-gold-400:       #CDA765;
-  --palette-gold-200:       #E7D3AA;
-  --palette-sage-600:       #5C6A4C;
-  --palette-sage-500:       #6E7A5C;
-  --palette-rose-500:       #A56760;
-  --palette-rose-400:       #B97D74;
-  --palette-linen-100:      #F6EFE4;
-  --palette-linen-50:       #FBF7F0;
-  --palette-cream-200:      #EEE3D1;
-  --palette-neutral-700:    #4A4340;
-  --palette-neutral-600:    #6B6560;
-  --palette-neutral-400:    #9C948A;
-  --palette-neutral-300:    #DCD2C1;
-  --palette-neutral-200:    #E9E0D2;
+  --palette-espresso-900:            #1B1412;
+  --palette-espresso-800:            #241A16;
+  --palette-espresso-700:            #2E211B;
+  --palette-coffee-500:              #6F4A2F;
+  --palette-terracotta-500:          #B5622F;
+  --palette-terracotta-400:          #C97A45;
+  --palette-gold-700:                #8A6530;
+  --palette-gold-600:                #A67C3D;
+  --palette-gold-400:                #CDA765;
+  --palette-gold-200:                #E7D3AA;
+  --palette-sage-600:                #5C6A4C;
+  --palette-sage-500:                #6E7A5C;
+  --palette-rose-500:                #A56760;
+  --palette-rose-400:                #B97D74;
+  --palette-linen-100:               #F6EFE4;
+  --palette-linen-50:                #FBF7F0;
+  --palette-cream-200:               #EEE3D1;
+  --palette-neutral-700:             #4A4340;
+  --palette-neutral-600:             #6B6560;
+  --palette-neutral-400:             #9C948A;
+  --palette-neutral-300:             #DCD2C1;
+  --palette-neutral-200:             #E9E0D2;
+  --bg-dark-color:                   #0c0a08;
+  --bg-card-color:                   #12100e;
+  --accent-gold:                     #c5a880;
+  --text-main:                       #e6dfd5;
+  --text-muted:                      #8c7b68;
+  --border-color:                    #221d17;
+  --color-bg-founder-espresso:       #050403;
+  --color-bg-panel-founder-espresso: #24594d;
 
   /* ---- 1.2 Semantic color roles — components consume these, never the palette above ---- */
-  --color-bg:               var(--palette-linen-100);
-  --color-bg-alt:           var(--palette-cream-200);
-  --color-bg-inverse:       var(--palette-espresso-900);
-  --color-bg-inverse-alt:   var(--palette-espresso-700);
+  --color-bg:                       var(--palette-linen-100);
+  --color-bg-alt:                   var(--palette-cream-200);
+  --color-bg-inverse:               var(--palette-espresso-900);
+  --color-bg-inverse-alt:           var(--palette-espresso-700);
 
   --color-surface:          var(--palette-linen-50);
   --color-surface-inverse:  var(--palette-espresso-800);
@@ -697,7 +705,7 @@ a.info-bar__item:hover {
   width: 100%;
   max-width: 360px;
   height: 100vh;
-  background: var(--color-surface-inverse);
+  background: rgb(from var(--color-surface-inverse) r g b / 0.9);
   z-index: var(--z-mobile-menu);
   padding: var(--space-9) var(--space-6) var(--space-6);
   border-left: 1px solid var(--color-border-inverse);
@@ -1257,7 +1265,7 @@ footer .logo-brand {
 #scroll-buttons {
   position: fixed;
   bottom: 92px;
-  right: 20px;
+  right: 5px;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -1265,12 +1273,12 @@ footer .logo-brand {
 }
 
 #scroll-buttons button {
-  width: 44px;
-  height: 44px;
+  width: 25px;
+  height: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-surface-inverse);
+  background: rgb(from var(--color-surface-inverse) r g b / 0.7);
   color: var(--color-accent-on-dark);
   border: 1px solid var(--color-border-inverse);
   border-radius: var(--radius-full);
@@ -1321,13 +1329,13 @@ footer .logo-brand {
 .share-btn {
   position: fixed;
   bottom: 208px;
-  right: 20px;
-  width: 44px;
-  height: 44px;
+  right: 5px;
+  width: 25px;
+  height: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-surface-inverse);
+  background: rgb(from var(--color-surface-inverse) r g b / 0.7);
   color: var(--color-accent-on-dark);
   border: 1px solid var(--color-border-inverse);
   border-radius: var(--radius-full);
@@ -1635,16 +1643,14 @@ footer .logo-brand {
 }
 
 @media (max-width: 640px) {
-  .share-btn { bottom: 186px; right: 14px; }
+  .share-btn { bottom: 186px; right: 5px;}
   #scroll-buttons { bottom: 78px; right: 14px; }
   .whatsapp-icon { right: 14px; width: 140px; bottom: 16px; }
-
-  .footer-actions a {
-    padding: 6px var(--space-3);
-    font-size: 9px;
-  }
-
+  .footer-actions a { padding: 6px var(--space-3); font-size: 9px;}
   .footer-actions a svg { width: 11px; height: 11px; }
+  .autoscroll-toggle, .share-btn { display: none !important;}
+  #scroll-buttons button { width: 20px; height: 20px;}
+  #scroll-buttons button svg { width:12px; height: 12px;}
 }
 
 @media (max-width: 400px) {
@@ -2484,10 +2490,12 @@ footer .logo-brand {
 
 :root[data-theme="botanica"] {
   /* ---- Palette: warm sand + sage + deep teal ---- */
-  --color-bg:               #F5F1E7;
-  --color-bg-alt:           #ECE5D5;
-  --color-bg-inverse:       #24413B;
-  --color-bg-inverse-alt:   #1B332D;
+  --color-bg:                     #F5F1E7;
+  --color-bg-alt:                 #ECE5D5;
+  --color-bg-inverse:             #24413B;
+  --color-bg-inverse-alt:         #1B332D;
+  --color-bg-founder-other:       #0c251f;
+  --color-bg-panel-founder-other: #1d4139;
 
   --color-surface:          #FBF9F3;
   --color-surface-inverse:  #24413B;
@@ -2643,63 +2651,57 @@ footer .logo-brand {
 
 
 /* ---- Style switcher: a clip tab docked to the right edge, below header ---- */
-.theme-clip {
-  position: fixed;
-  top: 130px;
-  right: 0;
-  z-index: 900;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  background: var(--color-surface-inverse);
-  border: 1px solid var(--color-border-inverse);
-  border-right: none;
-  border-radius: var(--radius-md) 0 0 var(--radius-md);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
+/* ---- Style Switcher: Floating Circular Button ---- */
+.cgs-theme-fab {
+    position: fixed;
+    top: 130px;
+    right: 5px;
+    z-index: 900;
+    appearance: none;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
 }
 
-.theme-clip__label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-2) 0;
-  color: var(--color-text-inverse-muted);
-  border-bottom: 1px solid var(--color-border-inverse);
+.cgs-theme-fab__icon {
+    width: 25px;
+    height: 25px;
+    background-color: rgb(from var(--color-surface-inverse) r g b / 0.8);
+    color: var(--color-text-inverse-muted);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all var(--duration-base) var(--ease-organic);
 }
 
-.theme-clip__label svg {
-  width: 15px;
-  height: 15px;
+.cgs-theme-fab__icon svg {
+    width: 15px;
+    height: 15px;
 }
 
-.theme-clip__option {
-  font-family: var(--font-accent);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-align: left;
-  color: var(--color-text-inverse-muted);
-  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-3);
-  cursor: pointer;
-  border-top: 1px solid var(--color-border-inverse);
-  transition: background-color var(--duration-base) var(--ease-organic),
-              color var(--duration-base) var(--ease-organic);
+.cgs-theme-fab__label {
+    font-family: var(--font-accent);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: capitalize;
+    color: var(--color-text-inverse-muted);
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 2px 6px;
+    border-radius: 4px;
 }
 
-.theme-clip__option:first-of-type { border-top: none; }
-
-.theme-clip__option.active {
-  background: var(--color-accent);
-  color: var(--color-text-inverse);
-}
-
-.theme-clip__option:hover:not(.active) {
-  color: var(--color-accent-on-dark);
-}
-
-@media (max-width: 640px) {
-  .theme-clip__option { padding: 7px var(--space-3) 7px var(--space-2); font-size: 9px; }
+.cgs-theme-fab:hover .cgs-theme-fab__icon {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
 }
 
 /* ==========================================================================
@@ -2944,75 +2946,18 @@ footer .logo-brand {
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* ---- Menu tabs clip — floating category switcher docked to the right
-   edge, replacing the old sticky horizontal bar that overlapped scrolled
-   content. Reuses the same .tab-btn class/JS as the inline tab bar, so
-   clicking either stays in sync. ---- */
-.menu-tabs-clip {
-  position: fixed;
-  top: 260px;
-  right: 0;
-  z-index: 850;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  background: var(--color-surface-inverse);
-  border: 1px solid var(--color-border-inverse);
-  border-right: none;
-  border-radius: var(--radius-md) 0 0 var(--radius-md);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
-}
-
-.menu-tabs-clip__label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-2) 0;
-  color: var(--color-text-inverse-muted);
-  border-bottom: 1px solid var(--color-border-inverse);
-}
-
-.menu-tabs-clip__label svg {
-  width: 15px;
-  height: 15px;
-}
-
-.menu-tabs-clip .tab-btn {
-  border: none;
-  border-top: 1px solid var(--color-border-inverse);
-  border-radius: 0;
-  background: none;
-  color: var(--color-text-inverse-muted);
-  font-size: 9px;
-  padding: 8px var(--space-3);
-  white-space: nowrap;
-}
-
-.menu-tabs-clip .tab-btn:first-of-type { border-top: none; }
-
-.menu-tabs-clip .tab-btn.active {
-  background: var(--color-accent);
-  color: var(--color-text-inverse);
-  border-color: var(--color-accent);
-}
-
-@media (max-width: 860px) {
-  .menu-tabs-clip { display: none; }
-}
-
 /* ---- Auto-scroll toggle — left edge, mirrors the theme-clip's docked style ---- */
 .autoscroll-toggle {
   position: fixed;
   top: 160px;
   left: 0;
   z-index: 900;
-  width: 38px;
-  height: 38px;
+  width: 25px;
+  height: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-surface-inverse);
+  background: rgb(from var(--color-surface-inverse) r g b / 0.7);
   border: 1px solid var(--color-border-inverse);
   border-left: none;
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
@@ -3157,4 +3102,137 @@ footer .logo-brand {
 .category-thumb-item.active .category-thumb-name {
     color: var(--color-accent);
     font-weight: 700;
+}
+
+/* Founder's Story */
+
+body.founder-story {
+  background-color: var(--color-bg-founder-espresso);
+  color: var(--text-main);
+}
+
+[data-theme="botanica"] body.founder-story {
+  background-color: var(--color-bg-founder-other);
+  color: var(--text-main);
+}
+
+[data-theme="botanica"] .chapter-desc {
+  color: #cfdad5;
+}
+
+[data-theme="botanica"] .chapter-card {
+  background-color: var(--color-bg-panel-founder-other);
+  border: 1px solid var(--palette-sage-600);
+}
+
+.top-menu-selector-hub {
+  background-color: #1c1814;
+  border-bottom: 2px solid var(--border-color);
+  padding: 15px 30px;
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.founder-layout {
+  max-width: 1100px;
+  margin: 160px auto 50px;
+  padding: 0 30px;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.sticky-header {
+  position: sticky;
+  top: 120px;
+}
+.story-tagline {
+  font-family: "Oswald", sans-serif;
+  font-size: 13px;
+  letter-spacing: 5px;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.story-main-title {
+  font-family: "Oswald", sans-serif;
+  font-size: 42px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: var(--text-main);
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+.story-intro {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.chapters-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.chapter-card {
+  background-color: var(--bg-card-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 35px;
+}
+
+.chapter-num {
+  font-family: "Oswald", sans-serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.chapter-heading {
+  font-family: "Oswald", sans-serif;
+  font-size: 20px;
+  letter-spacing: 1.5px;
+  color: var(--text-main);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.chapter-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin-bottom: 14px;
+}
+.chapter-desc:last-child {
+  margin-bottom: 0;
+}
+.highlight {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.founder-sig {
+  font-family: "Oswald", sans-serif;
+  font-size: 16px;
+  color: var(--accent-gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 30px;
+}
+
+@media (max-width: 900px) {
+  .founder-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .sticky-header {
+    position: relative;
+    top: 0;
+  }
 }

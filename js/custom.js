@@ -96,6 +96,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Roast / Botanica theme switcher — global so preloader.html's inline onclick can reach it
+// Roast / Botanica theme switcher — global so preloader.html's inline onclick can reach it
 function setCgsTheme(name) {
       document.documentElement.setAttribute('data-theme', name);
       try { localStorage.setItem('cgs-theme', name); } catch (e) {}
@@ -107,6 +108,19 @@ function syncThemeSwitchUI() {
       document.querySelectorAll('[data-theme-option]').forEach((el) => {
             el.classList.toggle('active', el.getAttribute('data-theme-option') === current);
       });
+      
+      // Safely update the button label text without breaking any other code
+      const label = document.getElementById('themeFabLabel');
+      if (label) {
+          label.textContent = current.charAt(0).toUpperCase() + current.slice(1);
+      }
+}
+
+// Helper function to toggle/cycle themes when clicking the button
+function cycleCgsTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'roast';
+    const nextTheme = current === 'roast' ? 'botanica' : 'roast';
+    setCgsTheme(nextTheme);
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
