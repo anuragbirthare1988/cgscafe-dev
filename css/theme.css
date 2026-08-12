@@ -1644,12 +1644,11 @@ footer .logo-brand {
 
 @media (max-width: 640px) {
   .share-btn { bottom: 186px; right: 5px;}
-  #scroll-buttons { bottom: 78px; right: 14px; }
+  /* #scroll-buttons { bottom: 78px; } */
   .whatsapp-icon { right: 14px; width: 140px; bottom: 16px; }
   .footer-actions a { padding: 6px var(--space-3); font-size: 9px;}
   .footer-actions a svg { width: 11px; height: 11px; }
   .autoscroll-toggle, .share-btn { display: none !important;}
-  #scroll-buttons button { width: 20px; height: 20px;}
   #scroll-buttons button svg { width:12px; height: 12px;}
 }
 
