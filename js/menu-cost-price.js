@@ -587,7 +587,7 @@ async function saveRecipeToSupabase(target) {
         ingredients_json: ingredientsJson,
         total_cost: totalRecipeCost,
         base_price: autoRound,
-        price: Math.max(autoRound, customPrice || 0),
+        display_price: Math.max(autoRound, customPrice || 0),
         custom_price: customPrice,
         custom_margin: customMargin,
         qty: servingSize,
@@ -1272,16 +1272,16 @@ async function loadMenuFromSupabase() {
             id,
             name,
             description,
-            price,
             base_price,
+            custom_price,
+            custom_margin,
+            display_price,
             used_qty,
             bulk_qty,
             bulk_cost,
             ingredients_json,
             image_url,
             total_cost,
-            custom_price,
-            custom_margin,
             category_id,
             sort_order,
             categories (
@@ -1290,6 +1290,7 @@ async function loadMenuFromSupabase() {
                 sort_order
             )
         `)
+        // ... rest of query
         // 1. Order by category sequence first
         .order('sort_order', { foreignTable: 'categories', ascending: true })
         // 2. Order by item sequence within that category (removes alphabetical sorting)
@@ -1351,9 +1352,9 @@ async function loadMenuFromSupabase() {
 
         const displayPrice = (item.custom_price !== null && item.custom_price !== undefined && item.custom_price !== '') 
             ? item.custom_price 
-            : (item.price !== null && item.price !== undefined && item.price !== '' 
-                ? item.price 
-                : (item.base_price !== null && item.base_price !== undefined && item.base_price !== '' ? item.base_price : ''));
+            : (item.base_price !== null && item.base_price !== undefined && item.base_price !== '' 
+                ? item.base_price 
+                : '');
 
         const displayMargin = (item.custom_margin !== null && item.custom_margin !== undefined && item.custom_margin !== '') 
             ? item.custom_margin 
@@ -1427,7 +1428,6 @@ async function loadMenuFromSupabase() {
         }
 
         const recipeTitle = typeof toCamelCase === 'function' ? toCamelCase(item.name || '') : (item.name || '');
-        
 
         card.innerHTML = `
             <div class="cgs-card-header">
@@ -1851,7 +1851,7 @@ async function saveDuplicatedRecipeFromModal(btn) {
         ingredients_json: ingredientsJson,
         total_cost: totalRecipeCost,
         base_price: autoRound,
-        price: Math.max(autoRound, customPrice || 0),
+        display_price: Math.max(autoRound, customPrice || 0),
         custom_price: customPrice,
         custom_margin: customMargin,
         qty: servingSize,
