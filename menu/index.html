@@ -88,7 +88,6 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../js/environment.js"></script>
-  <script src="../js/supabase-config.js"></script>
   <script>
     let ACTIVE_CANVAS = 'beverages';
     let MASTER_DATABASE = { categories: [] };
@@ -181,15 +180,11 @@
     }
 
     async function loadMenuFromSupabase(client) {
-        const {
-            data,
-            error
-        } = await client.from("live_menu").select("*").single();
-        if (error) {
-            throw error;
-        }
-        return data.menu_json;
-    }
+      // Fetch the structured menu directly from the normalized items and categories tables
+      const masterMenu = await window.fetchMasterMenuFromDatabase();
+      console.log(masterMenu);
+      return masterMenu;
+  }
     
     function switchCanvasTab(canvasKey) {
       ACTIVE_CANVAS = canvasKey;

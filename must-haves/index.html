@@ -83,7 +83,6 @@
 		<!-- Dependencies First -->
 		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 		<script src="../js/environment.js"></script>
-		<script src="../js/supabase-config.js"></script>
 		
 		<!-- Global Scripts (Load these before admin.js so they are ready) -->
 		<script src="../js/custom.js"></script>
@@ -142,35 +141,13 @@
 
     // Safe menu loader querying your live menu table
     async function loadMenuFromSupabase() {
-        const client = await getSupabaseClient();
+        // Directly leverage the centralized fetch helper from environment.js
+        if (typeof window.fetchMasterMenuFromDatabase === 'function') {
+            return await window.fetchMasterMenuFromDatabase();
+        }
         
-        if (!client || typeof client.from !== 'function') {
-            console.error("Supabase client is not initialized or '.from()' is unavailable.");
-            return { categories: [] };
-        }
-
-        try {
-            const { data, error } = await client
-                .from('live_menu')
-                .select('*')
-                .limit(1)
-                .single();
-
-            if (error) {
-                const { data: fallbackData, error: fallbackErr } = await client
-                    .from('menu_data')
-                    .select('*')
-                    .limit(1)
-                    .single();
-                if (fallbackErr) throw fallbackErr;
-                return fallbackData ? fallbackData.menu_json || fallbackData.content || fallbackData : { categories: [] };
-            }
-            
-            return data ? data.menu_json || data.content || data : { categories: [] };
-        } catch (err) {
-            console.error("Error loading menu from Supabase:", err);
-            return { categories: [] };
-        }
+        console.error("fetchMasterMenuFromDatabase is not defined in environment.js.");
+        return { categories: [] };
     }
 
     // Fully dynamic loader for categories, double-bordered thumbnail tabs, and items

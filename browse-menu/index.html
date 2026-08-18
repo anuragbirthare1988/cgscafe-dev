@@ -57,7 +57,6 @@
         <!-- Dependencies First -->
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
         <script src="../js/environment.js"></script>
-        <script src="../js/supabase-config.js"></script>
         
         <!-- Global Scripts (Load these before admin.js so they are ready) -->
         <script src="../js/custom.js"></script>
@@ -133,12 +132,15 @@
                 // Data Loading Function
                 async function loadDynamicMenu() {
                         try {
+                                if (typeof loadDisplaySettings === 'function') {
                                 await loadDisplaySettings();
-                                const { data, error } = await client.from("live_menu").select("menu_json").single();
-                                if (error) throw error;
+                                }
+                                
+                                // Fetch the structured menu directly from the normalized tables using our shared helper
+                                const dbData = await window.fetchMasterMenuFromDatabase();
                                 
                                 // Filter out hidden categories, hidden items, AND categories with 0 visible items left
-                                globalCategories = (data.menu_json.categories || [])
+                                globalCategories = (dbData.categories || [])
                                 .filter(cat => {
                                         if (cat.hidden === true) return false;
                                         const visibleItems = (cat.items || []).filter(item => item.hidden !== true);

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Cost and Price Matrix</title>
+    <link rel="stylesheet" href="/css/theme.css">
+</head>
+<body class="cgs-menu">
+    <div class="cgs-container">
+        <!-- Page Header -->
+        <header class="cgs-page-header">
+            <h1>Food Menu - Cost and Price Matrix</h1>
+        </header>
+
+        <!-- Top Toolbar: Real-time Search & Global Margin -->
+        <div class="cgs-toolbar">
+            <div class="cgs-search-container">
+                <span class="cgs-search-icon">🔍</span>
+                <input type="text" id="menuSearch" placeholder="Search any menu item across the menu..." oninput="filterRecipes()">
+            </div>
+            <span id="unsaved-global-changes" class="unsaved-indicator"></span>
+            <div class="cgs-input-group-container" style="display: inline-flex; align-items: stretch; border: 1px solid #3f3f46; border-radius: 6px; overflow: hidden; background: #18181b;">
+                <span style="background: #27272a; color: #a1a1aa; padding: 4px 10px; font-size: 0.85rem; display: flex; align-items: center; border-right: 1px solid #3f3f46; font-weight: 500;">Base Margin (%)</span>
+                <input type="number" id="baseMarginInput" value="" placeholder="--" min="1" max="99" step="1" style="width: 50px; background: transparent; border: none; color: #fff; text-align: center; font-weight: 700; outline: none;" oninput="this.value = this.value.replace(/[^0-9]/g, ''); handleBaseMarginInput(this)">
+                <button type="button" id="saveMarginBtn" class="cgs-action-btn" title="Save Base Margin" onclick="saveBaseMargin()" disabled style="background: transparent; border: none; border-left: 1px solid #3f3f46; padding: 4px 8px; color: #22c55e; cursor: not-allowed; opacity: 0.4;">💾</button>
+                <button type="button" id="cancelMarginBtn" class="cgs-action-btn" title="Cancel Changes" onclick="cancelBaseMarginChange()" disabled style="background: transparent; border: none; border-left: 1px solid #3f3f46; padding: 4px 8px; color: #ef4444; cursor: not-allowed; opacity: 0.4;">✕</button>
+            </div>
+        </div>
+
+        <div id="recipeContainer"></div>
+    </div>
+
+    <!-- Duplicate & Customize Recipe Modal Dialog -->
+    <div id="recipeModal" class="cgs-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; justify-content: center; align-items: center;" onclick="handleModalBackgroundClick(event)">
+        <div class="cgs-modal-content" style="background: #18181b; border: 1px solid #3f3f46; border-radius: 8px; width: 95%; max-width: 1050px; height: 85vh; max-height: 900px; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); overflow: hidden;">
+            
+            <!-- Non-Scrollable Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #3f3f46; background: #18181b; flex-shrink: 0;">
+                <h3 style="color: #fff; margin: 0; font-size: 1.25rem;">Duplicate & Customize Recipe</h3>
+                <button type="button" onclick="confirmCloseRecipeModal()" style="background: none; border: none; color: #a1a1aa; font-size: 1.25rem; cursor: pointer;">✕</button>
+            </div>
+
+            <!-- Scrollable Body Container (Holds the Recipe Card) -->
+            <div id="recipeModalBody" style="padding: 24px; overflow-y: auto; flex-grow: 1; background: #18181b;">
+                <!-- Cloned card will be injected here dynamically -->
+            </div>
+
+            <!-- Non-Scrollable Footer (Always pinned at the bottom) -->
+            <div style="display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; border-top: 1px solid #3f3f46; background: #18181b; flex-shrink: 0;">
+                <button type="button" onclick="confirmCloseRecipeModal()" style="background: #27272a; color: #fff; border: 1px solid #3f3f46; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500;">Cancel</button>
+                <button type="button" id="modalSaveBtn" onclick="saveDuplicatedRecipeFromModal(this)" disabled style="background: #22c55e; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: not-allowed; opacity: 0.4; font-weight: 600;" title="Ensure name is unique and all ingredient rows are filled.">Save New Recipe</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Full Size Photo Dialog Modal -->
+    <div id="photoModal" class="cgs-modal" onclick="closePhotoModal()">
+        <span class="cgs-modal-close" onclick="closePhotoModal()">&times;</span>
+        <img class="cgs-modal-content" id="modalImage">
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/environment.js"></script>
+    <script src="/js/menu-cost-price.js"></script>
+</body>
+</html>

@@ -60,6 +60,19 @@
   --color-bg-founder-espresso:       #050403;
   --color-bg-panel-founder-espresso: #24594d;
 
+  
+  --cgs-menu-bg: #121212;
+  --cgs-menu-surface: #1a1a1a;
+  --cgs-menu-card-bg: #222222;
+  --cgs-menu-border: #333333;
+  --cgs-menu-border-light: #2a2a2a;
+  --cgs-menu-text: #f3f4f6;
+  --cgs-menu-text-muted: #9ca3af;
+  --cgs-menu-accent: #d97706;
+  --cgs-menu-accent-hover: #b45309;
+  --cgs-menu-success: #10b981;
+  --cgs-menu-danger: #ef4444;
+
   /* ---- 1.2 Semantic color roles — components consume these, never the palette above ---- */
   --color-bg:                       var(--palette-linen-100);
   --color-bg-alt:                   var(--palette-cream-200);
@@ -3234,4 +3247,626 @@ body.founder-story {
     position: relative;
     top: 0;
   }
+}
+
+/* Food Menu - Cost and Price Calculator */
+body.cgs-menu {
+    background-color: var(--cgs-menu-bg);
+    color: var(--cgs-menu-text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Main wrapper container to manage max-width across screens */
+.cgs-container {
+    max-width: 1350px; /* Adjust wider if you want it to span further across laptop screens */
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Force the table wrapper to handle horizontal overflow */
+.cgs-recipe-body-grid {
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    background: var(--cgs-menu-surface);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+/* Give the table a strict minimum width so it triggers the scrollbar on smaller viewports */
+.cgs-ingredient-table {
+    width: 100%;
+    min-width: 650px; 
+}
+
+/* Hide default number input arrows/spinners */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Page Header */
+.cgs-page-header {
+    margin-bottom: 1.5rem;
+}
+
+.cgs-page-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--cgs-menu-text);
+    margin: 0;
+}
+
+/* Top Toolbar */
+.cgs-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--cgs-menu-surface);
+    border: 1px solid var(--cgs-menu-border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+.cgs-search-container {
+    position: relative;
+    flex: 1;
+    max-width: 500px;
+}
+
+.cgs-search-container input {
+    width: 100%;
+    background: var(--cgs-menu-bg);
+    border: 1px solid var(--cgs-menu-border);
+    border-radius: 6px;
+    padding: 0.6rem 0.75rem 0.6rem 2.4rem;
+    color: var(--cgs-menu-text);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.cgs-search-container input:focus {
+    border-color: var(--cgs-menu-accent);
+}
+
+.cgs-search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--cgs-menu-text-muted);
+    font-size: 0.9rem;
+}
+
+.cgs-global-margin {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--cgs-menu-bg);
+    border: 1px solid var(--cgs-menu-border);
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--cgs-menu-text-muted);
+}
+
+.cgs-global-margin input {
+    width: 60px;
+    background: var(--cgs-menu-surface);
+    border: 1px solid var(--cgs-menu-border);
+    border-radius: 4px;
+    padding: 0.3rem;
+    color: var(--cgs-menu-text);
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Recipe Cost Card */
+.cgs-cost-card {
+    background: var(--cgs-menu-surface);
+    border: 1px solid var(--cgs-menu-border);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: opacity 0.2s ease;
+}
+
+.cgs-card-header {
+    background: #202020;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--cgs-menu-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.cgs-recipe-meta {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.cgs-recipe-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--cgs-menu-text);
+}
+
+.cgs-recipe-category {
+    font-size: 0.8rem;
+    color: var(--cgs-menu-text-muted);
+    background: var(--cgs-menu-bg);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    border: 1px solid var(--cgs-menu-border);
+}
+
+.unsaved-indicator {
+    display: none;
+    color: var(--cgs-menu-accent);
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.cgs-photo-section {
+    padding: 1rem;
+    background: #181818;
+    border-right: 1px solid var(--cgs-menu-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.cgs-photo-thumb {
+    width: 100px;
+    height: 100px;
+    border-radius: 6px;
+    border: 1px dashed var(--cgs-menu-border);
+    object-fit: cover;
+    cursor: pointer;
+    background: #121212;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cgs-menu-text-muted);
+    font-size: 0.75rem;
+    text-align: center;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.cgs-photo-thumb:hover {
+    border-color: var(--cgs-menu-accent);
+}
+
+.cgs-photo-input {
+    display: none;
+}
+
+.cgs-photo-upload-label {
+    font-size: 0.75rem;
+    color: var(--cgs-menu-accent);
+    cursor: pointer;
+    text-align: center;
+    display: none;
+}
+
+.cgs-photo-upload-label:hover {
+    text-decoration: underline;
+}
+
+.cgs-right-content {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Financial Strip */
+.cgs-financial-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Forces exactly 5 equal columns in one row */
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Optional: tighten padding slightly inside each block if space is tight */
+.cgs-fin-block {
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.cgs-fin-block:last-child {
+    border-right: none;
+}
+
+.cgs-fin-label {
+    font-size: 0.75rem;
+    color: var(--cgs-menu-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+}
+
+.cgs-fin-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--cgs-menu-text);
+}
+
+.cgs-fin-value.highlight-price {
+    color: var(--cgs-menu-success);
+}
+
+/* Input Group with Symbols */
+.cgs-input-group {
+    display: inline-flex;
+    align-items: center;
+    background: var(--cgs-menu-bg);
+    border: 1px solid var(--cgs-menu-border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.cgs-input-group span {
+    padding: 0 0.4rem;
+    color: var(--cgs-menu-text-muted);
+    font-size: 0.85rem;
+    background: #1f1f1f;
+}
+
+.cgs-input-group input {
+    background: var(--cgs-menu-bg);
+    border: none;
+    color: var(--cgs-menu-text);
+    padding: 0.3rem 0.4rem;
+    font-size: 0.85rem;
+    text-align: center;
+    width: 55px;
+    outline: none;
+}
+
+/* Disabled field state styling */
+input:disabled, textarea:disabled {
+    background-color: #161616 !important;
+    color: #6b7280 !important;
+    border-color: #262626 !important;
+    cursor: not-allowed;
+}
+
+/* Ingredient Table */
+.cgs-ingredient-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    text-align: left;
+}
+
+.cgs-ingredient-table th {
+    background: #1f1f1f;
+    color: var(--cgs-menu-text-muted);
+    font-weight: 600;
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--cgs-menu-border);
+    white-space: nowrap;
+}
+
+.cgs-ingredient-table td {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--cgs-menu-border-light);
+    vertical-align: middle;
+    position: relative;
+}
+
+.cgs-ingredient-table tr:last-child td {
+    border-bottom: none;
+}
+
+.cgs-ingredient-table tr:hover td {
+    background: var(--cgs-menu-card-bg);
+}
+
+.cgs-table-input {
+    width: 100%;
+    background: var(--cgs-menu-bg);
+    border: 1px solid var(--cgs-menu-border);
+    border-radius: 4px;
+    padding: 0.35rem 0.5rem;
+    color: var(--cgs-menu-text);
+    font-size: 0.85rem;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.cgs-table-input:focus {
+    border-color: var(--cgs-menu-accent);
+}
+
+/* Autocomplete & Dropdown wrapper */
+.autocomplete-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.autocomplete-wrapper input {
+    flex: 1;
+}
+
+.ing-delete-db-btn {
+    position: absolute;
+    right: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: none;
+    padding: 0.2rem;
+    z-index: 2;
+}
+
+.autocomplete-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #252525;
+    border: 1px solid var(--cgs-menu-accent);
+    border-radius: 6px;
+    z-index: 9999;
+    max-height: 160px;
+    overflow-y: auto;
+    display: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+
+.autocomplete-item {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--cgs-menu-text);
+    border-bottom: 1px solid var(--cgs-menu-border-light);
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover {
+    background: var(--cgs-menu-accent);
+    color: white;
+}
+
+.badge-highlight-yellow {
+    background-color: #fef08a;
+    color: #713f12;
+    border: 1px solid #fde047;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.25rem;
+}
+
+.cgs-action-btn {
+    background: none;
+    border: none;
+    color: var(--cgs-menu-text-muted);
+    cursor: pointer;
+    padding: 0.3rem 0.5rem;
+    font-size: 1rem;
+    transition: color 0.2s;
+    border-radius: 4px;
+}
+
+.cgs-action-btn:hover {
+    color: var(--cgs-menu-text);
+    background: rgba(255,255,255,0.05);
+}
+
+.cgs-card-footer {
+    padding: 0.75rem 1.25rem;
+    background: #171717;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--cgs-menu-border);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.cgs-btn-primary {
+    background: var(--cgs-menu-accent);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.cgs-btn-primary:hover {
+    background: var(--cgs-menu-accent-hover);
+}
+
+.cgs-btn-primary:disabled {
+    background: #4b5563;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Modal Dialog for Full Size Photo */
+.cgs-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.85);
+    align-items: center;
+    justify-content: center;
+}
+
+.cgs-modal-content {
+    max-width: 80vw;
+    max-height: 80vh;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+}
+
+.cgs-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cgs-modal-close:hover {
+    color: var(--cgs-menu-accent);
+}
+
+.cgs-base-margin-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #18181b;
+    border: 1px solid #3f3f46;
+    padding: 6px 12px;
+    border-radius: 8px;
+}
+.cgs-margin-input {
+    width: 50px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    font-size: 1rem;
+}
+.cgs-margin-input:focus { outline: none; }
+.cgs-margin-actions {
+    display: flex;
+    gap: 4px;
+    margin-left: 4px;
+}
+.btn-margin-save {
+    background: #22c55e;
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.btn-margin-cancel {
+    background: #3f3f46;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 3px 8px;
+    cursor: pointer;
+}
+
+/* Green for healthy active price */
+.highlight-price {
+    color: #22c55e;
+    font-weight: 700;
+}
+
+/* Red for price set below margin threshold */
+.low-margin-price {
+    color: #ef4444;
+    font-weight: 700;
+}
+
+/* Hide default number input spinners across Chrome, Safari, Edge, Firefox */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Enable default clean browser spinners with custom spacing, or style custom wrappers */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Custom Number Input Wrapper with Stepper Buttons */
+.cgs-table-input[type="number"], 
+.custom-price-input, 
+.custom-margin-input, 
+.cgs-margin-input {
+    padding-right: 4px;
+}
+
+/* For modern browsers supporting native clean spinners */
+input[type=number]::-webkit-inner-spin-button {
+    opacity: 1;
+    cursor: pointer;
+    height: 24px;
+    filter: invert(0.8);
+}
+
+.cgs-stepper-container {
+    display: flex;
+    align-items: center;
+    background: #18181b;
+    border: 1px solid #3f3f46;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.cgs-stepper-container input {
+    border: none !important;
+    background: transparent !important;
+    text-align: center;
+    width: 100%;
+}
+.cgs-stepper-btn {
+    background: #27272a;
+    color: #fff;
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+.cgs-stepper-btn:hover {
+    background: #3f3f46;
 }

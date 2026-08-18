@@ -90,6 +90,7 @@
     .database-table th { background-color: rgba(0,0,0,0.25); padding: 12px 20px; font-family: 'Oswald', sans-serif; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-color); }
     .database-table td { padding: 10px 20px; border-bottom: 1px solid rgba(34, 29, 23, 0.4); vertical-align: middle; }
     
+    input.disabled { cursor: not-allowed; opacity: 0.3;}
     .db-input { background-color: #090807; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 12px; font-size: 13px; font-family: 'Plus Jakarta Sans', sans-serif; border-radius: 2px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; width: 100%; }
     .db-input:focus { border-color: var(--accent-gold); outline: none; }
     .db-input-name { font-family: 'Oswald', sans-serif; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-gold); }
@@ -363,7 +364,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="../js/environment.js"></script>
-  <script src="../js/supabase-config.js"></script>
   <script src="/admin/session.js"></script>
   <script src="../authorization/auth-guard.js"></script>
   <script src="./supabase-loader.js"></script>
@@ -941,8 +941,12 @@
             <td class="col-drag">${isUnsavedNewItem ? '<span style="color:var(--accent-gold); font-size:12px;">●</span>' : '<span class="drag-handle-pill">⋮⋮</span>'}</td>
             <td><input type="text" class="db-input db-input-name" value="${item.name || ''}" placeholder="Item Name..." oninput="modifyCell(${blockIndex},${itemIndex},'name',this.value)"></td>
             <td><input type="text" class="db-input" value="${item.description || ''}" placeholder="Description summary parameters..." title="${item.description || ''}" oninput="modifyCell(${blockIndex},${itemIndex},'description',this.value)"></td>
-            <td class="col-size"><input type="text" class="db-input" value="${item.qty || ''}" placeholder="500 ML" oninput="modifyCell(${blockIndex},${itemIndex},'qty',this.value)"></td>
-            <td class="col-price"><input type="text" class="db-input" value="${item.price || ''}" placeholder="199" oninput="modifyCell(${blockIndex},${itemIndex},'price',this.value)"></td>
+            <td class="col-size">
+                <input type="text" class="db-input disabled" value="${item.qty || ''}" readonly>
+            </td>
+            <td class="col-price">
+                <input type="text" class="db-input disabled" value="${item.price || Math.max(item.base_price || 0, item.custom_price || 0)}" readonly>
+            </td>
             <td style="text-align: center;">
               <label class="switch-wrapper">
                 <input type="checkbox" class="switch-input" ${item.featured ? 'checked' : ''} onchange="modifyCell(${blockIndex},${itemIndex},'featured',this.checked)">
