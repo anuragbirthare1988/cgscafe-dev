@@ -788,14 +788,20 @@ a.info-bar__item:hover {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-image: linear-gradient(to bottom,
-    rgba(20, 14, 12, 0.6) 0%,
-    rgba(20, 14, 12, 0.42) 45%,
-    rgba(20, 14, 12, 0.72) 100%),
-    var(--hero-image, url('/images/banner-2.webp'));
+
+  background-image:
+      linear-gradient(
+          to bottom,
+          rgba(20, 14, 12, 0.6) 0%,
+          rgba(20, 14, 12, 0.42) 45%,
+          rgba(20, 14, 12, 0.72) 100%
+      ),
+      var(--hero-image, url(/images/banner-2.webp));
+
   background-size: cover;
-  /* background-position: center; */
+  background-position: center;
 }
+
 
 .hero__content {
   position: relative;
@@ -2462,10 +2468,12 @@ footer .logo-brand {
   }
 
   .hero {
-    align-items: flex-start;
-    padding-top: calc(var(--header-offset) + var(--space-7));
-    padding-bottom: var(--space-8);
-    min-height: auto;
+    min-height: 680px;
+    background-size: auto 100%;
+    background-repeat: no-repeat;
+    background-position: center top;
+
+    background-color: #140e0c;
   }
 
   .hero__title {
