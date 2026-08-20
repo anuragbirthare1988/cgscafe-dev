@@ -64,15 +64,43 @@ function populateUI() {
             }
         });
 
-        // Phone/Call Link Binding with Validation
+        // Phone/Call Link Binding with Validation, and Correct Dialing Prefix
         document.querySelectorAll('.call-link').forEach(link => {
             const rawPhone = window.SITE_CONFIG['phone'];
+            const cleanDigits = rawPhone ? rawPhone.replace(/[^0-9]/g, '') : '';
             
-            if (!rawPhone || rawPhone.replace(/[^0-9]/g, '').length <= 2) {
-                link.style.display = 'none'; // Hide the element if empty/invalid
+            // Check if we have at least 10 digits to work with
+            if (!rawPhone || cleanDigits.length < 10) {
+                link.style.display = 'none'; // Hide if invalid
             } else {
                 link.style.display = '';
-                link.setAttribute('href', `tel:${rawPhone.replace(/[^0-9+]/g, '')}`);
+                
+                // 1. Ensure the tel: attribute always has the proper '+' prefix for international/local routing
+                let dialNumber = cleanDigits;
+                if (dialNumber.length === 10) {
+                    // If it's strictly 10 digits, prepend India's country code with a plus
+                    dialNumber = '+91' + dialNumber;
+                } else if (dialNumber.length > 10 && !dialNumber.startsWith('+')) {
+                    // If it has a country code like 91 but no '+', prepend the '+'
+                    dialNumber = '+' + dialNumber;
+                }
+                link.setAttribute('href', `tel:${dialNumber}`);
+                
+                // 2. Always grab the last 10 digits to strip out any country code for visual display
+                const tenDigits = cleanDigits.slice(-10);
+                
+                // 3. Format into your exact layout: 999 - 37 - 38 - 851
+                const formatted = `${tenDigits.slice(0, 3)} - ${tenDigits.slice(3, 5)} - ${tenDigits.slice(5, 7)} - ${tenDigits.slice(7)}`;
+                
+                // 4. Update ONLY the inner span so the SVG phone icon stays intact
+                const phoneSpan = link.querySelector('.display-phone');
+                if (phoneSpan) {
+                    phoneSpan.textContent = formatted;
+                } else {
+                    // Fallback or if you are using it on buttons like "Call Us Directly"
+                    const textNode = link.querySelector('span:not(.display-phone)') || link;
+                    // If it's just a general link without a span, you can handle text here if needed
+                }
             }
         });
 

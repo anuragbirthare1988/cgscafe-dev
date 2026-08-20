@@ -1656,6 +1656,7 @@ footer .logo-brand {
 }
 
 @media (max-width: 640px) {
+  .info-bar__item { font-size: clamp(0.55rem, 0.72vw, 0.82rem);}
   .share-btn { bottom: 186px; right: 5px;}
   /* #scroll-buttons { bottom: 78px; } */
   .whatsapp-icon { right: 14px; width: 140px; bottom: 16px; }
