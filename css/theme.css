@@ -60,6 +60,9 @@
   --color-bg-founder-espresso:       #050403;
   --color-bg-panel-founder-espresso: #24594d;
 
+  --hero-gradient-top: rgba(20, 14, 12, 0.6);
+  --hero-gradient-mid: rgba(20, 14, 12, 0.42);
+  --hero-gradient-bot: rgba(20, 14, 12, 0.72);
   
   --cgs-menu-bg: #121212;
   --cgs-menu-surface: #1a1a1a;
@@ -788,16 +791,13 @@ a.info-bar__item:hover {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-
-  background-image:
-      linear-gradient(
-          to bottom,
-          rgba(20, 14, 12, 0.6) 0%,
-          rgba(20, 14, 12, 0.42) 45%,
-          rgba(20, 14, 12, 0.72) 100%
-      ),
-      var(--hero-image, url(/images/banner-2.webp));
-
+  background-image: linear-gradient(
+    to bottom, 
+    var(--hero-gradient-top) 0%, 
+    var(--hero-gradient-mid) 45%, 
+    var(--hero-gradient-bot) 100%
+  ), 
+  var(--hero-image, url(/images/banner-2.webp));
   background-size: cover;
   background-position: center;
 }
@@ -2545,6 +2545,10 @@ footer .logo-brand {
   --color-band-bg:          #24413B;
   --color-band-text:        #F5F1E7;
   --color-band-text-muted:  rgba(245, 241, 231, 0.72);
+
+  --hero-gradient-top: rgba(36, 65, 59, 0.65);
+  --hero-gradient-mid: rgba(27, 51, 45, 0.48);
+  --hero-gradient-bot: rgba(36, 65, 59, 0.78);
 
   /* ---- Shape: soft, organic, generous — the opposite of Roast's flat default ---- */
   --radius-sm:   6px;
