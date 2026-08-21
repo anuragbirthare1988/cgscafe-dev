@@ -1578,10 +1578,11 @@ footer .logo-brand {
 
 /* Click feedback — brand-toned confetti (replaces old full-hue rainbow) */
 .party-prop {
-  position: absolute;
+  position: fixed; /* Changed from absolute to fixed so they float on the viewport without expanding the document */
   width: 8px;
   height: 8px;
   pointer-events: none;
+  z-index: 999999; /* Ensures particles stay on top as a floating glass layer */
   animation: introExplode 0.9s ease-out forwards;
 }
 
@@ -3033,6 +3034,9 @@ footer .logo-brand {
 
 /* Fallback to smooth horizontal scroll on smaller mobile screens */
 @media (max-width: 768px) {
+    .cursor-trail-container {
+      display: none !important;
+    }
     .category-thumbnails-slider {
         justify-content: flex-start;
         flex-wrap: nowrap;
