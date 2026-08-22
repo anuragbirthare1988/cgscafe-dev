@@ -89,8 +89,8 @@ function populateUI() {
                 // 2. Always grab the last 10 digits to strip out any country code for visual display
                 const tenDigits = cleanDigits.slice(-10);
                 
-                // 3. Format into your exact layout: 999 - 37 - 38 - 851
-                const formatted = `${tenDigits.slice(0, 3)} - ${tenDigits.slice(3, 5)} - ${tenDigits.slice(5, 7)} - ${tenDigits.slice(7)}`;
+                // 3. Format into your exact layout: 999-37-38-851
+                const formatted = `${tenDigits.slice(0, 3)}-${tenDigits.slice(3, 5)}-${tenDigits.slice(5, 7)}-${tenDigits.slice(7)}`;
                 
                 // 4. Update ONLY the inner span so the SVG phone icon stays intact
                 const phoneSpan = link.querySelector('.display-phone');
