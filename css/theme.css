@@ -1089,7 +1089,7 @@ footer .logo-brand {
 .footer-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-1);
+  gap: var(--space-7);
   padding-bottom: var(--space-8);
   border-bottom: 1px solid var(--color-border-inverse);
 }
@@ -1101,7 +1101,7 @@ footer .logo-brand {
   letter-spacing: var(--tracking-wider);
   text-transform: uppercase;
   color: var(--color-accent-on-dark);
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-4);
   padding-bottom: var(--space-3);
   border-bottom: 2px solid rgba(205, 167, 101, 0.35);
   display: inline-block;
@@ -1165,6 +1165,57 @@ footer .logo-brand {
   background: var(--color-accent);
   border-color: var(--color-accent);
   color: var(--color-text-inverse);
+}
+
+/* 1. Constrain the action buttons and their SVGs so they don't blow up */
+.footer-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 8px;
+  border: 1px solid var(--color-border, rgba(205, 167, 101, 0.2));
+  border-radius: var(--radius-sm, 6px);
+  color: var(--color-text-primary, #fff);
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 0.85rem;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+/* Force SVGs inside the buttons to stay small and neat */
+.action-btn svg {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px;
+  min-height: 18px;
+  flex-shrink: 0;
+  color: var(--color-accent, #CDA765);
+}
+
+/* 2. Ensure map thumbnail container respects bounds */
+.map-thumbnail {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 10px;
+  border: 1px solid rgba(205, 167, 101, 0.15);
+}
+
+.map-thumbnail iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  pointer-events: none;
 }
 
 .footer-middle {
@@ -2647,11 +2698,6 @@ footer .logo-brand {
   border-radius: 0;
 }
 
-/* ---- Footer: asymmetric column widths instead of a uniform 4-up grid ---- */
-[data-theme="botanica"] .footer-grid {
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
-}
-
 /* ---- Timeline: single-sided rail ---- */
 [data-theme="botanica"] .timeline::before { left: 0; }
 [data-theme="botanica"] .timeline__dot { left: 0; }
@@ -3038,6 +3084,25 @@ footer .logo-brand {
 
 /* Fallback to smooth horizontal scroll on smaller mobile screens */
 @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr !important;
+      gap: 2rem !important;
+    }
+
+    /* Target the list inside each footer column and turn it into a 2-column grid */
+    .footer-column ul {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 16px; /* Row gap and Column gap */
+      padding-left: 0;
+      list-style: none;
+    }
+
+    /* Ensure list items don't have stray bullets */
+    .footer-column li {
+      margin-bottom: 0;
+    }
+
     .cursor-trail-container {
       display: none !important;
     }

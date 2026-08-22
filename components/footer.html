@@ -11,7 +11,7 @@
     </a>
   </div>
 
-  <!-- Top Grid -->
+  <!-- Top Grid (Single-column on mobile, 4-column on desktop) -->
   <div class="footer-grid">
     <!-- Explore -->
     <div class="footer-column">
@@ -26,17 +26,19 @@
         <li><a href="/founders-story/">Founder's Story</a></li>
       </ul>
     </div>
+    
     <!-- More -->
     <div class="footer-column">
       <h5 class="footer-column__heading">More</h5>
       <ul>
         <li><a href="/orders/">Events &amp; Bulk Orders</a></li>
         <li><a href="/join-our-team/">Join Our Team</a></li>
-        <!-- <li><a href="/testimonials/">Testimonials</a></li> // Unhide it and populate the real reviews from customers -->
+        <!-- <li><a href="/testimonials/">Testimonials</a></li> -->
         <li><a href="/careers/">Careers</a></li>
         <li><a href="/faq/">FAQ</a></li>
       </ul>
     </div>
+    
     <!-- Legal -->
     <div class="footer-column">
       <h5 class="footer-column__heading">Legal</h5>
@@ -45,15 +47,23 @@
         <li><a href="/terms-and-conditions/">Terms &amp; Conditions</a></li>
       </ul>
     </div>
-    <!-- Find Us -->
-    <div class="footer-column">
+    
+    <!-- Find Us (With Live Google Maps Embed) -->
+    <div class="footer-column footer-column--find-us">
       <h5 class="footer-column__heading">Find Us</h5>
-      <p class="display-address footer-text"></p>
-      <div class="footer-actions">
-          <a class="map-link bold underline" target="_blank" rel="noopener noreferrer" title="Click to Navigate">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            Get Directions
-         </a>
+      
+      <div class="footer-location-card">
+        <!-- Dynamic Address Text injected via JS -->
+        <p class="display-address footer-text"></p>
+        <a class="map-link" target="_blank" rel="noopener noreferrer" title="Click to Navigate">
+          <div class="map-thumbnail">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3681.345399040273!2d75.84730557427375!3d22.678182529094254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962fd05e1f6ee11%3A0xf3cc3fff8af27c0!2sCGS%20-%20Coffee%2C%20Grill%20%26%20Shots!5e0!3m2!1sen!2sin!4v1787402334246!5m2!1sen!2sin" width="100%" height="100%" style="border:0; pointer-events: none;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          </div>
+        </a>
+      </div>
+
+      <!-- Action Buttons Grid (Call & WhatsApp side-by-side) -->
+       <div class="footer-actions">
           <br>
           <a class="call-link bold underline" title="Click to Call">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
