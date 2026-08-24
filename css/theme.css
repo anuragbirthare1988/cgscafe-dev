@@ -4294,3 +4294,4 @@ input[type=number]::-webkit-inner-spin-button {
     flex-wrap: wrap;
     justify-content: center;
 }
+.cgs-cta-btn-group .btn { min-width: 220px;}
