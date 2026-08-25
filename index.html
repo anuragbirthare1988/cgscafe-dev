@@ -72,12 +72,12 @@
         </script>
         <!-- Dependencies First -->
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-        <script src="../js/environment.js"></script>
+        <script src="/js/environment.js"></script>
         
         <!-- Global Scripts (Load these before admin.js so they are ready) -->
-        <script src="../js/custom.js"></script>
-        <script src="../js/components.js"></script>
-        <script src="../js/animations.js"></script>
+        <script src="/js/custom.js"></script>
+        <script src="/js/components.js"></script>
+        <script src="/js/animations.js"></script>
     </head>
     <body>
 		<!-- 
@@ -111,17 +111,18 @@
         <section id="index" class="reveal cgs-index-section">
             <div class="hero">
                 <div class="hero__content">
-                    <h1 class="hero__title animate-fade-up">
+                    <h1 class="hero__title hero-anim-1">
                         CGS Café<br>
-                        Premium Coffee, Grill &amp; Shots
+                        Craft Coffee, Grill &amp; Shots<br>
+                        in Indore
                     </h1>
-                    <p class="hero__summary animate-fade-up-delay-1">
+                    <p class="hero__summary hero-anim-2">
                         Rich coffee and warm grilled delights made for easy hangouts.
                     </p>
-                    <div class="animate-fade-up-delay-2">
+                    <div class="hero-anim-3">
                         <a class="btn btn--gold" href="/browse-menu/">Explore The Menu</a>
                     </div>
-                    <button type="button" class="hero__scroll-cue animate-fade-up-delay-3" onclick="scrollToFeatures()" aria-label="Scroll down">
+                    <button type="button" class="hero__scroll-cue hero-anim-4" onclick="scrollToFeatures()" aria-label="Scroll down">
                         <span class="hero__scroll-label">Scroll</span>
                         <div class="hero__scroll-line"></div>
                     </button>
@@ -136,7 +137,7 @@
                     
                     <!-- Row 1: Our Philosophy -->
                     <div class="cgs-editorial-split">
-                        <div class="organic-blob-img" style="background-image: url('images/gallery/chocolate-walnut.webp'); background-position: -15px -5px;"></div>
+                        <div class="organic-blob-img" style="background-image: url('images/gallery/lotus-biscoff-shake.webp'); background-position: 0 5px;"></div>
                         <div>
                             <span class="cgs-chapter-tag">
                                 <span class="cgs-chapter-dot"></span>
@@ -154,106 +155,140 @@
                         </div>
                     </div>
 
-                    <!-- Row 2: Thoughtful Wellness -->
+                    <!-- Chapter 02: Flipped Layout (Text Left, Image Right) -->
                     <div class="cgs-editorial-split">
-                        <div class="organic-blob-img" style="background-image: url('images/gallery/whipped-coffee.webp'); background-position: 0px -40px;"></div>
+                        <!-- Left Side: Text Content -->
                         <div>
-                            <span class="cgs-chapter-tag">
-                                <span class="cgs-chapter-dot"></span>
+                            <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--color-accent); font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                                <span style="width: 6px; height: 6px; background: var(--color-accent); border-radius: 50%; display: inline-block;"></span>
                                 Chapter 02 &mdash; Wellness
                             </span>
-                            <h3 class="cgs-editorial-title">Your Health &amp; Cravings, Perfectly Balanced</h3>
-                            <p class="cgs-editorial-body-spaced">
+                            <h3 style="font-family: var(--font-display); font-size: clamp(1.8rem, 2.5vw, 2.4rem); color: var(--color-text-primary); margin-bottom: 16px; font-weight: 400; line-height: 1.2;">
+                                Your Health &amp; Cravings, Perfectly Balanced
+                            </h3>
+                            <p style="color: var(--color-text-secondary); font-size: var(--text-base); line-height: 1.7; font-weight: 300; margin-bottom: 24px;">
                                 We care about the health of yours and the loved ones, and hence do not want you to sacrifice your cravings. Showcasing a range of delicate health-friendly options as well, we respect your choices and feel honoured to fulfil your customisations.
                             </p>
-                            <div class="cgs-wellness-grid">
-                                <div class="cgs-wellness-card">
-                                    <h4 class="cgs-wellness-title">Health Friendly</h4>
-                                    <p class="cgs-wellness-desc">Wholesome selections tailored for mindful foodies.</p>
+                            
+                            <!-- Luxury Feature Highlights -->
+                            <div class="cgs-luxury-pills-grid">
+                                
+                                <!-- Capsule 1: Health Friendly -->
+                                <div class="cgs-luxury-pill">
+                                    <span style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.25em; color: var(--color-accent); font-weight: 600; display: block; margin-bottom: 8px;">Wellness</span>
+                                    <h5 style="font-family: var(--font-display); font-size: 1.15rem; color: var(--color-text-primary); margin: 0 0 8px 0; font-weight: 400;">Health Friendly</h5>
+                                    <p style="color: var(--color-text-secondary); font-size: 0.88rem; line-height: 1.6; font-weight: 300; margin: 0;">
+                                        Wholesome selections tailored for mindful foodies.
+                                    </p>
                                 </div>
-                                <div class="cgs-wellness-card">
-                                    <h4 class="cgs-wellness-title">Custom Crafted</h4>
-                                    <p class="cgs-wellness-desc">Tailored ingredients built to match your preferences.</p>
+
+                                <!-- Capsule 2: Custom Crafted -->
+                                <div class="cgs-luxury-pill">
+                                    <span style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.25em; color: var(--color-accent); font-weight: 600; display: block; margin-bottom: 8px;">Personalized</span>
+                                    <h5 style="font-family: var(--font-display); font-size: 1.15rem; color: var(--color-text-primary); margin: 0 0 8px 0; font-weight: 400;">Custom Crafted</h5>
+                                    <p style="color: var(--color-text-secondary); font-size: 0.88rem; line-height: 1.6; font-weight: 300; margin: 0;">
+                                        Tailored ingredients built to match your preferences.
+                                    </p>
                                 </div>
+
+                            </div>
+                        </div>
+                        <!-- Right Side: Image Circle -->
+                        <div class="organic-blob-img" style="background-image: url('images/gallery/chocolate-walnut.webp'); background-position: 0 -5px;"></div>
+                    </div>
+
+                    <!-- Section: Built on Trust & Transparency -->
+                    <div class="cgs-diagonal-split-card">
+                        
+                        <!-- Section Title Header -->
+                        <div style="text-align: center; max-width: 650px; margin: 0 auto 40px auto; position: relative; z-index: 3;">
+                            <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.25em; color: var(--color-accent); font-weight: 600; display: block; margin-bottom: 12px;">Behind The Counter</span>
+                            <h3 style="font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 400; color: var(--color-text-primary); margin: 0; line-height: 1.2;">Built on Trust &amp; Transparency</h3>
+                        </div>
+
+                        <!-- 2-Column Split Grid -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; align-items: start; position: relative; z-index: 3;">
+                            
+                            <!-- Chapter 03 (Left Side: Image Top, Text Bottom) -->
+                            <div style="display: flex; flex-direction: column; gap: 24px;">
+                                <div style="text-align: center;">
+                                    <div class="cgs-organic-blob-frame" style="background-image: url('images/gallery/white-sauce-pasta.webp');" role="img" aria-label="Pure Vegetarian Kitchen"></div>
+                                </div>
+                                <div>
+                                    <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--color-accent); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;">
+                                        <span style="width: 6px; height: 6px; background: var(--color-accent); border-radius: 50%; display: inline-block;"></span>
+                                        Chapter 03 &mdash; Integrity
+                                    </span>
+                                    <h4 style="font-family: var(--font-display); font-size: clamp(1.4rem, 2vw, 1.8rem); color: var(--color-text-primary); margin-bottom: 12px; font-weight: 400; text-align: center;">Pure Vegetarian Kitchen</h4>
+                                    <p style="color: var(--color-text-secondary); font-size: var(--text-base); line-height: 1.7; font-weight: 300; margin: 0; text-align: center;">
+                                        A dedicated 100% vegetarian preparation space ensuring absolute hygiene, mindful sourcing, and complete peace of mind for every guest.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Chapter 04 (Right Side: Text Top, Image Bottom on Desktop, Stacks cleanly on Mobile) -->
+                            <div style="display: flex; flex-direction: column; gap: 24px;">
+                                <div style="order: 1;">
+                                    <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--color-accent); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;">
+                                        <span style="width: 6px; height: 6px; background: var(--color-accent); border-radius: 50%; display: inline-block;"></span>
+                                        Chapter 04 &mdash; Authenticity
+                                    </span>
+                                    <h4 style="font-family: var(--font-display); font-size: clamp(1.4rem, 2vw, 1.8rem); color: var(--color-text-primary); margin-bottom: 12px; font-weight: 400; text-align: center;">Real Counter Photography</h4>
+                                    <p style="color: var(--color-text-secondary); font-size: var(--text-base); line-height: 1.7; font-weight: 300; margin: 0; text-align: center;">
+                                        Every image on our menu reflects items freshly prepared right at our bar—no stock pictures, digital renders, or tricks.
+                                    </p>
+                                </div>
+                                <div style="text-align: center; order: 2;">
+                                    <div class="cgs-organic-blob-frame" style="background-image: url('images/gallery/honey-cinnamon-iced-coffee.webp');" role="img" aria-label="Real Counter Photography"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Section 4: The CGS Experience -->
+                    <div class="cgs-editorial-card interactive-reveal cgs-experience-container">
+                        <div class="cgs-experience-header-row">
+                            <div>
+                                <span class="cgs-chapter-tag">
+                                    <span class="cgs-chapter-dot"></span>
+                                    Atmosphere & Previews
+                                </span>
+                                <h3 class="cgs-experience-title">The CGS Experience</h3>
+                            </div>
+                            <a href="/quality-hygiene/" class="cgs-experience-link">Our Standards &rarr;</a>
+                        </div>
+                        <p class="cgs-experience-subtitle">A look into our upcoming interior aesthetics and freshly crafted preparations.</p>
+
+                        <!-- Visual Gallery Grid -->
+                        <div class="vibe-gallery-row">
+                            <div class="vibe-gallery-item" style="background-image: url('images/gallery/photo-corner.jpg');">
+                                <div class="vibe-gallery-caption">Welcoming Family Spaces</div>
+                            </div>
+                            <div class="vibe-gallery-item" style="background-image: url('images/gallery/corn-cheese-grilled-crust.webp');">
+                                <div class="vibe-gallery-caption">Cheesy Grill Delight</div>
+                            </div>
+                            <div class="vibe-gallery-item" style="background-image: url('images/gallery/roasted-brittle-eclipse.webp');">
+                                <div class="vibe-gallery-caption">Rich Chocolate Brittle</div>
+                            </div>
+                            <div class="vibe-gallery-item" style="background-image: url('images/gallery/velvet-greek-frappe.webp');">
+                                <div class="vibe-gallery-caption">Velvet Greek Frappe</div>
                             </div>
                         </div>
                     </div>
 
-                </div>
-
-                <!-- Section 3: Clean Editorial Standards Cards -->
-                <div class="cgs-standards-wrapper">
-                    <div class="cgs-standards-header">
-                        <span class="cgs-standards-subtag">Our Standards</span>
-                        <h3 class="cgs-standards-main-title">Built on Trust &amp; Transparency</h3>
-                    </div>
-
-                    <div class="cgs-standards-grid">
-                        <div class="cgs-editorial-card">
-                            <span class="cgs-chapter-tag">
-                                <span class="cgs-chapter-dot"></span>
-                                Chapter 03 &mdash; Integrity
-                            </span>
-                            <h4 class="cgs-standards-card-title">Pure Vegetarian Kitchen</h4>
-                            <p class="cgs-standards-card-desc">
-                                A dedicated meat-free preparation space ensuring absolute hygiene, mindful sourcing, and complete peace of mind for every guest.
-                            </p>
-                        </div>
-
-                        <div class="cgs-editorial-card">
-                            <span class="cgs-chapter-tag">
-                                <span class="cgs-chapter-dot"></span>
-                                Chapter 04 &mdash; Authenticity
-                            </span>
-                            <h4 class="cgs-standards-card-title">Real Counter Photography</h4>
-                            <p class="cgs-standards-card-desc">
-                                Every image on our menu reflects items freshly prepared right at our bar—no stock pictures, digital renders, or tricks.
-                            </p>
+                    <!-- Section 5: Call to Action -->
+                    <div class="cgs-cta-section-wrapper">
+                        <h3 class="cgs-cta-main-title">Ready to Visit Us?</h3>
+                        <p class="cgs-cta-desc">
+                            Browse our menu online or drop by today.
+                        </p>
+                        <div class="cgs-cta-btn-group">
+                            <a href="/browse-menu/" class="btn btn--gold cgs-cta-btn--primary">Explore Menu</a>
+                            <a href="/quality-hygiene/" class="btn btn--gold cgs-cta-btn--secondary">Hygiene Standards</a>
                         </div>
                     </div>
-                </div>
 
-                <!-- Section 4: The CGS Experience -->
-                <div class="cgs-editorial-card interactive-reveal cgs-experience-container">
-                    <div class="cgs-experience-header-row">
-                        <div>
-                            <span class="cgs-chapter-tag">
-                                <span class="cgs-chapter-dot"></span>
-                                Atmosphere & Previews
-                            </span>
-                            <h3 class="cgs-experience-title">The CGS Experience</h3>
-                        </div>
-                        <a href="/quality-hygiene/" class="cgs-experience-link">Our Standards &rarr;</a>
-                    </div>
-                    <p class="cgs-experience-subtitle">A look into our upcoming interior aesthetics and freshly crafted preparations.</p>
-
-                    <!-- Visual Gallery Grid -->
-                    <div class="vibe-gallery-row">
-                        <div class="vibe-gallery-item" style="background-image: url('images/gallery/photo-corner.jpg');">
-                            <div class="vibe-gallery-caption">Welcoming Family Spaces</div>
-                        </div>
-                        <div class="vibe-gallery-item" style="background-image: url('images/gallery/corn-cheese-grilled-crust.webp');">
-                            <div class="vibe-gallery-caption">Cheesy Grill Delight</div>
-                        </div>
-                        <div class="vibe-gallery-item" style="background-image: url('images/gallery/roasted-brittle-eclipse.webp');">
-                            <div class="vibe-gallery-caption">Rich Chocolate Brittle</div>
-                        </div>
-                        <div class="vibe-gallery-item" style="background-image: url('images/gallery/velvet-greek-frappe.webp');">
-                            <div class="vibe-gallery-caption">Velvet Greek Frappe</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section 5: Call to Action -->
-                <div class="cgs-cta-section-wrapper">
-                    <h3 class="cgs-cta-main-title">Ready to Visit Us?</h3>
-                    <p class="cgs-cta-desc">
-                        Browse our menu online or drop by today.
-                    </p>
-                    <div class="cgs-cta-btn-group">
-                        <a href="/browse-menu/" class="btn btn--gold cgs-cta-btn--primary">Explore Menu</a>
-                        <a href="/quality-hygiene/" class="btn btn--gold cgs-cta-btn--secondary">Hygiene Standards</a>
-                    </div>
                 </div>
 
             </div>

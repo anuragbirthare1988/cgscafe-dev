@@ -10,6 +10,7 @@ function initAllAnimations() {
         initOverlay();
         initClickEffect();
         initCanvasEffect();
+        initHeroAnimation();
     } catch (e) {
         console.error("Animation error:", e);
     }
@@ -299,4 +300,26 @@ function initCanvasEffect() {
         requestAnimationFrame(animate);
     }
     animate();
+}
+
+function initHeroAnimation() {  // Trigger hero animation after preloader finishes/hides (after splash screen)
+    var heroContent = document.querySelector(".hero__content");
+    if (!heroContent) return;
+
+    var overlay = document.getElementById('intro-overlay');
+
+    // SCENARIO A: There is a splash screen (First load / Hard refresh)
+    if (overlay) {
+        // Wait for the splash to finish (3.2s) and trigger animation
+        setTimeout(() => {
+            heroContent.classList.add("is-animated");
+        }, 3200);
+    } 
+    // SCENARIO B: No splash screen (Internal route navigation back to home)
+    else {
+        // Animate immediately (10ms) so it never stays hidden
+        setTimeout(() => {
+            heroContent.classList.add("is-animated");
+        }, 10);
+    }
 }

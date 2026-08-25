@@ -363,9 +363,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="../js/environment.js"></script>
+  <script src="/js/environment.js"></script>
   <script src="/admin/session.js"></script>
-  <script src="../authorization/auth-guard.js"></script>
+  <script src="/authorization/auth-guard.js"></script>
   <script src="./supabase-loader.js"></script>
   <script>
     if (typeof MASTER_DATABASE === 'undefined') {
@@ -1174,14 +1174,14 @@
 
             // 1. Commit Global Display Settings to app_settings table
             const settingsToSave = [
-              { setting_key: 'show_prices', value: !!APP_SETTINGS.show_prices, updated_at: new Date().toISOString() },
-              { setting_key: 'show_quantities', value: !!APP_SETTINGS.show_quantities, updated_at: new Date().toISOString() }
+                { setting_key: 'show_prices', value: !!APP_SETTINGS.show_prices, updated_at: new Date().toISOString() },
+                { setting_key: 'show_quantities', value: !!APP_SETTINGS.show_quantities, updated_at: new Date().toISOString() }
             ];
             for (const setting of settingsToSave) {
-              const { error: settingsError } = await supabaseClient
-                .from('app_settings')
-                .upsert(setting, { onConflict: 'setting_key' });
-              if (settingsError) throw settingsError;
+                const { error: settingsError } = await supabaseClient
+                    .from('app_settings')
+                    .upsert(setting, { onConflict: 'setting_key' });
+                if (settingsError) throw settingsError;
             }
 
             // 2. Delete products/categories removed by the user
@@ -1196,6 +1196,13 @@
             document.body.style.opacity = "0.7";
             btn.style.pointerEvents = "auto";
 
+            // 3. Separate categories and items into batch payload structures
+            const categoriesToInsert = [];
+            const categoriesToUpdate = [];
+            const itemsToInsert = [];
+            const itemsToUpdate = [];
+
+            // Temporary mapping map to track newly generated category IDs for their child items
             for (const category of MASTER_DATABASE.categories) {
                 const categoryPayload = {
                     super_category: category.superCategory,
@@ -1207,17 +1214,22 @@
                     sort_order: category.sortOrder || 0,
                     legacy_index: category.sortOrder || 0
                 };
+
                 const isNewCategory = !category.id || String(category.id).startsWith("cat_");
+                
                 if (isNewCategory) {
+                    // For new categories, we insert them and securely capture the returned real ID
                     const { data, error } = await supabaseClient.from('categories').insert(categoryPayload).select().single();
                     if (error) throw error;
                     category.id = data.id;
                 } else {
-                    const { error } = await supabaseClient.from('categories').update(categoryPayload).eq('id', category.id);
-                    if (error) throw error;
-                };
+                    categoryPayload.id = category.id;
+                    categoriesToUpdate.push(categoryPayload);
+                }
+
+                // Prepare items belonging to this category
                 for (const item of category.items) {
-                    const payload = {
+                    const itemPayload = {
                         category_id: category.id,
                         name: item.name,
                         description: item.description,
@@ -1230,17 +1242,50 @@
                         image_url: item.image_url || item.imageUrl || '',
                         image_path: item.image_path || item.imagePath || ''
                     };
+
                     const isNewItem = !item.id || String(item.id).startsWith("item_");
+                    
                     if (isNewItem) {
-                        const { data, error } = await supabaseClient.from('items').insert(payload).select().single();
-                        if (error) throw error;
-                        item.id = data.id;
+                        itemsToInsert.push(itemPayload);
+                        // Keep a temporary reference or handle insert response cleanly below
                     } else {
-                        const { error } = await supabaseClient.from('items').update(payload).eq('id', item.id);
-                        if (error) throw error;
+                        itemPayload.id = item.id;
+                        itemsToUpdate.push(itemPayload);
                     }
                 }
             }
+
+            // Execute Batch Upserts for Categories (if any updates exist)
+            if (categoriesToUpdate.length > 0) {
+                const { error: catUpdateError } = await supabaseClient.from('categories').upsert(categoriesToUpdate);
+                if (catUpdateError) throw catUpdateError;
+            }
+
+            // Execute Batch Inserts for Brand New Items to capture their server-generated UUIDs
+            if (itemsToInsert.length > 0) {
+                const { data: insertedItemsData, error: itemInsertError } = await supabaseClient.from('items').insert(itemsToInsert).select();
+                if (itemInsertError) throw itemInsertError;
+                
+                // Map the returned real UUIDs back to the local items array so they aren't treated as new next time
+                let insertIndex = 0;
+                for (const category of MASTER_DATABASE.categories) {
+                    for (const item of category.items) {
+                        const isNewItem = !item.id || String(item.id).startsWith("item_");
+                        // If it was newly inserted and doesn't have a real UUID yet, assign it from response
+                        if (isNewItem && !item.db_assigned && insertedItemsData[insertIndex]) {
+                            item.id = insertedItemsData[insertIndex].id;
+                            insertIndex++;
+                        }
+                    }
+                }
+            }
+
+            // Execute Batch Upserts for Existing Items (updates)
+            if (itemsToUpdate.length > 0) {
+                const { error: itemUpdateError } = await supabaseClient.from('items').upsert(itemsToUpdate);
+                if (itemUpdateError) throw itemUpdateError;
+            }
+
             ACTIVE_PENDING_NEW_ROW_MAP = {};
             DELETED_ITEM_IDS = [];
             DELETED_CATEGORY_IDS = [];

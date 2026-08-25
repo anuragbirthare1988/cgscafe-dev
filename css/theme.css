@@ -882,6 +882,53 @@ a.info-bar__item:hover {
   .hero__scroll-line { animation: none; }
 }
 
+/* Hero Initial States for Animation */
+.hero__content .animate-fade-up,
+.hero__content .animate-fade-up-delay-1,
+.hero__content .animate-fade-up-delay-2,
+.hero__content .animate-fade-up-delay-3 {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+/* Active State triggered on load */
+/* Initial hidden states for Hero items */
+.hero__content .hero-anim-1,
+.hero__content .hero-anim-2,
+.hero__content .hero-anim-3,
+.hero__content .hero-anim-4 {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+/* Active states with staggered delays when .is-animated is added */
+.hero__content.is-animated .hero-anim-1 {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.1s;
+}
+
+.hero__content.is-animated .hero-anim-2 {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.25s;
+}
+
+.hero__content.is-animated .hero-anim-3 {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.4s;
+}
+
+.hero__content.is-animated .hero-anim-4 {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.55s;
+}
 
 /* ---- 6.4 Cards ---- */
 .card {
@@ -3561,6 +3608,7 @@ input[type=number] {
 .cgs-right-content {
     display: flex;
     flex-direction: column;
+    overflow: auto;
 }
 
 /* Financial Strip */
@@ -3974,7 +4022,7 @@ input[type=number]::-webkit-inner-spin-button {
 .cgs-editorial-card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
+    border-radius: 20px;
     padding: clamp(36px, 5vw, 56px);
     position: relative;
     overflow: hidden;
@@ -3990,7 +4038,7 @@ input[type=number]::-webkit-inner-spin-button {
 .cgs-editorial-split {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
+    border-radius: 20px;
     padding: clamp(36px, 5vw, 56px);
     display: grid;
     grid-template-columns: 1fr 1.2fr;
@@ -4004,6 +4052,74 @@ input[type=number]::-webkit-inner-spin-button {
 .cgs-editorial-split:hover {
     border-color: var(--color-accent);
     box-shadow: 0 24px 50px rgba(0,0,0,0.08);
+}
+
+/* Container for the diagonal split section */
+.cgs-diagonal-split-card {
+    position: relative;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    /* margin-bottom: 60px; */
+    padding: clamp(36px, 5vw, 56px);
+    overflow: hidden;
+}
+
+.cgs-diagonal-split-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 24px 50px rgba(0,0,0,0.08);
+}
+
+/* The elegant diagonal dividing line for desktop */
+.cgs-diagonal-split-card::after {
+    content: '';
+    position: absolute;
+    top: 10%;
+    bottom: 10%;
+    left: 50%;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, rgba(201, 162, 75, 0.4), transparent);
+    transform: translateX(-50%) rotate(-18deg);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Organic curved blob frame matching Sections 1 & 2 */
+.cgs-organic-blob-frame {
+    width: 240px;
+    height: 240px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    background-size: cover;
+    background-position: center;
+    transition: border-radius 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s ease;
+}
+
+.cgs-organic-blob-frame:hover {
+    border-radius: 40% 60% 45% 55% / 55% 40% 60% 45%;
+    transform: scale(1.06);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.12);
+}
+
+/* Mobile-Specific Adjustments */
+@media (max-width: 768px) {
+    .cgs-diagonal-split-card {
+        padding: 30px 16px;
+    }
+    
+    /* Transform the diagonal line into a clean horizontal separator on mobile 
+       so it stays visible and visually anchors the two chapters nicely */
+    .cgs-diagonal-split-card::after {
+        display: none;
+    }
+    
+    .cgs-organic-blob-frame {
+        width: 220px;
+        height: 220px;
+    }
 }
 
 @media (max-width: 900px) {
@@ -4024,6 +4140,7 @@ input[type=number]::-webkit-inner-spin-button {
     box-shadow: 0 15px 35px rgba(0,0,0,0.1);
     transition: border-radius 0.6s ease;
 }
+
 @media (max-width: 900px) {
     .organic-blob-img {
         height: 260px;
@@ -4109,14 +4226,11 @@ input[type=number]::-webkit-inner-spin-button {
     background-color: var(--color-background);
     color: var(--color-text-primary);
 }
-.cgs-avant-garde-container {
-    padding: clamp(50px, 8vw, 100px) var(--container-pad);
-}
+
 .cgs-section-column-wrapper {
     display: flex;
     flex-direction: column;
     gap: 40px;
-    margin-bottom: 80px;
 }
 .cgs-chapter-tag {
     font-size: 0.75rem;
