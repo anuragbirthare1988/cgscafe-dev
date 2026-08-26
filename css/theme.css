@@ -311,16 +311,6 @@ p {
   background-color: var(--color-bg-alt);
 }
 
-.section-title {
-  font-family: var(--font-heading);
-  font-size: var(--text-xl);
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  text-align: center;
-  color: var(--color-text-primary);
-  margin-bottom: var(--space-3);
-}
-
 .section--inverse .section-title {
   color: var(--color-band-text);
 }
@@ -1019,7 +1009,7 @@ a.info-bar__item:hover {
 }
 
 .story__text:first-of-type {
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   color: var(--color-text-primary);
 }
 
@@ -4409,3 +4399,77 @@ input[type=number]::-webkit-inner-spin-button {
     justify-content: center;
 }
 .cgs-cta-btn-group .btn { min-width: 220px;}
+
+/* ==========================================================
+   Clean & Unified SEO Landing Page Styles
+   ========================================================== */
+
+/* Header clearance layout spacing */
+.cgs-seo-wrapper {
+    padding-top: 100px;
+}
+
+/* Subtle, unified vertical spacing layout */
+.cgs-seo-hero {
+    padding: 2rem 0;
+    text-align: center;
+}
+
+.cgs-seo-content {
+    padding-top: 0;
+    padding-bottom: 3.5rem;
+}
+
+.cgs-seo-heading-block {
+    margin-bottom: 2rem;
+}
+
+/* Unified structural wrapper for the divider separator line */
+.cgs-seo-banner {
+    border-top: 1px solid var(--color-border, rgba(0, 0, 0, 0.08));
+    border-bottom: 1px solid var(--color-border, rgba(0, 0, 0, 0.08));
+    padding: 2rem 1rem;
+    text-align: center;
+    margin: 3rem auto 2.5rem auto;
+    max-width: 1000px;
+}
+
+.cgs-seo-banner h3 {
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+}
+
+.cgs-seo-banner p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 760px;
+    margin: 0 auto;
+    opacity: 0.85;
+}
+
+/* Symmetrical Centered Alignment Fix for CTA Section */
+.cta-section {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.cta-section .cta-section__title {
+    margin-bottom: 0.3rem;
+}
+
+.cta-section .cta-section__eyebrow {
+    margin-bottom: 1.25rem;
+    opacity: 0.8;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Botanica Theme Adaptability */
+[data-theme="botanica"] .cgs-seo-banner {
+    border-color: rgba(255, 255, 255, 0.1);
+}

@@ -23,201 +23,207 @@
                 },
                 "geo": {
                         "@type": "GeoCoordinates",
-                        "latitude": 22.6783187402986,
-                        "longitude": 75.85015334973336
-                },
+                        "latitude": 22.678460, 
+                        "longitude": 75.849859
+                        },
                 "telephone": "+91-9993738851",
-                "openingHours": "Mo-Su 08:00-23:00",
+                "openingHours": "Mo-Su 09:00-23:00",
                 "servesCuisine": ["Cafe", "Coffee", "Fast Food", "Beverages"],
                 "priceRange": "₹₹"
                 }
         </script>
-	<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script>(function(){try{var t=localStorage.getItem('cgs-theme');if(t==='botanica')document.documentElement.setAttribute('data-theme','botanica');}catch(e){}})();</script>
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any">
-		<link rel="stylesheet" href="/fonts/local-fonts.css">
-		<link rel="preconnect" href="https://gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
-    	<link rel="stylesheet" href="/css/theme.css">
-        <meta name="theme-color" content="#1B1412">
-        <meta name="google-site-verification" content="fd40eee476e539a8" />
+        <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <script>(function(){try{var t=localStorage.getItem('cgs-theme');if(t==='botanica')document.documentElement.setAttribute('data-theme','botanica');}catch(e){}})();</script>
+                <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any">
+                <link rel="stylesheet" href="/fonts/local-fonts.css">
+                <link rel="preconnect" href="https://gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+                <link rel="stylesheet" href="/css/theme.css">
+                <meta name="theme-color" content="#1B1412">
+                <meta name="google-site-verification" content="fd40eee476e539a8" />
 
-        <title>Menu | Coffee, Sandwiches & Refreshing Shots | CGS Cafe Indore</title>
-        <meta name="description" content="Explore CGS Cafe menu with premium coffee, sandwiches, pasta, frappes, shakes and more in Indore. Find your favorites today.">
-        <link rel="canonical" href="https://cgscafe.in/browse-menu/">
+                <title>Menu | Coffee, Sandwiches & Refreshing Shots | CGS Cafe Indore</title>
+                <meta name="description" content="Explore CGS Cafe menu with premium coffee, sandwiches, pasta, frappes, shakes and more in Indore. Find your favorites today.">
+                <link rel="canonical" href="https://cgscafe.in/browse-menu/">
 
-        <meta property="og:type" content="website">
-        <meta property="og:title" content="Menu | CGS Cafe Indore">
-        <meta property="og:description" content="Discover coffee, sandwiches, pasta, frappes and more at CGS Cafe Indore.">
-        <meta property="og:url" content="https://cgscafe.in/browse-menu/">
-        <meta property="og:image" content="https://cgscafe.in/images/cgs-preview.webp">
+                <!-- Geo Location (Helps Local SEO) -->
+                <meta name="geo.region" content="IN-MP">
+                <meta name="geo.placename" content="Indore">
+                <meta name="geo.position" content="22.678460;75.849859">
+                <meta name="ICBM" content="22.678460, 75.849859">
 
-        <!-- Dependencies First -->
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-        <script src="/js/environment.js"></script>
-        
-        <!-- Global Scripts (Load these before admin.js so they are ready) -->
-        <script src="/js/custom.js"></script>
-        <script src="/js/components.js"></script> <!-- Updates the UI -->
-        <script src="/js/animations.js"></script>
-</head>
-<body>
-   <!-- Header Section -->
-        <header id="header"></header>
-        <section class="page-hero page-hero--tight">
-                <span class="eyebrow">Every Item, A Story</span>
-                <h1 class="page-hero__title">The Menu</h1>
-                <div class="divider"></div>
-                <p class="page-hero__subtitle">Every item, a story of craft &amp; care</p>
-        </section>
+                <meta property="og:type" content="website">
+                <meta property="og:title" content="Menu | CGS Cafe Indore">
+                <meta property="og:description" content="Discover coffee, sandwiches, pasta, frappes and more at CGS Cafe Indore.">
+                <meta property="og:url" content="https://cgscafe.in/browse-menu/">
+                <meta property="og:image" content="https://cgscafe.in/images/cgs-preview.webp">
 
-        <section class="section" style="padding-top:0;">
-                <div class="container">
-                        <div class="menu-note">
-                                <span class="menu-note__badge"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg></span>
-                                <div>
-                                        <p>Indicates our <strong>Signature Picks</strong> &mdash; Highly recommended by CGS. Want to explore them all? <a href="/must-haves/" style="color:var(--color-accent-strong);font-weight:600;">Let&rsquo;s dive in.</a></p>
-                                        <p class="menu-note__meta">Freshly prepared and served in-store &nbsp;&middot;&nbsp; Dine-in &amp; take-away available &nbsp;&middot;&nbsp; Online ordering coming soon</p>
-                                </div>
-                        </div>
-
-                        <div class="menu-tabs">
-                                <button class="tab-btn active" data-tab="all">All</button>
-                                <button class="tab-btn" data-tab="beverages">Beverages</button>
-                                <button class="tab-btn" data-tab="bites">Bites</button>
-                        </div>
-
-                        <!-- All Tab -->
-                        <div class="tab-content active" id="tab-all"></div>
-                        <!-- Beverages Tab -->
-                        <div class="tab-content" id="tab-beverages"></div>
-                        <!-- Bites Tab -->
-                        <div class="tab-content" id="tab-bites"></div>
-                </div>
-        </section>
-   <!-- Footer Section -->
-   <footer class="site-footer" id="footer"></footer>
-        <!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
-        <div id="preloader"></div>
-        <script>
-                // Use the global 'supabase' provided by the script tag
-                const client = window.supabaseClient || supabaseClient;
+                <!-- Dependencies First -->
+                <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+                <script src="/js/environment.js"></script>
                 
-                let globalCategories = [];
-                // Global display settings (loaded from Supabase app_settings)
-                let DISPLAY_SETTINGS = { showPrices: true, showQuantities: true };
+                <!-- Global Scripts (Load these before admin.js so they are ready) -->
+                <script src="/js/custom.js"></script>
+                <script src="/js/components.js"></script> <!-- Updates the UI -->
+                <script src="/js/animations.js"></script>
+        </head>
+        <body>
+        <!-- Header Section -->
+                <header id="header"></header>
+                <section class="page-hero page-hero--tight">
+                        <span class="eyebrow">Every Item, A Story</span>
+                        <h1 class="page-hero__title">The Menu</h1>
+                        <div class="divider"></div>
+                        <p class="page-hero__subtitle">Every item, a story of craft &amp; care</p>
+                </section>
 
-                // Load global display settings from Supabase 'app_settings'
-                async function loadDisplaySettings() {
-                        try {
-                                const { data, error } = await client
-                                        .from('app_settings')
-                                        .select('setting_key, value')
-                                        .in('setting_key', ['show_prices', 'show_quantities']);
-                                if (error) throw error;
-                                (data || []).forEach(row => {
-                                        const raw = row.value;
-                                        // Value may be boolean, string, or number. Anything explicitly "false"/0 is false.
-                                        const isTrue = !(raw === false || raw === 'false' || raw === 0 || raw === '0' || raw === null);
-                                        if (row.setting_key === 'show_prices')     DISPLAY_SETTINGS.showPrices = isTrue;
-                                        if (row.setting_key === 'show_quantities') DISPLAY_SETTINGS.showQuantities = isTrue;
-                                });
-                        } catch (err) {
-                                console.warn('Display settings fetch failed, using defaults:', err);
-                        }
-                }
+                <section class="section" style="padding-top:0;">
+                        <div class="container">
+                                <div class="menu-note">
+                                        <span class="menu-note__badge"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg></span>
+                                        <div>
+                                                <p>Indicates our <strong>Signature Picks</strong> &mdash; Highly recommended by CGS. Want to explore them all? <a href="/must-haves/" style="color:var(--color-accent-strong);font-weight:600;">Let&rsquo;s dive in.</a></p>
+                                                <p class="menu-note__meta">Freshly prepared and served in-store &nbsp;&middot;&nbsp; Dine-in &amp; take-away available &nbsp;&middot;&nbsp; Online ordering coming soon</p>
+                                        </div>
+                                </div>
 
-                // Data Loading Function
-                async function loadDynamicMenu() {
-                        try {
-                                if (typeof loadDisplaySettings === 'function') {
-                                await loadDisplaySettings();
+                                <div class="menu-tabs">
+                                        <button class="tab-btn active" data-tab="all">All</button>
+                                        <button class="tab-btn" data-tab="beverages">Beverages</button>
+                                        <button class="tab-btn" data-tab="bites">Bites</button>
+                                </div>
+
+                                <!-- All Tab -->
+                                <div class="tab-content active" id="tab-all"></div>
+                                <!-- Beverages Tab -->
+                                <div class="tab-content" id="tab-beverages"></div>
+                                <!-- Bites Tab -->
+                                <div class="tab-content" id="tab-bites"></div>
+                        </div>
+                </section>
+        <!-- Footer Section -->
+        <footer class="site-footer" id="footer"></footer>
+                <!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
+                <div id="preloader"></div>
+                <script>
+                        // Use the global 'supabase' provided by the script tag
+                        const client = window.supabaseClient || supabaseClient;
+                        
+                        let globalCategories = [];
+                        // Global display settings (loaded from Supabase app_settings)
+                        let DISPLAY_SETTINGS = { showPrices: true, showQuantities: true };
+
+                        // Load global display settings from Supabase 'app_settings'
+                        async function loadDisplaySettings() {
+                                try {
+                                        const { data, error } = await client
+                                                .from('app_settings')
+                                                .select('setting_key, value')
+                                                .in('setting_key', ['show_prices', 'show_quantities']);
+                                        if (error) throw error;
+                                        (data || []).forEach(row => {
+                                                const raw = row.value;
+                                                // Value may be boolean, string, or number. Anything explicitly "false"/0 is false.
+                                                const isTrue = !(raw === false || raw === 'false' || raw === 0 || raw === '0' || raw === null);
+                                                if (row.setting_key === 'show_prices')     DISPLAY_SETTINGS.showPrices = isTrue;
+                                                if (row.setting_key === 'show_quantities') DISPLAY_SETTINGS.showQuantities = isTrue;
+                                        });
+                                } catch (err) {
+                                        console.warn('Display settings fetch failed, using defaults:', err);
                                 }
-                                
-                                // Fetch the structured menu directly from the normalized tables using our shared helper
-                                const dbData = await window.fetchMasterMenuFromDatabase();
-                                
-                                // Filter out hidden categories, hidden items, AND categories with 0 visible items left
-                                globalCategories = (dbData.categories || [])
-                                .filter(cat => {
-                                        if (cat.hidden === true) return false;
-                                        const visibleItems = (cat.items || []).filter(item => item.hidden !== true);
-                                        return visibleItems.length > 0; // Drops the category if all its children are hidden
-                                })
-                                .map(cat => ({
-                                        ...cat,
-                                        items: (cat.items || []).filter(item => item.hidden !== true)
-                                }));
-
-                                renderCategories(globalCategories); 
-                        } catch (err) {
-                                console.error("Menu fetch error:", err);
                         }
-                }
 
-                // Helper to generate HTML for a category block
-                function createCategoryHTML(cat) {
-                        const showPrices = DISPLAY_SETTINGS.showPrices;
-                        const showQty    = DISPLAY_SETTINGS.showQuantities;
-                        return `
-                                <div class="menu-category">
-                                        <div class="menu-category__header">
-                                                <div>
-                                                        <h2 class="menu-category__title">${cat.subCategoryName}</h2>
-                                                        <p class="menu-category__subtitle">${cat.subCategoryDesc || ''}</p>
+                        // Data Loading Function
+                        async function loadDynamicMenu() {
+                                try {
+                                        if (typeof loadDisplaySettings === 'function') {
+                                        await loadDisplaySettings();
+                                        }
+                                        
+                                        // Fetch the structured menu directly from the normalized tables using our shared helper
+                                        const dbData = await window.fetchMasterMenuFromDatabase();
+                                        
+                                        // Filter out hidden categories, hidden items, AND categories with 0 visible items left
+                                        globalCategories = (dbData.categories || [])
+                                        .filter(cat => {
+                                                if (cat.hidden === true) return false;
+                                                const visibleItems = (cat.items || []).filter(item => item.hidden !== true);
+                                                return visibleItems.length > 0; // Drops the category if all its children are hidden
+                                        })
+                                        .map(cat => ({
+                                                ...cat,
+                                                items: (cat.items || []).filter(item => item.hidden !== true)
+                                        }));
+
+                                        renderCategories(globalCategories); 
+                                } catch (err) {
+                                        console.error("Menu fetch error:", err);
+                                }
+                        }
+
+                        // Helper to generate HTML for a category block
+                        function createCategoryHTML(cat) {
+                                const showPrices = DISPLAY_SETTINGS.showPrices;
+                                const showQty    = DISPLAY_SETTINGS.showQuantities;
+                                return `
+                                        <div class="menu-category">
+                                                <div class="menu-category__header">
+                                                        <div>
+                                                                <h2 class="menu-category__title">${cat.subCategoryName}</h2>
+                                                                <p class="menu-category__subtitle">${cat.subCategoryDesc || ''}</p>
+                                                        </div>
+                                                </div>
+                                                ${cat.supplementNote ? `<p class="menu-category__note">${cat.supplementNote}</p>` : ''}
+                                                <div class="menu-grid">
+                                                        ${cat.items.map(item => `
+                                                                <div class="menu-item ${item.featured ? 'menu-item--signature' : ''}">
+                                                                        ${item.featured ? '<span class="menu-item__star">&#10022;</span>' : ''}
+                                                                        <div class="menu-item__row">
+                                                                                <h3 class="menu-item__name">${item.name}</h3>
+                                                                        </div>
+                                                                        <p class="menu-item__desc">${item.description || ''}</p>
+                                                                        ${(showQty && item.qty) ? `<span class="menu-item__meta">${item.qty}</span>` : ''}
+                                                                        ${(showPrices && item.price) ? `<span class="menu-item__meta">${item.price}</span>` : ''}
+                                                                </div>
+                                                        `).join('')}
                                                 </div>
                                         </div>
-                                        ${cat.supplementNote ? `<p class="menu-category__note">${cat.supplementNote}</p>` : ''}
-                                        <div class="menu-grid">
-                                                ${cat.items.map(item => `
-                                                        <div class="menu-item ${item.featured ? 'menu-item--signature' : ''}">
-                                                                ${item.featured ? '<span class="menu-item__star">&#10022;</span>' : ''}
-                                                                <div class="menu-item__row">
-                                                                        <h3 class="menu-item__name">${item.name}</h3>
-                                                                </div>
-                                                                <p class="menu-item__desc">${item.description || ''}</p>
-                                                                ${(showQty && item.qty) ? `<span class="menu-item__meta">${item.qty}</span>` : ''}
-                                                                ${(showPrices && item.price) ? `<span class="menu-item__meta">${item.price}</span>` : ''}
-                                                        </div>
-                                                `).join('')}
-                                        </div>
-                                </div>
-                        `;
-                }
+                                `;
+                        }
 
-                // Rendering Function
-                function renderCategories(categories) {
-                        const allTarget = document.getElementById('tab-all');
-                        const bevTarget = document.getElementById('tab-beverages');
-                        const bitesTarget = document.getElementById('tab-bites');
+                        // Rendering Function
+                        function renderCategories(categories) {
+                                const allTarget = document.getElementById('tab-all');
+                                const bevTarget = document.getElementById('tab-beverages');
+                                const bitesTarget = document.getElementById('tab-bites');
 
-                        // Clear existing content
-                        if (allTarget) allTarget.innerHTML = '';
-                        if (bevTarget) bevTarget.innerHTML = '';
-                        if (bitesTarget) bitesTarget.innerHTML = '';
-                
-                        categories.forEach(cat => {
-                                const isBeverage = cat.originType === 'beverages';
-                                const categoryHTML = createCategoryHTML(cat);
+                                // Clear existing content
+                                if (allTarget) allTarget.innerHTML = '';
+                                if (bevTarget) bevTarget.innerHTML = '';
+                                if (bitesTarget) bitesTarget.innerHTML = '';
+                        
+                                categories.forEach(cat => {
+                                        const isBeverage = cat.originType === 'beverages';
+                                        const categoryHTML = createCategoryHTML(cat);
 
-                                // Append to "All" tab container
-                                if (allTarget) {
-                                        allTarget.insertAdjacentHTML('beforeend', categoryHTML);
-                                }
+                                        // Append to "All" tab container
+                                        if (allTarget) {
+                                                allTarget.insertAdjacentHTML('beforeend', categoryHTML);
+                                        }
 
-                                // Append to specific target tab container
-                                const specificTarget = isBeverage ? bevTarget : bitesTarget;
-                                if (specificTarget) {
-                                        specificTarget.insertAdjacentHTML('beforeend', categoryHTML);
-                                }
-                        });
-                }
+                                        // Append to specific target tab container
+                                        const specificTarget = isBeverage ? bevTarget : bitesTarget;
+                                        if (specificTarget) {
+                                                specificTarget.insertAdjacentHTML('beforeend', categoryHTML);
+                                        }
+                                });
+                        }
 
-                // Initialize
-                window.addEventListener("DOMContentLoaded", loadDynamicMenu);
-        </script>
-</body>
+                        // Initialize
+                        window.addEventListener("DOMContentLoaded", loadDynamicMenu);
+                </script>
+        </body>
 </html>
 
