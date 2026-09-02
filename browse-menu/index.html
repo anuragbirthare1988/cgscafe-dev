@@ -71,38 +71,83 @@
         </head>
         <body>
         <!-- Header Section -->
-                <header id="header"></header>
-                <section class="page-hero page-hero--tight">
-                        <span class="eyebrow">Every Item, A Story</span>
-                        <h1 class="page-hero__title">The Menu</h1>
-                        <div class="divider"></div>
-                        <p class="page-hero__subtitle">Every item, a story of craft &amp; care</p>
-                </section>
+        <header id="header"></header>
+        <section class="page-hero page-hero--tight">
+                <span class="eyebrow">Every Item, A Story</span>
+                <h1 class="page-hero__title">The Menu</h1>
+                <div class="divider"></div>
+                <p class="page-hero__subtitle">Every item, a story of craft &amp; care</p>
+        </section>
 
-                <section class="section" style="padding-top:0;">
-                        <div class="container">
-                                <div class="menu-note">
-                                        <span class="menu-note__badge"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg></span>
-                                        <div>
-                                                <p>Indicates our <strong>Signature Picks</strong> &mdash; Highly recommended by CGS. Want to explore them all? <a href="/must-haves/" style="color:var(--color-accent-strong);font-weight:600;">Let&rsquo;s dive in.</a></p>
-                                                <p class="menu-note__meta">Freshly prepared and served in-store &nbsp;&middot;&nbsp; Dine-in &amp; take-away available &nbsp;&middot;&nbsp; Online ordering coming soon</p>
-                                        </div>
-                                </div>
+        <section class="section" style="padding-top:0;">
+                <div class="container">
+                        <!-- Master Split Banner with Single-Line Mobile Scaling Header & Bottom Arrow -->
+<div class="cgs-master-banner">
+    
+    <!-- Left Side: Features (Freshly Made & Dine-In) -->
+    <div class="cgs-banner-features-side">
+        
+        <!-- Feature 1 -->
+        <div class="cgs-mini-feature-item">
+            <div class="cgs-mini-icon-wrap">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            </div>
+            <div class="cgs-mini-text">
+                <h4>Freshly Made</h4>
+                <p>Made fresh in small batches daily</p>
+            </div>
+        </div>
 
-                                <div class="menu-tabs">
-                                        <button class="tab-btn active" data-tab="all">All</button>
-                                        <button class="tab-btn" data-tab="beverages">Beverages</button>
-                                        <button class="tab-btn" data-tab="bites">Bites</button>
-                                </div>
+        <!-- Vertical Divider -->
+        <div class="cgs-features-divider"></div>
 
-                                <!-- All Tab -->
-                                <div class="tab-content active" id="tab-all"></div>
-                                <!-- Beverages Tab -->
-                                <div class="tab-content" id="tab-beverages"></div>
-                                <!-- Bites Tab -->
-                                <div class="tab-content" id="tab-bites"></div>
+        <!-- Feature 2 -->
+        <div class="cgs-mini-feature-item">
+            <div class="cgs-mini-icon-wrap">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+            </div>
+            <div class="cgs-mini-text">
+                <h4>Dine-in &amp; Takeaway</h4>
+                <p>Sit back, relax or grab and go</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Right Side: Distinct Navigation Card Module for Must-Haves -->
+    <a href="/must-haves/" class="cgs-banner-action-side">
+        <svg class="cgs-sprig-icon" width="26" height="38" viewBox="0 0 48 80" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M24 76V12M24 24C18 20 10 22 8 16C12 10 20 12 24 16ZM24 38C30 34 38 36 40 30C36 24 28 26 24 30ZM24 52C18 48 10 50 8 44C12 38 20 40 24 44Z"/>
+            <circle cx="6" cy="28" r="1.5" fill="currentColor" stroke="none"/>
+            <circle cx="42" cy="50" r="1.5" fill="currentColor" stroke="none"/>
+            <circle cx="8" cy="62" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+
+        <div class="cgs-loved-picks-header">
+            <div>
+                <h3>A glance at our <span>most-loved picks</span></h3>
+                <p class="cgs-loved-picks-sub">Curated with love, just for you.</p>
+            </div>
+        </div>
+
+        <div class="cgs-arrow-badge">&rsaquo;</div>
+    </a>
+
+</div>
+                        <div class="menu-tabs">
+                                <button class="tab-btn active" data-tab="all">All</button>
+                                <button class="tab-btn" data-tab="beverages">Beverages</button>
+                                <button class="tab-btn" data-tab="bites">Bites</button>
                         </div>
-                </section>
+        
+                        <!-- All Tab -->
+                        <div class="tab-content active" id="tab-all"></div>
+                        <!-- Beverages Tab -->
+                        <div class="tab-content" id="tab-beverages"></div>
+                        <!-- Bites Tab -->
+                        <div class="tab-content" id="tab-bites"></div>
+                </div>
+        </section>
         <!-- Footer Section -->
         <footer class="site-footer" id="footer"></footer>
                 <!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
