@@ -15,6 +15,9 @@ CREATE TABLE public.categories (
   legacy_index integer,
   CONSTRAINT categories_pkey PRIMARY KEY (id)
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS categories_id_idx ON public.categories USING btree (id);
+
 CREATE TABLE public.items (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   category_id uuid NOT NULL,
@@ -41,6 +44,17 @@ CREATE TABLE public.items (
   CONSTRAINT items_pkey PRIMARY KEY (id),
   CONSTRAINT items_category_id_fkey FOREIGN KEY (category_id) REFERENCES public.categories(id)
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS items_id_idx ON public.items USING btree (id);
+
+-- Trigger configuration for tracking and updating category visibility status
+DROP TRIGGER IF EXISTS trg_update_category_hidden_status ON public.items;
+
+CREATE TRIGGER trg_update_category_hidden_status
+AFTER INSERT OR DELETE OR UPDATE ON public.items
+FOR EACH ROW
+EXECUTE FUNCTION update_category_hidden_status();
+
 CREATE TABLE public.ingredients (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   name text NOT NULL UNIQUE,
@@ -51,6 +65,7 @@ CREATE TABLE public.ingredients (
   updated_at timestamp with time zone DEFAULT now(),
   CONSTRAINT ingredients_pkey PRIMARY KEY (id)
 );
+
 CREATE TABLE public.recipe_ingredients (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   item_id uuid NOT NULL,
@@ -61,6 +76,7 @@ CREATE TABLE public.recipe_ingredients (
   CONSTRAINT recipe_ingredients_item_id_fkey FOREIGN KEY (item_id) REFERENCES public.items(id),
   CONSTRAINT recipe_ingredients_ingredient_id_fkey FOREIGN KEY (ingredient_id) REFERENCES public.ingredients(id)
 );
+
 CREATE TABLE public.site_settings (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   key text NOT NULL UNIQUE,
@@ -68,12 +84,14 @@ CREATE TABLE public.site_settings (
   updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()),
   CONSTRAINT site_settings_pkey PRIMARY KEY (id)
 );
+
 CREATE TABLE public.live_menu (
   id integer NOT NULL,
-  menu_json jsonb
+  menu_json jsonb,
   updated_at timestamp with time zone,
   CONSTRAINT live_menu_pkey PRIMARY KEY (id)
 );
+
 CREATE TABLE public.app_settings (
   id integer NOT NULL DEFAULT nextval('app_settings_id_seq'::regclass),
   base_margin numeric DEFAULT 35,
