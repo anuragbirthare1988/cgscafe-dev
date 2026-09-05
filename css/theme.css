@@ -1727,6 +1727,7 @@ footer .logo-brand {
   .autoscroll-toggle, .share-btn { display: none !important;}
   #scroll-buttons button svg { width:12px; height: 12px;}
   .menu-tabs .tab-btn { padding: var(--space-3) var(--space-4);}
+  .cgs-home-signature-teaser .cgs-cta-btn-group { display: grid !important;}
   .copyright-content { margin-bottom: 20px;}
 }
 
@@ -4520,9 +4521,6 @@ input[type=number]::-webkit-inner-spin-button {
     font-weight: 300;
     margin: 0;
 }
-.cgs-experience-container {
-    margin-bottom: 80px;
-}
 .cgs-experience-header-row {
     display: flex;
     justify-content: space-between;
@@ -4544,35 +4542,6 @@ input[type=number]::-webkit-inner-spin-button {
     font-weight: 300;
     margin-bottom: 24px;
 }
-.cgs-cta-section-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto;
-}
-.cgs-cta-main-title {
-    font-family: var(--font-display);
-    font-size: clamp(1.8rem, 3vw, 2.6rem);
-    font-weight: 400;
-    color: var(--color-text-primary);
-    margin-bottom: 12px;
-}
-.cgs-cta-desc {
-    color: var(--color-text-secondary);
-    font-size: var(--text-base);
-    line-height: 1.7;
-    font-weight: 300;
-    margin-bottom: 24px;
-}
-.cgs-cta-btn-group {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-.cgs-cta-btn-group .btn { min-width: 220px;}
 
 /* ==========================================================
    Clean & Unified SEO Landing Page Styles
@@ -4783,3 +4752,119 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .accent-color { color:var(--color-accent); font-weight: 400;}
+
+.cgs-home-signature-teaser {
+      padding: 3rem 1.5rem 2.5rem 1.5rem;
+      text-align: center;
+      background-color: var(--color-bg, #FAF8F5);
+  }
+  .cgs-teaser-container {
+      max-width: 720px;
+      margin: 0 auto;
+  }
+  .cgs-home-signature-teaser .teaser-subtitle {
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #8C6D53;
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+  }
+  .cgs-home-signature-teaser .cgs-cta-main-title {
+      font-family: var(--font-display, serif);
+      font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+      font-weight: 400;
+      color: var(--color-text-primary, #1B1412);
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+  }
+  .cgs-home-signature-teaser .cgs-cta-desc {
+      color: var(--color-text-secondary, #5C5046);
+      font-size: 0.98rem;
+      line-height: 1.5;
+      font-weight: 300;
+      margin-bottom: 1.75rem;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+  }
+  .cgs-home-signature-teaser .cgs-cta-btn-group {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 1.75rem;
+  }
+  .cgs-home-signature-teaser .btn {
+      min-width: 200px;
+      padding: 12px 24px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .cgs-home-signature-teaser .btn--gold {
+      background-color: #8C6D53;
+      color: #FAF8F5;
+      border: 1px solid #8C6D53;
+  }
+  .cgs-home-signature-teaser .btn--gold:hover {
+      background-color: #72553e;
+      border-color: #72553e;
+      transform: translateY(-1px);
+  }
+  .cgs-home-signature-teaser .btn--outline-gold {
+      background-color: transparent;
+      color: #8C6D53;
+      border: 1px solid rgba(140, 109, 83, 0.4);
+  }
+  .cgs-home-signature-teaser .btn--outline-gold:hover {
+      border-color: #8C6D53;
+      background-color: rgba(140, 109, 83, 0.04);
+      transform: translateY(-1px);
+  }
+  .teaser-divider {
+      width: 32px;
+      height: 1px;
+      background-color: rgba(140, 109, 83, 0.25);
+      margin: 0 auto 1.1rem auto;
+  }
+  .cgs-home-signature-teaser .teaser-footer-quote {
+      color: var(--color-text-secondary, #5C5046);
+      font-size: 0.95rem;
+      font-style: italic;
+      letter-spacing: 0.3px;
+      font-weight: 300;
+      margin: 0;
+  }
+
+  .cgs-menu-cta-wrapper {
+      text-align: center;
+      margin-top: var(--space-7);
+  }
+  .cgs-menu-cta-wrapper .btn--gold-outline {
+      display: inline-block;
+      padding: 12px 32px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #8C6D53;
+      background-color: var(--color-bg-inverse);
+      border: 1px solid rgba(140, 109, 83, 0.4);
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .cgs-menu-cta-wrapper .btn--gold-outline:hover {
+      background-color: #8C6D53;
+      color: #FAF8F5;
+      border-color: #8C6D53;
+      transform: translateY(-1px);
+  }
