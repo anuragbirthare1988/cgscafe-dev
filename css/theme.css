@@ -59,6 +59,7 @@
   --border-color:                    #221d17;
   --color-bg-founder-espresso:       #050403;
   --color-bg-panel-founder-espresso: #24594d;
+  --color-tagline:                   #dabba0;
 
   --hero-gradient-top: rgba(20, 14, 12, 0.6);
   --hero-gradient-mid: rgba(20, 14, 12, 0.42);
@@ -578,9 +579,10 @@ a.info-bar__item:hover {
 
 .logo-brand__wordmark, 
 .logo-brand__tagline  { /* Use your exact selector for the logo text heading */
-  font-size: clamp(0.9rem, 3.8vw, 1.8rem); /* Shrinks gracefully on smaller devices */
+  font-size: clamp(1.15rem, 3.8vw, 1.8rem); /* Shrinks gracefully on smaller devices */
   white-space: nowrap; /* Keeps it on a single line */
   max-width: calc(100vw - 140px);
+  line-height: 1.4;
 }
 
 /* Collapse the info bar smoothly once the nav reports the page has scrolled */
@@ -1070,28 +1072,24 @@ footer .logo-brand {
   border-bottom: 1px solid var(--color-border-inverse);
 }
 
+.log-brand-text { line-height: 2.5em;}
+
 .logo-brand__mark {
-  height: 55px;
+  height: 85px;
   width: auto;
   transition: opacity var(--duration-base) var(--ease-organic),
               height var(--duration-base) var(--ease-organic);
 }
 
 .logo-brand__wordmark {
-  font-size: clamp(1.3rem, 3.8vw, 1.8rem);
-  letter-spacing: 0.08em;
-  color: #F1E6D3;
-  line-height: 1;
+  letter-spacing: 0.085em;
+  color: #fff;
 }
 
 .logo-brand__tagline {
-  font-family: var(--font-display);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-accent-on-dark);
-  margin-top: 3px;
+  -webkit-text-stroke: 0.8px var(--color-tagline);
 }
 
 .footer-grid {
@@ -2741,7 +2739,7 @@ footer .logo-brand {
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1080px) {
   .nav-links {
     display: none;
   }
@@ -2975,7 +2973,7 @@ footer .logo-brand {
 /* ---- Style Switcher: Floating Circular Button ---- */
 .cgs-theme-fab {
     position: fixed;
-    top: 130px;
+    top: 170px;
     right: 5px;
     z-index: 900;
     appearance: none;

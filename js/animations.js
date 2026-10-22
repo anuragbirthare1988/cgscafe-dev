@@ -45,7 +45,7 @@ function initShareFeature() {
         if (navigator.share) {
             navigator.share({
                 title: "Let’s plan a coffee ☕",
-                text: " \n \nCGS - Coffee, Grill & Shots \nExplore Premium Coffee, Sandwiches and Refreshing Shots \n \n",
+                text: "*❖ CGS - Coffee, Grill & Shots ❖*\n> Discover chilled coffees, velvety frappes & mocktails paired with hot grilled delights, flavourful pastas & warm treats.\n",
                 url: window.location.pathname
             });
         } else {
