@@ -5027,3 +5027,21 @@ input[type=number]::-webkit-inner-spin-button {
 	color: var(--color-accent);
 	margin: 0;
 }
+
+/* Container adjustment to allow absolute positioning of the coil effect */
+.logo-brand {
+  position: relative;
+  border-radius: 50%;
+  animation: heatPulse 2s ease-in-out infinite;
+}
+
+/* Breathing intensity pulse mimicking radiant heat */
+@keyframes heatPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 3px rgba(255, 140, 0, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(255, 100, 0, 0.3)) 
+            drop-shadow(0 0 24px rgba(255, 200, 100, 0.3));
+  }
+}
