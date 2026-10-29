@@ -95,6 +95,28 @@ document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeLightbox();
 });
 
+
+// Minimize the Instagram block upon scrolling
+window.addEventListener('scroll', function() {
+    const instaCard = document.querySelector('.instagram-banner-card');
+    if (!instaCard) return;
+    
+    // For mobile (screen width <= 600px): scrolling closes the expanded card
+    if (window.innerWidth <= 600) {
+        if (window.scrollY > 50) {
+            instaCard.classList.remove('is-open');
+        }
+    } 
+    // For desktop: scrolling past 100px minimizes it, returning to top expands it
+    else {
+        if (window.scrollY > 100) {
+            instaCard.classList.add('is-minimized');
+        } else {
+            instaCard.classList.remove('is-minimized');
+        }
+    }
+});
+
 // Roast / Botanica theme switcher — global so preloader.html's inline onclick can reach it
 // Roast / Botanica theme switcher — global so preloader.html's inline onclick can reach it
 function setCgsTheme(name) {

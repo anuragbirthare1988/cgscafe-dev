@@ -1406,33 +1406,6 @@ footer .logo-brand {
   transform: scale(1.05);
 }
 
-/* Share button — sits above the scroll buttons */
-.share-btn {
-  position: fixed;
-  bottom: 208px;
-  right: 5px;
-  width: 25px;
-  height: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(from var(--color-surface-inverse) r g b / 0.7);
-  color: var(--color-accent-on-dark);
-  border: 1px solid var(--color-border-inverse);
-  border-radius: var(--radius-full);
-  box-shadow: var(--shadow-md);
-  z-index: 99;
-  transition: background-color var(--duration-base) var(--ease-organic),
-              color var(--duration-base) var(--ease-organic),
-              transform var(--duration-fast) var(--ease-organic);
-}
-
-.share-btn:hover {
-  background: var(--color-accent);
-  color: var(--color-text-inverse);
-  transform: translateY(-2px);
-}
-
 /* ---- Intro splash overlay ---- */
 #intro-overlay {
   position: fixed;
@@ -1729,12 +1702,18 @@ footer .logo-brand {
     padding: var(--space-2);
   }
   .info-bar__item { font-size: clamp(0.55rem, 0.72vw, 0.82rem);}
-  .share-btn { bottom: 186px; right: 5px;}
   /* #scroll-buttons { bottom: 78px; } */
   .whatsapp-icon { right: 14px; width: 140px; bottom: 16px; }
+  .instagram-banner-card { padding: 6px 8px !important; gap: 0 !important; }
+  .instagram-banner-card .cgs-logo-wrapper { border-right: none; padding-right: 0; }
+  .instagram-banner-card .banner-content { opacity: 0; max-width: 0; padding: 0; margin: 0; pointer-events: none; overflow: hidden; }
+  /* Expanded state when clicked/active on mobile */
+  .instagram-banner-card.is-open { padding: 8px 10px; gap: 10px; }
+  .instagram-banner-card.is-open .cgs-logo-wrapper { border-right: 1px solid rgba(212, 175, 55, 0.3); padding-right: 10px; }
+  .instagram-banner-card.is-open .banner-content { opacity: 1; max-width: 400px; pointer-events: auto; }
   .footer-actions a { padding: 6px var(--space-3); font-size: 9px;}
   .footer-actions a svg { width: 11px; height: 11px; }
-  .autoscroll-toggle, .share-btn { display: none !important;}
+  .autoscroll-toggle { display: none !important;}
   #scroll-buttons button svg { width:12px; height: 12px;}
   .menu-tabs .tab-btn { padding: var(--space-3) var(--space-4);}
   .cgs-home-signature-teaser .cgs-cta-btn-group { display: grid !important;}
@@ -5035,31 +5014,33 @@ input[type=number]::-webkit-inner-spin-button {
   }
 }
 
-/* CSS Styling for instagram wrapper */
+/* Instagram link */
+/* Instagram wrapper card with smooth transitions */
 .instagram-banner-card {
   display: flex;
   align-items: center;
-  gap: 20px;
-  background: rgba(30, 25, 20, 0.65);
+  gap: 10px;
+  background: rgba(30, 25, 20, 0.4);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  border-radius: 14px;
-  padding: 12px 18px;
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(244, 235, 208, 0.25);
+  border-radius: 4px;
+  padding: 8px 10px;
   max-width: 480px;
   text-decoration: none;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-  position: absolute;
-  bottom: 80px;
-  right: 20px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: fixed;
+  bottom: 170px;
+  right: 5px;
+  z-index: 9;
   outline: none;
   color: #f4ebd0;
   font-size: 0.70rem;
+  overflow: hidden;
 }
 
 .instagram-banner-card:hover {
-  border-color: rgba(212, 175, 55, 0.6);
   transform: translateY(-2px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
@@ -5070,7 +5051,8 @@ input[type=number]::-webkit-inner-spin-button {
   align-items: center;
   justify-content: center;
   border-right: 1px solid rgba(212, 175, 55, 0.3);
-  padding-right: 20px;
+  padding-right: 10px;
+  transition: all 0.4s ease;
 }
 
 .logo-container {
@@ -5093,7 +5075,6 @@ input[type=number]::-webkit-inner-spin-button {
   right: -2px;
   width: 22px;
   height: 22px;
-  background: linear-num(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
   background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
   border-radius: 50%;
   display: flex;
@@ -5110,15 +5091,20 @@ input[type=number]::-webkit-inner-spin-button {
   fill: none;
 }
 
+/* Banner content with fixed layout collapse properties */
 .banner-content {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  opacity: 1;
+  max-width: 400px;
+  transition: opacity 0.3s ease, max-width 0.4s ease, padding 0.4s ease;
+  white-space: nowrap;
 }
 
 .banner-title {
   font-family: inherit;
-  font-size: 0.85rem;
+  font-size: 0.6rem;
   letter-spacing: 0.05em;
   margin: 0;
   color: #f4ebd0;
@@ -5128,10 +5114,10 @@ input[type=number]::-webkit-inner-spin-button {
 
 .banner-subtitle {
   font-family: inherit;
-  font-size: 0.75rem;
+  font-size: 0.6rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  border: 1px solid rgba(212, 175, 55, 0.4);
+  border: 1px solid rgba(244, 235, 208, 0.25);
   border-radius: 6px;
   padding: 6px 12px;
   text-align: center;
@@ -5140,9 +5126,41 @@ input[type=number]::-webkit-inner-spin-button {
   transition: all 0.2s ease;
 }
 
-.instagram-banner-card:hover .banner-subtitle {
-  background: rgba(212, 175, 55, 0.15);
-  border-color: rgba(212, 175, 55, 0.8);
+/* --- MINIMIZED STATE ON SCROLL --- */
+.instagram-banner-card.is-minimized {
+  padding: 6px 8px;
+  gap: 0;
+}
+
+.instagram-banner-card.is-minimized .cgs-logo-wrapper {
+  border-right: none;
+  padding-right: 0;
+}
+
+.instagram-banner-card.is-minimized .banner-content {
+  opacity: 0;
+  max-width: 0;
+  padding: 0;
+  margin: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* --- HOVER TO EXPAND WHEN MINIMIZED --- */
+.instagram-banner-card.is-minimized:hover {
+  padding: 8px 10px;
+  gap: 10px;
+}
+
+.instagram-banner-card.is-minimized:hover .cgs-logo-wrapper {
+  border-right: 1px solid rgba(212, 175, 55, 0.3);
+  padding-right: 10px;
+}
+
+.instagram-banner-card.is-minimized:hover .banner-content {
+  opacity: 1;
+  max-width: 400px;
+  pointer-events: auto;
 }
 
 /* ===================================================================
