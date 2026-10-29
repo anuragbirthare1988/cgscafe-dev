@@ -1773,7 +1773,7 @@ footer .logo-brand {
 /* ==========================================================================
    6.9 INNER-PAGE COMPONENTS
    Shared across browse-menu, must-haves, our-story, cgs-experience, faq,
-   find-us, orders, careers, join-our-team, cafe-in-indore, quality-hygiene,
+   find-us, orders, careers, cafe-in-indore, quality-hygiene,
    privacy-policy, terms-and-conditions, testimonials.
    ========================================================================== */
 
@@ -4487,18 +4487,7 @@ input[type=number]::-webkit-inner-spin-button {
 /* ==========================================================
    Clean & Unified SEO Landing Page Styles
    ========================================================== */
-
-/* Header clearance layout spacing */
-.cgs-seo-wrapper {
-    padding-top: 100px;
-}
-
 /* Subtle, unified vertical spacing layout */
-.cgs-seo-hero {
-    padding: 2rem 0;
-    text-align: center;
-}
-
 .cgs-seo-content {
     padding-top: 0;
     padding-bottom: 3.5rem;
