@@ -37,7 +37,7 @@
             "opens": "09:00",
             "closes": "23:00"
         },
-        "servesCuisine": ["Cafe", "Coffee", "Fast Food", "Beverages"],
+        "servesCuisine": ["Cafe", "Coffee", "Grill", "Beverages"],
         "priceRange": "₹₹"
         }
     </script>
@@ -48,13 +48,13 @@
         <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any">   
         <link rel="stylesheet" href="/fonts/local-fonts.css">
         <link rel="preconnect" href="https://gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/css/theme.css">
         <meta name="theme-color" content="#1B1412">
         <meta name="google-site-verification" content="fd40eee476e539a8" />
 
         <title>Careers | Work at CGS Cafe Indore</title>
-        <meta name="description" content="Join CGS Cafe Indore and build your career in a creative and fast-growing cafe environment.">
+        <meta name="description" content="Join CGS Cafe Indore. Openings for Cafe Manager, Food & Beverage staff, and Housekeeping. Easy apply via email.">
         <link rel="canonical" href="https://cgscafe.in/careers/">
 
         <meta name="geo.region" content="IN-MP">
@@ -64,7 +64,7 @@
 
         <meta property="og:type" content="website">
         <meta property="og:title" content="Careers at CGS Cafe Indore">
-        <meta property="og:description" content="Explore career opportunities at CGS Cafe Indore.">
+        <meta property="og:description" content="Explore open job vacancies at CGS Cafe Indore.">
         <meta property="og:url" content="https://cgscafe.in/careers/">
         <meta property="og:image" content="https://cgscafe.in/images/cgs-preview.webp">
 
@@ -72,14 +72,15 @@
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
         <script src="/js/environment.js"></script>
         
-        <!-- Global Scripts (Load these before admin.js so they are ready) -->
+        <!-- Global Scripts -->
         <script src="/js/custom.js"></script>
-        <script src="/js/components.js"></script> <!-- Updates the UI -->
+        <script src="/js/components.js"></script>
         <script src="/js/animations.js"></script>
     </head>
     <body>
-    <!-- Header Section -->
+        <!-- Header Section -->
         <header id="header"></header>
+        
         <section class="page-hero">
             <span class="eyebrow">Careers at CGS</span>
             <h1 class="page-hero__title">Now Hiring</h1>
@@ -87,9 +88,10 @@
             <p class="page-hero__subtitle">We're not just serving coffee. We're building a culture — one that values people who care, create, and commit to doing things the right way.</p>
         </section>
 
-        <section class="section" style="padding-top:0;">
-            <div class="container">
-                <div class="card-grid" style="margin-bottom:var(--space-9);">
+        <!-- Culture Values Grid -->
+        <section class="section careers-culture-section">
+            <div class="container careers-container-wide">
+                <div class="card-grid careers-culture-grid">
                     <div class="card card--icon">
                         <span class="card__glyph">◆</span>
                         <h3 class="card__title">Youth-Driven Environment</h3>
@@ -109,27 +111,103 @@
             </div>
         </section>
 
-        <section class="section section--inverse">
-            <div class="container">
-                <div class="card-grid card-grid--2" style="align-items:center;max-width:900px;margin:0 auto;">
-                    <div class="text-center">
-                        <div class="card__icon" style="margin:0 auto var(--space-4);background:transparent;border:1px solid var(--color-accent);color:var(--color-accent-on-dark);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></div>
-                        <h3 style="font-family:var(--font-display);font-size:var(--text-lg);color:var(--color-accent-on-dark);margin-bottom:var(--space-3);">Ready to Begin?</h3>
-                        <p style="color:var(--color-text-inverse-muted);margin-bottom:var(--space-4);">Send us your resume and a brief note about yourself. We review every application personally.</p>
-                        <a href="mailto:coffeegrillandshots@gmail.com" class="btn btn--gold">Send Your Resume</a>
+        <!-- Active Openings Section -->
+        <section class="section careers-openings-section">
+            <div class="container careers-container-wide">
+                <h2 class="careers-section-title">Current Open Positions</h2>
+                
+                <div class="careers-stack-container">
+                    
+                    <!-- Role 1: Café Operations Manager -->
+                    <div class="card careers-job-card">
+                        <div class="careers-job-content">
+                            <div class="careers-job-header">
+                                <span class="eyebrow careers-job-eyebrow">FULL-TIME | OPERATIONS & LEADERSHIP</span>
+                                <span class="careers-badge">1 Opening</span>
+                            </div>
+                            <h3 class="card__title careers-job-title">Café Operations Manager</h3>
+                            
+                            <p class="careers-resp-label">Key Responsibilities & Scope:</p>
+                            <ul class="careers-resp-list careers-resp-list-split">
+                                <div>
+                                    <li>Oversee day-to-day front-of-house and back-of-house boutique café operations.</li>
+                                    <li>Manage comprehensive inventory tracking, stock audits, and strict FIFO/FEFO rotation principles.</li>
+                                    <li>Lead, train, and mentor café staff to maintain premium guest service standards.</li>
+                                </div>
+                                <div>
+                                    <li>Enforce rigorous hygiene, safety, and opening/closing compliance protocols.</li>
+                                    <li>Handle daily vendor coordination, supply fulfillment, and quality checks.</li>
+                                    <li>Drive customer satisfaction, resolve feedback, and ensure smooth floor workflows.</li>
+                                </div>
+                            </ul>
+                        </div>
+                        <div class="careers-btn-wrapper">
+                            <a href="mailto:coffeegrillandshots@gmail.com?subject=Application:%20Cafe%20Operations%20Manager" class="btn btn--outline careers-apply-btn">APPLY</a>
+                        </div>
                     </div>
-                    <div class="text-center">
-                        <div class="card__icon" style="margin:0 auto var(--space-4);background:transparent;border:1px solid var(--color-accent);color:var(--color-accent-on-dark);"><svg width="20" height="20" viewBox="0 0 1.44 1.44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.44 0H0v1.44h1.44z" fill="#d2a54d" fill-opacity=".01"/><path d="M1.29.15.891 1.29.663.777.15.549z" stroke="currentColor" stroke-width=".12" stroke-linejoin="round"/><path d="M1.29.15.663.777" stroke="currentColor" stroke-width=".12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                        <h3 style="font-family:var(--font-display);font-size:var(--text-lg);color:var(--color-accent-on-dark);margin-bottom:var(--space-3);">Apply to an Existing Position</h3>
-                        <p style="color:var(--color-text-inverse-muted);margin-bottom:var(--space-4);">Interested to know about current openings at CGS? Click here to see them.</p>
-                        <a href="/join-our-team/" class="btn btn--outline">Join Our Team</a>
+
+                    <!-- Role 2: Food & Beverage Staff -->
+                    <div class="card careers-job-card">
+                        <div class="careers-job-content">
+                            <div class="careers-job-header">
+                                <span class="eyebrow careers-job-eyebrow">FULL-TIME | COUNTER & KITCHEN</span>
+                                <span class="careers-badge">4 Openings</span>
+                            </div>
+                            <h3 class="card__title careers-job-title">Food & Beverage Staff</h3>
+                            
+                            <p class="careers-resp-label">Work Responsibilities:</p>
+                            <ul class="careers-resp-list">
+                                <li>Craft signature cold coffee, frappes, and refreshing beverage blends with exact precision.</li>
+                                <li>Prepare curated pure-vegetarian grill and bite items to highest presentation standards.</li>
+                                <li>Ensure efficient order preparation and timely service across counter operations.</li>
+                                <li>Maintain pristine cleanliness across workstations, equipment, and serving areas.</li>
+                                <li>Monitor stock rotation diligently using FIFO/FEFO inventory practices.</li>
+                            </ul>
+                        </div>
+                        <div class="careers-btn-wrapper">
+                            <a href="mailto:coffeegrillandshots@gmail.com?subject=Application:%20Food%20%26%20Beverage%20Staff" class="btn btn--outline careers-apply-btn">APPLY</a>
+                        </div>
                     </div>
+
+                    <!-- Role 3: Housekeeping Staff -->
+                    <div class="card careers-job-card">
+                        <div class="careers-job-content">
+                            <div class="careers-job-header">
+                                <span class="eyebrow careers-job-eyebrow">FULL-TIME | FLOOR & HYGIENE</span>
+                                <span class="careers-badge">2 Openings</span>
+                            </div>
+                            <h3 class="card__title careers-job-title">Housekeeping Staff</h3>
+                            
+                            <p class="careers-resp-label">Work Responsibilities:</p>
+                            <ul class="careers-resp-list">
+                                <li>Execute thorough opening and closing cleaning protocols across café premises.</li>
+                                <li>Maintain continuous hygiene and cleanliness across guest seating and dining areas.</li>
+                                <li>Wash and sanitize glassware, crockery, serving trays, and kitchen utensils.</li>
+                                <li>Ensure impeccable sanitation standards in washrooms and back-of-house areas.</li>
+                                <li>Support overall floor upkeep to preserve an immaculate boutique atmosphere.</li>
+                            </ul>
+                        </div>
+                        <div class="careers-btn-wrapper">
+                            <a href="mailto:coffeegrillandshots@gmail.com?subject=Application:%20Housekeeping%20Staff" class="btn btn--outline careers-apply-btn">APPLY</a>
+                        </div>
+                    </div>
+
                 </div>
+
+                <!-- General Application CTA Section (Border Removed) -->
+                <div class="careers-cta-box">
+                    <div class="card__icon careers-cta-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></div>
+                    <h3 class="careers-cta-title">Want to Join Our Team?</h3>
+                    <p class="careers-cta-text">Send us your name, contact details, or resume. We review every message personally.</p>
+                    <a href="mailto:coffeegrillandshots@gmail.com?subject=General%20Application%20-%20CGS%20Careers" class="btn btn--outline careers-cta-btn">APPLY</a>
+                </div>
+
             </div>
         </section>
-    <!-- Footer Section -->
-    <footer class="site-footer" id="footer"></footer>
-        <!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
+
+        <!-- Footer Section -->
+        <footer class="site-footer" id="footer"></footer>
+        <!-- Miscellaneous -->
         <div id="preloader"></div>
     </body>
 </html>
