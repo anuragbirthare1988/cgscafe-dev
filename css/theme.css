@@ -1718,21 +1718,24 @@ footer .logo-brand {
   .menu-tabs .tab-btn { padding: var(--space-3) var(--space-4);}
   .cgs-home-signature-teaser .cgs-cta-btn-group { display: grid !important;}
   .copyright-content { margin-bottom: 20px;}
-  .cgs-banner-features-side { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .cgs-banner-features-side { flex-direction: column; gap: 14px; }
   .cgs-features-divider { display: none; }
-  .cgs-banner-action-side { flex-direction: column; align-items: stretch; padding: 16px; gap: 12px; }
+  .cgs-banner-action-side { flex-direction: column; align-items: stretch;}
   .cgs-banner-action-side .cgs-sprig-icon { display: none; }
-  .cgs-loved-picks-header h3 { font-size: clamp(1.1rem, 4vw, 1.05rem);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
-  .cgs-loved-picks-sub { text-align: center; margin-top: 2px; }
-  .cgs-arrow-badge { margin: 5px auto 0; }
+  .cgs-arrow-badge { margin-top: 5px; text-align: center; }
   .cgs-arrow-badge::after { content: ' \203A'; }
+  .careers-job-header {
+    display: flex;
+    flex-direction: column; /* Stacks them cleanly so text has full width */
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
   .footer-middle { flex-direction: column; align-items: flex-start; }
   .logo-brand { flex-direction: column; align-items: flex-start; text-align: left; }
   .logo-brand__mark { height: 65px;}
   .hero { min-height: 680px; background-size: auto 100%; background-repeat: no-repeat; background-position: center top; background-color: #140e0c; }
   /* .hero__title { font-size: var(--text-2xl); line-height: 1.6; letter-spacing: 0.1em;} */
-  .menu-grid, .product-grid, .info-grid, .card-grid--4 { grid-template-columns: 1fr; }
+  .card-grid--4, .info-grid, .product-grid, .menu-grid { grid-template-columns: 1fr !important; }
   .menu-category__note { margin-left: 0; }
   .page-hero__title { font-size: var(--text-4xl); }
   .section { padding: var(--space-7) 0; }
@@ -2253,7 +2256,6 @@ footer .logo-brand {
 /* Left Side: Features (Freshly Made & Dine-In) */
 .cgs-banner-features-side {
     display: flex;
-    align-items: center;
     justify-content: space-between;
     gap: 12px;
     padding-right: 12px;
@@ -2388,12 +2390,14 @@ footer .logo-brand {
 
 .cgs-loved-picks-header h3 {
     font-family: var(--font-display);
-    font-size: 1.25rem;
     font-weight: 600;
     color: var(--color-text-primary);
     margin: 0;
     line-height: 1.2;
+    font-size: clamp(0.7rem, 5vw, 1rem);
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .cgs-loved-picks-header h3 span {
@@ -2401,7 +2405,7 @@ footer .logo-brand {
 }
 
 .cgs-loved-picks-sub {
-    font-size: 0.64rem;
+    font-size: clamp(0.55rem, 2.4vw, 0.7rem);
     text-transform: uppercase;
     letter-spacing: 0.18em;
     color: var(--color-text-secondary);
@@ -2857,7 +2861,6 @@ footer .logo-brand {
 }
 
 [data-theme="botanica"] .card__icon {
-  margin-left: 0;
   background: rgba(124, 144, 112, 0.16);
   border-radius: 50%;
 }
@@ -5230,26 +5233,26 @@ input[type=number]::-webkit-inner-spin-button {
     font-weight: 600;
 }
 
+.careers-job-category { text-transform: capitalize; font-style: italic;}
+.careers-job-category::before { content: "("; }
+.careers-job-category::after { content: ")"; }
+
 .careers-badge {
-    background: rgba(210, 165, 77, 0.12);
-    color: var(--color-heading);
+    background: var(--color-accent);
+    color: var(--color-text-inverse);
+    border-color: var(--color-border-inverse);
     border: 1px solid rgba(210, 165, 77, 0.35);
     padding: 4px 12px;
-    border-radius: 12px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     white-space: nowrap;
-}
-
-.careers-job-title {
-    margin-bottom: var(--space-4);
 }
 
 .careers-resp-label {
     font-size: 14px;
     color: var(--color-heading);
     margin-bottom: var(--space-2);
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .careers-resp-list {
@@ -5272,7 +5275,7 @@ input[type=number]::-webkit-inner-spin-button {
 /* Prevents the apply button from spanning full-width */
 .careers-btn-wrapper {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
 }
 
 .careers-apply-btn {
@@ -5309,6 +5312,8 @@ input[type=number]::-webkit-inner-spin-button {
     font-size: var(--text-md);
     color: var(--color-heading);
     margin-bottom: var(--space-2);
+    font-weight: 600;
+    letter-spacing: 0.1rem;
 }
 
 .careers-cta-text {
