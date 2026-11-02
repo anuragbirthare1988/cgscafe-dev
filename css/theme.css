@@ -218,6 +218,14 @@ html {
   font-size: 16px;
 }
 
+/* IMPORTANT: Splash-screen loading protection.
+   Keep the page hidden until custom.js has loaded the shared preloader
+   and initialized its animations. Do not remove or override this rule
+   without testing the splash screen on a fresh visit and page reload. */
+html:not(.intro-ready) body {
+    visibility: hidden;
+}
+
 body {
   font-family: var(--font-body);
   font-weight: 300;

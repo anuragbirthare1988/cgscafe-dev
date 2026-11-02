@@ -154,11 +154,23 @@ document.addEventListener("DOMContentLoaded", async () => {
             el.innerHTML = await res.text();
             }
       }
+
+
+      // IMPORTANT: Keep the preloader component loaded before initializing animations.
+      // The page must remain hidden until all components are loaded and the splash
+      // overlay is initialized. This prevents the page content from flashing before
+      // the splash screen appears.
+      //
+      // Do not move `intro-ready` before `initAllAnimations()`.
+      // Do not remove the preloader from this loading sequence.
+      await loadComponent("preloader", "/components/preloader.html");
+      document.documentElement.classList.add('intro-ready');      // The page content to appear before the splash screen.
       await Promise.all([
             loadComponent("header", "/components/header.html"),
-            loadComponent("footer", "/components/footer.html"),
-            loadComponent("preloader", "/components/preloader.html")
+            loadComponent("footer", "/components/footer.html")
       ]);
+      syncThemeSwitchUI();
+      initAllAnimations();
       syncThemeSwitchUI(); // reflect the persisted Boho/European preference on the newly-loaded header
       
       // Get the current year for copyright note
