@@ -3,94 +3,245 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>CGS Menu Color Palette</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGS Core Brand Color Standards</title>
 
     <style>
+        :root {
+            --bg-dark: #1B1412;
+            --surface-dark: #221a18;
+            --header-dark: #181211;
+            --text-light: #f8f4ed;
+            --text-muted: #9e8e85;
+            --text-label: #e5dad0;
+            --accent-gold: #a4783a;
+            --accent-orange: #ff751f;
+            --border-subtle: rgba(164, 120, 58, 0.15);
+        }
+
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #282220;
-            color: #c2b8ae;
-            padding: 40px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding: 40px 16px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
         }
 
         h1 {
+            font-size: 22px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin: 0 0 4px 0;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--accent-gold);
+            font-size: 11px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            color: var(--accent-gold);
+            font-size: 10px;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        /* Desktop Split Layout (60% / 40%) */
+        .content-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .content-grid {
+                flex-direction: row;
+                align-items: start;
+            }
+
+            .main-table-col {
+                width: 60%;
+                flex-shrink: 0;
+            }
+
+            .side-logos-col {
+                width: 40%;
+                flex-grow: 1;
+            }
+        }
+
+        .logo-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .logo-card {
+            background-color: var(--surface-dark);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            padding: 14px;
             text-align: center;
-            color: #d17533;
-            margin-bottom: 30px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-preview {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            padding: 6px;
+        }
+
+        .logo-preview img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .logo-label {
+            color: var(--text-label);
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+
+        .logo-link {
+            color: var(--accent-gold);
+            font-size: 11px;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            text-decoration: underline;
+            word-break: break-all;
+            transition: color 0.2s ease;
+        }
+
+        .logo-link:hover {
+            color: var(--accent-orange);
+        }
+
+        .card {
+            background-color: var(--surface-dark);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
-            max-width: 800px;
-            margin: auto;
             border-collapse: collapse;
-            background-color: #1f1a18;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        th,
-        td {
-            padding: 15px;
-            text-align: left;
         }
 
         th {
-            background-color: #3a3230;
-            color: #dabba0;
-            font-weight: bold;
+            background-color: var(--header-dark);
+            color: var(--accent-gold);
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 1.8px;
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-subtle);
+            white-space: nowrap;
         }
 
-        tr {
-            border-bottom: 1px solid #3a3230;
+        td {
+            padding: 14px 16px;
+            text-align: left;
+            vertical-align: middle;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            white-space: nowrap;
         }
 
-        tr:last-child {
+        tr:last-child td {
             border-bottom: none;
         }
 
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.015);
+        }
+
+        .element-name {
+            color: var(--text-label);
+            font-size: 13px;
+            letter-spacing: 0.4px;
+        }
+
         .swatch {
-            width: 50px;
-            height: 25px;
-            border-radius: 5px;
-            border: 1px solid #000;
+            width: 30px;
+            height: 18px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            vertical-align: middle;
         }
 
         .copy {
             cursor: pointer;
-            color: #dabba0;
-            font-size: 14px;
+            color: var(--accent-gold);
+            font-size: 13px;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            letter-spacing: 0.8px;
+            transition: color 0.2s ease;
         }
 
         .copy:hover {
-            text-decoration: underline;
+            color: var(--accent-orange);
+        }
+
+        .usage-text {
+            color: var(--text-muted);
+            font-size: 12.5px;
+            font-weight: 300;
         }
 
         .footer {
             text-align: center;
-            margin-top: 30px;
-            color: #c2b8ae;
-            font-size: 14px;
+            margin-top: 32px;
+            color: #6e6058;
+            font-size: 11px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
         }
 
-        /* Toast */
         .toast {
             position: fixed;
-            top: 20px;
+            bottom: 30px;
             left: 50%;
-            transform: translateX(-50%) translateY(-20px);
-            background: linear-gradient(135deg, #1f1a18, #2a2522);
-            color: #ffffff;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 14px;
+            transform: translateX(-50%) translateY(20px);
+            background: #2a201d;
+            color: var(--text-light);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 12px;
             opacity: 0;
             pointer-events: none;
-            transition: all 0.35s ease;
-            border-left: 4px solid #4caf50;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid var(--accent-gold);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.5px;
+            z-index: 100;
         }
 
         .toast.show {
@@ -102,83 +253,105 @@
 
 <body>
 
-    <h1>CGS Menu Color Palette</h1>
+    <div class="container">
+        <div class="header">
+            <h1>CGS Brand Standard</h1>
+            <div class="subtitle">Core Brand Assets & Color Specifications</div>
+        </div>
 
-    <table>
-        <tr>
-            <th>Element</th>
-            <th>Preview</th>
-            <th>Hex Code</th>
-            <th>Usage</th>
-        </tr>
+        <div class="content-grid">
+            <!-- Left Column: 60% Color Table -->
+            <div class="main-table-col">
+                <div class="section-title">Color Specifications</div>
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Element</th>
+                                <th>Swatch</th>
+                                <th>Hex Code</th>
+                                <th>Usage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="element-name">Background</td>
+                                <td><div class="swatch" style="background:#1B1412;"></div></td>
+                                <td class="copy" onclick="copyText('#1B1412')">#1B1412</td>
+                                <td class="usage-text">Main dark background</td>
+                            </tr>
+                            <tr>
+                                <td class="element-name">Logo</td>
+                                <td><div class="swatch" style="background:#ff751f;"></div></td>
+                                <td class="copy" onclick="copyText('#ff751f')">#ff751f</td>
+                                <td class="usage-text">Logo & brand emblem</td>
+                            </tr>
+                            <tr>
+                                <td class="element-name">Menu surface</td>
+                                <td><div class="swatch" style="background:#f8f4ed;"></div></td>
+                                <td class="copy" onclick="copyText('#f8f4ed')">#f8f4ed</td>
+                                <td class="usage-text">Light canvas & cards</td>
+                            </tr>
+                            <tr>
+                                <td class="element-name">Heading / Accent</td>
+                                <td><div class="swatch" style="background:#a4783a;"></div></td>
+                                <td class="copy" onclick="copyText('#a4783a')">#a4783a</td>
+                                <td class="usage-text">Category titles & accents</td>
+                            </tr>
+                            <tr>
+                                <td class="element-name">Text / Content</td>
+                                <td><div class="swatch" style="background:#1f1917;"></div></td>
+                                <td class="copy" onclick="copyText('#1f1917')">#1f1917</td>
+                                <td class="usage-text">Dish names & readable text</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-        <tr>
-            <td>Background</td>
-            <td>
-                <div class="swatch" style="background:#282220;"></div>
-            </td>
-            <td class="copy" onclick="copyText('#282220')">#282220</td>
-            <td>Main background</td>
-        </tr>
+            <!-- Right Column: 40% Vertically Stacked Logos -->
+            <div class="side-logos-col">
+                <div class="section-title">Official Brand Logos</div>
+                <div class="logo-stack">
+                    <div class="logo-card">
+                        <div class="logo-preview" style="background: var(--bg-dark);">
+                            <img src="/images/cgs-logo.webp" alt="Non-Transparent Logo">
+                        </div>
+                        <div class="logo-label">Non-Transparent logo</div>
+                        <a class="logo-link" href="/images/cgs-logo.webp" target="_blank">/images/cgs-logo.webp</a>
+                    </div>
 
-        <tr>
-            <td>Cafe Name</td>
-            <td>
-                <div class="swatch" style="background:#d17533;"></div>
-            </td>
-            <td class="copy" onclick="copyText('#d17533')">#d17533</td>
-            <td>Logo / Heading</td>
-        </tr>
+                    <div class="logo-card">
+                        <div class="logo-preview" style="background: #28201d;">
+                            <img src="/images/cgs-logo-transparent.webp" alt="Transparent Logo">
+                        </div>
+                        <div class="logo-label">Transparent logo</div>
+                        <a class="logo-link" href="/images/cgs-logo-transparent.webp" target="_blank">/images/cgs-logo-transparent.webp</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <tr>
-            <td>Heading / Sub-heading</td>
-            <td>
-                <div class="swatch" style="background:#dabba0;"></div>
-            </td>
-            <td class="copy" onclick="copyText('#dabba0')">#dabba0</td>
-            <td>Category titles</td>
-        </tr>
-
-        <tr>
-            <td>Menu Items</td>
-            <td>
-                <div class="swatch" style="background:#c2b8ae;"></div>
-            </td>
-            <td class="copy" onclick="copyText('#c2b8ae')">#c2b8ae</td>
-            <td>Dish names</td>
-        </tr>
-
-        <tr>
-            <td>Divider</td>
-            <td>
-                <div class="swatch" style="background:#3a3230;"></div>
-            </td>
-            <td class="copy" onclick="copyText('#3a3230')">#3a3230</td>
-            <td>Lines / separators</td>
-        </tr>
-
-    </table>
-
-    <div class="footer">
-        Click on any hex code to copy 🎯
+        <div class="footer">
+            Click any code to copy
+        </div>
     </div>
 
     <div id="toast" class="toast"></div>
 
     <script>
+        let toastTimeout;
+
         function copyText(text) {
             navigator.clipboard.writeText(text);
-            showToast("✔ Copied " + text);
-        }
-
-        function showToast(message) {
             const toast = document.getElementById("toast");
-            toast.innerText = message;
+            toast.innerText = "Copied " + text + " to clipboard";
             toast.classList.add("show");
 
-            setTimeout(() => {
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
                 toast.classList.remove("show");
-            }, 2000);
+            }, 2200);
         }
     </script>
 
