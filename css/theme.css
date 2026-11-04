@@ -5002,7 +5002,7 @@ input[type=number]::-webkit-inner-spin-button {
 .team-effort__quote p {
 	font-family: "Cormorant Garamond", serif;
 	font-style: italic;
-	font-size: 1.5rem;
+	font-size: 2rem;
 	color: var(--color-accent);
 	margin: 0;
 }
