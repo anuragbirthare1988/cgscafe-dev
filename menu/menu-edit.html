@@ -506,23 +506,20 @@
     }
 
     async function handleSignOutRequest() {
-        if (IS_UNPUBLISHED_CHANGES_PENDING) {
-            const leave = await showCgsDialog("Unsaved Changes Alert", "You have unpublished modifications. Signing out now will completely discard all current work. Do you still want to exit?", true);
-            if (!leave) return;
-        }
-        try {
-            const {
-                error
-            } = await supabaseClient.auth.signOut();
-            if (error) {
-                throw error;
-            }
-            clearSavedSession();
-            window.location.replace("/authorization/login.html");
-        } catch (err) {
-            console.error(err);
-            showCgsDialog("Sign Out Failed", err.message || "Unable to sign out.");
-        }
+      if (IS_UNPUBLISHED_CHANGES_PENDING) {
+        const leave = await showCgsDialog(
+          "Unsaved Changes Alert",
+          "You have unpublished modifications. Signing out now will completely discard all current work. Do you still want to exit?",
+          true
+        );
+        if (!leave) return;
+      }
+      try {
+        await logout();
+      } catch (err) {
+        console.error(err);
+        showCgsDialog("Sign Out Failed", err.message || "Unable to sign out.");
+      }
     }
 
     async function handleOriginContextSwitch(contextKey) {
@@ -576,48 +573,41 @@
     }
 
     async function initializeDatabaseConnection(isAutoConnect = false) {
-        if (!(await requireLogin())) return;
-        
-        try {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            
-            if (!session) {
-                window.location.replace("/authorization/login.html");
-                return;
-            }
-    
-            MASTER_DATABASE = await loadMenuFromSupabase();
-            if (!MASTER_DATABASE.categories) {
-                MASTER_DATABASE.categories = [];
-            }
-            MASTER_DATABASE.categories.forEach(cat => {
-                if (cat.hidden === undefined) cat.hidden = false;
-                if (cat.items) {
-                    cat.items.forEach(item => {
-                        if (item.hidden === undefined) item.hidden = false;
-                    });
-                }
-            });
-            const authGate = document.getElementById("auth-gate");
-            if (authGate) {
-                authGate.style.display = "none";
-            }
-            document.getElementById("admin-panel").style.display = "block";
-            setPendingChanges(false);
-            renderAdminDatabasePanel();
-            loadAppSettings();
-        } catch (err) {
-            console.error(err);
-            const authGate = document.getElementById("auth-gate");
-            if (authGate) {
-                authGate.style.display = "block";
-            }
-            const adminPanel = document.getElementById("admin-panel");
-            if (adminPanel) {
-                adminPanel.style.display = "none";
-            }
-            showCgsDialog("Database Connection Failed", err.message);
+      if (!(await requireLogin())) return;
+
+      try {
+        MASTER_DATABASE = await loadMenuFromSupabase();
+        if (!MASTER_DATABASE.categories) {
+          MASTER_DATABASE.categories = [];
         }
+        MASTER_DATABASE.categories.forEach(cat => {
+          if (cat.hidden === undefined) cat.hidden = false;
+          if (cat.items) {
+            cat.items.forEach(item => {
+              if (item.hidden === undefined) item.hidden = false;
+            });
+          }
+        });
+        const authGate = document.getElementById("auth-gate");
+        if (authGate) {
+          authGate.style.display = "none";
+        }
+        document.getElementById("admin-panel").style.display = "block";
+        setPendingChanges(false);
+        renderAdminDatabasePanel();
+        loadAppSettings();
+      } catch (err) {
+        console.error(err);
+        const authGate = document.getElementById("auth-gate");
+        if (authGate) {
+          authGate.style.display = "block";
+        }
+        const adminPanel = document.getElementById("admin-panel");
+        if (adminPanel) {
+          adminPanel.style.display = "none";
+        }
+        showCgsDialog("Database Connection Failed", err.message);
+      }
     }
 
     function setOriginContextFilter(contextKey) {

@@ -1,12 +1,13 @@
+// /authorization/auth-guard.js
 async function requireAdminLogin() {
-    const {
-        data: {
-            session
-        }
-    } = await supabaseClient.auth.getSession();
-    if (!session) {
-        window.location.href = "../authorization/login.html";
-        return false;
-    }
-    return true;
+  if (typeof requireLogin === "function") {
+    return await requireLogin();
+  }
+  const client = window.supabaseClient || (typeof supabaseClient !== "undefined" ? supabaseClient : null);
+  const { data: { session } } = await client.auth.getSession();
+  if (!session) {
+    window.location.replace("/authorization/login.html");
+    return false;
+  }
+  return true;
 }

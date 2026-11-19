@@ -1,0 +1,3816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>POS</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="../js/environment.js"></script>
+  <script src="/admin/session.js"></script>
+  <style id="admin-auth-cloak">
+    body.admin-auth-pending .app-shell {
+      visibility: hidden;
+    }
+  </style>
+  <style>
+    :root {
+      --bg: #f6f1ea;
+      --surface: #fffdf9;
+      --surface-alt: #f2ece2;
+      --ink: #241914;
+      --muted: #6e5c52;
+      --border: #dfd4c5;
+      --accent: #3b2319;
+      --accent-hover: #27160f;
+      --accent-ink: #fffdf9;
+      --accent-soft: #efe5d8;
+      --warm-gold: #9c6638;
+      --warm-gold-soft: #f7ece0;
+      --vacant-bg: #f8f4ee;
+      --vacant-border: #d9cfc0;
+      --ongoing-bg: #e7cbb0;
+      --ongoing-border: #8b5428;
+      --ongoing-ink: #2d180c;
+      --warn-bg: #fdf2df;
+      --warn-border: #dfb067;
+      --warn-ink: #6e4306;
+      --danger: #8f2d24;
+      --danger-bg: #fbeae8;
+      --ok: #255c35;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .app-shell {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: var(--accent);
+    }
+
+    .sync-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .sync-pill.synced {
+      color: var(--ok);
+      border-color: #b7d7c0;
+      background: #eef7f0;
+    }
+
+    .sync-pill.syncing {
+      color: var(--warm-gold);
+      border-color: var(--warn-border);
+      background: var(--warn-bg);
+    }
+
+    .sync-pill.error {
+      color: var(--danger);
+      border-color: #dfb0ab;
+      background: var(--danger-bg);
+    }
+
+    .header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    .btn {
+      border: 1px solid var(--accent);
+      background: var(--surface);
+      color: var(--accent);
+      padding: 7px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 1;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: var(--accent-soft);
+      color: var(--accent-hover);
+      border-color: var(--accent-hover);
+      opacity: 1;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+      color: var(--accent-ink);
+      border-color: var(--accent-hover);
+    }
+
+    .btn-warm {
+      background: var(--warm-gold);
+      color: #ffffff;
+      border-color: var(--warm-gold);
+    }
+
+    .btn-warm:hover:not(:disabled) {
+      background: #7f5129;
+      color: #ffffff;
+      border-color: #7f5129;
+    }
+
+    .btn-danger {
+      background: var(--surface);
+      color: var(--danger);
+      border-color: #dfb0ab;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .btn-sm {
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    .table-bar {
+      padding: 9px 20px;
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .table-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .table-tab {
+      border: 1px solid var(--vacant-border);
+      background: var(--vacant-bg);
+      color: var(--ink);
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 1;
+      transition: background-color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .table-tab.ongoing {
+      background: var(--ongoing-bg);
+      border-color: var(--ongoing-border);
+      color: var(--ongoing-ink);
+      box-shadow: 0 0 0 2px rgba(156, 102, 56, 0.25), 0 4px 10px rgba(59, 35, 25, 0.14);
+    }
+
+    .table-tab:hover {
+      border-color: var(--accent);
+      opacity: 1;
+    }
+
+    .table-tab.active {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(156, 102, 56, 0.45), 0 6px 14px rgba(36, 25, 20, 0.24);
+    }
+
+    .table-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #a5998a;
+      display: inline-block;
+    }
+
+    .table-tab.ongoing .table-status-dot {
+      background: #7c4416;
+    }
+
+    .table-tab.active .table-status-dot {
+      background: #f6cfa4;
+    }
+
+    .table-badge {
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(36, 25, 20, 0.1);
+    }
+
+    .table-tab.active .table-badge {
+      background: rgba(255, 253, 249, 0.22);
+      color: #ffffff;
+    }
+
+    .workspace {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1.45fr 1fr;
+      gap: 16px;
+      padding: 14px 20px 18px;
+      max-width: 1480px;
+      width: 100%;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    @media (max-width: 980px) {
+      html, body, .app-shell, .workspace {
+        overflow: auto;
+        height: auto;
+      }
+      .workspace { grid-template-columns: 1fr; }
+    }
+
+    .left-pane {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      overflow-y: auto;
+      min-height: 0;
+    }
+
+    .right-pane {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      overflow-y: auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .catalog-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      padding-bottom: 8px;
+      z-index: 5;
+    }
+
+    .catalog-controls input,
+    .catalog-controls select {
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-alt);
+      color: var(--ink);
+    }
+
+    .catalog-controls input { flex: 1; min-width: 180px; }
+
+    .super-cat-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      margin: 16px 0 6px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+    }
+
+    .sub-cat-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 10px 0 8px;
+      color: var(--accent);
+    }
+
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 10px;
+    }
+
+    .item-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: var(--surface-alt);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .item-card:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .item-name {
+      font-weight: 600;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .item-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .order-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .order-meta-grid input,
+    .order-meta-grid select {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-alt);
+      font-size: 12px;
+      color: var(--ink);
+    }
+
+    #customerNameInput,
+    #tokenNumberInput {
+      text-transform: uppercase;
+    }
+
+    .kot-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      background: var(--warm-gold-soft);
+      border: 1px solid var(--ongoing-border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .kot-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .cart-list {
+      flex: 1 1 auto;
+      min-height: 170px;
+      overflow-y: auto;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 2px 0;
+    }
+
+    .cart-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px dashed var(--border);
+      font-size: 13px;
+    }
+
+    .cart-row:last-child { border-bottom: none; }
+
+    .cart-row-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .cart-sub-note {
+      font-size: 11px;
+      color: var(--warn-ink);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .kot-tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      margin-left: 6px;
+    }
+
+    .waived-tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      color: var(--warn-ink);
+      margin-left: 6px;
+    }
+
+    .qty-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .promo-controls {
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .promo-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ff-toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+    }
+
+    .ff-active-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      color: var(--warn-ink);
+    }
+
+    .discount-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .discount-chip {
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--ink);
+      padding: 3px 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .discount-chip.active {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+    }
+
+    .discount-custom-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: auto;
+    }
+
+    .discount-custom-wrap input {
+      width: 64px;
+      padding: 3px 6px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #ffffff;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .totals-box {
+      font-size: 13px;
+      display: grid;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .totals-line {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .totals-discount {
+      color: var(--ok);
+      font-weight: 600;
+    }
+
+    .totals-grand {
+      font-size: 16px;
+      font-weight: 700;
+      padding-top: 5px;
+      border-top: 1px solid var(--border);
+      color: var(--accent);
+    }
+
+    .pay-modes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .pay-mode-btn {
+      padding: 7px 10px;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--accent);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      opacity: 1;
+    }
+
+    .pay-mode-btn:hover {
+      background: var(--accent-soft);
+      opacity: 1;
+    }
+
+    .pay-mode-btn.active {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+    }
+
+    .flow-box {
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .upi-compact-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+      padding: 6px 8px;
+      background: #ffffff;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .upi-qr-preview {
+      width: 72px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    .upi-qr-preview img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .qr-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .wa-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .wa-row input {
+      flex: 1;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+      font-size: 12px;
+    }
+
+    .field-error {
+      color: var(--danger);
+      font-size: 11px;
+      margin-top: 2px;
+      min-height: 12px;
+    }
+
+    .field-status {
+      color: var(--ok);
+      font-size: 11px;
+      margin-top: 2px;
+      min-height: 12px;
+      font-weight: 600;
+    }
+
+    .highlight-warning {
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      color: var(--warn-ink);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .receipt-sheet {
+      background: #ffffff;
+      border: 1px dashed #9d8c7a;
+      border-radius: 10px;
+      padding: 14px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 12px;
+      color: #1f1712;
+      line-height: 1.4;
+    }
+
+    .receipt-center { text-align: center; }
+    .receipt-divider {
+      border-top: 1px dashed #b8a999;
+      margin: 8px 0;
+    }
+    .receipt-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 6px 0;
+      font-size: 11px;
+    }
+    .receipt-table th,
+    .receipt-table td {
+      padding: 3px 4px;
+      border-bottom: none;
+      text-align: left;
+    }
+    .receipt-table th.num,
+    .receipt-table td.num,
+    .receipt-table th.qty-col,
+    .receipt-table td.qty-col {
+      text-align: right;
+    }
+    .receipt-service-row td {
+      font-weight: 700;
+      padding-top: 2px;
+      border-bottom: none;
+    }
+    .receipt-gap-row td {
+      height: 10px;
+      padding: 0;
+      border: none;
+    }
+    .receipt-note-row td {
+      font-size: 10px;
+      color: #5a463a;
+      padding-top: 0;
+      padding-bottom: 4px;
+    }
+    .receipt-totals-block {
+      margin-top: 8px;
+      font-size: 12px;
+    }
+    .receipt-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-top: 5px;
+    }
+    .receipt-total-label {
+      font-weight: 700;
+      text-align: left;
+    }
+    .receipt-total-val {
+      text-align: right;
+      white-space: nowrap;
+    }
+    .receipt-grand {
+      font-size: 14px;
+      font-weight: 700;
+      padding-top: 4px;
+    }
+
+    .muted { color: var(--muted); }
+
+    dialog.app-dialog {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0;
+      max-width: 820px;
+      width: calc(100% - 28px);
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 18px 48px rgba(36, 25, 20, 0.24);
+    }
+
+    dialog.app-dialog::backdrop {
+      background: rgba(36, 25, 20, 0.55);
+    }
+
+    .dialog-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .dialog-body {
+      padding: 18px;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+
+    .dialog-footer {
+      padding: 12px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      background: var(--surface-alt);
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+      min-width: 0;
+    }
+
+    .sc-inline {
+      display: grid;
+      grid-template-columns: 1fr 90px;
+      gap: 8px;
+    }
+
+    .field input[type="number"],
+    .field input[type="text"],
+    .field select {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-alt);
+      color: var(--ink);
+    }
+
+    .upi-manager {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .upi-add-row {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr auto;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 640px) {
+      .upi-add-row { grid-template-columns: 1fr; }
+    }
+
+    .upi-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .upi-item-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-alt);
+      font-size: 12px;
+    }
+
+    .upi-item-card.active-upi {
+      border-color: var(--ongoing-border);
+      background: var(--warm-gold-soft);
+    }
+
+    .upi-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .upi-mini-qr {
+      width: 44px;
+      height: 44px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .upi-mini-qr img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+
+    table.bills-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    table.bills-table th,
+    table.bills-table td {
+      text-align: left;
+      padding: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    table.bills-table th.sortable {
+      cursor: pointer;
+      user-select: none;
+      color: var(--accent);
+    }
+
+    table.bills-table th.sortable:hover {
+      background: var(--accent-soft);
+    }
+
+    #printMount {
+      display: none;
+    }
+
+    @media print {
+      body > .app-shell,
+      body > dialog {
+        display: none !important;
+      }
+      #printMount {
+        display: block !important;
+        padding: 12px;
+        background: #ffffff;
+        color: #000000;
+      }
+      .receipt-sheet {
+        border: none;
+        padding: 0;
+        max-width: 340px;
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body class="admin-auth-pending">
+  <div class="app-shell">
+    <header>
+      <div class="brand">
+        <a href="/admin/" class="btn btn-sm">← Admin</a>
+        <h1>POS</h1>
+        <span class="sync-pill" id="dbSyncStatus" title="Supabase sync status">DB: Checking...</span>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="btn" id="btnOpenSettings">Billing Rules & Tax</button>
+        <button type="button" class="btn" id="btnOpenSales">Today's Bills (<span id="todayCount">0</span>)</button>
+        <button type="button" class="btn btn-primary" id="btnExportCsv">Export CSV</button>
+        <button type="button" class="btn btn-danger btn-sm" id="btnPosLogout">Sign Out</button>
+      </div>
+    </header>
+
+    <div class="table-bar">
+      <div class="table-tabs" id="tableTabs"></div>
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="btn btn-sm btn-primary" id="btnAddTable">+ Add Table</button>
+        <button type="button" class="btn btn-sm btn-danger" id="btnRemoveTable">Remove Table</button>
+      </div>
+    </div>
+
+    <main class="workspace">
+      <section class="left-pane">
+        <div class="catalog-controls">
+          <input type="search" id="searchInput" placeholder="Search items (e.g., Frappe, Bun Maska, Pasta)..." />
+          <select id="categoryFilter">
+            <option value="ALL">All Categories</option>
+          </select>
+        </div>
+        <div id="catalogContainer"></div>
+      </section>
+
+      <aside class="right-pane">
+        <div class="order-meta-grid">
+          <input type="text" id="customerNameInput" placeholder="Customer Name" />
+          <input type="tel" id="customerPhoneInput" maxlength="10" inputmode="numeric" placeholder="Mobile" />
+        </div>
+
+        <div class="order-meta-grid">
+          <select id="serviceTypeSelect" aria-label="Service type">
+            <option value="Dine-in">Dine-in</option>
+            <option value="Take away">Take away</option>
+          </select>
+          <input type="text" id="tokenNumberInput" maxlength="3" placeholder="Token # (max 3)" />
+        </div>
+
+        <div class="kot-strip">
+          <span id="kotStatusLabel"><strong>KOT:</strong> None</span>
+          <div class="kot-actions">
+            <button type="button" class="btn btn-sm btn-warm" id="btnSendKot">Send KOT</button>
+            <button type="button" class="btn btn-sm" id="btnReprintKot" disabled>Re-print Last KOT</button>
+          </div>
+        </div>
+
+        <div class="cart-list" id="cartList">
+          <p class="muted" style="text-align:center; padding:18px 0;">Tap any menu item to add.</p>
+        </div>
+
+        <div class="promo-controls">
+          <div class="promo-top-row">
+            <label class="ff-toggle-label">
+              <input type="checkbox" id="friendsFamilyToggle" />
+              <span>Friends &amp; Family Waive-Off</span>
+            </label>
+            <span class="ff-active-badge" id="ffStatusBadge" style="display:none;">F&amp;F WAIVED (INVENTORY LOGGED)</span>
+          </div>
+          <div class="discount-row" id="discountPresetRow">
+            <span class="muted" style="font-weight:600;">Discount:</span>
+            <button type="button" class="discount-chip active" data-disc="0">0%</button>
+            <button type="button" class="discount-chip" data-disc="10">10%</button>
+            <button type="button" class="discount-chip" data-disc="15">15%</button>
+            <button type="button" class="discount-chip" data-disc="20">20%</button>
+            <div class="discount-custom-wrap">
+              <input type="number" id="customDiscountInput" min="0" max="100" step="0.5" value="0" aria-label="Custom discount percentage" />
+              <span>%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="totals-box">
+          <div class="totals-line">
+            <span>Gross Items Total</span>
+            <strong id="grossSubtotalText">₹0.00</strong>
+          </div>
+          <div class="totals-line totals-discount" id="waivedItemsRow" style="display:none;">
+            <span>Waived Items (Wrong / Unmet Exp.)</span>
+            <span id="waivedItemsText">-₹0.00</span>
+          </div>
+          <div class="totals-line totals-discount" id="discountRow" style="display:none;">
+            <span id="discountLabel">Discount</span>
+            <span id="discountText">-₹0.00</span>
+          </div>
+          <div class="totals-line totals-discount" id="ffWaiveRow" style="display:none;">
+            <span>Friends &amp; Family Waive-Off</span>
+            <span id="ffWaiveText">-₹0.00</span>
+          </div>
+          <div class="totals-line">
+            <span>Billable Subtotal</span>
+            <strong id="subtotalText">₹0.00</strong>
+          </div>
+          <div class="totals-line" id="scRow" style="display:none;">
+            <span id="scLabel">Service Charges</span>
+            <span id="scText">₹0.00</span>
+          </div>
+          <div class="totals-line" id="cgstRow" style="display:none;">
+            <span id="cgstLabel">CGST</span>
+            <span id="cgstText">₹0.00</span>
+          </div>
+          <div class="totals-line" id="sgstRow" style="display:none;">
+            <span id="sgstLabel">SGST</span>
+            <span id="sgstText">₹0.00</span>
+          </div>
+          <div class="totals-line totals-grand">
+            <span>Total Payable</span>
+            <span id="grandTotalText">₹0.00</span>
+          </div>
+        </div>
+
+        <div class="pay-modes">
+          <button type="button" class="pay-mode-btn active" data-mode="UPI">UPI + WA</button>
+          <button type="button" class="pay-mode-btn" data-mode="CASH">Cash</button>
+          <button type="button" class="pay-mode-btn" data-mode="CARD">Card (POS)</button>
+        </div>
+
+        <div class="flow-box" id="paymentFlowBox"></div>
+
+        <button type="button" class="btn btn-primary" id="btnCloseTransaction" style="width:100%; padding:10px; font-size:14px; flex-shrink:0;" disabled>
+          Settle &amp; Close Bill
+        </button>
+      </aside>
+    </main>
+  </div>
+
+  <dialog class="app-dialog" id="waiveItemDialog" style="max-width: 460px;">
+    <div class="dialog-header">
+      <strong>Waive Item Charges (Track Consumption)</strong>
+      <button type="button" class="btn btn-sm" id="btnCloseWaiveItemTop">✕</button>
+    </div>
+    <div class="dialog-body">
+      <div class="highlight-warning">
+        Waived items are removed from customer billing while remaining in consumption/inventory records.
+      </div>
+      <div class="field" style="margin-bottom:12px;">
+        <div><strong>Item:</strong> <span id="waiveModalItemName">-</span></div>
+        <div class="muted" style="font-size:12px;">Total Qty: <span id="waiveModalTotalQty">0</span> • Already Waived: <span id="waiveModalAlreadyWaived">0</span> • Unit Rate: ₹<span id="waiveModalRate">0.00</span></div>
+      </div>
+      <div class="field" style="margin-bottom:12px;">
+        <label for="waiveQtyInput"><strong>Quantity to Waive</strong></label>
+        <input type="number" id="waiveQtyInput" min="0" step="1" value="1" />
+        <span class="muted" style="font-size:11px;">Set to 0 to clear waivers on this item.</span>
+      </div>
+      <div class="field" style="margin-bottom:12px;">
+        <label for="waiveReasonSelect"><strong>Reason</strong></label>
+        <select id="waiveReasonSelect">
+          <option value="Wrong Product Delivered">Wrong Product Delivered</option>
+          <option value="Did Not Meet Expectation">Did Not Meet Expectation</option>
+          <option value="Quality / Preparation Issue">Quality / Preparation Issue</option>
+          <option value="Spillage / Damaged">Spillage / Damaged</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="waiveNoteInput"><strong>Note (Optional)</strong></label>
+        <input type="text" id="waiveNoteInput" placeholder="e.g., Replaced with right item, logged for stock" />
+      </div>
+      <div class="field-error" id="waiveModalError"></div>
+    </div>
+    <div class="dialog-footer">
+      <button type="button" class="btn" id="btnCancelWaiveItem">Cancel</button>
+      <button type="button" class="btn btn-warm" id="btnApplyWaiveItem">Save Waive-Off</button>
+    </div>
+  </dialog>
+
+  <dialog class="app-dialog" id="settingsDialog">
+    <div class="dialog-header">
+      <strong>Billing Rules, Service Charges &amp; Taxes</strong>
+      <button type="button" class="btn btn-sm" id="btnCancelSettingsTop">✕</button>
+    </div>
+    <div class="dialog-body">
+      <div class="settings-grid">
+        <div class="field">
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600;">
+            <input type="checkbox" id="scEnabled" />
+            <span>Apply Service Charges</span>
+          </label>
+          <div class="sc-inline">
+            <select id="scType">
+              <option value="percent">Percent (%)</option>
+              <option value="fixed">Fixed (₹)</option>
+            </select>
+            <input type="number" id="scValue" min="0" step="0.5" value="5" placeholder="Value" />
+          </div>
+          <span class="muted" style="font-size:11px;">Hidden on bill &amp; receipt when unchecked.</span>
+        </div>
+
+        <div class="field">
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600;">
+            <input type="checkbox" id="cgstEnabled" />
+            <span>Apply CGST (%)</span>
+          </label>
+          <input type="number" id="cgstRate" min="0" max="28" step="0.5" value="2.5" placeholder="CGST %" />
+          <span class="muted" style="font-size:11px;">Default 2.5%; editable manually.</span>
+        </div>
+
+        <div class="field">
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600;">
+            <input type="checkbox" id="sgstEnabled" />
+            <span>Apply SGST (%)</span>
+          </label>
+          <input type="number" id="sgstRate" min="0" max="28" step="0.5" value="2.5" placeholder="SGST %" />
+          <span class="muted" style="font-size:11px;">Default 2.5%; editable manually.</span>
+        </div>
+      </div>
+
+      <div class="upi-manager">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+          <strong style="font-size:13px;">UPI Accounts (Multiple Saved • Only One Active)</strong>
+          <span class="muted" style="font-size:11px;">The active UPI automatically powers QR &amp; WhatsApp invoice details.</span>
+        </div>
+
+        <div class="upi-add-row">
+          <input type="text" id="newUpiVpaInput" placeholder="Enter UPI ID (e.g., name@oksbi)" />
+          <label class="btn btn-sm" style="margin:0; cursor:pointer;">
+            <span>Upload QR (Optional)</span>
+            <input type="file" id="newUpiQrFile" accept="image/*" style="display:none;" />
+          </label>
+          <button type="button" class="btn btn-sm btn-primary" id="btnAddUpiEntry">+ Add UPI</button>
+        </div>
+        <input type="file" id="replaceUpiQrFile" accept="image/*" style="display:none;" />
+        <div class="field-status" id="newUpiQrFileName"></div>
+        <div class="field-error" id="upiManagerError"></div>
+
+        <div class="upi-list" id="upiAccountsList"></div>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button type="button" class="btn" id="btnCancelSettings">Cancel</button>
+      <button type="button" class="btn btn-primary" id="btnSaveSettings">Save &amp; Done</button>
+    </div>
+  </dialog>
+
+  <dialog class="app-dialog" id="salesDialog" style="max-width: 1240px;">
+    <div class="dialog-header">
+      <strong>Today's Bills</strong>
+      <button type="button" class="btn btn-sm" data-close-dialog="salesDialog">✕</button>
+    </div>
+    <div class="dialog-body">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+        <span class="muted" id="salesSummaryText">0 bills recorded</span>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn-sm btn-primary" id="btnExportCsvInner">Download CSV</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="bills-table">
+          <thead>
+            <tr>
+              <th>Bill #</th>
+              <th>Seat</th>
+              <th>Type / Token</th>
+              <th>Customer</th>
+              <th>Time</th>
+              <th>Items (Consumed)</th>
+              <th>Mode</th>
+              <th class="sortable" id="sortSubtotalHeader" title="Click to sort by Subtotal">
+                Subtotal <span id="subtotalSortIndicator">↕</span>
+              </th>
+              <th>Waived / Disc.</th>
+              <th>Service Charges</th>
+              <th>CGST</th>
+              <th>SGST</th>
+              <th>Total</th>
+              <th>Receipt</th>
+            </tr>
+          </thead>
+          <tbody id="salesTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button type="button" class="btn" data-close-dialog="salesDialog">Close</button>
+    </div>
+  </dialog>
+
+  <dialog class="app-dialog" id="confirmCloseDialog" style="max-width: 540px;">
+    <div class="dialog-header">
+      <strong>Billing Receipt &amp; Closure</strong>
+      <button type="button" class="btn btn-sm" data-close-dialog="confirmCloseDialog">✕</button>
+    </div>
+    <div class="dialog-body">
+      <div class="highlight-warning">
+        Verify full payment receipt before closing this billing session.
+      </div>
+      <div id="confirmReceiptPreview"></div>
+    </div>
+    <div class="dialog-footer">
+      <button type="button" class="btn" data-close-dialog="confirmCloseDialog">Cancel</button>
+      <button type="button" class="btn btn-primary" id="btnConfirmAndPrint">Confirm &amp; Print Receipt</button>
+    </div>
+  </dialog>
+
+  <div id="printMount"></div>
+
+  <script>
+    const CAFE_CONTACT_PHONE = "999-37-38-851";
+
+    const STORAGE_KEYS = {
+      settings: "cgs_billing_settings_v1",
+      sales: "cgs_billing_sales_v1",
+      tables: "cgs_billing_tables_v1",
+      menuCache: "cgs_pos_menu_cache_v1"
+    };
+
+    const DEFAULT_UPI_VPA = "anuragbirthare1988-1@oksbi";
+    const tableSyncTimers = new Map();
+
+    function getDbClient() {
+      return window.supabaseClient || (typeof supabaseClient !== "undefined" ? supabaseClient : null);
+    }
+
+    function setDbSyncStatus(mode, text) {
+      const pill = document.getElementById("dbSyncStatus");
+      if (!pill) return;
+      pill.className = `sync-pill ${mode || ""}`.trim();
+      pill.textContent = text;
+    }
+
+    async function getCurrentStaffId() {
+      const client = getDbClient();
+      if (!client?.auth) return null;
+      try {
+        const { data } = await client.auth.getUser();
+        return data?.user?.id || null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    async function logPosActivity(activityType, details = {}, table = null, referenceId = null) {
+      const client = getDbClient();
+      if (!client?.from) return;
+      try {
+        const actorId = await getCurrentStaffId();
+        const { error } = await client.from("pos_activity_log").insert([{
+          activity_type: activityType,
+          table_id: table?.id || null,
+          table_name: table ? formatSeatLabel(table.name) : null,
+          reference_id: referenceId || null,
+          details_json: details,
+          actor_id: actorId
+        }]);
+        if (error) {
+          console.warn("pos_activity_log insert failed:", error.message);
+        }
+      } catch (err) {
+        console.warn("pos_activity_log error:", err);
+      }
+    }
+
+    async function syncKotToSupabase(table, kotEntry) {
+      const client = getDbClient();
+      if (!client?.from) return;
+      setDbSyncStatus("syncing", "DB: Syncing KOT...");
+      try {
+        const actorId = await getCurrentStaffId();
+        const { error } = await client.from("pos_kots").insert([{
+          table_id: table.id,
+          table_name: formatSeatLabel(table.name),
+          kot_number: kotEntry.kotNumber,
+          service_type: kotEntry.serviceType || "Dine-in",
+          token_number: kotEntry.tokenNumber || null,
+          items_json: kotEntry.items,
+          created_by: actorId
+        }]);
+        if (error) throw error;
+
+        await logPosActivity("KOT_SENT", {
+          kotNumber: kotEntry.kotNumber,
+          serviceType: kotEntry.serviceType,
+          tokenNumber: kotEntry.tokenNumber || null,
+          items: kotEntry.items
+        }, table, `KOT-${kotEntry.kotNumber}`);
+
+        setDbSyncStatus("synced", "DB: Synced");
+      } catch (err) {
+        console.warn("pos_kots insert failed:", err);
+        setDbSyncStatus("error", "DB: Offline/Error");
+      }
+    }
+
+    function queueTableSessionSync(table, immediate = false) {
+      if (!table || !table.id) return;
+      if (tableSyncTimers.has(table.id)) {
+        clearTimeout(tableSyncTimers.get(table.id));
+        tableSyncTimers.delete(table.id);
+      }
+      if (immediate) {
+        syncTableSessionToSupabase(table);
+        return;
+      }
+      const timer = setTimeout(() => {
+        tableSyncTimers.delete(table.id);
+        syncTableSessionToSupabase(table);
+      }, 600);
+      tableSyncTimers.set(table.id, timer);
+    }
+
+    async function syncTableSessionToSupabase(table) {
+      const client = getDbClient();
+      if (!client?.from || !table) return;
+      const sortIdx = state.tables.findIndex(t => t.id === table.id);
+      try {
+        const { error } = await client.from("pos_table_sessions").upsert([{
+          table_id: table.id,
+          table_name: formatSeatLabel(table.name),
+          sort_order: sortIdx >= 0 ? sortIdx : 0,
+          service_type: table.serviceType || "Dine-in",
+          token_number: table.tokenNumber || null,
+          customer_name: table.customerName || null,
+          customer_phone: table.customerPhone || null,
+          wa_phone: table.waPhone || null,
+          payment_mode: table.paymentMode || "UPI",
+          cart_json: {
+            items: table.cart || [],
+            discountPercent: Number(table.discountPercent || 0),
+            isFriendsAndFamily: Boolean(table.isFriendsAndFamily)
+          },
+          kots_json: table.kots || [],
+          updated_at: new Date().toISOString()
+        }], { onConflict: "table_id" });
+        if (error) throw error;
+        setDbSyncStatus("synced", "DB: Synced");
+      } catch (err) {
+        console.warn("pos_table_sessions upsert failed:", err);
+        setDbSyncStatus("error", "DB: Offline/Error");
+      }
+    }
+
+    async function deleteTableSessionFromSupabase(tableId) {
+      const client = getDbClient();
+      if (!client?.from || !tableId) return;
+      try {
+        await client.from("pos_table_sessions").delete().eq("table_id", tableId);
+      } catch (err) {
+        console.warn("pos_table_sessions delete failed:", err);
+      }
+    }
+
+    async function syncBillingSettingsToSupabase(settings) {
+      const client = getDbClient();
+      if (!client?.from) return;
+      setDbSyncStatus("syncing", "DB: Saving rules...");
+      try {
+        const { error } = await client.from("pos_billing_settings").upsert([{
+          id: "default",
+          sc_enabled: Boolean(settings.scEnabled),
+          sc_type: settings.scType || "percent",
+          sc_value: Number(settings.scValue || 0),
+          cgst_enabled: Boolean(settings.cgstEnabled),
+          cgst_rate: Number(settings.cgstRate ?? 2.5),
+          sgst_enabled: Boolean(settings.sgstEnabled),
+          sgst_rate: Number(settings.sgstRate ?? 2.5),
+          active_upi_vpa: settings.upiVpa || null,
+          settings_json: settings,
+          updated_at: new Date().toISOString()
+        }], { onConflict: "id" });
+        if (error) throw error;
+
+        await logPosActivity("BILLING_SETTINGS_UPDATED", {
+          scEnabled: settings.scEnabled,
+          scType: settings.scType,
+          scValue: settings.scValue,
+          cgstEnabled: settings.cgstEnabled,
+          cgstRate: settings.cgstRate,
+          sgstEnabled: settings.sgstEnabled,
+          sgstRate: settings.sgstRate,
+          activeUpiVpa: settings.upiVpa
+        });
+
+        setDbSyncStatus("synced", "DB: Synced");
+      } catch (err) {
+        console.warn("pos_billing_settings upsert failed:", err);
+        setDbSyncStatus("error", "DB: Offline/Error");
+      }
+    }
+
+    function parseCartPayload(rawCartJson) {
+      if (Array.isArray(rawCartJson)) {
+        return { cart: rawCartJson, discountPercent: 0, isFriendsAndFamily: false };
+      }
+      if (rawCartJson && typeof rawCartJson === "object" && Array.isArray(rawCartJson.items)) {
+        return {
+          cart: rawCartJson.items,
+          discountPercent: Math.max(0, Math.min(100, Number(rawCartJson.discountPercent || 0))),
+          isFriendsAndFamily: Boolean(rawCartJson.isFriendsAndFamily)
+        };
+      }
+      return { cart: [], discountPercent: 0, isFriendsAndFamily: false };
+    }
+
+    async function hydratePosFromSupabase() {
+      const client = getDbClient();
+      if (!client?.from) {
+        setDbSyncStatus("error", "DB: Local only");
+        return;
+      }
+
+      setDbSyncStatus("syncing", "DB: Syncing...");
+      const todayKey = getLocalDateKey();
+
+      try {
+        const { data: settingsRow, error: settingsErr } = await client
+          .from("pos_billing_settings")
+          .select("*")
+          .eq("id", "default")
+          .maybeSingle();
+
+        if (!settingsErr && settingsRow) {
+          const remoteJson = (settingsRow.settings_json && typeof settingsRow.settings_json === "object")
+            ? settingsRow.settings_json
+            : {};
+          const merged = {
+            ...state.settings,
+            ...remoteJson,
+            scEnabled: Boolean(settingsRow.sc_enabled),
+            scType: settingsRow.sc_type || remoteJson.scType || "percent",
+            scValue: Number(settingsRow.sc_value ?? remoteJson.scValue ?? 5),
+            cgstEnabled: Boolean(settingsRow.cgst_enabled),
+            cgstRate: Number(settingsRow.cgst_rate ?? remoteJson.cgstRate ?? 2.5),
+            sgstEnabled: Boolean(settingsRow.sgst_enabled),
+            sgstRate: Number(settingsRow.sgst_rate ?? remoteJson.sgstRate ?? 2.5),
+            upiVpa: settingsRow.active_upi_vpa || remoteJson.upiVpa || state.settings.upiVpa
+          };
+          const normalizedUpi = normalizeUpiSettings(merged);
+          state.settings = { ...merged, ...normalizedUpi };
+          try {
+            localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.settings));
+          } catch (_) {}
+          syncSettingsInputsFromState();
+        }
+
+        const { data: sessionRows, error: sessionsErr } = await client
+          .from("pos_table_sessions")
+          .select("*")
+          .order("sort_order", { ascending: true });
+
+        if (!sessionsErr && Array.isArray(sessionRows) && sessionRows.length > 0) {
+          state.tables = sessionRows.map(row => {
+            const custPhone = sanitizeTenDigitPhone(row.customer_phone || "");
+            const rawWa = sanitizeTenDigitPhone(row.wa_phone || "");
+            const isManual = Boolean(rawWa && custPhone && rawWa !== custPhone);
+            const parsedCart = parseCartPayload(row.cart_json);
+            return {
+              id: row.table_id,
+              name: formatSeatLabel(row.table_name),
+              cart: parsedCart.cart.map(normalizeCartItem),
+              kots: Array.isArray(row.kots_json) ? row.kots_json : [],
+              paymentMode: row.payment_mode || "UPI",
+              customerName: normalizeCustomerName(row.customer_name || ""),
+              customerPhone: custPhone,
+              waPhone: isManual ? rawWa : custPhone,
+              waPhoneManual: isManual,
+              serviceType: row.service_type === "Take away" ? "Take away" : "Dine-in",
+              tokenNumber: sanitizeToken(row.token_number || ""),
+              discountPercent: parsedCart.discountPercent,
+              isFriendsAndFamily: parsedCart.isFriendsAndFamily
+            };
+          });
+          if (!state.tables.some(t => t.id === state.activeTableId)) {
+            state.activeTableId = state.tables[0].id;
+          }
+          try {
+            localStorage.setItem(STORAGE_KEYS.tables, JSON.stringify({
+              tables: state.tables,
+              activeTableId: state.activeTableId
+            }));
+          } catch (_) {}
+        } else if (!sessionsErr && Array.isArray(sessionRows) && sessionRows.length === 0) {
+          for (const t of state.tables) {
+            await syncTableSessionToSupabase(t);
+          }
+        }
+
+        const { data: billRows, error: billsErr } = await client
+          .from("bills")
+          .select("*")
+          .eq("bill_date", todayKey)
+          .order("created_at", { ascending: false });
+
+        if (!billsErr && Array.isArray(billRows)) {
+          state.salesDateKey = todayKey;
+          state.sales = billRows.map(r => {
+            const extra = (r.consumption_json && typeof r.consumption_json === "object")
+              ? r.consumption_json
+              : {};
+            return {
+              id: r.bill_number,
+              contactPhone: CAFE_CONTACT_PHONE,
+              tableName: formatSeatLabel(r.table_name || ""),
+              serviceType: r.service_type || "Dine-in",
+              tokenNumber: sanitizeToken(r.token_number || ""),
+              customerName: normalizeCustomerName(r.customer_name || ""),
+              customerPhone: sanitizeTenDigitPhone(r.customer_phone || ""),
+              date: r.bill_date,
+              time: r.bill_time,
+              dateTimeLabel: `${r.bill_date} ${r.bill_time}`,
+              services: Array.isArray(r.kots_json) ? r.kots_json : [],
+              itemsSummary: r.items_summary || "",
+              mode: r.payment_mode || "UPI",
+              upiVpa: r.upi_vpa || "",
+              grossSubtotal: Number(extra.grossSubtotal ?? r.subtotal ?? 0),
+              waivedItemsAmount: Number(extra.waivedItemsAmount ?? 0),
+              waivedItems: Array.isArray(extra.waivedItems) ? extra.waivedItems : [],
+              discountPercent: Number(extra.discountPercent ?? 0),
+              discountAmount: Number(extra.discountAmount ?? 0),
+              isFriendsAndFamily: Boolean(extra.isFriendsAndFamily),
+              friendsFamilyWaivedAmount: Number(extra.friendsFamilyWaivedAmount ?? 0),
+              subtotal: Number(r.subtotal || 0),
+              scEnabled: Number(r.service_charge || 0) > 0,
+              serviceCharge: Number(r.service_charge || 0),
+              cgstEnabled: Number(r.cgst_amount || 0) > 0,
+              cgstRate: Number(r.cgst_rate || 0),
+              cgstAmount: Number(r.cgst_amount || 0),
+              sgstEnabled: Number(r.sgst_amount || 0) > 0,
+              sgstRate: Number(r.sgst_rate || 0),
+              sgstAmount: Number(r.sgst_amount || 0),
+              gstAmount: Number(r.gst_amount || 0),
+              grandTotal: Number(r.grand_total || 0)
+            };
+          });
+          saveSalesState();
+        }
+
+        setDbSyncStatus("synced", "DB: Synced");
+      } catch (err) {
+        console.warn("Supabase POS hydration failed:", err);
+        setDbSyncStatus("error", "DB: Offline/Error");
+      }
+    }
+
+    function getLocalDateKey(dateObj = new Date()) {
+      const yyyy = dateObj.getFullYear();
+      const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const dd = String(dateObj.getDate()).padStart(2, "0");
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function normalizeCartItem(item) {
+      const qty = Math.max(1, Number(item.qty || 1));
+      const waivedQty = Math.max(0, Math.min(qty, Number(item.waivedQty || 0)));
+      return {
+        id: item.id,
+        name: item.name,
+        price: Number(item.price || 0),
+        qty,
+        unsentQty: Number(item.unsentQty ?? 0),
+        kotNumbers: Array.isArray(item.kotNumbers) ? item.kotNumbers : [],
+        waivedQty,
+        waiveReason: item.waiveReason || "",
+        waiveNote: item.waiveNote || ""
+      };
+    }
+
+    function createDefaultTables() {
+      return [
+        { id: "T1", name: "1", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0, isFriendsAndFamily: false },
+        { id: "T2", name: "2", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0, isFriendsAndFamily: false },
+        { id: "T3", name: "3", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0, isFriendsAndFamily: false },
+        { id: "T4", name: "4", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0, isFriendsAndFamily: false }
+      ];
+    }
+
+    const state = {
+      menu: [],
+      menuLoadError: "",
+      tables: createDefaultTables(),
+      activeTableId: "T1",
+      subtotalSortDir: null,
+      pendingClosureBill: null,
+      waivingItemId: null,
+      draftUpiAccounts: [],
+      draftActiveUpiId: "",
+      pendingUploadedQrDataUrl: "",
+      replacingQrForUpiId: "",
+      lastQrStatusMsg: "",
+      lastQrErrorMsg: "",
+      settings: {
+        cgstEnabled: false,
+        cgstRate: 2.5,
+        sgstEnabled: false,
+        sgstRate: 2.5,
+        scEnabled: false,
+        scType: "percent",
+        scValue: 5,
+        upiVpa: DEFAULT_UPI_VPA,
+        activeUpiId: "upi-default",
+        upiAccounts: [
+          { id: "upi-default", vpa: DEFAULT_UPI_VPA, customQrDataUrl: "" }
+        ]
+      },
+      salesDateKey: getLocalDateKey(),
+      sales: []
+    };
+
+    function saveSalesState() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.sales, JSON.stringify({
+          dateKey: state.salesDateKey,
+          bills: state.sales
+        }));
+      } catch (_) {}
+    }
+
+    function enforceMidnightRolloverForSales() {
+      const todayKey = getLocalDateKey();
+      if (state.salesDateKey !== todayKey) {
+        state.salesDateKey = todayKey;
+        state.sales = [];
+        saveSalesState();
+        renderSalesTable();
+      }
+    }
+
+    function sanitizeTenDigitPhone(value) {
+      return String(value || "").replace(/\D/g, "").slice(0, 10);
+    }
+
+    function sanitizeToken(value) {
+      return String(value || "").replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 3);
+    }
+
+    function normalizeCustomerName(value) {
+      return String(value || "").toUpperCase();
+    }
+
+    function formatSeatLabel(name) {
+      const raw = String(name || "").trim();
+      return raw.replace(/^table\s*/i, "") || "1";
+    }
+
+    function formatReceiptDateTime(dateObj = new Date()) {
+      const yyyy = dateObj.getFullYear();
+      const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const dd = String(dateObj.getDate()).padStart(2, "0");
+      const timeStr = dateObj.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+      });
+      return `${yyyy}-${mm}-${dd} ${timeStr}`;
+    }
+
+    function normalizeUpiSettings(rawSettings) {
+      const fallbackVpa = (rawSettings?.upiVpa || DEFAULT_UPI_VPA).trim() || DEFAULT_UPI_VPA;
+      let accounts = Array.isArray(rawSettings?.upiAccounts) && rawSettings.upiAccounts.length > 0
+        ? rawSettings.upiAccounts
+          .map((acc, idx) => ({
+            id: String(acc.id || `upi-${idx + 1}-${Date.now()}`),
+            vpa: String(acc.vpa || "").trim(),
+            customQrDataUrl: String(acc.customQrDataUrl || "")
+          }))
+          .filter(acc => acc.vpa.length > 0)
+        : [{ id: "upi-default", vpa: fallbackVpa, customQrDataUrl: "" }];
+
+      if (accounts.length === 0) {
+        accounts = [{ id: "upi-default", vpa: fallbackVpa, customQrDataUrl: "" }];
+      }
+
+      let activeId = rawSettings?.activeUpiId;
+      if (!accounts.some(acc => acc.id === activeId)) {
+        const matchedByVpa = accounts.find(acc => acc.vpa === fallbackVpa);
+        activeId = matchedByVpa ? matchedByVpa.id : accounts[0].id;
+      }
+
+      const activeAcc = accounts.find(acc => acc.id === activeId) || accounts[0];
+      return {
+        upiAccounts: accounts,
+        activeUpiId: activeAcc.id,
+        upiVpa: activeAcc.vpa
+      };
+    }
+
+    function getActiveUpiAccount(source = state.settings) {
+      const list = Array.isArray(source.upiAccounts) ? source.upiAccounts : [];
+      return list.find(u => u.id === source.activeUpiId) || list[0] || {
+        id: "upi-default",
+        vpa: source.upiVpa || DEFAULT_UPI_VPA,
+        customQrDataUrl: ""
+      };
+    }
+
+    function getActiveTable() {
+      return state.tables.find(t => t.id === state.activeTableId) || state.tables[0];
+    }
+
+    function saveTablesState(immediateDbSync = false) {
+      try {
+        localStorage.setItem(STORAGE_KEYS.tables, JSON.stringify({
+          tables: state.tables,
+          activeTableId: state.activeTableId
+        }));
+      } catch (_) {}
+      queueTableSessionSync(getActiveTable(), immediateDbSync);
+    }
+
+    window.getBillingItemPrice = function(item) {
+      const candidates = [item.price, item.selling_price, item.sellingPrice, item.unit_price];
+      for (const val of candidates) {
+        const num = Number(val);
+        if (Number.isFinite(num) && num >= 0 && val !== null && val !== undefined && val !== "") {
+          return num;
+        }
+      }
+      return 0;
+    };
+
+    function renderUpiManagerDraft() {
+      const listEl = document.getElementById("upiAccountsList");
+      const errEl = document.getElementById("upiManagerError");
+      if (errEl) errEl.textContent = "";
+
+      listEl.innerHTML = state.draftUpiAccounts.map(acc => {
+        const isActive = acc.id === state.draftActiveUpiId;
+        const qrPayload = `upi://pay?pa=${encodeURIComponent(acc.vpa)}&pn=${encodeURIComponent("CGS - COFFEE, GRILL & SHOTS")}&cu=INR`;
+        return `
+          <div class="upi-item-card ${isActive ? "active-upi" : ""}">
+            <div class="upi-item-left">
+              <div class="upi-mini-qr" data-qr-payload="${escapeAttr(qrPayload)}" data-custom-qr="${escapeAttr(acc.customQrDataUrl || "")}"></div>
+              <div style="min-width:0;">
+                <div style="font-weight:700; word-break:break-all;">${escapeHtml(acc.vpa)}</div>
+                <div class="muted" style="font-size:11px;">${isActive ? "ACTIVE • Used for QR & WhatsApp" : (acc.customQrDataUrl ? "Custom QR saved" : "Auto QR from UPI ID")}</div>
+              </div>
+            </div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; flex-shrink:0;">
+              <button
+                type="button"
+                class="btn btn-sm ${isActive ? "btn-primary" : ""}"
+                onclick="setDraftActiveUpi('${escapeAttr(acc.id)}')"
+              >${isActive ? "Active ✓" : "Set Active"}</button>
+              <button
+                type="button"
+                class="btn btn-sm"
+                onclick="triggerReplaceQrForUpi('${escapeAttr(acc.id)}')"
+              >${acc.customQrDataUrl ? "Change QR" : "Add QR"}</button>
+              <button
+                type="button"
+                class="btn btn-sm btn-danger"
+                ${state.draftUpiAccounts.length <= 1 ? "disabled" : ""}
+                onclick="removeDraftUpi('${escapeAttr(acc.id)}')"
+              >✕</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      listEl.querySelectorAll(".upi-mini-qr").forEach(el => {
+        const customUrl = el.dataset.customQr;
+        if (customUrl) {
+          el.innerHTML = `<img src="${customUrl}" alt="Custom UPI QR" />`;
+          return;
+        }
+        if (typeof QRCode !== "undefined") {
+          const holder = document.createElement("div");
+          new QRCode(holder, {
+            text: el.dataset.qrPayload,
+            width: 40,
+            height: 40
+          });
+          el.innerHTML = "";
+          el.appendChild(holder);
+        }
+      });
+    }
+
+    function setDraftActiveUpi(id) {
+      state.draftActiveUpiId = id;
+      const chosen = state.draftUpiAccounts.find(u => u.id === id);
+      if (chosen) {
+        state.settings.activeUpiId = chosen.id;
+        state.settings.upiVpa = chosen.vpa;
+        state.settings.upiAccounts = state.draftUpiAccounts.map(u => ({ ...u }));
+        try {
+          localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.settings));
+        } catch (_) {}
+        syncBillingSettingsToSupabase(state.settings);
+        renderPaymentFlow();
+      }
+      renderUpiManagerDraft();
+    }
+
+    function triggerReplaceQrForUpi(id) {
+      state.replacingQrForUpiId = id;
+      const fileInput = document.getElementById("replaceUpiQrFile");
+      fileInput.value = "";
+      fileInput.click();
+    }
+
+    function removeDraftUpi(id) {
+      if (state.draftUpiAccounts.length <= 1) return;
+      state.draftUpiAccounts = state.draftUpiAccounts.filter(u => u.id !== id);
+      if (state.draftActiveUpiId === id) {
+        state.draftActiveUpiId = state.draftUpiAccounts[0].id;
+      }
+      renderUpiManagerDraft();
+    }
+
+    function addDraftUpiEntry() {
+      const input = document.getElementById("newUpiVpaInput");
+      const errEl = document.getElementById("upiManagerError");
+      const vpa = (input.value || "").trim();
+
+      if (!vpa || !vpa.includes("@")) {
+        errEl.textContent = "Enter a valid UPI ID (example: yourname@oksbi).";
+        input.focus();
+        return;
+      }
+
+      const duplicate = state.draftUpiAccounts.find(u => u.vpa.toLowerCase() === vpa.toLowerCase());
+      if (duplicate) {
+        if (state.pendingUploadedQrDataUrl) {
+          duplicate.customQrDataUrl = state.pendingUploadedQrDataUrl;
+        }
+        state.draftActiveUpiId = duplicate.id;
+      } else {
+        const uniqueId = `upi-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+        state.draftUpiAccounts.push({
+          id: uniqueId,
+          vpa,
+          customQrDataUrl: state.pendingUploadedQrDataUrl || ""
+        });
+        state.draftActiveUpiId = uniqueId;
+      }
+
+      input.value = "";
+      state.pendingUploadedQrDataUrl = "";
+      document.getElementById("newUpiQrFile").value = "";
+      document.getElementById("newUpiQrFileName").textContent = "";
+      errEl.textContent = "";
+      renderUpiManagerDraft();
+    }
+
+    function syncSettingsInputsFromState() {
+      const normalizedUpi = normalizeUpiSettings(state.settings);
+      state.settings = { ...state.settings, ...normalizedUpi };
+
+      const legacyGstEnabled = Boolean(state.settings.gstEnabled);
+      const legacyGstHalf = Number.isFinite(Number(state.settings.gstRate)) ? Number(state.settings.gstRate) / 2 : 2.5;
+
+      const cgstOn = state.settings.cgstEnabled !== undefined ? Boolean(state.settings.cgstEnabled) : legacyGstEnabled;
+      const sgstOn = state.settings.sgstEnabled !== undefined ? Boolean(state.settings.sgstEnabled) : legacyGstEnabled;
+      const cgstVal = state.settings.cgstRate !== undefined ? Number(state.settings.cgstRate) : legacyGstHalf;
+      const sgstVal = state.settings.sgstRate !== undefined ? Number(state.settings.sgstRate) : legacyGstHalf;
+
+      document.getElementById("scEnabled").checked = Boolean(state.settings.scEnabled);
+      document.getElementById("scType").value = state.settings.scType;
+      document.getElementById("scValue").value = state.settings.scValue;
+      document.getElementById("cgstEnabled").checked = cgstOn;
+      document.getElementById("cgstRate").value = Number.isFinite(cgstVal) ? cgstVal : 2.5;
+      document.getElementById("sgstEnabled").checked = sgstOn;
+      document.getElementById("sgstRate").value = Number.isFinite(sgstVal) ? sgstVal : 2.5;
+
+      state.draftUpiAccounts = state.settings.upiAccounts.map(u => ({ ...u }));
+      state.draftActiveUpiId = state.settings.activeUpiId;
+      state.pendingUploadedQrDataUrl = "";
+      state.replacingQrForUpiId = "";
+      document.getElementById("newUpiVpaInput").value = "";
+      document.getElementById("newUpiQrFile").value = "";
+      document.getElementById("newUpiQrFileName").textContent = "";
+      renderUpiManagerDraft();
+    }
+
+    function loadPersistedState() {
+      try {
+        const savedSettings = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings) || "null");
+        if (savedSettings) state.settings = { ...state.settings, ...savedSettings };
+      } catch (_) {}
+
+      const normalizedUpi = normalizeUpiSettings(state.settings);
+      state.settings = { ...state.settings, ...normalizedUpi };
+
+      if (state.settings.cgstEnabled === undefined) {
+        state.settings.cgstEnabled = Boolean(state.settings.gstEnabled);
+      }
+      if (state.settings.sgstEnabled === undefined) {
+        state.settings.sgstEnabled = Boolean(state.settings.gstEnabled);
+      }
+      if (state.settings.cgstRate === undefined) {
+        state.settings.cgstRate = state.settings.gstRate !== undefined ? Number(state.settings.gstRate) / 2 : 2.5;
+      }
+      if (state.settings.sgstRate === undefined) {
+        state.settings.sgstRate = state.settings.gstRate !== undefined ? Number(state.settings.gstRate) / 2 : 2.5;
+      }
+
+      const todayKey = getLocalDateKey();
+      try {
+        const savedSales = JSON.parse(localStorage.getItem(STORAGE_KEYS.sales) || "null");
+        if (savedSales && !Array.isArray(savedSales) && Array.isArray(savedSales.bills)) {
+          if (savedSales.dateKey === todayKey) {
+            state.salesDateKey = savedSales.dateKey;
+            state.sales = savedSales.bills;
+          } else {
+            state.salesDateKey = todayKey;
+            state.sales = [];
+            saveSalesState();
+          }
+        } else if (Array.isArray(savedSales)) {
+          const todaysOnly = savedSales.filter(b => b && b.date === todayKey);
+          state.salesDateKey = todayKey;
+          state.sales = todaysOnly;
+          saveSalesState();
+        }
+      } catch (_) {
+        state.salesDateKey = todayKey;
+        state.sales = [];
+      }
+
+      try {
+        const savedTables = JSON.parse(localStorage.getItem(STORAGE_KEYS.tables) || "null");
+        if (savedTables && Array.isArray(savedTables.tables) && savedTables.tables.length > 0) {
+          state.tables = savedTables.tables.map(t => {
+            const custPhone = sanitizeTenDigitPhone(t.customerPhone || "");
+            const rawWaPhone = sanitizeTenDigitPhone(t.waPhone ?? "");
+            const isManual = Boolean(t.waPhoneManual) || (rawWaPhone && custPhone && rawWaPhone !== custPhone);
+            return {
+              ...t,
+              name: formatSeatLabel(t.name),
+              cart: Array.isArray(t.cart) ? t.cart.map(normalizeCartItem) : [],
+              kots: Array.isArray(t.kots) ? t.kots : [],
+              customerName: normalizeCustomerName(t.customerName || ""),
+              customerPhone: custPhone,
+              waPhone: isManual ? rawWaPhone : custPhone,
+              waPhoneManual: isManual,
+              serviceType: t.serviceType === "Take away" ? "Take away" : "Dine-in",
+              tokenNumber: sanitizeToken(t.tokenNumber || ""),
+              paymentMode: t.paymentMode || "UPI",
+              discountPercent: Math.max(0, Math.min(100, Number(t.discountPercent || 0))),
+              isFriendsAndFamily: Boolean(t.isFriendsAndFamily)
+            };
+          });
+          state.activeTableId = savedTables.activeTableId || state.tables[0].id;
+        }
+      } catch (_) {}
+
+      syncSettingsInputsFromState();
+    }
+
+    function openSettingsDialog() {
+      syncSettingsInputsFromState();
+      document.getElementById("settingsDialog").showModal();
+    }
+
+    function closeSettingsWithoutSaving() {
+      syncSettingsInputsFromState();
+      document.getElementById("settingsDialog").close();
+    }
+
+    async function commitSettingsFromDialog() {
+      const normalizedUpi = normalizeUpiSettings({
+        upiAccounts: state.draftUpiAccounts,
+        activeUpiId: state.draftActiveUpiId
+      });
+
+      const cgstEnabled = document.getElementById("cgstEnabled").checked;
+      const sgstEnabled = document.getElementById("sgstEnabled").checked;
+      const cgstRate = Math.max(0, Number(document.getElementById("cgstRate").value) || 0);
+      const sgstRate = Math.max(0, Number(document.getElementById("sgstRate").value) || 0);
+
+      state.settings = {
+        scEnabled: document.getElementById("scEnabled").checked,
+        scType: document.getElementById("scType").value,
+        scValue: Math.max(0, Number(document.getElementById("scValue").value) || 0),
+        cgstEnabled,
+        cgstRate,
+        sgstEnabled,
+        sgstRate,
+        gstEnabled: cgstEnabled || sgstEnabled,
+        gstRate: (cgstEnabled ? cgstRate : 0) + (sgstEnabled ? sgstRate : 0),
+        ...normalizedUpi
+      };
+
+      try {
+        localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.settings));
+      } catch (_) {
+        alert("Storage quota exceeded—try using a smaller QR image or standard UPI ID QR.");
+      }
+
+      await syncBillingSettingsToSupabase(state.settings);
+
+      state.lastQrStatusMsg = "";
+      state.lastQrErrorMsg = "";
+      document.getElementById("settingsDialog").close();
+      renderTotals();
+      renderPaymentFlow();
+    }
+
+    function renderTableTabs() {
+      const container = document.getElementById("tableTabs");
+      container.innerHTML = state.tables.map(t => {
+        const count = t.cart.reduce((sum, item) => sum + item.qty, 0);
+        const isOngoing = count > 0 || (t.kots && t.kots.length > 0);
+        const classes = [
+          "table-tab",
+          isOngoing ? "ongoing" : "",
+          t.id === state.activeTableId ? "active" : ""
+        ].filter(Boolean).join(" ");
+
+        const badgeText = count > 0
+          ? `${count} item${count > 1 ? "s" : ""}`
+          : (t.kots && t.kots.length > 0 ? `KOT ${t.kots.length}` : "Vacant");
+
+        return `
+          <button type="button" class="${classes}" onclick="selectTable('${escapeAttr(t.id)}')">
+            <span class="table-status-dot"></span>
+            <span>Table ${escapeHtml(t.name)}</span>
+            <span class="table-badge">${escapeHtml(badgeText)}</span>
+          </button>
+        `;
+      }).join("");
+
+      const active = getActiveTable();
+      document.getElementById("customerNameInput").value = normalizeCustomerName(active.customerName || "");
+      document.getElementById("customerPhoneInput").value = active.customerPhone || "";
+      document.getElementById("serviceTypeSelect").value = active.serviceType || "Dine-in";
+      document.getElementById("tokenNumberInput").value = sanitizeToken(active.tokenNumber || "");
+
+      const ffCheckbox = document.getElementById("friendsFamilyToggle");
+      ffCheckbox.checked = Boolean(active.isFriendsAndFamily);
+      document.getElementById("ffStatusBadge").style.display = active.isFriendsAndFamily ? "inline-block" : "none";
+
+      const discVal = Number(active.discountPercent || 0);
+      document.getElementById("customDiscountInput").value = discVal;
+      document.getElementById("customDiscountInput").disabled = Boolean(active.isFriendsAndFamily);
+      document.querySelectorAll(".discount-chip").forEach(chip => {
+        const chipVal = Number(chip.dataset.disc);
+        chip.classList.toggle("active", !active.isFriendsAndFamily && chipVal === discVal);
+        chip.disabled = Boolean(active.isFriendsAndFamily);
+      });
+
+      document.querySelectorAll(".pay-mode-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.mode === active.paymentMode);
+      });
+
+      const removeBtn = document.getElementById("btnRemoveTable");
+      removeBtn.disabled = state.tables.length <= 1 || active.cart.length > 0 || (active.kots && active.kots.length > 0);
+    }
+
+    function selectTable(tableId) {
+      state.activeTableId = tableId;
+      saveTablesState(false);
+      renderTableTabs();
+      renderCart();
+    }
+
+    async function addNewTable() {
+      const nextNum = state.tables.length + 1;
+      const newTable = {
+        id: `T${Date.now()}`,
+        name: String(nextNum),
+        cart: [],
+        kots: [],
+        paymentMode: "UPI",
+        customerName: "",
+        customerPhone: "",
+        waPhone: "",
+        waPhoneManual: false,
+        serviceType: "Dine-in",
+        tokenNumber: "",
+        discountPercent: 0,
+        isFriendsAndFamily: false
+      };
+      state.tables.push(newTable);
+      state.activeTableId = newTable.id;
+      saveTablesState(true);
+      await logPosActivity("TABLE_ADDED", { tableName: newTable.name }, newTable, newTable.id);
+      renderTableTabs();
+      renderCart();
+    }
+
+    async function removeCurrentTable() {
+      const active = getActiveTable();
+      if (state.tables.length <= 1) return;
+      if (active.cart.length > 0 || (active.kots && active.kots.length > 0)) {
+        alert("Settle active items/KOTs on this table before removing it.");
+        return;
+      }
+      const removedTable = { ...active };
+      state.tables = state.tables.filter(t => t.id !== active.id);
+      state.activeTableId = state.tables[state.tables.length - 1].id;
+      saveTablesState(false);
+      await deleteTableSessionFromSupabase(removedTable.id);
+      await logPosActivity("TABLE_REMOVED", { tableName: removedTable.name }, removedTable, removedTable.id);
+      renderTableTabs();
+      renderCart();
+    }
+
+    function normalizeMenuCategories(rawCategories) {
+      const normalized = [];
+      for (const cat of (rawCategories || [])) {
+        if (cat.hidden || cat.is_hidden) continue;
+        const subName = cat.subCategoryName || cat.sub_category_name || cat.name || "General";
+        const superName = cat.superCategory || cat.super_category || "Menu";
+        for (const item of (cat.items || [])) {
+          if (item.hidden || item.is_hidden || item.is_available === false) continue;
+          normalized.push({
+            id: item.id,
+            name: item.name,
+            superCategory: superName,
+            subCategory: subName,
+            price: window.getBillingItemPrice(item)
+          });
+        }
+      }
+      return normalized;
+    }
+
+    async function fetchMenuDirectlyFromTables(client) {
+      const { data: itemsData, error: itemsErr } = await client
+        .from("menu_items")
+        .select("*");
+      if (itemsErr) throw itemsErr;
+
+      let catMap = new Map();
+      try {
+        const { data: catsData } = await client.from("menu_categories").select("*");
+        if (Array.isArray(catsData)) {
+          for (const c of catsData) {
+            catMap.set(c.id, c);
+          }
+        }
+      } catch (_) {}
+
+      const grouped = new Map();
+      for (const item of (itemsData || [])) {
+        if (item.hidden || item.is_hidden || item.is_available === false) continue;
+        const catObj = catMap.get(item.category_id);
+        const subName = item.sub_category_name || item.subCategoryName || catObj?.sub_category_name || catObj?.name || "General";
+        const superName = item.super_category || item.superCategory || catObj?.super_category || "Menu";
+        const key = `${superName}::${subName}`;
+        if (!grouped.has(key)) {
+          grouped.set(key, {
+            superCategory: superName,
+            subCategoryName: subName,
+            items: []
+          });
+        }
+        grouped.get(key).items.push(item);
+      }
+
+      return [...grouped.values()];
+    }
+
+    async function loadMenu() {
+      state.menuLoadError = "";
+      let rawCategories = [];
+      const client = getDbClient();
+
+      if (typeof window.fetchMasterMenuFromDatabase === "function") {
+        try {
+          const result = await window.fetchMasterMenuFromDatabase();
+          if (result && Array.isArray(result.categories) && result.categories.length > 0) {
+            rawCategories = result.categories;
+          }
+        } catch (err) {
+          state.menuLoadError = err?.message || "Could not reach menu service.";
+        }
+      }
+
+      if (rawCategories.length === 0 && client?.from) {
+        try {
+          const { data: liveRow, error: liveErr } = await client
+            .from("live_menu")
+            .select("menu_json")
+            .eq("id", 1)
+            .maybeSingle();
+          if (liveErr) throw liveErr;
+          if (liveRow?.menu_json?.categories?.length > 0) {
+            rawCategories = liveRow.menu_json.categories;
+          } else {
+            rawCategories = await fetchMenuDirectlyFromTables(client);
+          }
+          state.menuLoadError = "";
+        } catch (err) {
+          state.menuLoadError = err?.message || "Could not load menu & prices from database.";
+        }
+      }
+
+      if (rawCategories.length > 0) {
+        try {
+          localStorage.setItem(STORAGE_KEYS.menuCache, JSON.stringify(rawCategories));
+        } catch (_) {}
+      } else {
+        try {
+          const cached = JSON.parse(localStorage.getItem(STORAGE_KEYS.menuCache) || "null");
+          if (Array.isArray(cached) && cached.length > 0) {
+            rawCategories = cached;
+          }
+        } catch (_) {}
+      }
+
+      state.menu = normalizeMenuCategories(rawCategories);
+      populateCategoryFilter();
+      renderCatalog();
+    }
+
+    function populateCategoryFilter() {
+      const select = document.getElementById("categoryFilter");
+      const current = select.value;
+      const cats = [...new Set(state.menu.map(i => i.subCategory))];
+      select.innerHTML = `<option value="ALL">All Categories</option>` +
+        cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+      if (cats.includes(current)) select.value = current;
+    }
+
+    function renderCatalog() {
+      const query = document.getElementById("searchInput").value.trim().toLowerCase();
+      const selectedCat = document.getElementById("categoryFilter").value;
+      const container = document.getElementById("catalogContainer");
+
+      if (state.menu.length === 0) {
+        const msg = state.menuLoadError
+          ? `Unable to load menu prices from database (${escapeHtml(state.menuLoadError)}).`
+          : "No active menu items found in database.";
+        container.innerHTML = `
+          <div class="highlight-warning">
+            <div style="margin-bottom:8px;">${msg}</div>
+            <button type="button" class="btn btn-sm btn-primary" onclick="loadMenu()">Retry DB</button>
+          </div>
+        `;
+        return;
+      }
+
+      const filtered = state.menu.filter(item => {
+        const matchesCat = selectedCat === "ALL" || item.subCategory === selectedCat;
+        const matchesSearch = !query ||
+          item.name.toLowerCase().includes(query) ||
+          item.subCategory.toLowerCase().includes(query) ||
+          item.superCategory.toLowerCase().includes(query);
+        return matchesCat && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<p class="muted">No items found.</p>`;
+        return;
+      }
+
+      const grouped = new Map();
+      for (const item of filtered) {
+        if (!grouped.has(item.superCategory)) grouped.set(item.superCategory, new Map());
+        const subMap = grouped.get(item.superCategory);
+        if (!subMap.has(item.subCategory)) subMap.set(item.subCategory, []);
+        subMap.get(item.subCategory).push(item);
+      }
+
+      let html = "";
+      for (const [superCat, subMap] of grouped.entries()) {
+        html += `<div class="super-cat-title">${escapeHtml(superCat)}</div>`;
+        for (const [subCat, items] of subMap.entries()) {
+          html += `<div class="sub-cat-title">${escapeHtml(subCat)}</div>`;
+          html += `<div class="items-grid">`;
+          for (const item of items) {
+            html += `
+              <div class="item-card" onclick="addToCart('${escapeAttr(item.id)}')">
+                <div class="item-name">${escapeHtml(item.name)}</div>
+                <div class="item-meta">
+                  <span>₹${item.price.toFixed(0)}</span>
+                  <span class="btn btn-sm">+ Add</span>
+                </div>
+              </div>
+            `;
+          }
+          html += `</div>`;
+        }
+      }
+
+      container.innerHTML = html;
+    }
+
+    function addToCart(itemId) {
+      const table = getActiveTable();
+      const existing = table.cart.find(c => c.id === itemId);
+      if (existing) {
+        existing.qty += 1;
+        existing.unsentQty = (existing.unsentQty ?? 0) + 1;
+      } else {
+        const prod = state.menu.find(m => m.id === itemId);
+        if (!prod) return;
+        table.cart.push({
+          id: prod.id,
+          name: prod.name,
+          price: Number(prod.price || 0),
+          qty: 1,
+          unsentQty: 1,
+          kotNumbers: [],
+          waivedQty: 0,
+          waiveReason: "",
+          waiveNote: ""
+        });
+      }
+      saveTablesState(false);
+      renderTableTabs();
+      renderCart();
+    }
+
+    function updateQty(itemId, delta) {
+      const table = getActiveTable();
+      const idx = table.cart.findIndex(c => c.id === itemId);
+      if (idx === -1) return;
+      const item = table.cart[idx];
+      const nextQty = item.qty + delta;
+      if (nextQty <= 0) {
+        table.cart.splice(idx, 1);
+      } else {
+        item.qty = nextQty;
+        item.unsentQty = Math.max(0, (item.unsentQty ?? 0) + delta);
+        if (Number(item.waivedQty || 0) > item.qty) {
+          item.waivedQty = item.qty;
+        }
+      }
+      saveTablesState(false);
+      renderTableTabs();
+      renderCart();
+    }
+
+    function removeItemCompletely(itemId) {
+      const table = getActiveTable();
+      table.cart = table.cart.filter(c => c.id !== itemId);
+      saveTablesState(false);
+      renderTableTabs();
+      renderCart();
+    }
+
+    function openWaiveItemModal(itemId) {
+      const table = getActiveTable();
+      const item = table.cart.find(c => c.id === itemId);
+      if (!item) return;
+
+      state.waivingItemId = itemId;
+      const alreadyWaived = Math.max(0, Number(item.waivedQty || 0));
+      document.getElementById("waiveModalItemName").textContent = item.name;
+      document.getElementById("waiveModalTotalQty").textContent = String(item.qty);
+      document.getElementById("waiveModalAlreadyWaived").textContent = String(alreadyWaived);
+      document.getElementById("waiveModalRate").textContent = Number(item.price || 0).toFixed(2);
+
+      const qtyInput = document.getElementById("waiveQtyInput");
+      qtyInput.max = String(item.qty);
+      qtyInput.value = String(alreadyWaived > 0 ? alreadyWaived : 1);
+
+      const reasonSelect = document.getElementById("waiveReasonSelect");
+      if (item.waiveReason && [...reasonSelect.options].some(o => o.value === item.waiveReason)) {
+        reasonSelect.value = item.waiveReason;
+      } else {
+        reasonSelect.value = "Wrong Product Delivered";
+      }
+
+      document.getElementById("waiveNoteInput").value = item.waiveNote || "";
+      document.getElementById("waiveModalError").textContent = "";
+      document.getElementById("waiveItemDialog").showModal();
+    }
+
+    function closeWaiveItemModal() {
+      state.waivingItemId = null;
+      const dlg = document.getElementById("waiveItemDialog");
+      if (dlg?.open) dlg.close();
+    }
+
+    async function applyWaiveItemFromModal() {
+      const table = getActiveTable();
+      const item = table.cart.find(c => c.id === state.waivingItemId);
+      const errEl = document.getElementById("waiveModalError");
+      if (!item) {
+        closeWaiveItemModal();
+        return;
+      }
+
+      const qtyInput = document.getElementById("waiveQtyInput");
+      const rawWaiveQty = Number(qtyInput.value);
+      if (!Number.isFinite(rawWaiveQty) || rawWaiveQty < 0 || rawWaiveQty > item.qty) {
+        errEl.textContent = `Enter a waive quantity between 0 and ${item.qty}.`;
+        return;
+      }
+
+      const waiveQty = Math.floor(rawWaiveQty);
+      const reason = document.getElementById("waiveReasonSelect").value;
+      const note = (document.getElementById("waiveNoteInput").value || "").trim();
+
+      item.waivedQty = waiveQty;
+      item.waiveReason = waiveQty > 0 ? reason : "";
+      item.waiveNote = waiveQty > 0 ? note : "";
+
+      saveTablesState(true);
+      await logPosActivity("ITEM_CONSUMPTION_WAIVED", {
+        itemId: item.id,
+        itemName: item.name,
+        totalQty: item.qty,
+        waivedQty: item.waivedQty,
+        waivedValue: Number((waiveQty * Number(item.price || 0)).toFixed(2)),
+        reason: item.waiveReason,
+        note: item.waiveNote,
+        consumptionTracked: true
+      }, table, item.id);
+
+      closeWaiveItemModal();
+      renderCart();
+    }
+
+    async function sendKotForActiveTable() {
+      const table = getActiveTable();
+      const pendingItems = table.cart
+        .map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          qty: Number(item.unsentQty ?? item.qty),
+          waivedQty: Number(item.waivedQty || 0),
+          waiveReason: item.waiveReason || ""
+        }))
+        .filter(i => i.qty > 0);
+
+      if (pendingItems.length === 0) {
+        alert("No new items to send in KOT.");
+        return;
+      }
+
+      const kotNumber = (table.kots ? table.kots.length : 0) + 1;
+      const now = new Date();
+      const kotEntry = {
+        kotNumber,
+        time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        serviceType: table.serviceType || "Dine-in",
+        tokenNumber: sanitizeToken(table.tokenNumber || ""),
+        items: pendingItems
+      };
+
+      table.kots = table.kots || [];
+      table.kots.push(kotEntry);
+
+      for (const item of table.cart) {
+        if ((item.unsentQty ?? 0) > 0) {
+          item.kotNumbers = item.kotNumbers || [];
+          if (!item.kotNumbers.includes(kotNumber)) item.kotNumbers.push(kotNumber);
+          item.unsentQty = 0;
+        }
+      }
+
+      saveTablesState(true);
+      renderTableTabs();
+      renderCart();
+      await syncKotToSupabase(table, kotEntry);
+      printKotSlip(table, kotEntry);
+    }
+
+    async function reprintLastKotForActiveTable() {
+      const table = getActiveTable();
+      if (!table.kots || table.kots.length === 0) return;
+      const lastKot = table.kots[table.kots.length - 1];
+      await logPosActivity("KOT_REPRINTED", { kotNumber: lastKot.kotNumber }, table, `KOT-${lastKot.kotNumber}`);
+      printKotSlip(table, lastKot);
+    }
+
+    function printKotSlip(table, kotEntry) {
+      const linesHtml = kotEntry.items
+        .map(i => `<div style="padding-left:14px;">${escapeHtml(i.name.toUpperCase())} ${i.qty}</div>`)
+        .join("");
+
+      const modeText = kotEntry.serviceType || table.serviceType || "Dine-in";
+      const tokenText = sanitizeToken(kotEntry.tokenNumber || table.tokenNumber || "");
+
+      document.getElementById("printMount").innerHTML = `
+        <div class="receipt-sheet">
+          <div class="receipt-center">
+            <strong>CGS - COFFEE, GRILL &amp; SHOTS</strong><br/>
+            <strong>KOT #${kotEntry.kotNumber} • ${escapeHtml(modeText)}</strong><br/>
+            <span>Seat: ${escapeHtml(formatSeatLabel(table.name))} • ${escapeHtml(kotEntry.time)}</span>
+            ${tokenText ? `<br/><strong>Token: ${escapeHtml(tokenText)}</strong>` : ""}
+          </div>
+          <div class="receipt-divider"></div>
+          <div style="font-weight:700;">Service ${kotEntry.kotNumber}</div>
+          ${linesHtml}
+        </div>
+      `;
+      window.print();
+    }
+
+    function renderKotControls() {
+      const table = getActiveTable();
+      const kotCount = table.kots ? table.kots.length : 0;
+      const unsentTotal = table.cart.reduce((sum, item) => sum + Math.max(0, Number(item.unsentQty ?? 0)), 0);
+
+      const label = document.getElementById("kotStatusLabel");
+      if (kotCount === 0 && unsentTotal === 0) {
+        label.innerHTML = `<strong>KOT:</strong> None`;
+      } else if (unsentTotal > 0) {
+        label.innerHTML = `<strong>KOTs:</strong> ${kotCount} sent • <strong>${unsentTotal}</strong> new`;
+      } else {
+        label.innerHTML = `<strong>KOTs:</strong> ${kotCount} sent (all synced)`;
+      }
+
+      document.getElementById("btnSendKot").disabled = unsentTotal === 0;
+      document.getElementById("btnReprintKot").disabled = kotCount === 0;
+    }
+
+    function computeBillTotals() {
+      const table = getActiveTable();
+      const isFriendsAndFamily = Boolean(table.isFriendsAndFamily);
+      const discountPercent = isFriendsAndFamily
+        ? 0
+        : Math.max(0, Math.min(100, Number(table.discountPercent || 0)));
+
+      let grossSubtotal = 0;
+      let waivedItemsAmount = 0;
+      let chargeableBeforeDiscount = 0;
+      const waivedItems = [];
+
+      for (const item of table.cart) {
+        const qty = Number(item.qty || 0);
+        const rate = Number(item.price || 0);
+        const wQty = Math.max(0, Math.min(qty, Number(item.waivedQty || 0)));
+        const bQty = Math.max(0, qty - wQty);
+
+        grossSubtotal += qty * rate;
+        waivedItemsAmount += wQty * rate;
+        chargeableBeforeDiscount += bQty * rate;
+
+        if (wQty > 0) {
+          waivedItems.push({
+            id: item.id,
+            name: item.name,
+            totalQty: qty,
+            waivedQty: wQty,
+            billableQty: bQty,
+            rate,
+            waivedAmount: Number((wQty * rate).toFixed(2)),
+            reason: item.waiveReason || "Waived",
+            note: item.waiveNote || "",
+            consumptionTracked: true
+          });
+        }
+      }
+
+      const discountAmount = chargeableBeforeDiscount > 0
+        ? (chargeableBeforeDiscount * discountPercent) / 100
+        : 0;
+
+      const afterDiscountSubtotal = Math.max(0, chargeableBeforeDiscount - discountAmount);
+      const friendsFamilyWaivedAmount = isFriendsAndFamily ? afterDiscountSubtotal : 0;
+      const subtotal = isFriendsAndFamily ? 0 : afterDiscountSubtotal;
+
+      const scEnabled = Boolean(state.settings.scEnabled);
+      let serviceCharge = 0;
+      if (!isFriendsAndFamily && scEnabled && subtotal > 0) {
+        serviceCharge = state.settings.scType === "fixed"
+          ? Number(state.settings.scValue || 0)
+          : (subtotal * Number(state.settings.scValue || 0)) / 100;
+      }
+
+      const taxableBase = subtotal + serviceCharge;
+
+      const cgstEnabled = Boolean(state.settings.cgstEnabled);
+      const cgstRate = Number(state.settings.cgstRate ?? 2.5);
+      const cgstAmount = (!isFriendsAndFamily && cgstEnabled && taxableBase > 0)
+        ? (taxableBase * cgstRate) / 100
+        : 0;
+
+      const sgstEnabled = Boolean(state.settings.sgstEnabled);
+      const sgstRate = Number(state.settings.sgstRate ?? 2.5);
+      const sgstAmount = (!isFriendsAndFamily && sgstEnabled && taxableBase > 0)
+        ? (taxableBase * sgstRate) / 100
+        : 0;
+
+      const gstAmount = cgstAmount + sgstAmount;
+      const grandTotal = isFriendsAndFamily
+        ? 0
+        : (subtotal + serviceCharge + cgstAmount + sgstAmount);
+
+      return {
+        grossSubtotal,
+        waivedItemsAmount,
+        waivedItems,
+        discountPercent,
+        discountAmount,
+        isFriendsAndFamily,
+        friendsFamilyWaivedAmount,
+        subtotal,
+        scEnabled,
+        serviceCharge,
+        cgstEnabled,
+        cgstRate,
+        cgstAmount,
+        sgstEnabled,
+        sgstRate,
+        sgstAmount,
+        gstAmount,
+        grandTotal
+      };
+    }
+
+    function renderCart() {
+      const table = getActiveTable();
+      const list = document.getElementById("cartList");
+      const closeBtn = document.getElementById("btnCloseTransaction");
+      const totals = computeBillTotals();
+
+      const canClose = table.cart.length > 0 && (totals.grandTotal > 0 || totals.isFriendsAndFamily);
+      closeBtn.disabled = !canClose;
+
+      renderKotControls();
+
+      if (table.cart.length === 0) {
+        list.innerHTML = `<p class="muted" style="text-align:center; padding:24px 0;">Tap any menu item to add to Seat ${escapeHtml(formatSeatLabel(table.name))}.</p>`;
+      } else {
+        list.innerHTML = table.cart.map(item => {
+          const unsent = Number(item.unsentQty ?? 0);
+          const wQty = Math.max(0, Math.min(item.qty, Number(item.waivedQty || 0)));
+          const kotPill = unsent > 0
+            ? `<span class="kot-tag">New: ${unsent}</span>`
+            : (item.kotNumbers && item.kotNumbers.length > 0
+              ? `<span class="kot-tag">KOT ${item.kotNumbers.join(",")}</span>`
+              : "");
+          const waivedPill = wQty > 0
+            ? `<span class="waived-tag">Waived: ${wQty}</span>`
+            : "";
+
+          const waiveDetail = wQty > 0
+            ? `<div class="cart-sub-note">${escapeHtml(item.waiveReason || "Waived")}${item.waiveNote ? ` • ${escapeHtml(item.waiveNote)}` : ""} (Inv. tracked)</div>`
+            : "";
+
+          return `
+            <div class="cart-row">
+              <div>
+                <div style="font-weight:600;">${escapeHtml(item.name)}${kotPill}${waivedPill}</div>
+                ${waiveDetail}
+              </div>
+              <div class="qty-box">
+                <button type="button" class="btn btn-sm" onclick="updateQty('${escapeAttr(item.id)}', -1)">-</button>
+                <span>${item.qty}</span>
+                <button type="button" class="btn btn-sm" onclick="updateQty('${escapeAttr(item.id)}', 1)">+</button>
+              </div>
+              <div class="cart-row-actions">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-warm"
+                  title="Waive item charges (wrong item / unmet expectation)"
+                  onclick="openWaiveItemModal('${escapeAttr(item.id)}')"
+                >Waive</button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger"
+                  title="Remove item"
+                  onclick="removeItemCompletely('${escapeAttr(item.id)}')"
+                >✕</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      renderTotals();
+      renderPaymentFlow();
+    }
+
+    function renderTotals() {
+      const {
+        grossSubtotal,
+        waivedItemsAmount,
+        discountPercent,
+        discountAmount,
+        isFriendsAndFamily,
+        friendsFamilyWaivedAmount,
+        subtotal,
+        scEnabled,
+        serviceCharge,
+        cgstEnabled,
+        cgstRate,
+        cgstAmount,
+        sgstEnabled,
+        sgstRate,
+        sgstAmount,
+        grandTotal
+      } = computeBillTotals();
+
+      document.getElementById("grossSubtotalText").textContent = `₹${grossSubtotal.toFixed(2)}`;
+
+      const waivedItemsRow = document.getElementById("waivedItemsRow");
+      if (waivedItemsAmount > 0) {
+        waivedItemsRow.style.display = "flex";
+        document.getElementById("waivedItemsText").textContent = `-₹${waivedItemsAmount.toFixed(2)}`;
+      } else {
+        waivedItemsRow.style.display = "none";
+      }
+
+      const discountRow = document.getElementById("discountRow");
+      if (!isFriendsAndFamily && discountAmount > 0) {
+        discountRow.style.display = "flex";
+        document.getElementById("discountLabel").textContent = `Discount (${discountPercent}%)`;
+        document.getElementById("discountText").textContent = `-₹${discountAmount.toFixed(2)}`;
+      } else {
+        discountRow.style.display = "none";
+      }
+
+      const ffWaiveRow = document.getElementById("ffWaiveRow");
+      if (isFriendsAndFamily && friendsFamilyWaivedAmount > 0) {
+        ffWaiveRow.style.display = "flex";
+        document.getElementById("ffWaiveText").textContent = `-₹${friendsFamilyWaivedAmount.toFixed(2)}`;
+      } else {
+        ffWaiveRow.style.display = "none";
+      }
+
+      document.getElementById("subtotalText").textContent = `₹${subtotal.toFixed(2)}`;
+
+      const scRow = document.getElementById("scRow");
+      if (!isFriendsAndFamily && scEnabled) {
+        scRow.style.display = "flex";
+        document.getElementById("scLabel").textContent = state.settings.scType === "fixed"
+          ? "Service Charges (Fixed)"
+          : `Service Charges (${state.settings.scValue}%)`;
+        document.getElementById("scText").textContent = `₹${serviceCharge.toFixed(2)}`;
+      } else {
+        scRow.style.display = "none";
+      }
+
+      const cgstRow = document.getElementById("cgstRow");
+      if (!isFriendsAndFamily && cgstEnabled) {
+        cgstRow.style.display = "flex";
+        document.getElementById("cgstLabel").textContent = `CGST (${cgstRate}%)`;
+        document.getElementById("cgstText").textContent = `₹${cgstAmount.toFixed(2)}`;
+      } else {
+        cgstRow.style.display = "none";
+      }
+
+      const sgstRow = document.getElementById("sgstRow");
+      if (!isFriendsAndFamily && sgstEnabled) {
+        sgstRow.style.display = "flex";
+        document.getElementById("sgstLabel").textContent = `SGST (${sgstRate}%)`;
+        document.getElementById("sgstText").textContent = `₹${sgstAmount.toFixed(2)}`;
+      } else {
+        sgstRow.style.display = "none";
+      }
+
+      document.getElementById("grandTotalText").textContent = `₹${grandTotal.toFixed(2)}`;
+    }
+
+    function getQrDataUrlFromContainer(qrContainer, customQrDataUrl) {
+      if (customQrDataUrl) return customQrDataUrl;
+      const img = qrContainer?.querySelector("img");
+      if (img && img.src) return img.src;
+      const canvas = qrContainer?.querySelector("canvas");
+      if (canvas && typeof canvas.toDataURL === "function") return canvas.toDataURL("image/png");
+      return "";
+    }
+
+    async function copyActiveQrToClipboard(qrContainer, customQrDataUrl) {
+      const statusEl = document.getElementById("qrActionStatus");
+      const errEl = document.getElementById("qrActionError");
+      if (statusEl) statusEl.textContent = "";
+      if (errEl) errEl.textContent = "";
+
+      const dataUrl = getQrDataUrlFromContainer(qrContainer, customQrDataUrl);
+      if (!dataUrl) {
+        if (errEl) errEl.textContent = "Add items to generate an active QR first.";
+        return;
+      }
+
+      if (!navigator.clipboard || typeof ClipboardItem === "undefined" || typeof navigator.clipboard.write !== "function") {
+        state.lastQrErrorMsg = "Clipboard image copy isn't supported here—use Save QR to attach.";
+        if (errEl) errEl.textContent = state.lastQrErrorMsg;
+        return;
+      }
+
+      try {
+        const res = await fetch(dataUrl);
+        const blob = await res.blob();
+        const pngBlob = blob.type === "image/png" ? blob : new Blob([blob], { type: "image/png" });
+        await navigator.clipboard.write([new ClipboardItem({ "image/png": pngBlob })]);
+        state.lastQrStatusMsg = "QR copied to clipboard—paste (Ctrl+V / Cmd+V) in WhatsApp.";
+        state.lastQrErrorMsg = "";
+        if (statusEl) statusEl.textContent = state.lastQrStatusMsg;
+      } catch (_) {
+        state.lastQrErrorMsg = "Could not copy image automatically—use Save QR to attach.";
+        if (errEl) errEl.textContent = state.lastQrErrorMsg;
+      }
+    }
+
+    function downloadActiveQr(qrContainer, customQrDataUrl, vpa) {
+      const errEl = document.getElementById("qrActionError");
+      const dataUrl = getQrDataUrlFromContainer(qrContainer, customQrDataUrl);
+      if (!dataUrl) {
+        if (errEl) errEl.textContent = "Add items to generate an active QR first.";
+        return;
+      }
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = `cgs-upi-qr-${(vpa || "upi").replace(/[^a-zA-Z0-9._-]/g, "_")}.png`;
+      a.click();
+    }
+
+    function buildInvoiceWhatsAppMessage(table, activeUpi, totals) {
+      const custUpper = normalizeCustomerName(table.customerName);
+      const seatNo = formatSeatLabel(table.name);
+      const tokenPart = table.tokenNumber ? ` | TKN:${sanitizeToken(table.tokenNumber)}` : "";
+      const custContactLine = [custUpper, table.customerPhone].filter(Boolean).join(" | ");
+      const services = buildServiceGroups(table);
+
+      const greetingName = custUpper ? custUpper : "Friend";
+      const thankYouBlock = [
+        `Hi *${greetingName}*,`,
+        "",
+        "Thank you for visiting *CGS - COFFEE, GRILL & SHOTS* today. We loved hosting you and hope our handcrafted food and coffee gave you a comforting break!",
+        "",
+        "Pull up a chair again anytime—we're always ready to welcome you back.",
+        "Menu & story: https://cgscafe.in/",
+        "_See you again soon!_ *Team CGS*"
+      ].join("\n");
+
+      const paymentAndInvoiceLines = [
+        "====================================",
+        "CGS - COFFEE, GRILL & SHOTS",
+        `Phone: ${CAFE_CONTACT_PHONE}`,
+        `UPI ID: ${activeUpi.vpa}`,
+        `TOTAL PAYABLE: ₹${Number(totals.grandTotal).toFixed(2)}`,
+        "====================================",
+        `DT  : ${formatReceiptDateTime()}`,
+        `SEAT: ${seatNo} (${table.serviceType || "Dine-in"})${tokenPart}`
+      ];
+
+      if (custContactLine) {
+        paymentAndInvoiceLines.push(`CUST: ${custContactLine}`);
+      }
+
+      paymentAndInvoiceLines.push("------------------------------------");
+      paymentAndInvoiceLines.push("ITEM                      QTY  AMT");
+      paymentAndInvoiceLines.push("------------------------------------");
+
+      services.forEach((svc, svcIdx) => {
+        if (svcIdx > 0) paymentAndInvoiceLines.push("");
+        paymentAndInvoiceLines.push(svc.serviceLabel);
+        for (const item of (svc.items || [])) {
+          const cleanName = String(item.label || "").replace(/\s+\d+$/, "").trim().toUpperCase();
+          const shortName = cleanName.slice(0, 23).padEnd(23, " ");
+          const qtyStr = String(Number(item.qty)).padStart(3, " ");
+          const amtStr = `₹${Number(item.amount).toFixed(2)}`.padStart(9, " ");
+          paymentAndInvoiceLines.push(`${shortName} ${qtyStr} ${amtStr}`);
+        }
+      });
+
+      paymentAndInvoiceLines.push("------------------------------------");
+      paymentAndInvoiceLines.push(`GROSS ITEMS            ₹${Number(totals.grossSubtotal).toFixed(2).padStart(9, " ")}`);
+      if (totals.waivedItemsAmount > 0) {
+        paymentAndInvoiceLines.push(`WAIVED ITEMS           -₹${Number(totals.waivedItemsAmount).toFixed(2).padStart(8, " ")}`);
+      }
+      if (!totals.isFriendsAndFamily && totals.discountAmount > 0) {
+        const dTag = `DISCOUNT (${totals.discountPercent}%)`.padEnd(22, " ");
+        paymentAndInvoiceLines.push(`${dTag} -₹${Number(totals.discountAmount).toFixed(2).padStart(8, " ")}`);
+      }
+      if (totals.isFriendsAndFamily) {
+        paymentAndInvoiceLines.push(`FRIENDS & FAMILY       -₹${Number(totals.friendsFamilyWaivedAmount).toFixed(2).padStart(8, " ")}`);
+      }
+      paymentAndInvoiceLines.push(`BILLABLE SUBTOTAL      ₹${Number(totals.subtotal).toFixed(2).padStart(9, " ")}`);
+      if (!totals.isFriendsAndFamily && totals.scEnabled) {
+        paymentAndInvoiceLines.push(`SERVICE CHARGES        ₹${Number(totals.serviceCharge).toFixed(2).padStart(9, " ")}`);
+      }
+      if (!totals.isFriendsAndFamily && totals.cgstEnabled) {
+        const cgstTag = `CGST (${totals.cgstRate}%)`.padEnd(22, " ");
+        paymentAndInvoiceLines.push(`${cgstTag} ₹${Number(totals.cgstAmount).toFixed(2).padStart(9, " ")}`);
+      }
+      if (!totals.isFriendsAndFamily && totals.sgstEnabled) {
+        const sgstTag = `SGST (${totals.sgstRate}%)`.padEnd(22, " ");
+        paymentAndInvoiceLines.push(`${sgstTag} ₹${Number(totals.sgstAmount).toFixed(2).padStart(9, " ")}`);
+      }
+      paymentAndInvoiceLines.push("====================================");
+      paymentAndInvoiceLines.push(`TOTAL PAYABLE          ₹${Number(totals.grandTotal).toFixed(2).padStart(9, " ")}`);
+      paymentAndInvoiceLines.push(`UPI ID: ${activeUpi.vpa}`);
+      paymentAndInvoiceLines.push("====================================");
+
+      return `${thankYouBlock}\n\n\`\`\`\n${paymentAndInvoiceLines.join("\n")}\n\`\`\``;
+    }
+
+    function renderPaymentFlow() {
+      const table = getActiveTable();
+      const box = document.getElementById("paymentFlowBox");
+      const totals = computeBillTotals();
+      const amountStr = totals.grandTotal.toFixed(2);
+      const effectiveWaPhone = sanitizeTenDigitPhone(table.waPhone || table.customerPhone || "");
+
+      if (totals.isFriendsAndFamily) {
+        box.innerHTML = `<p class="muted" style="margin:0;">Friends &amp; Family waive-off active (₹0.00 payable). Item consumption remains recorded for inventory.</p>`;
+        return;
+      }
+
+      if (table.paymentMode === "CASH") {
+        box.innerHTML = `<p class="muted" style="margin:0;">Collect ₹${amountStr} in cash and verify receipt before closing.</p>`;
+        return;
+      }
+
+      if (table.paymentMode === "CARD") {
+        box.innerHTML = `<p class="muted" style="margin:0;">Complete ₹${amountStr} on POS terminal and verify approval before closing.</p>`;
+        return;
+      }
+
+      const activeUpi = getActiveUpiAccount(state.settings);
+      const vpa = activeUpi.vpa || DEFAULT_UPI_VPA;
+      const upiQrPayload = `upi://pay?pa=${encodeURIComponent(vpa)}&pn=${encodeURIComponent("CGS - COFFEE, GRILL & SHOTS")}&am=${encodeURIComponent(amountStr)}&cu=INR`;
+
+      box.innerHTML = `
+        <div class="upi-compact-row">
+          <div class="upi-qr-preview" id="upiQrCode"></div>
+          <div style="min-width:0; flex:1;">
+            <div style="font-weight:700; color:var(--accent);">₹${amountStr}</div>
+            <div class="muted" style="font-size:11px; word-break:break-all;">Active UPI: ${escapeHtml(vpa)}</div>
+          </div>
+          <div class="qr-actions">
+            <button type="button" class="btn btn-sm" id="btnCopyQr">Copy QR</button>
+            <button type="button" class="btn btn-sm" id="btnSaveQr">Save QR</button>
+          </div>
+        </div>
+        <div class="field-status" id="qrActionStatus">${escapeHtml(state.lastQrStatusMsg)}</div>
+        <div class="field-error" id="qrActionError">${escapeHtml(state.lastQrErrorMsg)}</div>
+        <div class="wa-row">
+          <input
+            type="tel"
+            id="waPhoneInput"
+            maxlength="10"
+            inputmode="numeric"
+            placeholder="Mobile"
+            value="${escapeAttr(effectiveWaPhone)}"
+          />
+          <button type="button" class="btn btn-sm btn-primary" id="btnSendWa">Send WA</button>
+        </div>
+        <div class="field-error" id="waPhoneError"></div>
+      `;
+
+      const qrContainer = document.getElementById("upiQrCode");
+      if (qrContainer) {
+        if (activeUpi.customQrDataUrl) {
+          qrContainer.innerHTML = `<img src="${activeUpi.customQrDataUrl}" alt="Active UPI QR" />`;
+        } else if (typeof QRCode !== "undefined" && totals.grandTotal > 0) {
+          new QRCode(qrContainer, {
+            text: upiQrPayload,
+            width: 72,
+            height: 72
+          });
+        }
+      }
+
+      document.getElementById("btnCopyQr").addEventListener("click", () => {
+        copyActiveQrToClipboard(qrContainer, activeUpi.customQrDataUrl);
+      });
+
+      document.getElementById("btnSaveQr").addEventListener("click", () => {
+        downloadActiveQr(qrContainer, activeUpi.customQrDataUrl, vpa);
+      });
+
+      const phoneInput = document.getElementById("waPhoneInput");
+      const phoneError = document.getElementById("waPhoneError");
+
+      phoneInput.addEventListener("input", (e) => {
+        const cleaned = sanitizeTenDigitPhone(e.target.value);
+        e.target.value = cleaned;
+        table.waPhone = cleaned;
+        table.waPhoneManual = cleaned.length > 0 && cleaned !== sanitizeTenDigitPhone(table.customerPhone || "");
+        phoneError.textContent = "";
+        saveTablesState(false);
+      });
+
+      document.getElementById("btnSendWa").addEventListener("click", async () => {
+        const tenDigit = sanitizeTenDigitPhone(phoneInput.value);
+        if (tenDigit.length !== 10) {
+          phoneError.textContent = "Enter a valid 10-digit mobile number.";
+          phoneInput.focus();
+          return;
+        }
+
+        phoneError.textContent = "";
+        const message = buildInvoiceWhatsAppMessage(table, activeUpi, totals);
+        await logPosActivity("WA_INVOICE_SENT", {
+          phone: tenDigit,
+          grandTotal: Number(totals.grandTotal.toFixed(2)),
+          upiVpa: activeUpi.vpa
+        }, table);
+        const waUrl = `https://wa.me/91${tenDigit}?text=${encodeURIComponent(message)}`;
+        window.open(waUrl, "_blank", "noopener,noreferrer");
+      });
+    }
+
+    function buildServiceGroups(table) {
+      const itemMap = new Map(table.cart.map(i => [i.name, i]));
+      const isFnF = Boolean(table.isFriendsAndFamily);
+
+      function mapLineItem(name, qty, fallbackPrice) {
+        const totalQty = Number(qty || 1);
+        const cartMatch = itemMap.get(name);
+        const rate = Number(fallbackPrice ?? cartMatch?.price ?? 0);
+        const wQty = Math.max(0, Math.min(totalQty, Number(cartMatch?.waivedQty || 0)));
+        const billableQty = isFnF ? 0 : Math.max(0, totalQty - wQty);
+        const amount = billableQty * rate;
+        const noteParts = [];
+        if (wQty > 0) {
+          noteParts.push(`Waived ${wQty} (${cartMatch?.waiveReason || "Exception"} • Inv. logged)`);
+        }
+        if (isFnF) {
+          noteParts.push("F&F Waived (Inv. logged)");
+        }
+        return {
+          label: `${String(name || "").toUpperCase()} ${totalQty}`,
+          qty: totalQty,
+          rate,
+          amount,
+          note: noteParts.join("; ")
+        };
+      }
+
+      if (table.kots && table.kots.length > 0) {
+        const groups = table.kots.map(k => ({
+          serviceLabel: `Service ${k.kotNumber}`,
+          items: k.items.map(i => mapLineItem(i.name, i.qty, i.price))
+        }));
+
+        const unsent = table.cart
+          .map(i => ({ name: i.name, qty: Number(i.unsentQty ?? 0), price: Number(i.price || 0) }))
+          .filter(i => i.qty > 0);
+
+        if (unsent.length > 0) {
+          groups.push({
+            serviceLabel: `Service ${table.kots.length + 1}`,
+            items: unsent.map(i => mapLineItem(i.name, i.qty, i.price))
+          });
+        }
+        return groups;
+      }
+
+      return [{
+        serviceLabel: "Service 1",
+        items: table.cart.map(i => mapLineItem(i.name, i.qty, i.price))
+      }];
+    }
+
+    function renderReceiptHtml(bill) {
+      const services = Array.isArray(bill.services) && bill.services.length > 0
+        ? bill.services.map((s, idx) => ({
+          ...s,
+          serviceLabel: String(s.serviceLabel || `Service ${idx + 1}`).replace(/:+$/, "")
+        }))
+        : [{
+          serviceLabel: "Service 1",
+          items: (bill.lineItems || []).map(li => ({
+            label: `${String(li.name || "").toUpperCase()} ${li.qty}`,
+            qty: li.qty,
+            rate: li.price,
+            amount: Number(li.price || 0) * Number(li.qty || 1),
+            note: ""
+          }))
+        }];
+
+      let bodyRowsHtml = "";
+      services.forEach((svc, svcIdx) => {
+        if (svcIdx > 0) {
+          bodyRowsHtml += `<tr class="receipt-gap-row"><td colspan="4"></td></tr>`;
+        }
+        bodyRowsHtml += `
+          <tr class="receipt-service-row">
+            <td colspan="4">${escapeHtml(svc.serviceLabel)}</td>
+          </tr>
+        `;
+        for (const item of (svc.items || [])) {
+          bodyRowsHtml += `
+            <tr>
+              <td>${escapeHtml(item.label)}</td>
+              <td class="qty-col">${Number(item.qty)}</td>
+              <td class="num">₹${Number(item.rate).toFixed(2)}</td>
+              <td class="num">₹${Number(item.amount).toFixed(2)}</td>
+            </tr>
+          `;
+          if (item.note) {
+            bodyRowsHtml += `
+              <tr class="receipt-note-row">
+                <td colspan="4">↳ ${escapeHtml(item.note)}</td>
+              </tr>
+            `;
+          }
+        }
+      });
+
+      const custUpper = normalizeCustomerName(bill.customerName);
+      const custLineHtml = custUpper
+        ? `<div><strong>CUST: ${escapeHtml(custUpper)}</strong>${bill.customerPhone ? ` • ${escapeHtml(bill.customerPhone)}` : ""}</div>`
+        : (bill.customerPhone ? `<div>${escapeHtml(bill.customerPhone)}</div>` : "");
+
+      const seatLineParts = [
+        `Seat: ${escapeHtml(formatSeatLabel(bill.tableName || ""))}`,
+        escapeHtml(bill.serviceType || "Dine-in"),
+        bill.tokenNumber ? `Token: ${escapeHtml(sanitizeToken(bill.tokenNumber))}` : "",
+        bill.isFriendsAndFamily ? "Friends & Family" : ""
+      ].filter(Boolean).join(" • ");
+
+      const showSc = bill.scEnabled !== undefined ? Boolean(bill.scEnabled) : Number(bill.serviceCharge || 0) > 0;
+      const showCgst = bill.cgstEnabled !== undefined ? Boolean(bill.cgstEnabled) : Number(bill.cgstAmount || 0) > 0;
+      const showSgst = bill.sgstEnabled !== undefined ? Boolean(bill.sgstEnabled) : Number(bill.sgstAmount || 0) > 0;
+
+      let optionalTotalsHtml = "";
+      if (Number(bill.grossSubtotal || 0) > 0 && (Number(bill.waivedItemsAmount || 0) > 0 || Number(bill.discountAmount || 0) > 0 || bill.isFriendsAndFamily)) {
+        optionalTotalsHtml += `
+          <div class="receipt-total-row">
+            <span class="receipt-total-label">Gross Items</span>
+            <span class="receipt-total-val">₹${Number(bill.grossSubtotal).toFixed(2)}</span>
+          </div>
+        `;
+      }
+      if (Number(bill.waivedItemsAmount || 0) > 0) {
+        optionalTotalsHtml += `
+          <div class="receipt-total-row">
+            <span class="receipt-total-label">Waived Items</span>
+            <span class="receipt-total-val">-₹${Number(bill.waivedItemsAmount).toFixed(2)}</span>
+          </div>
+        `;
+      }
+      if (!bill.isFriendsAndFamily && Number(bill.discountAmount || 0) > 0) {
+        const dLabel = `Discount (${Number(bill.discountPercent || 0)}%)`;
+        optionalTotalsHtml += `
+          <div class="receipt-total-row">
+            <span class="receipt-total-label">${escapeHtml(dLabel)}</span>
+            <span class="receipt-total-val">-₹${Number(bill.discountAmount).toFixed(2)}</span>
+          </div>
+        `;
+      }
+      if (bill.isFriendsAndFamily && Number(bill.friendsFamilyWaivedAmount || 0) > 0) {
+        optionalTotalsHtml += `
+          <div class="receipt-total-row">
+            <span class="receipt-total-label">F&amp;F Waive-Off</span>
+            <span class="receipt-total-val">-₹${Number(bill.friendsFamilyWaivedAmount).toFixed(2)}</span>
+          </div>
+        `;
+      }
+      if (showSc) {
+        optionalTotalsHtml += `
+          <div class="receipt-total-row">
+            <span class="receipt-total-label">Service Charges</span>
+            <span class="receipt-total-val">₹${Number(bill.serviceCharge || 0).toFixed(2)}</span>
+          </div>
+        `;
+      }
+      if (showCgst) {
+        const cgstRateLabel = bill.cgstRate !== undefined ? `CGST (${bill.cgstRate}%)` : "CGST";
+        optionalTotalsHtml += `
+          <div class="receipt-total-row">
+            <span class="receipt-total-label">${escapeHtml(cgstRateLabel)}</span>
+            <span class="receipt-total-val">₹${Number(bill.cgstAmount || 0).toFixed(2)}</span>
+          </div>
+        `;
+      }
+      if (showSgst) {
+        const sgstRateLabel = bill.sgstRate !== undefined ? `SGST (${bill.sgstRate}%)` : "SGST";
+        optionalTotalsHtml += `
+          <div class="receipt-total-row">
+            <span class="receipt-total-label">${escapeHtml(sgstRateLabel)}</span>
+            <span class="receipt-total-val">₹${Number(bill.sgstAmount || 0).toFixed(2)}</span>
+          </div>
+        `;
+      }
+
+      const modeBadge = bill.isFriendsAndFamily ? "F&F WAIVED" : bill.mode;
+
+      return `
+        <div class="receipt-sheet">
+          <div class="receipt-center">
+            <div><strong>CGS - COFFEE, GRILL &amp; SHOTS</strong></div>
+            <div>Phone: ${escapeHtml(bill.contactPhone || CAFE_CONTACT_PHONE)}</div>
+            <div>${escapeHtml(bill.dateTimeLabel || `${bill.date} ${bill.time}`)}</div>
+            <div>${seatLineParts}</div>
+            <div>Bill: ${escapeHtml(bill.id)}</div>
+            ${custLineHtml}
+          </div>
+          <div class="receipt-divider"></div>
+          <table class="receipt-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th class="qty-col">Qty</th>
+                <th class="num">Rate</th>
+                <th class="num">Amount</th>
+              </tr>
+            </thead>
+            <tbody>${bodyRowsHtml}</tbody>
+          </table>
+          <div class="receipt-divider"></div>
+          <div class="receipt-totals-block">
+            <div class="receipt-total-row">
+              <span class="receipt-total-label">Billable Subtotal</span>
+              <span class="receipt-total-val">₹${Number(bill.subtotal).toFixed(2)}</span>
+            </div>
+            ${optionalTotalsHtml}
+            <div class="receipt-divider"></div>
+            <div class="receipt-total-row receipt-grand">
+              <span class="receipt-total-label">Total (${escapeHtml(modeBadge)})</span>
+              <span class="receipt-total-val">₹${Number(bill.grandTotal).toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openCloseConfirmation() {
+      const table = getActiveTable();
+      const totals = computeBillTotals();
+      if (table.cart.length === 0 || !(totals.grandTotal > 0 || totals.isFriendsAndFamily)) return;
+
+      enforceMidnightRolloverForSales();
+
+      const activeUpi = getActiveUpiAccount(state.settings);
+      const now = new Date();
+      const billNumber = `CGS-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${String(state.sales.length + 1).padStart(3, "0")}`;
+
+      state.pendingClosureBill = {
+        id: billNumber,
+        contactPhone: CAFE_CONTACT_PHONE,
+        tableName: formatSeatLabel(table.name),
+        serviceType: table.serviceType || "Dine-in",
+        tokenNumber: sanitizeToken(table.tokenNumber || ""),
+        customerName: normalizeCustomerName((table.customerName || "").trim()),
+        customerPhone: sanitizeTenDigitPhone(table.customerPhone || ""),
+        date: getLocalDateKey(now),
+        time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        dateTimeLabel: formatReceiptDateTime(now),
+        lineItems: table.cart.map(i => ({
+          name: i.name,
+          qty: i.qty,
+          price: i.price,
+          waivedQty: Number(i.waivedQty || 0),
+          waiveReason: i.waiveReason || "",
+          waiveNote: i.waiveNote || "",
+          consumedQty: i.qty
+        })),
+        services: buildServiceGroups(table),
+        itemsSummary: table.cart.map(i => {
+          const w = Number(i.waivedQty || 0);
+          return w > 0
+            ? `${String(i.name || "").toUpperCase()} ${i.qty} (WAIVED ${w})`
+            : `${String(i.name || "").toUpperCase()} ${i.qty}`;
+        }).join("; "),
+        mode: totals.isFriendsAndFamily ? "F&F_WAIVED" : table.paymentMode,
+        upiVpa: (!totals.isFriendsAndFamily && table.paymentMode === "UPI") ? (activeUpi.vpa || "") : "",
+        grossSubtotal: Number(totals.grossSubtotal.toFixed(2)),
+        waivedItemsAmount: Number(totals.waivedItemsAmount.toFixed(2)),
+        waivedItems: totals.waivedItems,
+        discountPercent: Number(totals.discountPercent.toFixed(2)),
+        discountAmount: Number(totals.discountAmount.toFixed(2)),
+        isFriendsAndFamily: totals.isFriendsAndFamily,
+        friendsFamilyWaivedAmount: Number(totals.friendsFamilyWaivedAmount.toFixed(2)),
+        subtotal: Number(totals.subtotal.toFixed(2)),
+        scEnabled: totals.scEnabled,
+        serviceCharge: Number(totals.serviceCharge.toFixed(2)),
+        cgstEnabled: totals.cgstEnabled,
+        cgstRate: totals.cgstRate,
+        cgstAmount: Number(totals.cgstAmount.toFixed(2)),
+        sgstEnabled: totals.sgstEnabled,
+        sgstRate: totals.sgstRate,
+        sgstAmount: Number(totals.sgstAmount.toFixed(2)),
+        gstAmount: Number(totals.gstAmount.toFixed(2)),
+        grandTotal: Number(totals.grandTotal.toFixed(2))
+      };
+
+      document.getElementById("confirmReceiptPreview").innerHTML = renderReceiptHtml(state.pendingClosureBill);
+      document.getElementById("confirmCloseDialog").showModal();
+    }
+
+    async function persistBillToSupabase(bill, table) {
+      const client = getDbClient();
+      if (!client?.from) return;
+      setDbSyncStatus("syncing", "DB: Saving bill...");
+      try {
+        const actorId = await getCurrentStaffId();
+        const consumptionPayload = {
+          consumedItems: bill.lineItems,
+          grossSubtotal: bill.grossSubtotal,
+          waivedItemsAmount: bill.waivedItemsAmount,
+          waivedItems: bill.waivedItems,
+          discountPercent: bill.discountPercent,
+          discountAmount: bill.discountAmount,
+          isFriendsAndFamily: bill.isFriendsAndFamily,
+          friendsFamilyWaivedAmount: bill.friendsFamilyWaivedAmount,
+          inventoryConsumptionTracked: true
+        };
+
+        const { error } = await client.from("bills").upsert([{
+          bill_number: bill.id,
+          table_name: bill.tableName,
+          service_type: bill.serviceType,
+          token_number: bill.tokenNumber || null,
+          customer_name: bill.customerName || null,
+          customer_phone: bill.customerPhone || null,
+          bill_date: bill.date,
+          bill_time: bill.time,
+          items_summary: bill.itemsSummary,
+          kots_json: bill.services,
+          consumption_json: consumptionPayload,
+          payment_mode: bill.mode,
+          upi_vpa: bill.upiVpa || null,
+          subtotal: bill.subtotal,
+          service_charge: bill.serviceCharge,
+          cgst_rate: bill.cgstEnabled ? bill.cgstRate : 0,
+          cgst_amount: bill.cgstAmount,
+          sgst_rate: bill.sgstEnabled ? bill.sgstRate : 0,
+          sgst_amount: bill.sgstAmount,
+          gst_amount: bill.gstAmount,
+          grand_total: bill.grandTotal,
+          created_by: actorId
+        }], { onConflict: "bill_number" });
+
+        if (error) throw error;
+
+        await logPosActivity("BILL_SETTLED", {
+          billNumber: bill.id,
+          mode: bill.mode,
+          grossSubtotal: bill.grossSubtotal,
+          waivedItemsAmount: bill.waivedItemsAmount,
+          waivedItems: bill.waivedItems,
+          discountPercent: bill.discountPercent,
+          discountAmount: bill.discountAmount,
+          isFriendsAndFamily: bill.isFriendsAndFamily,
+          friendsFamilyWaivedAmount: bill.friendsFamilyWaivedAmount,
+          subtotal: bill.subtotal,
+          serviceCharge: bill.serviceCharge,
+          cgstAmount: bill.cgstAmount,
+          sgstAmount: bill.sgstAmount,
+          grandTotal: bill.grandTotal,
+          consumedItems: bill.lineItems
+        }, table, bill.id);
+
+        setDbSyncStatus("synced", "DB: Synced");
+      } catch (err) {
+        console.warn("Supabase bills insert failed:", err);
+        setDbSyncStatus("error", "DB: Offline/Error");
+      }
+    }
+
+    async function confirmAndPrintReceipt() {
+      const bill = state.pendingClosureBill;
+      if (!bill || !(Number(bill.grandTotal) > 0 || bill.isFriendsAndFamily)) return;
+
+      enforceMidnightRolloverForSales();
+
+      const table = getActiveTable();
+      state.salesDateKey = getLocalDateKey();
+      state.sales.unshift(bill);
+      saveSalesState();
+      await persistBillToSupabase(bill, table);
+
+      table.cart = [];
+      table.kots = [];
+      table.customerName = "";
+      table.customerPhone = "";
+      table.waPhone = "";
+      table.waPhoneManual = false;
+      table.tokenNumber = "";
+      table.serviceType = "Dine-in";
+      table.paymentMode = "UPI";
+      table.discountPercent = 0;
+      table.isFriendsAndFamily = false;
+      state.pendingClosureBill = null;
+      state.lastQrStatusMsg = "";
+      state.lastQrErrorMsg = "";
+      saveTablesState(true);
+
+      document.getElementById("confirmCloseDialog").close();
+      renderTableTabs();
+      renderCart();
+      renderSalesTable();
+
+      document.getElementById("printMount").innerHTML = renderReceiptHtml(bill);
+      window.print();
+    }
+
+    async function printPastBill(billId) {
+      const bill = state.sales.find(b => b.id === billId);
+      if (!bill) return;
+      await logPosActivity("RECEIPT_REPRINTED", { billNumber: bill.id }, null, bill.id);
+      document.getElementById("printMount").innerHTML = renderReceiptHtml(bill);
+      window.print();
+    }
+
+    function getSortedSales() {
+      const list = [...state.sales];
+      if (!state.subtotalSortDir) return list;
+      return list.sort((a, b) => {
+        const diff = Number(a.subtotal || 0) - Number(b.subtotal || 0);
+        return state.subtotalSortDir === "asc" ? diff : -diff;
+      });
+    }
+
+    function toggleSubtotalSort() {
+      if (state.subtotalSortDir === null) state.subtotalSortDir = "asc";
+      else if (state.subtotalSortDir === "asc") state.subtotalSortDir = "desc";
+      else state.subtotalSortDir = null;
+      renderSalesTable();
+    }
+
+    function renderSalesTable() {
+      document.getElementById("todayCount").textContent = String(state.sales.length);
+      const totalRevenue = state.sales.reduce((sum, b) => sum + Number(b.grandTotal || 0), 0);
+      document.getElementById("salesSummaryText").textContent =
+        `${state.sales.length} bill(s) recorded (${state.salesDateKey}) • Net Revenue: ₹${totalRevenue.toFixed(2)}`;
+
+      const indicator = document.getElementById("subtotalSortIndicator");
+      if (state.subtotalSortDir === "asc") indicator.textContent = "↑";
+      else if (state.subtotalSortDir === "desc") indicator.textContent = "↓";
+      else indicator.textContent = "↕";
+
+      const tbody = document.getElementById("salesTableBody");
+      const rows = getSortedSales();
+      if (rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="14" class="muted">No completed bills recorded yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map(b => {
+        const custText = [normalizeCustomerName(b.customerName), b.customerPhone].filter(Boolean).join(" • ") || "-";
+        const modeTokenText = [b.serviceType || "Dine-in", b.tokenNumber ? `#${sanitizeToken(b.tokenNumber)}` : ""].filter(Boolean).join(" • ");
+        const cgstVal = b.cgstAmount !== undefined ? Number(b.cgstAmount) : Number(b.gstAmount || 0) / 2;
+        const sgstVal = b.sgstAmount !== undefined ? Number(b.sgstAmount) : Number(b.gstAmount || 0) / 2;
+        const totalWaivedAndDisc = Number(b.waivedItemsAmount || 0) + Number(b.discountAmount || 0) + Number(b.friendsFamilyWaivedAmount || 0);
+        return `
+          <tr>
+            <td>${escapeHtml(b.id)}</td>
+            <td>Seat ${escapeHtml(formatSeatLabel(b.tableName || "-"))}</td>
+            <td>${escapeHtml(modeTokenText)}</td>
+            <td>${escapeHtml(custText)}</td>
+            <td>${escapeHtml(b.date)} ${escapeHtml(b.time)}</td>
+            <td>${escapeHtml(b.itemsSummary)}</td>
+            <td>${escapeHtml(b.mode)}</td>
+            <td>₹${Number(b.subtotal).toFixed(2)}</td>
+            <td>₹${totalWaivedAndDisc.toFixed(2)}</td>
+            <td>₹${Number(b.serviceCharge || 0).toFixed(2)}</td>
+            <td>₹${cgstVal.toFixed(2)}</td>
+            <td>₹${sgstVal.toFixed(2)}</td>
+            <td><strong>₹${Number(b.grandTotal).toFixed(2)}</strong></td>
+            <td><button type="button" class="btn btn-sm" onclick="printPastBill('${escapeAttr(b.id)}')">Print</button></td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function exportSalesCsv() {
+      enforceMidnightRolloverForSales();
+
+      if (state.sales.length === 0) {
+        alert("No sales records to export yet.");
+        return;
+      }
+
+      const headers = [
+        "Bill ID", "Seat", "Service Type", "Token #", "Customer Name", "Customer Phone",
+        "Date", "Time", "Items (Consumed)", "Payment Mode", "Gross Items",
+        "Waived Items (Inv. Tracked)", "Discount %", "Discount Amount", "F&F Waived",
+        "Billable Subtotal", "Service Charges", "CGST", "SGST", "Grand Total"
+      ];
+
+      const rows = state.sales.map(b => {
+        const cgstVal = b.cgstAmount !== undefined ? Number(b.cgstAmount) : Number(b.gstAmount || 0) / 2;
+        const sgstVal = b.sgstAmount !== undefined ? Number(b.sgstAmount) : Number(b.gstAmount || 0) / 2;
+        return [
+          b.id, formatSeatLabel(b.tableName || ""), b.serviceType || "Dine-in", sanitizeToken(b.tokenNumber || ""),
+          normalizeCustomerName(b.customerName || ""), b.customerPhone || "",
+          b.date, b.time, b.itemsSummary, b.mode,
+          Number(b.grossSubtotal ?? b.subtotal).toFixed(2),
+          Number(b.waivedItemsAmount || 0).toFixed(2),
+          Number(b.discountPercent || 0).toFixed(2),
+          Number(b.discountAmount || 0).toFixed(2),
+          Number(b.friendsFamilyWaivedAmount || 0).toFixed(2),
+          Number(b.subtotal).toFixed(2), Number(b.serviceCharge || 0).toFixed(2),
+          cgstVal.toFixed(2), sgstVal.toFixed(2), Number(b.grandTotal).toFixed(2)
+        ];
+      });
+
+      const csvContent = [headers, ...rows]
+        .map(row => row.map(cell => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(","))
+        .join("\n");
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `cgs-cafe-sales-${state.salesDateKey || getLocalDateKey()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function escapeAttr(str) {
+      return String(str ?? "").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    }
+
+    document.getElementById("btnPosLogout").addEventListener("click", async () => {
+      if (typeof logout === "function") {
+        await logout({ clearStorage: false });
+      }
+    });
+
+    document.getElementById("friendsFamilyToggle").addEventListener("change", async (e) => {
+      const table = getActiveTable();
+      table.isFriendsAndFamily = Boolean(e.target.checked);
+      saveTablesState(true);
+      await logPosActivity("FRIENDS_AND_FAMILY_WAIVE", {
+        enabled: table.isFriendsAndFamily,
+        grossSubtotal: computeBillTotals().grossSubtotal
+      }, table);
+      renderTableTabs();
+      renderCart();
+    });
+
+    document.querySelectorAll(".discount-chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        const table = getActiveTable();
+        if (table.isFriendsAndFamily) return;
+        const pct = Math.max(0, Math.min(100, Number(chip.dataset.disc) || 0));
+        table.discountPercent = pct;
+        saveTablesState(false);
+        renderTableTabs();
+        renderTotals();
+        renderPaymentFlow();
+      });
+    });
+
+    document.getElementById("customDiscountInput").addEventListener("input", (e) => {
+      const table = getActiveTable();
+      if (table.isFriendsAndFamily) return;
+      let val = Number(e.target.value);
+      if (!Number.isFinite(val) || val < 0) val = 0;
+      if (val > 100) val = 100;
+      table.discountPercent = val;
+      saveTablesState(false);
+      document.querySelectorAll(".discount-chip").forEach(chip => {
+        chip.classList.toggle("active", Number(chip.dataset.disc) === val);
+      });
+      renderTotals();
+      renderPaymentFlow();
+    });
+
+    document.getElementById("btnCloseWaiveItemTop").addEventListener("click", closeWaiveItemModal);
+    document.getElementById("btnCancelWaiveItem").addEventListener("click", closeWaiveItemModal);
+    document.getElementById("btnApplyWaiveItem").addEventListener("click", applyWaiveItemFromModal);
+    document.getElementById("waiveItemDialog").addEventListener("cancel", (e) => {
+      e.preventDefault();
+      closeWaiveItemModal();
+    });
+
+    document.getElementById("btnOpenSettings").addEventListener("click", openSettingsDialog);
+    document.getElementById("btnSaveSettings").addEventListener("click", commitSettingsFromDialog);
+    document.getElementById("btnCancelSettings").addEventListener("click", closeSettingsWithoutSaving);
+    document.getElementById("btnCancelSettingsTop").addEventListener("click", closeSettingsWithoutSaving);
+    document.getElementById("settingsDialog").addEventListener("cancel", (e) => {
+      e.preventDefault();
+      closeSettingsWithoutSaving();
+    });
+
+    document.getElementById("btnAddUpiEntry").addEventListener("click", addDraftUpiEntry);
+    document.getElementById("newUpiVpaInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addDraftUpiEntry();
+      }
+    });
+
+    document.getElementById("newUpiQrFile").addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      const nameEl = document.getElementById("newUpiQrFileName");
+      const errEl = document.getElementById("upiManagerError");
+      if (!file) {
+        state.pendingUploadedQrDataUrl = "";
+        nameEl.textContent = "";
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        errEl.textContent = "Please select an image file for the QR code.";
+        e.target.value = "";
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        state.pendingUploadedQrDataUrl = String(reader.result || "");
+        nameEl.textContent = `Selected QR for new UPI: ${file.name}`;
+        errEl.textContent = "";
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById("replaceUpiQrFile").addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      const targetId = state.replacingQrForUpiId;
+      state.replacingQrForUpiId = "";
+      if (!file || !targetId) return;
+
+      const errEl = document.getElementById("upiManagerError");
+      if (!file.type.startsWith("image/")) {
+        errEl.textContent = "Please select an image file for the QR code.";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = String(reader.result || "");
+        const targetAcc = state.draftUpiAccounts.find(u => u.id === targetId);
+        if (targetAcc) {
+          targetAcc.customQrDataUrl = dataUrl;
+          if (state.settings.activeUpiId === targetAcc.id) {
+            state.settings.upiAccounts = state.draftUpiAccounts.map(u => ({ ...u }));
+            try {
+              localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.settings));
+            } catch (_) {}
+            syncBillingSettingsToSupabase(state.settings);
+            renderPaymentFlow();
+          }
+          renderUpiManagerDraft();
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById("btnOpenSales").addEventListener("click", () => {
+      enforceMidnightRolloverForSales();
+      renderSalesTable();
+      document.getElementById("salesDialog").showModal();
+    });
+
+    document.querySelectorAll("[data-close-dialog]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const dialog = document.getElementById(btn.dataset.closeDialog);
+        if (dialog && typeof dialog.close === "function") dialog.close();
+      });
+    });
+
+    document.getElementById("searchInput").addEventListener("input", renderCatalog);
+    document.getElementById("categoryFilter").addEventListener("change", renderCatalog);
+    document.getElementById("btnAddTable").addEventListener("click", addNewTable);
+    document.getElementById("btnRemoveTable").addEventListener("click", removeCurrentTable);
+    document.getElementById("btnSendKot").addEventListener("click", sendKotForActiveTable);
+    document.getElementById("btnReprintKot").addEventListener("click", reprintLastKotForActiveTable);
+    document.getElementById("sortSubtotalHeader").addEventListener("click", toggleSubtotalSort);
+
+    document.getElementById("customerNameInput").addEventListener("input", (e) => {
+      const upper = normalizeCustomerName(e.target.value);
+      e.target.value = upper;
+      const table = getActiveTable();
+      table.customerName = upper;
+      saveTablesState(false);
+    });
+
+    document.getElementById("customerPhoneInput").addEventListener("input", (e) => {
+      const cleaned = sanitizeTenDigitPhone(e.target.value);
+      e.target.value = cleaned;
+      const table = getActiveTable();
+      table.customerPhone = cleaned;
+      if (!table.waPhoneManual) {
+        table.waPhone = cleaned;
+        const waInput = document.getElementById("waPhoneInput");
+        if (waInput) {
+          waInput.value = cleaned;
+          const waErr = document.getElementById("waPhoneError");
+          if (waErr) waErr.textContent = "";
+        }
+      }
+      saveTablesState(false);
+    });
+
+    document.getElementById("serviceTypeSelect").addEventListener("change", (e) => {
+      const table = getActiveTable();
+      table.serviceType = e.target.value;
+      saveTablesState(false);
+    });
+
+    document.getElementById("tokenNumberInput").addEventListener("input", (e) => {
+      const cleanedToken = sanitizeToken(e.target.value);
+      e.target.value = cleanedToken;
+      const table = getActiveTable();
+      table.tokenNumber = cleanedToken;
+      saveTablesState(false);
+    });
+
+    document.getElementById("btnCloseTransaction").addEventListener("click", openCloseConfirmation);
+    document.getElementById("btnConfirmAndPrint").addEventListener("click", confirmAndPrintReceipt);
+
+    document.querySelectorAll(".pay-mode-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const table = getActiveTable();
+        table.paymentMode = btn.dataset.mode;
+        saveTablesState(false);
+        renderTableTabs();
+        renderPaymentFlow();
+      });
+    });
+
+    document.getElementById("btnExportCsv").addEventListener("click", exportSalesCsv);
+    document.getElementById("btnExportCsvInner").addEventListener("click", exportSalesCsv);
+
+    setInterval(enforceMidnightRolloverForSales, 30000);
+
+    async function bootPos() {
+      if (typeof requireLogin === "function") {
+        const authed = await requireLogin();
+        if (!authed) return;
+      }
+
+      loadPersistedState();
+      renderTableTabs();
+      renderCart();
+      renderSalesTable();
+
+      await hydratePosFromSupabase();
+      renderTableTabs();
+      renderCart();
+      renderSalesTable();
+      await loadMenu();
+    }
+
+    bootPos();
+  </script>
+</body>
+</html>
