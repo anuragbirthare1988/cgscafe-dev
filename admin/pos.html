@@ -463,19 +463,6 @@
 
     .cart-row:last-child { border-bottom: none; }
 
-    .cart-row-actions {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .cart-sub-note {
-      font-size: 11px;
-      color: var(--warn-ink);
-      font-weight: 600;
-      margin-top: 2px;
-    }
-
     .kot-tag {
       font-size: 10px;
       font-weight: 700;
@@ -483,17 +470,6 @@
       border-radius: 999px;
       background: var(--accent-soft);
       color: var(--accent);
-      margin-left: 6px;
-    }
-
-    .waived-tag {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 1px 6px;
-      border-radius: 999px;
-      background: var(--warn-bg);
-      border: 1px solid var(--warn-border);
-      color: var(--warn-ink);
       margin-left: 6px;
     }
 
@@ -507,45 +483,20 @@
       border: 1px solid var(--border);
       background: var(--surface-alt);
       border-radius: 10px;
-      padding: 8px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 12px;
-      flex-shrink: 0;
-    }
-
-    .promo-top-row {
+      padding: 7px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
       flex-wrap: wrap;
-    }
-
-    .ff-toggle-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 700;
-      color: var(--accent);
-      cursor: pointer;
-    }
-
-    .ff-active-badge {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 999px;
-      background: var(--warn-bg);
-      border: 1px solid var(--warn-border);
-      color: var(--warn-ink);
+      font-size: 12px;
+      flex-shrink: 0;
     }
 
     .discount-row {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       flex-wrap: wrap;
     }
 
@@ -569,12 +520,11 @@
     .discount-custom-wrap {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      margin-left: auto;
+      gap: 3px;
     }
 
     .discount-custom-wrap input {
-      width: 64px;
+      width: 58px;
       padding: 3px 6px;
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -769,12 +719,6 @@
       height: 10px;
       padding: 0;
       border: none;
-    }
-    .receipt-note-row td {
-      font-size: 10px;
-      color: #5a463a;
-      padding-top: 0;
-      padding-bottom: 4px;
     }
     .receipt-totals-block {
       margin-top: 8px;
@@ -999,7 +943,7 @@
         <span class="sync-pill" id="dbSyncStatus" title="Supabase sync status">DB: Checking...</span>
       </div>
       <div class="header-actions">
-        <button type="button" class="btn" id="btnOpenSettings">Billing Rules & Tax</button>
+        <button type="button" class="btn" id="btnOpenSettings">Billing Rules &amp; Tax</button>
         <button type="button" class="btn" id="btnOpenSales">Today's Bills (<span id="todayCount">0</span>)</button>
         <button type="button" class="btn btn-primary" id="btnExportCsv">Export CSV</button>
         <button type="button" class="btn btn-danger btn-sm" id="btnPosLogout">Sign Out</button>
@@ -1052,13 +996,6 @@
         </div>
 
         <div class="promo-controls">
-          <div class="promo-top-row">
-            <label class="ff-toggle-label">
-              <input type="checkbox" id="friendsFamilyToggle" />
-              <span>Friends &amp; Family Waive-Off</span>
-            </label>
-            <span class="ff-active-badge" id="ffStatusBadge" style="display:none;">F&amp;F WAIVED (INVENTORY LOGGED)</span>
-          </div>
           <div class="discount-row" id="discountPresetRow">
             <span class="muted" style="font-weight:600;">Discount:</span>
             <button type="button" class="discount-chip active" data-disc="0">0%</button>
@@ -1074,24 +1011,12 @@
 
         <div class="totals-box">
           <div class="totals-line">
-            <span>Gross Items Total</span>
-            <strong id="grossSubtotalText">₹0.00</strong>
-          </div>
-          <div class="totals-line totals-discount" id="waivedItemsRow" style="display:none;">
-            <span>Waived Items (Wrong / Unmet Exp.)</span>
-            <span id="waivedItemsText">-₹0.00</span>
+            <span>Subtotal</span>
+            <strong id="subtotalText">₹0.00</strong>
           </div>
           <div class="totals-line totals-discount" id="discountRow" style="display:none;">
             <span id="discountLabel">Discount</span>
             <span id="discountText">-₹0.00</span>
-          </div>
-          <div class="totals-line totals-discount" id="ffWaiveRow" style="display:none;">
-            <span>Friends &amp; Family Waive-Off</span>
-            <span id="ffWaiveText">-₹0.00</span>
-          </div>
-          <div class="totals-line">
-            <span>Billable Subtotal</span>
-            <strong id="subtotalText">₹0.00</strong>
           </div>
           <div class="totals-line" id="scRow" style="display:none;">
             <span id="scLabel">Service Charges</span>
@@ -1125,45 +1050,6 @@
       </aside>
     </main>
   </div>
-
-  <dialog class="app-dialog" id="waiveItemDialog" style="max-width: 460px;">
-    <div class="dialog-header">
-      <strong>Waive Item Charges (Track Consumption)</strong>
-      <button type="button" class="btn btn-sm" id="btnCloseWaiveItemTop">✕</button>
-    </div>
-    <div class="dialog-body">
-      <div class="highlight-warning">
-        Waived items are removed from customer billing while remaining in consumption/inventory records.
-      </div>
-      <div class="field" style="margin-bottom:12px;">
-        <div><strong>Item:</strong> <span id="waiveModalItemName">-</span></div>
-        <div class="muted" style="font-size:12px;">Total Qty: <span id="waiveModalTotalQty">0</span> • Already Waived: <span id="waiveModalAlreadyWaived">0</span> • Unit Rate: ₹<span id="waiveModalRate">0.00</span></div>
-      </div>
-      <div class="field" style="margin-bottom:12px;">
-        <label for="waiveQtyInput"><strong>Quantity to Waive</strong></label>
-        <input type="number" id="waiveQtyInput" min="0" step="1" value="1" />
-        <span class="muted" style="font-size:11px;">Set to 0 to clear waivers on this item.</span>
-      </div>
-      <div class="field" style="margin-bottom:12px;">
-        <label for="waiveReasonSelect"><strong>Reason</strong></label>
-        <select id="waiveReasonSelect">
-          <option value="Wrong Product Delivered">Wrong Product Delivered</option>
-          <option value="Did Not Meet Expectation">Did Not Meet Expectation</option>
-          <option value="Quality / Preparation Issue">Quality / Preparation Issue</option>
-          <option value="Spillage / Damaged">Spillage / Damaged</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="waiveNoteInput"><strong>Note (Optional)</strong></label>
-        <input type="text" id="waiveNoteInput" placeholder="e.g., Replaced with right item, logged for stock" />
-      </div>
-      <div class="field-error" id="waiveModalError"></div>
-    </div>
-    <div class="dialog-footer">
-      <button type="button" class="btn" id="btnCancelWaiveItem">Cancel</button>
-      <button type="button" class="btn btn-warm" id="btnApplyWaiveItem">Save Waive-Off</button>
-    </div>
-  </dialog>
 
   <dialog class="app-dialog" id="settingsDialog">
     <div class="dialog-header">
@@ -1254,12 +1140,12 @@
               <th>Type / Token</th>
               <th>Customer</th>
               <th>Time</th>
-              <th>Items (Consumed)</th>
+              <th>Items</th>
               <th>Mode</th>
               <th class="sortable" id="sortSubtotalHeader" title="Click to sort by Subtotal">
                 Subtotal <span id="subtotalSortIndicator">↕</span>
               </th>
-              <th>Waived / Disc.</th>
+              <th>Discount</th>
               <th>Service Charges</th>
               <th>CGST</th>
               <th>SGST</th>
@@ -1416,8 +1302,7 @@
           payment_mode: table.paymentMode || "UPI",
           cart_json: {
             items: table.cart || [],
-            discountPercent: Number(table.discountPercent || 0),
-            isFriendsAndFamily: Boolean(table.isFriendsAndFamily)
+            discountPercent: Number(table.discountPercent || 0)
           },
           kots_json: table.kots || [],
           updated_at: new Date().toISOString()
@@ -1480,16 +1365,15 @@
 
     function parseCartPayload(rawCartJson) {
       if (Array.isArray(rawCartJson)) {
-        return { cart: rawCartJson, discountPercent: 0, isFriendsAndFamily: false };
+        return { cart: rawCartJson, discountPercent: 0 };
       }
       if (rawCartJson && typeof rawCartJson === "object" && Array.isArray(rawCartJson.items)) {
         return {
           cart: rawCartJson.items,
-          discountPercent: Math.max(0, Math.min(100, Number(rawCartJson.discountPercent || 0))),
-          isFriendsAndFamily: Boolean(rawCartJson.isFriendsAndFamily)
+          discountPercent: Math.max(0, Math.min(100, Number(rawCartJson.discountPercent || 0)))
         };
       }
-      return { cart: [], discountPercent: 0, isFriendsAndFamily: false };
+      return { cart: [], discountPercent: 0 };
     }
 
     async function hydratePosFromSupabase() {
@@ -1556,8 +1440,7 @@
               waPhoneManual: isManual,
               serviceType: row.service_type === "Take away" ? "Take away" : "Dine-in",
               tokenNumber: sanitizeToken(row.token_number || ""),
-              discountPercent: parsedCart.discountPercent,
-              isFriendsAndFamily: parsedCart.isFriendsAndFamily
+              discountPercent: parsedCart.discountPercent
             };
           });
           if (!state.tables.some(t => t.id === state.activeTableId)) {
@@ -1602,13 +1485,8 @@
               itemsSummary: r.items_summary || "",
               mode: r.payment_mode || "UPI",
               upiVpa: r.upi_vpa || "",
-              grossSubtotal: Number(extra.grossSubtotal ?? r.subtotal ?? 0),
-              waivedItemsAmount: Number(extra.waivedItemsAmount ?? 0),
-              waivedItems: Array.isArray(extra.waivedItems) ? extra.waivedItems : [],
               discountPercent: Number(extra.discountPercent ?? 0),
               discountAmount: Number(extra.discountAmount ?? 0),
-              isFriendsAndFamily: Boolean(extra.isFriendsAndFamily),
-              friendsFamilyWaivedAmount: Number(extra.friendsFamilyWaivedAmount ?? 0),
               subtotal: Number(r.subtotal || 0),
               scEnabled: Number(r.service_charge || 0) > 0,
               serviceCharge: Number(r.service_charge || 0),
@@ -1640,27 +1518,22 @@
     }
 
     function normalizeCartItem(item) {
-      const qty = Math.max(1, Number(item.qty || 1));
-      const waivedQty = Math.max(0, Math.min(qty, Number(item.waivedQty || 0)));
       return {
         id: item.id,
         name: item.name,
         price: Number(item.price || 0),
-        qty,
+        qty: Math.max(1, Number(item.qty || 1)),
         unsentQty: Number(item.unsentQty ?? 0),
-        kotNumbers: Array.isArray(item.kotNumbers) ? item.kotNumbers : [],
-        waivedQty,
-        waiveReason: item.waiveReason || "",
-        waiveNote: item.waiveNote || ""
+        kotNumbers: Array.isArray(item.kotNumbers) ? item.kotNumbers : []
       };
     }
 
     function createDefaultTables() {
       return [
-        { id: "T1", name: "1", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0, isFriendsAndFamily: false },
-        { id: "T2", name: "2", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0, isFriendsAndFamily: false },
-        { id: "T3", name: "3", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0, isFriendsAndFamily: false },
-        { id: "T4", name: "4", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0, isFriendsAndFamily: false }
+        { id: "T1", name: "1", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0 },
+        { id: "T2", name: "2", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0 },
+        { id: "T3", name: "3", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0 },
+        { id: "T4", name: "4", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0 }
       ];
     }
 
@@ -1671,7 +1544,6 @@
       activeTableId: "T1",
       subtotalSortDir: null,
       pendingClosureBill: null,
-      waivingItemId: null,
       draftUpiAccounts: [],
       draftActiveUpiId: "",
       pendingUploadedQrDataUrl: "",
@@ -2027,8 +1899,7 @@
               serviceType: t.serviceType === "Take away" ? "Take away" : "Dine-in",
               tokenNumber: sanitizeToken(t.tokenNumber || ""),
               paymentMode: t.paymentMode || "UPI",
-              discountPercent: Math.max(0, Math.min(100, Number(t.discountPercent || 0))),
-              isFriendsAndFamily: Boolean(t.isFriendsAndFamily)
+              discountPercent: Math.max(0, Math.min(100, Number(t.discountPercent || 0)))
             };
           });
           state.activeTableId = savedTables.activeTableId || state.tables[0].id;
@@ -2117,17 +1988,11 @@
       document.getElementById("serviceTypeSelect").value = active.serviceType || "Dine-in";
       document.getElementById("tokenNumberInput").value = sanitizeToken(active.tokenNumber || "");
 
-      const ffCheckbox = document.getElementById("friendsFamilyToggle");
-      ffCheckbox.checked = Boolean(active.isFriendsAndFamily);
-      document.getElementById("ffStatusBadge").style.display = active.isFriendsAndFamily ? "inline-block" : "none";
-
       const discVal = Number(active.discountPercent || 0);
       document.getElementById("customDiscountInput").value = discVal;
-      document.getElementById("customDiscountInput").disabled = Boolean(active.isFriendsAndFamily);
       document.querySelectorAll(".discount-chip").forEach(chip => {
         const chipVal = Number(chip.dataset.disc);
-        chip.classList.toggle("active", !active.isFriendsAndFamily && chipVal === discVal);
-        chip.disabled = Boolean(active.isFriendsAndFamily);
+        chip.classList.toggle("active", chipVal === discVal);
       });
 
       document.querySelectorAll(".pay-mode-btn").forEach(btn => {
@@ -2159,8 +2024,7 @@
         waPhoneManual: false,
         serviceType: "Dine-in",
         tokenNumber: "",
-        discountPercent: 0,
-        isFriendsAndFamily: false
+        discountPercent: 0
       };
       state.tables.push(newTable);
       state.activeTableId = newTable.id;
@@ -2384,10 +2248,7 @@
           price: Number(prod.price || 0),
           qty: 1,
           unsentQty: 1,
-          kotNumbers: [],
-          waivedQty: 0,
-          waiveReason: "",
-          waiveNote: ""
+          kotNumbers: []
         });
       }
       saveTablesState(false);
@@ -2406,9 +2267,6 @@
       } else {
         item.qty = nextQty;
         item.unsentQty = Math.max(0, (item.unsentQty ?? 0) + delta);
-        if (Number(item.waivedQty || 0) > item.qty) {
-          item.waivedQty = item.qty;
-        }
       }
       saveTablesState(false);
       renderTableTabs();
@@ -2423,80 +2281,6 @@
       renderCart();
     }
 
-    function openWaiveItemModal(itemId) {
-      const table = getActiveTable();
-      const item = table.cart.find(c => c.id === itemId);
-      if (!item) return;
-
-      state.waivingItemId = itemId;
-      const alreadyWaived = Math.max(0, Number(item.waivedQty || 0));
-      document.getElementById("waiveModalItemName").textContent = item.name;
-      document.getElementById("waiveModalTotalQty").textContent = String(item.qty);
-      document.getElementById("waiveModalAlreadyWaived").textContent = String(alreadyWaived);
-      document.getElementById("waiveModalRate").textContent = Number(item.price || 0).toFixed(2);
-
-      const qtyInput = document.getElementById("waiveQtyInput");
-      qtyInput.max = String(item.qty);
-      qtyInput.value = String(alreadyWaived > 0 ? alreadyWaived : 1);
-
-      const reasonSelect = document.getElementById("waiveReasonSelect");
-      if (item.waiveReason && [...reasonSelect.options].some(o => o.value === item.waiveReason)) {
-        reasonSelect.value = item.waiveReason;
-      } else {
-        reasonSelect.value = "Wrong Product Delivered";
-      }
-
-      document.getElementById("waiveNoteInput").value = item.waiveNote || "";
-      document.getElementById("waiveModalError").textContent = "";
-      document.getElementById("waiveItemDialog").showModal();
-    }
-
-    function closeWaiveItemModal() {
-      state.waivingItemId = null;
-      const dlg = document.getElementById("waiveItemDialog");
-      if (dlg?.open) dlg.close();
-    }
-
-    async function applyWaiveItemFromModal() {
-      const table = getActiveTable();
-      const item = table.cart.find(c => c.id === state.waivingItemId);
-      const errEl = document.getElementById("waiveModalError");
-      if (!item) {
-        closeWaiveItemModal();
-        return;
-      }
-
-      const qtyInput = document.getElementById("waiveQtyInput");
-      const rawWaiveQty = Number(qtyInput.value);
-      if (!Number.isFinite(rawWaiveQty) || rawWaiveQty < 0 || rawWaiveQty > item.qty) {
-        errEl.textContent = `Enter a waive quantity between 0 and ${item.qty}.`;
-        return;
-      }
-
-      const waiveQty = Math.floor(rawWaiveQty);
-      const reason = document.getElementById("waiveReasonSelect").value;
-      const note = (document.getElementById("waiveNoteInput").value || "").trim();
-
-      item.waivedQty = waiveQty;
-      item.waiveReason = waiveQty > 0 ? reason : "";
-      item.waiveNote = waiveQty > 0 ? note : "";
-
-      saveTablesState(true);
-      await logPosActivity("ITEM_CONSUMPTION_WAIVED", {
-        itemId: item.id,
-        itemName: item.name,
-        totalQty: item.qty,
-        waivedQty: item.waivedQty,
-        waivedValue: Number((waiveQty * Number(item.price || 0)).toFixed(2)),
-        reason: item.waiveReason,
-        note: item.waiveNote,
-        consumptionTracked: true
-      }, table, item.id);
-
-      closeWaiveItemModal();
-      renderCart();
-    }
-
     async function sendKotForActiveTable() {
       const table = getActiveTable();
       const pendingItems = table.cart
@@ -2504,9 +2288,7 @@
           id: item.id,
           name: item.name,
           price: item.price,
-          qty: Number(item.unsentQty ?? item.qty),
-          waivedQty: Number(item.waivedQty || 0),
-          waiveReason: item.waiveReason || ""
+          qty: Number(item.unsentQty ?? item.qty)
         }))
         .filter(i => i.qty > 0);
 
@@ -2595,53 +2377,21 @@
 
     function computeBillTotals() {
       const table = getActiveTable();
-      const isFriendsAndFamily = Boolean(table.isFriendsAndFamily);
-      const discountPercent = isFriendsAndFamily
-        ? 0
-        : Math.max(0, Math.min(100, Number(table.discountPercent || 0)));
+      const discountPercent = Math.max(0, Math.min(100, Number(table.discountPercent || 0)));
 
-      let grossSubtotal = 0;
-      let waivedItemsAmount = 0;
-      let chargeableBeforeDiscount = 0;
-      const waivedItems = [];
+      const grossSubtotal = table.cart.reduce((sum, item) => {
+        return sum + (Number(item.price || 0) * Number(item.qty || 0));
+      }, 0);
 
-      for (const item of table.cart) {
-        const qty = Number(item.qty || 0);
-        const rate = Number(item.price || 0);
-        const wQty = Math.max(0, Math.min(qty, Number(item.waivedQty || 0)));
-        const bQty = Math.max(0, qty - wQty);
-
-        grossSubtotal += qty * rate;
-        waivedItemsAmount += wQty * rate;
-        chargeableBeforeDiscount += bQty * rate;
-
-        if (wQty > 0) {
-          waivedItems.push({
-            id: item.id,
-            name: item.name,
-            totalQty: qty,
-            waivedQty: wQty,
-            billableQty: bQty,
-            rate,
-            waivedAmount: Number((wQty * rate).toFixed(2)),
-            reason: item.waiveReason || "Waived",
-            note: item.waiveNote || "",
-            consumptionTracked: true
-          });
-        }
-      }
-
-      const discountAmount = chargeableBeforeDiscount > 0
-        ? (chargeableBeforeDiscount * discountPercent) / 100
+      const discountAmount = grossSubtotal > 0
+        ? (grossSubtotal * discountPercent) / 100
         : 0;
 
-      const afterDiscountSubtotal = Math.max(0, chargeableBeforeDiscount - discountAmount);
-      const friendsFamilyWaivedAmount = isFriendsAndFamily ? afterDiscountSubtotal : 0;
-      const subtotal = isFriendsAndFamily ? 0 : afterDiscountSubtotal;
+      const subtotal = Math.max(0, grossSubtotal - discountAmount);
 
       const scEnabled = Boolean(state.settings.scEnabled);
       let serviceCharge = 0;
-      if (!isFriendsAndFamily && scEnabled && subtotal > 0) {
+      if (scEnabled && subtotal > 0) {
         serviceCharge = state.settings.scType === "fixed"
           ? Number(state.settings.scValue || 0)
           : (subtotal * Number(state.settings.scValue || 0)) / 100;
@@ -2651,29 +2401,23 @@
 
       const cgstEnabled = Boolean(state.settings.cgstEnabled);
       const cgstRate = Number(state.settings.cgstRate ?? 2.5);
-      const cgstAmount = (!isFriendsAndFamily && cgstEnabled && taxableBase > 0)
+      const cgstAmount = (cgstEnabled && taxableBase > 0)
         ? (taxableBase * cgstRate) / 100
         : 0;
 
       const sgstEnabled = Boolean(state.settings.sgstEnabled);
       const sgstRate = Number(state.settings.sgstRate ?? 2.5);
-      const sgstAmount = (!isFriendsAndFamily && sgstEnabled && taxableBase > 0)
+      const sgstAmount = (sgstEnabled && taxableBase > 0)
         ? (taxableBase * sgstRate) / 100
         : 0;
 
       const gstAmount = cgstAmount + sgstAmount;
-      const grandTotal = isFriendsAndFamily
-        ? 0
-        : (subtotal + serviceCharge + cgstAmount + sgstAmount);
+      const grandTotal = subtotal + serviceCharge + cgstAmount + sgstAmount;
 
       return {
         grossSubtotal,
-        waivedItemsAmount,
-        waivedItems,
         discountPercent,
         discountAmount,
-        isFriendsAndFamily,
-        friendsFamilyWaivedAmount,
         subtotal,
         scEnabled,
         serviceCharge,
@@ -2694,8 +2438,7 @@
       const closeBtn = document.getElementById("btnCloseTransaction");
       const totals = computeBillTotals();
 
-      const canClose = table.cart.length > 0 && (totals.grandTotal > 0 || totals.isFriendsAndFamily);
-      closeBtn.disabled = !canClose;
+      closeBtn.disabled = table.cart.length === 0 || !(totals.grandTotal > 0);
 
       renderKotControls();
 
@@ -2704,45 +2447,28 @@
       } else {
         list.innerHTML = table.cart.map(item => {
           const unsent = Number(item.unsentQty ?? 0);
-          const wQty = Math.max(0, Math.min(item.qty, Number(item.waivedQty || 0)));
           const kotPill = unsent > 0
             ? `<span class="kot-tag">New: ${unsent}</span>`
             : (item.kotNumbers && item.kotNumbers.length > 0
               ? `<span class="kot-tag">KOT ${item.kotNumbers.join(",")}</span>`
               : "");
-          const waivedPill = wQty > 0
-            ? `<span class="waived-tag">Waived: ${wQty}</span>`
-            : "";
-
-          const waiveDetail = wQty > 0
-            ? `<div class="cart-sub-note">${escapeHtml(item.waiveReason || "Waived")}${item.waiveNote ? ` • ${escapeHtml(item.waiveNote)}` : ""} (Inv. tracked)</div>`
-            : "";
 
           return `
             <div class="cart-row">
               <div>
-                <div style="font-weight:600;">${escapeHtml(item.name)}${kotPill}${waivedPill}</div>
-                ${waiveDetail}
+                <div style="font-weight:600;">${escapeHtml(item.name)}${kotPill}</div>
               </div>
               <div class="qty-box">
                 <button type="button" class="btn btn-sm" onclick="updateQty('${escapeAttr(item.id)}', -1)">-</button>
                 <span>${item.qty}</span>
                 <button type="button" class="btn btn-sm" onclick="updateQty('${escapeAttr(item.id)}', 1)">+</button>
               </div>
-              <div class="cart-row-actions">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-warm"
-                  title="Waive item charges (wrong item / unmet expectation)"
-                  onclick="openWaiveItemModal('${escapeAttr(item.id)}')"
-                >Waive</button>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-danger"
-                  title="Remove item"
-                  onclick="removeItemCompletely('${escapeAttr(item.id)}')"
-                >✕</button>
-              </div>
+              <button
+                type="button"
+                class="btn btn-sm btn-danger"
+                title="Remove item"
+                onclick="removeItemCompletely('${escapeAttr(item.id)}')"
+              >✕</button>
             </div>
           `;
         }).join("");
@@ -2754,12 +2480,8 @@
 
     function renderTotals() {
       const {
-        grossSubtotal,
-        waivedItemsAmount,
         discountPercent,
         discountAmount,
-        isFriendsAndFamily,
-        friendsFamilyWaivedAmount,
         subtotal,
         scEnabled,
         serviceCharge,
@@ -2772,18 +2494,10 @@
         grandTotal
       } = computeBillTotals();
 
-      document.getElementById("grossSubtotalText").textContent = `₹${grossSubtotal.toFixed(2)}`;
-
-      const waivedItemsRow = document.getElementById("waivedItemsRow");
-      if (waivedItemsAmount > 0) {
-        waivedItemsRow.style.display = "flex";
-        document.getElementById("waivedItemsText").textContent = `-₹${waivedItemsAmount.toFixed(2)}`;
-      } else {
-        waivedItemsRow.style.display = "none";
-      }
+      document.getElementById("subtotalText").textContent = `₹${subtotal.toFixed(2)}`;
 
       const discountRow = document.getElementById("discountRow");
-      if (!isFriendsAndFamily && discountAmount > 0) {
+      if (discountAmount > 0) {
         discountRow.style.display = "flex";
         document.getElementById("discountLabel").textContent = `Discount (${discountPercent}%)`;
         document.getElementById("discountText").textContent = `-₹${discountAmount.toFixed(2)}`;
@@ -2791,18 +2505,8 @@
         discountRow.style.display = "none";
       }
 
-      const ffWaiveRow = document.getElementById("ffWaiveRow");
-      if (isFriendsAndFamily && friendsFamilyWaivedAmount > 0) {
-        ffWaiveRow.style.display = "flex";
-        document.getElementById("ffWaiveText").textContent = `-₹${friendsFamilyWaivedAmount.toFixed(2)}`;
-      } else {
-        ffWaiveRow.style.display = "none";
-      }
-
-      document.getElementById("subtotalText").textContent = `₹${subtotal.toFixed(2)}`;
-
       const scRow = document.getElementById("scRow");
-      if (!isFriendsAndFamily && scEnabled) {
+      if (scEnabled) {
         scRow.style.display = "flex";
         document.getElementById("scLabel").textContent = state.settings.scType === "fixed"
           ? "Service Charges (Fixed)"
@@ -2813,7 +2517,7 @@
       }
 
       const cgstRow = document.getElementById("cgstRow");
-      if (!isFriendsAndFamily && cgstEnabled) {
+      if (cgstEnabled) {
         cgstRow.style.display = "flex";
         document.getElementById("cgstLabel").textContent = `CGST (${cgstRate}%)`;
         document.getElementById("cgstText").textContent = `₹${cgstAmount.toFixed(2)}`;
@@ -2822,7 +2526,7 @@
       }
 
       const sgstRow = document.getElementById("sgstRow");
-      if (!isFriendsAndFamily && sgstEnabled) {
+      if (sgstEnabled) {
         sgstRow.style.display = "flex";
         document.getElementById("sgstLabel").textContent = `SGST (${sgstRate}%)`;
         document.getElementById("sgstText").textContent = `₹${sgstAmount.toFixed(2)}`;
@@ -2937,26 +2641,19 @@
       });
 
       paymentAndInvoiceLines.push("------------------------------------");
-      paymentAndInvoiceLines.push(`GROSS ITEMS            ₹${Number(totals.grossSubtotal).toFixed(2).padStart(9, " ")}`);
-      if (totals.waivedItemsAmount > 0) {
-        paymentAndInvoiceLines.push(`WAIVED ITEMS           -₹${Number(totals.waivedItemsAmount).toFixed(2).padStart(8, " ")}`);
-      }
-      if (!totals.isFriendsAndFamily && totals.discountAmount > 0) {
+      paymentAndInvoiceLines.push(`SUBTOTAL               ₹${Number(totals.subtotal).toFixed(2).padStart(9, " ")}`);
+      if (totals.discountAmount > 0) {
         const dTag = `DISCOUNT (${totals.discountPercent}%)`.padEnd(22, " ");
         paymentAndInvoiceLines.push(`${dTag} -₹${Number(totals.discountAmount).toFixed(2).padStart(8, " ")}`);
       }
-      if (totals.isFriendsAndFamily) {
-        paymentAndInvoiceLines.push(`FRIENDS & FAMILY       -₹${Number(totals.friendsFamilyWaivedAmount).toFixed(2).padStart(8, " ")}`);
-      }
-      paymentAndInvoiceLines.push(`BILLABLE SUBTOTAL      ₹${Number(totals.subtotal).toFixed(2).padStart(9, " ")}`);
-      if (!totals.isFriendsAndFamily && totals.scEnabled) {
+      if (totals.scEnabled) {
         paymentAndInvoiceLines.push(`SERVICE CHARGES        ₹${Number(totals.serviceCharge).toFixed(2).padStart(9, " ")}`);
       }
-      if (!totals.isFriendsAndFamily && totals.cgstEnabled) {
+      if (totals.cgstEnabled) {
         const cgstTag = `CGST (${totals.cgstRate}%)`.padEnd(22, " ");
         paymentAndInvoiceLines.push(`${cgstTag} ₹${Number(totals.cgstAmount).toFixed(2).padStart(9, " ")}`);
       }
-      if (!totals.isFriendsAndFamily && totals.sgstEnabled) {
+      if (totals.sgstEnabled) {
         const sgstTag = `SGST (${totals.sgstRate}%)`.padEnd(22, " ");
         paymentAndInvoiceLines.push(`${sgstTag} ₹${Number(totals.sgstAmount).toFixed(2).padStart(9, " ")}`);
       }
@@ -2974,11 +2671,6 @@
       const totals = computeBillTotals();
       const amountStr = totals.grandTotal.toFixed(2);
       const effectiveWaPhone = sanitizeTenDigitPhone(table.waPhone || table.customerPhone || "");
-
-      if (totals.isFriendsAndFamily) {
-        box.innerHTML = `<p class="muted" style="margin:0;">Friends &amp; Family waive-off active (₹0.00 payable). Item consumption remains recorded for inventory.</p>`;
-        return;
-      }
 
       if (table.paymentMode === "CASH") {
         box.innerHTML = `<p class="muted" style="margin:0;">Collect ₹${amountStr} in cash and verify receipt before closing.</p>`;
@@ -3077,28 +2769,17 @@
 
     function buildServiceGroups(table) {
       const itemMap = new Map(table.cart.map(i => [i.name, i]));
-      const isFnF = Boolean(table.isFriendsAndFamily);
 
       function mapLineItem(name, qty, fallbackPrice) {
         const totalQty = Number(qty || 1);
         const cartMatch = itemMap.get(name);
         const rate = Number(fallbackPrice ?? cartMatch?.price ?? 0);
-        const wQty = Math.max(0, Math.min(totalQty, Number(cartMatch?.waivedQty || 0)));
-        const billableQty = isFnF ? 0 : Math.max(0, totalQty - wQty);
-        const amount = billableQty * rate;
-        const noteParts = [];
-        if (wQty > 0) {
-          noteParts.push(`Waived ${wQty} (${cartMatch?.waiveReason || "Exception"} • Inv. logged)`);
-        }
-        if (isFnF) {
-          noteParts.push("F&F Waived (Inv. logged)");
-        }
+        const amount = totalQty * rate;
         return {
           label: `${String(name || "").toUpperCase()} ${totalQty}`,
           qty: totalQty,
           rate,
-          amount,
-          note: noteParts.join("; ")
+          amount
         };
       }
 
@@ -3139,8 +2820,7 @@
             label: `${String(li.name || "").toUpperCase()} ${li.qty}`,
             qty: li.qty,
             rate: li.price,
-            amount: Number(li.price || 0) * Number(li.qty || 1),
-            note: ""
+            amount: Number(li.price || 0) * Number(li.qty || 1)
           }))
         }];
 
@@ -3163,13 +2843,6 @@
               <td class="num">₹${Number(item.amount).toFixed(2)}</td>
             </tr>
           `;
-          if (item.note) {
-            bodyRowsHtml += `
-              <tr class="receipt-note-row">
-                <td colspan="4">↳ ${escapeHtml(item.note)}</td>
-              </tr>
-            `;
-          }
         }
       });
 
@@ -3181,8 +2854,7 @@
       const seatLineParts = [
         `Seat: ${escapeHtml(formatSeatLabel(bill.tableName || ""))}`,
         escapeHtml(bill.serviceType || "Dine-in"),
-        bill.tokenNumber ? `Token: ${escapeHtml(sanitizeToken(bill.tokenNumber))}` : "",
-        bill.isFriendsAndFamily ? "Friends & Family" : ""
+        bill.tokenNumber ? `Token: ${escapeHtml(sanitizeToken(bill.tokenNumber))}` : ""
       ].filter(Boolean).join(" • ");
 
       const showSc = bill.scEnabled !== undefined ? Boolean(bill.scEnabled) : Number(bill.serviceCharge || 0) > 0;
@@ -3190,36 +2862,12 @@
       const showSgst = bill.sgstEnabled !== undefined ? Boolean(bill.sgstEnabled) : Number(bill.sgstAmount || 0) > 0;
 
       let optionalTotalsHtml = "";
-      if (Number(bill.grossSubtotal || 0) > 0 && (Number(bill.waivedItemsAmount || 0) > 0 || Number(bill.discountAmount || 0) > 0 || bill.isFriendsAndFamily)) {
-        optionalTotalsHtml += `
-          <div class="receipt-total-row">
-            <span class="receipt-total-label">Gross Items</span>
-            <span class="receipt-total-val">₹${Number(bill.grossSubtotal).toFixed(2)}</span>
-          </div>
-        `;
-      }
-      if (Number(bill.waivedItemsAmount || 0) > 0) {
-        optionalTotalsHtml += `
-          <div class="receipt-total-row">
-            <span class="receipt-total-label">Waived Items</span>
-            <span class="receipt-total-val">-₹${Number(bill.waivedItemsAmount).toFixed(2)}</span>
-          </div>
-        `;
-      }
-      if (!bill.isFriendsAndFamily && Number(bill.discountAmount || 0) > 0) {
+      if (Number(bill.discountAmount || 0) > 0) {
         const dLabel = `Discount (${Number(bill.discountPercent || 0)}%)`;
         optionalTotalsHtml += `
           <div class="receipt-total-row">
             <span class="receipt-total-label">${escapeHtml(dLabel)}</span>
             <span class="receipt-total-val">-₹${Number(bill.discountAmount).toFixed(2)}</span>
-          </div>
-        `;
-      }
-      if (bill.isFriendsAndFamily && Number(bill.friendsFamilyWaivedAmount || 0) > 0) {
-        optionalTotalsHtml += `
-          <div class="receipt-total-row">
-            <span class="receipt-total-label">F&amp;F Waive-Off</span>
-            <span class="receipt-total-val">-₹${Number(bill.friendsFamilyWaivedAmount).toFixed(2)}</span>
           </div>
         `;
       }
@@ -3250,8 +2898,6 @@
         `;
       }
 
-      const modeBadge = bill.isFriendsAndFamily ? "F&F WAIVED" : bill.mode;
-
       return `
         <div class="receipt-sheet">
           <div class="receipt-center">
@@ -3277,13 +2923,13 @@
           <div class="receipt-divider"></div>
           <div class="receipt-totals-block">
             <div class="receipt-total-row">
-              <span class="receipt-total-label">Billable Subtotal</span>
+              <span class="receipt-total-label">Subtotal</span>
               <span class="receipt-total-val">₹${Number(bill.subtotal).toFixed(2)}</span>
             </div>
             ${optionalTotalsHtml}
             <div class="receipt-divider"></div>
             <div class="receipt-total-row receipt-grand">
-              <span class="receipt-total-label">Total (${escapeHtml(modeBadge)})</span>
+              <span class="receipt-total-label">Total (${escapeHtml(bill.mode)})</span>
               <span class="receipt-total-val">₹${Number(bill.grandTotal).toFixed(2)}</span>
             </div>
           </div>
@@ -3294,7 +2940,7 @@
     function openCloseConfirmation() {
       const table = getActiveTable();
       const totals = computeBillTotals();
-      if (table.cart.length === 0 || !(totals.grandTotal > 0 || totals.isFriendsAndFamily)) return;
+      if (table.cart.length === 0 || !(totals.grandTotal > 0)) return;
 
       enforceMidnightRolloverForSales();
 
@@ -3316,28 +2962,14 @@
         lineItems: table.cart.map(i => ({
           name: i.name,
           qty: i.qty,
-          price: i.price,
-          waivedQty: Number(i.waivedQty || 0),
-          waiveReason: i.waiveReason || "",
-          waiveNote: i.waiveNote || "",
-          consumedQty: i.qty
+          price: i.price
         })),
         services: buildServiceGroups(table),
-        itemsSummary: table.cart.map(i => {
-          const w = Number(i.waivedQty || 0);
-          return w > 0
-            ? `${String(i.name || "").toUpperCase()} ${i.qty} (WAIVED ${w})`
-            : `${String(i.name || "").toUpperCase()} ${i.qty}`;
-        }).join("; "),
-        mode: totals.isFriendsAndFamily ? "F&F_WAIVED" : table.paymentMode,
-        upiVpa: (!totals.isFriendsAndFamily && table.paymentMode === "UPI") ? (activeUpi.vpa || "") : "",
-        grossSubtotal: Number(totals.grossSubtotal.toFixed(2)),
-        waivedItemsAmount: Number(totals.waivedItemsAmount.toFixed(2)),
-        waivedItems: totals.waivedItems,
+        itemsSummary: table.cart.map(i => `${String(i.name || "").toUpperCase()} ${i.qty}`).join("; "),
+        mode: table.paymentMode,
+        upiVpa: table.paymentMode === "UPI" ? (activeUpi.vpa || "") : "",
         discountPercent: Number(totals.discountPercent.toFixed(2)),
         discountAmount: Number(totals.discountAmount.toFixed(2)),
-        isFriendsAndFamily: totals.isFriendsAndFamily,
-        friendsFamilyWaivedAmount: Number(totals.friendsFamilyWaivedAmount.toFixed(2)),
         subtotal: Number(totals.subtotal.toFixed(2)),
         scEnabled: totals.scEnabled,
         serviceCharge: Number(totals.serviceCharge.toFixed(2)),
@@ -3363,14 +2995,8 @@
         const actorId = await getCurrentStaffId();
         const consumptionPayload = {
           consumedItems: bill.lineItems,
-          grossSubtotal: bill.grossSubtotal,
-          waivedItemsAmount: bill.waivedItemsAmount,
-          waivedItems: bill.waivedItems,
           discountPercent: bill.discountPercent,
-          discountAmount: bill.discountAmount,
-          isFriendsAndFamily: bill.isFriendsAndFamily,
-          friendsFamilyWaivedAmount: bill.friendsFamilyWaivedAmount,
-          inventoryConsumptionTracked: true
+          discountAmount: bill.discountAmount
         };
 
         const { error } = await client.from("bills").upsert([{
@@ -3403,13 +3029,8 @@
         await logPosActivity("BILL_SETTLED", {
           billNumber: bill.id,
           mode: bill.mode,
-          grossSubtotal: bill.grossSubtotal,
-          waivedItemsAmount: bill.waivedItemsAmount,
-          waivedItems: bill.waivedItems,
           discountPercent: bill.discountPercent,
           discountAmount: bill.discountAmount,
-          isFriendsAndFamily: bill.isFriendsAndFamily,
-          friendsFamilyWaivedAmount: bill.friendsFamilyWaivedAmount,
           subtotal: bill.subtotal,
           serviceCharge: bill.serviceCharge,
           cgstAmount: bill.cgstAmount,
@@ -3427,7 +3048,7 @@
 
     async function confirmAndPrintReceipt() {
       const bill = state.pendingClosureBill;
-      if (!bill || !(Number(bill.grandTotal) > 0 || bill.isFriendsAndFamily)) return;
+      if (!bill || !(Number(bill.grandTotal) > 0)) return;
 
       enforceMidnightRolloverForSales();
 
@@ -3447,7 +3068,6 @@
       table.serviceType = "Dine-in";
       table.paymentMode = "UPI";
       table.discountPercent = 0;
-      table.isFriendsAndFamily = false;
       state.pendingClosureBill = null;
       state.lastQrStatusMsg = "";
       state.lastQrErrorMsg = "";
@@ -3509,7 +3129,6 @@
         const modeTokenText = [b.serviceType || "Dine-in", b.tokenNumber ? `#${sanitizeToken(b.tokenNumber)}` : ""].filter(Boolean).join(" • ");
         const cgstVal = b.cgstAmount !== undefined ? Number(b.cgstAmount) : Number(b.gstAmount || 0) / 2;
         const sgstVal = b.sgstAmount !== undefined ? Number(b.sgstAmount) : Number(b.gstAmount || 0) / 2;
-        const totalWaivedAndDisc = Number(b.waivedItemsAmount || 0) + Number(b.discountAmount || 0) + Number(b.friendsFamilyWaivedAmount || 0);
         return `
           <tr>
             <td>${escapeHtml(b.id)}</td>
@@ -3520,7 +3139,7 @@
             <td>${escapeHtml(b.itemsSummary)}</td>
             <td>${escapeHtml(b.mode)}</td>
             <td>₹${Number(b.subtotal).toFixed(2)}</td>
-            <td>₹${totalWaivedAndDisc.toFixed(2)}</td>
+            <td>₹${Number(b.discountAmount || 0).toFixed(2)}</td>
             <td>₹${Number(b.serviceCharge || 0).toFixed(2)}</td>
             <td>₹${cgstVal.toFixed(2)}</td>
             <td>₹${sgstVal.toFixed(2)}</td>
@@ -3541,9 +3160,8 @@
 
       const headers = [
         "Bill ID", "Seat", "Service Type", "Token #", "Customer Name", "Customer Phone",
-        "Date", "Time", "Items (Consumed)", "Payment Mode", "Gross Items",
-        "Waived Items (Inv. Tracked)", "Discount %", "Discount Amount", "F&F Waived",
-        "Billable Subtotal", "Service Charges", "CGST", "SGST", "Grand Total"
+        "Date", "Time", "Items", "Payment Mode", "Discount %", "Discount Amount",
+        "Subtotal", "Service Charges", "CGST", "SGST", "Grand Total"
       ];
 
       const rows = state.sales.map(b => {
@@ -3553,11 +3171,8 @@
           b.id, formatSeatLabel(b.tableName || ""), b.serviceType || "Dine-in", sanitizeToken(b.tokenNumber || ""),
           normalizeCustomerName(b.customerName || ""), b.customerPhone || "",
           b.date, b.time, b.itemsSummary, b.mode,
-          Number(b.grossSubtotal ?? b.subtotal).toFixed(2),
-          Number(b.waivedItemsAmount || 0).toFixed(2),
           Number(b.discountPercent || 0).toFixed(2),
           Number(b.discountAmount || 0).toFixed(2),
-          Number(b.friendsFamilyWaivedAmount || 0).toFixed(2),
           Number(b.subtotal).toFixed(2), Number(b.serviceCharge || 0).toFixed(2),
           cgstVal.toFixed(2), sgstVal.toFixed(2), Number(b.grandTotal).toFixed(2)
         ];
@@ -3594,22 +3209,9 @@
       }
     });
 
-    document.getElementById("friendsFamilyToggle").addEventListener("change", async (e) => {
-      const table = getActiveTable();
-      table.isFriendsAndFamily = Boolean(e.target.checked);
-      saveTablesState(true);
-      await logPosActivity("FRIENDS_AND_FAMILY_WAIVE", {
-        enabled: table.isFriendsAndFamily,
-        grossSubtotal: computeBillTotals().grossSubtotal
-      }, table);
-      renderTableTabs();
-      renderCart();
-    });
-
     document.querySelectorAll(".discount-chip").forEach(chip => {
       chip.addEventListener("click", () => {
         const table = getActiveTable();
-        if (table.isFriendsAndFamily) return;
         const pct = Math.max(0, Math.min(100, Number(chip.dataset.disc) || 0));
         table.discountPercent = pct;
         saveTablesState(false);
@@ -3621,7 +3223,6 @@
 
     document.getElementById("customDiscountInput").addEventListener("input", (e) => {
       const table = getActiveTable();
-      if (table.isFriendsAndFamily) return;
       let val = Number(e.target.value);
       if (!Number.isFinite(val) || val < 0) val = 0;
       if (val > 100) val = 100;
@@ -3632,14 +3233,6 @@
       });
       renderTotals();
       renderPaymentFlow();
-    });
-
-    document.getElementById("btnCloseWaiveItemTop").addEventListener("click", closeWaiveItemModal);
-    document.getElementById("btnCancelWaiveItem").addEventListener("click", closeWaiveItemModal);
-    document.getElementById("btnApplyWaiveItem").addEventListener("click", applyWaiveItemFromModal);
-    document.getElementById("waiveItemDialog").addEventListener("cancel", (e) => {
-      e.preventDefault();
-      closeWaiveItemModal();
     });
 
     document.getElementById("btnOpenSettings").addEventListener("click", openSettingsDialog);

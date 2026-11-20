@@ -223,7 +223,7 @@ html {
    and initialized its animations. Do not remove or override this rule
    without testing the splash screen on a fresh visit and page reload. */
 html:not(.intro-ready) body {
-    visibility: hidden;
+    /* visibility: hidden; */
 }
 
 body {
@@ -3515,7 +3515,7 @@ body.cgs-menu {
     padding: 1.5rem;
     width: 100%;
     box-sizing: border-box;
-    visibility: visible !important;
+    /* visibility: visible !important; */
 }
 
 /* Main wrapper container to manage max-width across screens */
