@@ -1,68 +1,962 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu - Cost and Price Matrix</title>
-    <link rel="stylesheet" href="/css/theme.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CGS Cost &amp; Price Matrix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <style>
+    :root {
+      --cgs-bg-canvas: #050403;
+      --cgs-bg-dark: #0c0a08;
+      --cgs-bg-surface: #13100e;
+      --cgs-bg-card: #161310;
+      --cgs-bg-elevated: #1c1814;
+      --cgs-accent-gold: #c5a880;
+      --cgs-accent-gold-hover: #d4bda1;
+      --cgs-text-main: #e6dfd5;
+      --cgs-text-muted: #8c7b68;
+      --cgs-text-dim: #524639;
+      --cgs-border: #221d17;
+      --cgs-success: #7ac074;
+      --cgs-danger: #ff6b6b;
+
+      --cgs-menu-success: #7ac074;
+      --cgs-menu-text-muted: #8c7b68;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body.cgs-menu {
+      background-color: var(--cgs-bg-canvas);
+      color: var(--cgs-text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding: 36px 20px;
+    }
+
+    .cgs-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      background-color: var(--cgs-bg-surface);
+      border: 1px solid var(--cgs-border);
+      border-radius: 6px;
+      padding: 32px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
+    }
+
+    .cgs-page-header {
+      border-bottom: 1px solid var(--cgs-border);
+      padding-bottom: 18px;
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .cgs-page-header h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--cgs-accent-gold);
+    }
+
+    .cgs-toolbar {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      background-color: var(--cgs-bg-card);
+      border: 1px solid var(--cgs-border);
+      border-radius: 4px;
+      padding: 12px 16px;
+    }
+
+    .cgs-search-container {
+      position: relative;
+      flex: 1;
+      min-width: 240px;
+      display: flex;
+      align-items: center;
+    }
+
+    .cgs-search-icon {
+      position: absolute;
+      left: 12px;
+      font-size: 13px;
+      color: var(--cgs-text-muted);
+      pointer-events: none;
+    }
+
+    #menuSearch {
+      width: 100%;
+      background-color: var(--cgs-bg-dark);
+      border: 1px solid var(--cgs-border);
+      color: var(--cgs-text-main);
+      padding: 10px 14px 10px 36px;
+      font-size: 13.5px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      border-radius: 4px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #menuSearch::placeholder {
+      color: var(--cgs-text-muted);
+    }
+
+    #menuSearch:focus {
+      border-color: var(--cgs-accent-gold);
+    }
+
+    #manageStockBtn {
+      background: var(--cgs-accent-gold) !important;
+      color: var(--cgs-bg-dark) !important;
+      border: none !important;
+      font-family: 'Oswald', sans-serif !important;
+      font-size: 12px !important;
+      letter-spacing: 1px !important;
+      text-transform: uppercase !important;
+      border-radius: 2px !important;
+    }
+
+    #manageStockBtn:hover {
+      background: var(--cgs-accent-gold-hover) !important;
+    }
+
+    .cgs-margin-pill {
+      display: inline-flex;
+      align-items: stretch;
+      border: 1px solid var(--cgs-border);
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--cgs-bg-dark);
+      height: 40px;
+    }
+
+    .cgs-margin-label {
+      background: var(--cgs-bg-elevated);
+      color: var(--cgs-text-muted);
+      padding: 0 12px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      border-right: 1px solid var(--cgs-border);
+    }
+
+    #baseMarginInput {
+      width: 54px;
+      background: transparent;
+      border: none;
+      color: var(--cgs-accent-gold);
+      font-family: 'Oswald', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      text-align: center;
+      outline: none;
+    }
+
+    .cgs-margin-btn {
+      background: transparent;
+      border: none;
+      border-left: 1px solid var(--cgs-border);
+      padding: 0 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      transition: background-color 0.2s, opacity 0.2s;
+    }
+
+    .cgs-margin-btn:hover:not(:disabled) {
+      background: var(--cgs-bg-elevated);
+    }
+
+    .unsaved-indicator {
+      display: none;
+      align-items: center;
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--cgs-danger);
+    }
+
+    .cgs-cost-card {
+      background-color: var(--cgs-bg-card);
+      border: 1px solid var(--cgs-border);
+      border-radius: 4px;
+      padding: 20px 22px;
+      margin-bottom: 18px;
+      transition: border-color 0.2s;
+    }
+
+    .cgs-cost-card:hover {
+      border-color: rgba(197, 168, 128, 0.35);
+    }
+
+    .cgs-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--cgs-border);
+    }
+
+    .cgs-recipe-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .cgs-recipe-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--cgs-accent-gold);
+    }
+
+    .cgs-recipe-category {
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--cgs-text-muted);
+      background-color: var(--cgs-bg-dark);
+      border: 1px solid var(--cgs-border);
+      padding: 3px 9px;
+      border-radius: 2px;
+    }
+
+    .cgs-action-btn {
+      background: var(--cgs-bg-dark);
+      border: 1px solid var(--cgs-border);
+      color: var(--cgs-text-muted);
+      padding: 6px 10px;
+      border-radius: 2px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+    }
+
+    .cgs-action-btn:hover:not(:disabled) {
+      border-color: var(--cgs-accent-gold);
+      color: var(--cgs-accent-gold);
+      background: var(--cgs-bg-elevated);
+    }
+
+    .cgs-action-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .cgs-recipe-body-grid {
+      display: grid;
+      grid-template-columns: 148px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 820px) {
+      .cgs-recipe-body-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .cgs-photo-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cgs-photo-thumb {
+      width: 136px;
+      height: 136px;
+      border-radius: 4px;
+      border: 1px solid var(--cgs-border);
+      background-color: var(--cgs-bg-dark);
+      color: var(--cgs-text-muted);
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .cgs-photo-thumb:hover {
+      border-color: var(--cgs-accent-gold);
+    }
+
+    .cgs-photo-input {
+      display: none;
+    }
+
+    .cgs-photo-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+      max-width: 136px;
+    }
+
+    .cgs-photo-upload-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--cgs-accent-gold);
+      border: 1px dashed var(--cgs-accent-gold);
+      padding: 5px 8px;
+      border-radius: 2px;
+      cursor: pointer;
+      text-align: center;
+      background: transparent;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .cgs-photo-upload-label:hover {
+      background: rgba(197, 168, 128, 0.12);
+      color: var(--cgs-accent-gold-hover);
+    }
+
+    .cgs-photo-crop-btn {
+      font-family: 'Oswald', sans-serif;
+      font-size: 10.5px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--cgs-text-main);
+      background: var(--cgs-bg-elevated);
+      border: 1px solid var(--cgs-border);
+      padding: 4px 8px;
+      border-radius: 2px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .cgs-photo-crop-btn:hover:not(:disabled) {
+      border-color: var(--cgs-accent-gold);
+      color: var(--cgs-accent-gold);
+    }
+
+    .cgs-photo-crop-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .cgs-financial-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 12px;
+      background-color: var(--cgs-bg-dark);
+      border: 1px solid var(--cgs-border);
+      border-left: 3px solid var(--cgs-accent-gold);
+      border-radius: 4px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+    }
+
+    .cgs-fin-block {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 4px 6px;
+      border-radius: 3px;
+    }
+
+    .cgs-fin-block.highlight-price {
+      background: rgba(197, 168, 128, 0.08);
+      outline: 1px solid rgba(197, 168, 128, 0.28);
+    }
+
+    .cgs-fin-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--cgs-text-muted);
+      display: flex;
+      align-items: center;
+    }
+
+    .cgs-fin-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--cgs-text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .cgs-derived-price {
+      font-weight: 700;
+      color: var(--cgs-accent-gold);
+      font-size: 15px;
+    }
+
+    .cgs-price-tick {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 6px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(122, 192, 116, 0.14);
+      color: var(--cgs-success);
+      border: 1px solid rgba(122, 192, 116, 0.45);
+    }
+
+    .cgs-price-tick.inactive {
+      display: none;
+    }
+
+    .cgs-input-group {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--cgs-bg-surface);
+      border: 1px solid var(--cgs-border);
+      border-radius: 2px;
+      padding: 2px 8px;
+      gap: 4px;
+    }
+
+    .cgs-input-group input {
+      width: 44px;
+      background: transparent;
+      border: none;
+      color: var(--cgs-text-main);
+      font-size: 13px;
+      text-align: center;
+      outline: none;
+    }
+
+    .cgs-input-group span {
+      color: var(--cgs-text-muted);
+      font-size: 12px;
+    }
+
+    .cgs-table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--cgs-border);
+      border-radius: 4px;
+      background-color: var(--cgs-bg-dark);
+    }
+
+    .cgs-ingredient-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .cgs-ingredient-table th {
+      background-color: var(--cgs-bg-elevated);
+      color: var(--cgs-text-muted);
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--cgs-border);
+    }
+
+    .cgs-ingredient-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(34, 29, 23, 0.55);
+      color: var(--cgs-text-main);
+      font-size: 13px;
+      vertical-align: middle;
+    }
+
+    .cgs-table-input {
+      width: 100%;
+      background-color: var(--cgs-bg-surface);
+      border: 1px solid var(--cgs-border);
+      color: var(--cgs-text-main);
+      padding: 6px 9px;
+      font-size: 13px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      border-radius: 2px;
+      outline: none;
+    }
+
+    .cgs-table-input:focus {
+      border-color: var(--cgs-accent-gold);
+    }
+
+    .cgs-table-input:disabled {
+      opacity: 0.85;
+      background-color: transparent;
+      border-color: transparent;
+    }
+
+    .cgs-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .cgs-btn-primary {
+      background-color: var(--cgs-accent-gold);
+      color: var(--cgs-bg-dark);
+      border: none;
+      padding: 8px 16px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    .cgs-btn-primary:hover:not(:disabled) {
+      background-color: var(--cgs-accent-gold-hover);
+    }
+
+    .cgs-btn-primary:disabled {
+      background-color: var(--cgs-text-dim);
+      color: var(--cgs-text-muted);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .autocomplete-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .ing-delete-db-btn {
+      background: none;
+      border: none;
+      color: var(--cgs-danger);
+      cursor: pointer;
+      padding: 2px 6px;
+      font-size: 12px;
+    }
+
+    .autocomplete-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: var(--cgs-bg-elevated);
+      border: 1px solid var(--cgs-accent-gold);
+      border-radius: 2px;
+      max-height: 180px;
+      overflow-y: auto;
+      z-index: 2000;
+    }
+
+    .autocomplete-item {
+      padding: 7px 10px;
+      font-size: 12.5px;
+      color: var(--cgs-text-main);
+      cursor: pointer;
+    }
+
+    .autocomplete-item:hover {
+      background-color: var(--cgs-accent-gold);
+      color: var(--cgs-bg-dark);
+    }
+
+    .badge-highlight-yellow {
+      background-color: var(--cgs-accent-gold);
+      color: var(--cgs-bg-dark);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    .cgs-dialog-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 4, 3, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      padding: 20px;
+    }
+
+    .cgs-dialog-box {
+      background: var(--cgs-bg-surface);
+      border: 1px solid var(--cgs-border);
+      width: 100%;
+      max-width: 460px;
+      padding: 24px;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .cgs-dialog-header {
+      font-family: 'Oswald', sans-serif;
+      font-size: 18px;
+      text-transform: uppercase;
+      color: var(--cgs-accent-gold);
+      border-bottom: 1px solid var(--cgs-border);
+      padding-bottom: 8px;
+    }
+
+    .cgs-dialog-body {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--cgs-text-main);
+    }
+
+    .cgs-dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      border-top: 1px solid var(--cgs-border);
+      padding-top: 14px;
+    }
+
+    .cgs-dialog-btn {
+      padding: 8px 16px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 12px;
+      text-transform: uppercase;
+      border-radius: 2px;
+      cursor: pointer;
+      border: none;
+    }
+
+    .cgs-dialog-btn-primary {
+      background: var(--cgs-accent-gold);
+      color: var(--cgs-bg-dark);
+      font-weight: 700;
+    }
+
+    .cgs-dialog-btn-secondary {
+      background: var(--cgs-bg-elevated);
+      color: var(--cgs-text-main);
+      border: 1px solid var(--cgs-border);
+    }
+
+    .cgs-dialog-btn-danger {
+      background: var(--cgs-danger);
+      color: var(--cgs-bg-dark);
+      font-weight: 700;
+    }
+
+    /* Interactive Image Cropper Modal */
+    #imageCropModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 4, 3, 0.9);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .cgs-crop-dialog {
+      background: var(--cgs-bg-surface);
+      border: 1px solid var(--cgs-border);
+      border-radius: 6px;
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+    }
+
+    .cgs-crop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: var(--cgs-bg-card);
+      border-bottom: 1px solid var(--cgs-border);
+    }
+
+    .cgs-crop-header h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 16px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--cgs-accent-gold);
+      margin: 0;
+    }
+
+    .cgs-crop-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .cgs-crop-stage {
+      width: 300px;
+      height: 300px;
+      position: relative;
+      overflow: hidden;
+      background: var(--cgs-bg-dark);
+      border: 2px solid var(--cgs-accent-gold);
+      border-radius: 4px;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .cgs-crop-stage.dragging {
+      cursor: grabbing;
+    }
+
+    .cgs-crop-stage img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      max-width: none;
+      transform-origin: center center;
+      pointer-events: none;
+    }
+
+    .cgs-crop-controls {
+      width: 100%;
+      max-width: 340px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cgs-crop-zoom-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--cgs-text-muted);
+    }
+
+    .cgs-crop-zoom-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--cgs-accent-gold);
+      cursor: pointer;
+    }
+
+    .cgs-crop-aspect-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .cgs-aspect-btn {
+      background: var(--cgs-bg-dark);
+      color: var(--cgs-text-muted);
+      border: 1px solid var(--cgs-border);
+      padding: 5px 12px;
+      border-radius: 2px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .cgs-aspect-btn.active {
+      background: var(--cgs-accent-gold);
+      color: var(--cgs-bg-dark);
+      border-color: var(--cgs-accent-gold);
+      font-weight: 700;
+    }
+
+    .cgs-crop-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 14px 20px;
+      background: var(--cgs-bg-card);
+      border-top: 1px solid var(--cgs-border);
+    }
+  </style>
 </head>
 <body class="cgs-menu">
-    <div class="cgs-container">
-        <!-- Page Header -->
-        <header class="cgs-page-header">
-            <h1>Food Menu - Cost and Price Matrix</h1>
-        </header>
+  <div class="cgs-container">
+    <header class="cgs-page-header">
+      <h1>Food Menu - Cost and Price Matrix</h1>
+    </header>
 
-        <!-- Top Toolbar: Real-time Search & Global Margin -->
-        <div class="cgs-toolbar">
-            <div class="cgs-search-container">
-                <span class="cgs-search-icon">🔍</span>
-                <input type="text" id="menuSearch" placeholder="Search any menu item across the menu..." oninput="filterRecipes()">
-            </div>
-            <span id="unsaved-global-changes" class="unsaved-indicator"></span>
-            <div class="cgs-input-group-container" style="display: inline-flex; align-items: stretch; border: 1px solid #3f3f46; border-radius: 6px; overflow: hidden; background: #18181b;">
-                <span style="background: #27272a; color: #a1a1aa; padding: 4px 10px; font-size: 0.85rem; display: flex; align-items: center; border-right: 1px solid #3f3f46; font-weight: 500;">Base Margin (%)</span>
-                <input type="number" id="baseMarginInput" value="" placeholder="--" min="1" max="99" step="1" style="width: 50px; background: transparent; border: none; color: #fff; text-align: center; font-weight: 700; outline: none;" oninput="this.value = this.value.replace(/[^0-9]/g, ''); handleBaseMarginInput(this)">
-                <button type="button" id="saveMarginBtn" class="cgs-action-btn" title="Save Base Margin" onclick="saveBaseMargin()" disabled style="background: transparent; border: none; border-left: 1px solid #3f3f46; padding: 4px 8px; color: #22c55e; cursor: not-allowed; opacity: 0.4;">💾</button>
-                <button type="button" id="cancelMarginBtn" class="cgs-action-btn" title="Cancel Changes" onclick="cancelBaseMarginChange()" disabled style="background: transparent; border: none; border-left: 1px solid #3f3f46; padding: 4px 8px; color: #ef4444; cursor: not-allowed; opacity: 0.4;">✕</button>
-            </div>
+    <div class="cgs-toolbar">
+      <div class="cgs-search-container">
+        <span class="cgs-search-icon">🔍</span>
+        <input
+          type="text"
+          id="menuSearch"
+          placeholder="Search any menu item across the menu..."
+          oninput="filterRecipes()"
+        />
+      </div>
+      <span id="unsaved-global-changes" class="unsaved-indicator"></span>
+      <div class="cgs-margin-pill">
+        <span class="cgs-margin-label">Base Margin (%)</span>
+        <input
+          type="number"
+          id="baseMarginInput"
+          value=""
+          placeholder="--"
+          min="1"
+          max="99"
+          step="1"
+          oninput="this.value = this.value.replace(/[^0-9]/g, ''); handleBaseMarginInput(this)"
+        />
+        <button
+          type="button"
+          id="saveMarginBtn"
+          class="cgs-margin-btn"
+          title="Save Base Margin"
+          onclick="saveBaseMargin()"
+          disabled
+          style="color: #7ac074; cursor: not-allowed; opacity: 0.4;"
+        >💾</button>
+        <button
+          type="button"
+          id="cancelMarginBtn"
+          class="cgs-margin-btn"
+          title="Cancel Changes"
+          onclick="cancelBaseMarginChange()"
+          disabled
+          style="color: #ff6b6b; cursor: not-allowed; opacity: 0.4;"
+        >✕</button>
+      </div>
+    </div>
+
+    <div id="recipeContainer"></div>
+  </div>
+
+  <!-- Image Cropper Modal -->
+  <div id="imageCropModal" onclick="handleCropBackdropClick(event)">
+    <div class="cgs-crop-dialog">
+      <div class="cgs-crop-header">
+        <h3>Crop Item Photo</h3>
+        <button
+          type="button"
+          onclick="closeCropModal()"
+          style="background: none; border: none; color: #8c7b68; font-size: 18px; cursor: pointer;"
+        >✕</button>
+      </div>
+      <div class="cgs-crop-body">
+        <div class="cgs-crop-aspect-row">
+          <button type="button" id="cropAspect11" class="cgs-aspect-btn active" onclick="setCropAspect(1, 1)">1 : 1 Square</button>
+          <button type="button" id="cropAspect43" class="cgs-aspect-btn" onclick="setCropAspect(4, 3)">4 : 3 Landscape</button>
         </div>
-
-        <div id="recipeContainer"></div>
-    </div>
-
-    <!-- Duplicate & Customize Recipe Modal Dialog -->
-    <div id="recipeModal" class="cgs-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 1000; justify-content: center; align-items: center;" onclick="handleModalBackgroundClick(event)">
-        <div class="cgs-modal-content" style="background: #18181b; border: 1px solid #3f3f46; border-radius: 8px; width: 95%; max-width: 1050px; height: 85vh; max-height: 900px; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.5); overflow: hidden;">
-            
-            <!-- Non-Scrollable Header -->
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #3f3f46; background: #18181b; flex-shrink: 0;">
-                <h3 style="color: #fff; margin: 0; font-size: 1.25rem;">Duplicate & Customize Recipe</h3>
-                <button type="button" onclick="confirmCloseRecipeModal()" style="background: none; border: none; color: #a1a1aa; font-size: 1.25rem; cursor: pointer;">✕</button>
-            </div>
-
-            <!-- Scrollable Body Container (Holds the Recipe Card) -->
-            <div id="recipeModalBody" style="padding: 24px; overflow-y: auto; flex-grow: 1; background: #18181b;">
-                <!-- Cloned card will be injected here dynamically -->
-            </div>
-
-            <!-- Non-Scrollable Footer (Always pinned at the bottom) -->
-            <div style="display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; border-top: 1px solid #3f3f46; background: #18181b; flex-shrink: 0;">
-                <button type="button" onclick="confirmCloseRecipeModal()" style="background: #27272a; color: #fff; border: 1px solid #3f3f46; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500;">Cancel</button>
-                <button type="button" id="modalSaveBtn" onclick="saveDuplicatedRecipeFromModal(this)" disabled style="background: #22c55e; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: not-allowed; opacity: 0.4; font-weight: 600;" title="Ensure name is unique and all ingredient rows are filled.">Save New Recipe</button>
-            </div>
-
+        <div id="cropStage" class="cgs-crop-stage">
+          <img id="cropPreviewImg" src="" alt="Crop preview" />
         </div>
+        <div class="cgs-crop-controls">
+          <div class="cgs-crop-zoom-row">
+            <span>Zoom</span>
+            <input type="range" id="cropZoomSlider" min="1" max="3" step="0.02" value="1" oninput="handleCropZoom(this.value)" />
+            <span id="cropZoomValue">100%</span>
+          </div>
+          <div style="font-size: 11px; color: var(--cgs-text-muted); text-align: center;">
+            Drag photo inside frame to position • Scroll or slide to zoom
+          </div>
+        </div>
+      </div>
+      <div class="cgs-crop-footer">
+        <button
+          type="button"
+          onclick="closeCropModal()"
+          style="background: #1c1814; color: #e6dfd5; border: 1px solid #221d17; padding: 8px 16px; border-radius: 2px; cursor: pointer; font-family: 'Oswald', sans-serif; letter-spacing: 1px; text-transform: uppercase; font-size: 12px;"
+        >Cancel</button>
+        <button
+          type="button"
+          onclick="applyCroppedImage()"
+          style="background: #c5a880; color: #0c0a08; border: none; padding: 8px 18px; border-radius: 2px; cursor: pointer; font-family: 'Oswald', sans-serif; letter-spacing: 1px; text-transform: uppercase; font-size: 12px; font-weight: 700;"
+        >Apply Crop</button>
+      </div>
     </div>
+  </div>
 
-    <!-- Full Size Photo Dialog Modal -->
-    <div id="photoModal" class="cgs-modal" onclick="closePhotoModal()">
-        <span class="cgs-modal-close" onclick="closePhotoModal()">&times;</span>
-        <img class="cgs-modal-content" id="modalImage">
+  <div
+    id="recipeModal"
+    class="cgs-modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 4, 3, 0.88); z-index: 1000; justify-content: center; align-items: center;"
+    onclick="handleModalBackgroundClick(event)"
+  >
+    <div
+      class="cgs-modal-content"
+      style="background: #13100e; border: 1px solid #221d17; border-radius: 6px; width: 95%; max-width: 1050px; height: 85vh; max-height: 900px; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8); overflow: hidden;"
+    >
+      <div
+        style="display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid #221d17; background: #161310; flex-shrink: 0;"
+      >
+        <h3 style="color: #c5a880; font-family: 'Oswald', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; margin: 0; font-size: 1.2rem;">Duplicate &amp; Customize Recipe</h3>
+        <button
+          type="button"
+          onclick="confirmCloseRecipeModal()"
+          style="background: none; border: none; color: #8c7b68; font-size: 1.25rem; cursor: pointer;"
+        >✕</button>
+      </div>
+
+      <div id="recipeModalBody" style="padding: 24px; overflow-y: auto; flex-grow: 1; background: #13100e;"></div>
+
+      <div
+        style="display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; border-top: 1px solid #221d17; background: #161310; flex-shrink: 0;"
+      >
+        <button
+          type="button"
+          onclick="confirmCloseRecipeModal()"
+          style="background: #1c1814; color: #e6dfd5; border: 1px solid #221d17; padding: 8px 16px; border-radius: 2px; cursor: pointer; font-family: 'Oswald', sans-serif; letter-spacing: 1px; text-transform: uppercase; font-size: 12px;"
+        >Cancel</button>
+        <button
+          type="button"
+          id="modalSaveBtn"
+          onclick="saveDuplicatedRecipeFromModal(this)"
+          disabled
+          style="background: #c5a880; color: #0c0a08; border: none; padding: 8px 18px; border-radius: 2px; cursor: not-allowed; opacity: 0.4; font-family: 'Oswald', sans-serif; letter-spacing: 1px; text-transform: uppercase; font-size: 12px; font-weight: 700;"
+          title="Ensure name is unique and all ingredient rows are filled."
+        >Save New Recipe</button>
+      </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/js/environment.js"></script>
-    <script src="/js/menu-cost-price.js"></script>
+  </div>
+
+  <div id="photoModal" class="cgs-modal" onclick="closePhotoModal()">
+    <span class="cgs-modal-close" onclick="closePhotoModal()">&times;</span>
+    <img class="cgs-modal-content" id="modalImage" alt="Recipe preview" />
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/environment.js"></script>
+  <script src="/js/menu-cost-price.js"></script>
 </body>
 </html>

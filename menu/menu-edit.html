@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>CGS LIVE MENU MANAGER</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>CGS PRINT MENU LAYOUT &amp; STRUCTURE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg-dark-color: #0c0a08;
@@ -15,376 +15,219 @@
       --text-muted: #8c7b68;
       --border-color: #221d17;
       --admin-bg: #13100e;
-      --admin-surface: #161311; 
+      --admin-surface: #161311;
       --text-darker: #4a3e32;
       --highlight-new-row: #241e17;
       --danger-color: #ff6b6b;
-      --danger-hover: #fa5252;
-      
-      --dragged-source-color: #c5a880;      
-      --drop-target-hover-color: #a44343;   
+      --dragged-source-color: #c5a880;
+      --drop-target-hover-color: #a44343;
       --drop-target-bg: rgba(164, 67, 67, 0.1);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background-color: #050403; color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; padding: 40px 20px; transition: padding-top 0.2s; }
-    
-    .unsaved-ribbon-toast { position: fixed; top: 0; left: 0; width: 100%; background: #2b1616; border-bottom: 2px solid var(--danger-color); color: #fcdbdb; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 500; text-align: center; padding: 12px 20px; z-index: 999999; box-shadow: 0 5px 20px rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; gap: 15px; animation: slideDownRibbon 0.25s cubic-bezier(0.1, 0.9, 0.2, 1); }
-    @keyframes slideDownRibbon { from { transform: translateY(-100%); } to { transform: translateY(0); } }
-    .pulse-danger-dot { width: 8px; height: 8px; background-color: var(--danger-color); border-radius: 50%; box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); animation: pulseDanger 1.6s infinite; }
-    @keyframes pulseDanger { 0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.8); } 70% { box-shadow: 0 0 0 8px rgba(255, 107, 107, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); } }
 
-    .btn-rollback-action { background: rgba(255,107,107,0.15); border: 1px solid var(--danger-color); color: #ff8b8b; font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; padding: 4px 12px; cursor: pointer; border-radius: 3px; transition: all 0.2s; }
+    .unsaved-ribbon-toast { position: fixed; top: 0; left: 0; width: 100%; background: #2b1616; border-bottom: 2px solid var(--danger-color); color: #fcdbdb; font-size: 12px; font-weight: 500; text-align: center; padding: 12px 20px; z-index: 999999; display: none; align-items: center; justify-content: center; gap: 15px; }
+    .pulse-danger-dot { width: 8px; height: 8px; background-color: var(--danger-color); border-radius: 50%; }
+    .btn-rollback-action { background: rgba(255,107,107,0.15); border: 1px solid var(--danger-color); color: #ff8b8b; font-family: 'Oswald', sans-serif; font-size: 11px; text-transform: uppercase; padding: 4px 12px; cursor: pointer; border-radius: 3px; }
     .btn-rollback-action:hover { background: var(--danger-color); color: var(--bg-dark-color); }
 
-    .pulse-publish-btn { animation: pulseButton 2s infinite ease-in-out; border: 1px solid var(--accent-gold) !important; }
-    @keyframes pulseButton { 0% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(197, 168, 128, 0); } 100% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0); } }
-    @keyframes cgsSpin{
-        from{transform:rotate(0deg);}
-        to{transform:rotate(360deg);}
-    }
-    .login-box { max-width: 450px; margin: 100px auto; background: var(--admin-bg); border: 1px solid var(--border-color); padding: 40px; border-radius: 4px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-    .login-box h2 { font-family: 'Oswald', sans-serif; font-size: 24px; color: var(--accent-gold); letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
-    .login-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
+    @keyframes cgsSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-    .admin-container { max-width: 1300px; margin: 0 auto; background-color: var(--admin-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); display: none; }
-    .admin-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 20px; }
-    .admin-header h2 { font-family: 'Oswald', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--accent-gold); margin-bottom: 5px; }
-    .admin-header p { color: var(--text-muted); font-size: 13px; font-weight: 600; letter-spacing: 0.5px; }
-    
-    .primary-btn { background-color: var(--accent-gold); color: #000000; border: none; padding: 12px 28px; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; cursor: pointer; border-radius: 2px; display: flex; align-items: center; gap: 10px; transition: background-color 0.2s, transform 0.1s, opacity 0.2s; }
-    .primary-btn:hover { background-color: var(--accent-gold-hover); transform: translateY(-1px); }
-    
-    .sync-icon { width: 16px; height: 16px; fill: currentColor; display: inline-block; }
+    .admin-container { max-width: 1300px; margin: 0 auto; background-color: var(--admin-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 35px; display: none; }
+    .admin-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 20px; }
+    .admin-header h2 { font-family: 'Oswald', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--accent-gold); }
 
-    .primary-btn:disabled { background-color: var(--text-darker); color: var(--text-muted); cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.6; }
-    
-    .controls-filter-row { display: flex; gap: 15px; margin-bottom: 25px; align-items: center; }
-    .search-input-field { flex: 1; background-color: #0c0a08; border: 1px solid var(--border-color); padding: 14px 16px; color: var(--text-main); font-size: 14px; font-family: inherit; border-radius: 4px; transition: border-color 0.2s; }
+    .primary-btn { background-color: var(--accent-gold); color: #000000; border: none; padding: 12px 24px; font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 2px; display: inline-flex; align-items: center; gap: 8px; }
+    .primary-btn:hover:not(:disabled) { background-color: var(--accent-gold-hover); }
+    .primary-btn:disabled { background-color: var(--text-darker); color: var(--text-muted); cursor: not-allowed; opacity: 0.6; }
+
+    .controls-filter-row { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
+    .search-input-field { flex: 1; min-width: 220px; background-color: #0c0a08; border: 1px solid var(--border-color); padding: 12px 16px; color: var(--text-main); font-size: 14px; border-radius: 4px; }
     .search-input-field:focus { border-color: var(--accent-gold); outline: none; }
 
-    .origin-filter-pill-box { display: flex; background: #0c0a08; padding: 4px; border-radius: 4px; border: 1px solid var(--border-color); height: 48px; align-items: center; }
-    .filter-pill-btn { background: none; border: none; color: var(--text-muted); font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; padding: 8px 20px; cursor: pointer; transition: all 0.2s; height: 100%; border-radius: 2px; }
+    .origin-filter-pill-box { display: flex; background: #0c0a08; padding: 4px; border-radius: 4px; border: 1px solid var(--border-color); height: 44px; align-items: center; }
+    .filter-pill-btn { background: none; border: none; color: var(--text-muted); font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; padding: 8px 18px; cursor: pointer; height: 100%; border-radius: 2px; }
     .filter-pill-btn.active { background-color: var(--accent-gold); color: var(--bg-dark-color); }
 
-    .top-creation-stage-panel { background: #1a1511; border: 1px solid var(--accent-gold); border-radius: 4px; padding: 20px; margin-bottom: 25px; display: none; }
+    .top-creation-stage-panel { background: #1a1511; border: 1px solid var(--accent-gold); border-radius: 4px; padding: 20px; margin-bottom: 24px; display: none; }
     .creation-stage-title { font-family: 'Oswald', sans-serif; font-size: 13px; text-transform: uppercase; color: var(--accent-gold); letter-spacing: 1.5px; margin-bottom: 12px; }
 
-    .category-block { margin-bottom: 16px; background-color: rgba(0,0,0,0.1); border-radius: 4px; border: 1px solid #1c1814; overflow: hidden; position: relative; transition: all 0.15s ease; }
+    .category-block { margin-bottom: 16px; background-color: rgba(0,0,0,0.1); border-radius: 4px; border: 1px solid #1c1814; overflow: hidden; }
     .category-block.is-dragging { outline: 2px solid var(--dragged-source-color); opacity: 0.4; }
     .category-block.drag-over { outline: 2px dashed var(--drop-target-hover-color); background-color: var(--drop-target-bg); }
-    
-    .category-header { background-color: var(--admin-surface); padding: 14px 22px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background-color 0.2s; }
+
+    .category-header { background-color: var(--admin-surface); padding: 14px 22px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
     .category-header:hover { background-color: #1e1a16; }
     .category-title-display { display: flex; align-items: center; width: 100%; overflow: hidden; }
-    
+
     .category-edit-grid-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; width: 100%; margin-bottom: 14px; }
     .category-edit-actions-row { display: flex; gap: 12px; justify-content: flex-end; align-items: center; width: 100%; }
 
-    .btn-edit-header { background: none; border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 14px; font-family: 'Oswald', sans-serif; font-size: 11px; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: all 0.2s; white-space: nowrap; }
-    .btn-edit-header:hover { border-color: var(--accent-gold); color: var(--accent-gold); background-color: rgba(255,255,255,0.01); }
+    .btn-edit-header { background: none; border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 14px; font-family: 'Oswald', sans-serif; font-size: 11px; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
+    .btn-edit-header:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
 
-    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s cubic-bezier(0, 1, 0, 1); background-color: rgba(0,0,0,0.15); }
-    .category-block.open .accordion-content { max-height: 3000px; transition: max-height 0.4s cubic-bezier(1, 0, 1, 0); }
+    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background-color: rgba(0,0,0,0.15); }
+    .category-block.open .accordion-content { max-height: 4000px; }
 
     .database-table { width: 100%; border-collapse: collapse; text-align: left; table-layout: fixed; }
-    .database-table th { background-color: rgba(0,0,0,0.25); padding: 12px 20px; font-family: 'Oswald', sans-serif; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-color); }
-    .database-table td { padding: 10px 20px; border-bottom: 1px solid rgba(34, 29, 23, 0.4); vertical-align: middle; }
-    
-    input.disabled { cursor: not-allowed; opacity: 0.3;}
-    .db-input { background-color: #090807; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 12px; font-size: 13px; font-family: 'Plus Jakarta Sans', sans-serif; border-radius: 2px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; width: 100%; }
+    .database-table th { background-color: rgba(0,0,0,0.25); padding: 12px 16px; font-family: 'Oswald', sans-serif; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-color); }
+    .database-table td { padding: 10px 16px; border-bottom: 1px solid rgba(34, 29, 23, 0.4); vertical-align: middle; }
+
+    .db-input { background-color: #090807; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 10px; font-size: 13px; border-radius: 2px; width: 100%; }
     .db-input:focus { border-color: var(--accent-gold); outline: none; }
     .db-input-name { font-family: 'Oswald', sans-serif; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-gold); }
-    
-    .col-drag { width: 45px; text-align: center; }
-    .col-name { width: 22%; }
-    .col-desc { width: 33%; }
-    .col-size { width: 11%; } 
-    .col-price { width: 11%; } 
-    .col-star { width: 8%; text-align: center; }
-    .col-vis { width: 8%; text-align: center; }
+
+    .col-drag { width: 42px; text-align: center; }
+    .col-name { width: 26%; }
+    .col-desc { width: 40%; }
+    .col-star { width: 9%; text-align: center; }
+    .col-vis { width: 9%; text-align: center; }
     .col-ctrl { width: 12%; text-align: right; }
 
-    .product-row-node { transition: all 0.15s ease; }
     .product-row-node.newly-created { background-color: var(--highlight-new-row); }
     .product-row-node.is-dragging { outline: 2px solid var(--dragged-source-color); opacity: 0.4; }
     .product-row-node.drag-active-indicator { outline: 2px dashed var(--drop-target-hover-color); background-color: var(--drop-target-bg); }
 
-    .drag-handle-pill { cursor: grab; color: var(--text-muted); font-size: 15px; padding: 2px 6px; user-select: none; font-weight: normal; }
-    .drag-handle-pill:active { cursor: grabbing; color: var(--accent-gold); }
-
-    .switch-wrapper { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; width: 36px; height: 18px; }
-    
-    .switch-input { position: absolute; opacity: 0; width: 0; height: 0; margin: 0; }
-    .switch-rail { width: 36px; height: 18px; background-color: #0c0a08; border: 1px solid var(--border-color); border-radius: 10px; position: relative; display: block; transition: border-color 0.15s; }
+    .drag-handle-pill { cursor: grab; color: var(--text-muted); font-size: 15px; padding: 2px 6px; user-select: none; }
+    .switch-wrapper { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; width: 36px; height: 18px; position: relative; }
+    .switch-input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .switch-rail { width: 36px; height: 18px; background-color: #0c0a08; border: 1px solid var(--border-color); border-radius: 10px; position: relative; display: block; }
     .switch-indicator { width: 12px; height: 12px; background-color: var(--text-muted); border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: transform 0.2s, background-color 0.2s; }
-    
     .switch-input:checked + .switch-rail .switch-indicator { transform: translateX(18px); background-color: var(--accent-gold); }
-    .switch-input:focus-visible + .switch-rail { outline: 2px solid var(--accent-gold); outline-offset: 2px; border-color: var(--accent-gold); }
 
-    .btn-delete { background: none; border: none; color: #a44343; cursor: pointer; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
-    .btn-delete:hover { color: #f26161; }
-    
-    .btn-save-inline { background: none; border: 1px solid var(--accent-gold); color: var(--accent-gold); font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 11px; padding: 4px 8px; cursor: pointer; border-radius: 2px; letter-spacing: 0.5px; margin-right: 6px; }
-    .btn-save-inline:hover { background-color: var(--accent-gold); color: var(--bg-dark-color); }
-
-    .btn-add-inline { background: none; border: 1px dashed var(--accent-gold); color: var(--accent-gold); font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 11px; padding: 4px 10px; cursor: pointer; border-radius: 2px; letter-spacing: 0.5px; }
-    .btn-add-inline:hover { background-color: rgba(197, 168, 128, 0.05); }
-    .btn-add-inline:disabled { border-color: var(--text-darker); color: var(--text-darker); cursor: not-allowed; background: none; }
-
+    .btn-delete { background: none; border: none; color: #a44343; cursor: pointer; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 11px; }
+    .btn-save-inline { background: none; border: 1px solid var(--accent-gold); color: var(--accent-gold); font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 11px; padding: 4px 8px; cursor: pointer; border-radius: 2px; margin-right: 6px; }
+    .btn-add-inline { background: none; border: 1px dashed var(--accent-gold); color: var(--accent-gold); font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 11px; padding: 4px 10px; cursor: pointer; border-radius: 2px; }
+    .btn-add-inline:disabled { border-color: var(--text-darker); color: var(--text-darker); cursor: not-allowed; }
     .hidden-mask-dim { opacity: 0.35; }
+    .empty-section-notice { padding: 24px 20px; text-align: center; color: var(--text-muted); font-size: 13px; font-style: italic; }
 
-    .cgs-dialog-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(5,4,3,0.85); display: flex; align-items: center; justify-content: center; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 0.2s; padding: 20px; }
+    .global-settings-bar { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; background: #12100e; border: 1px solid var(--border-color); border-left: 3px solid var(--accent-gold); border-radius: 4px; padding: 14px 20px; margin-bottom: 22px; }
+    .global-settings-bar__label { font-family: 'Oswald', sans-serif; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent-gold); }
+    .global-settings-bar__item { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+    .global-settings-bar__hint { margin-left: auto; font-size: 11px; color: var(--text-muted); font-style: italic; }
+    .global-settings-bar__status { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; min-width: 60px; text-align: right; }
+    .global-settings-bar__status.saved { color: #7ac074; }
+    .global-settings-bar__status.saving { color: var(--accent-gold); }
+    .global-settings-bar__status.error { color: var(--danger-color); }
+
+    .cgs-dialog-overlay { position: fixed; inset: 0; background: rgba(5,4,3,0.85); display: flex; align-items: center; justify-content: center; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 0.2s; padding: 20px; }
     .cgs-dialog-overlay.active { opacity: 1; pointer-events: auto; }
-    .cgs-dialog-box { background: var(--admin-bg); border: 1px solid var(--border-color); width: 100%; max-width: 520px; padding: 30px; border-radius: 4px; box-shadow: 0 25px 60px rgba(0,0,0,0.7); transform: translateY(-20px); transition: transform 0.2s; display: flex; flex-direction: column; gap: 16px; }
-    .cgs-dialog-overlay.active .cgs-dialog-box { transform: translateY(0); }
-    .cgs-dialog-title { font-family: 'Oswald', sans-serif; font-size: 18px; text-transform: uppercase; color: var(--accent-gold); letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
-    .cgs-dialog-body { font-size: 14px; color: var(--text-main); line-height: 1.6; word-wrap: break-word; }
-    .cgs-dialog-footer { display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 8px; }
-    
-    .double-confirm-gate { background: #211414; padding: 14px; border: 1px dashed #9c3a3a; border-radius: 2px; }
-    .empty-section-notice { padding: 30px 20px; text-align: center; color: var(--text-muted); font-size: 13px; font-style: italic; background-color: rgba(197, 168, 128, 0.02); border-bottom: 1px dashed var(--border-color); letter-spacing: 0.3px; }
-    .btn-action { background-color: var(--accent-gold); color: var(--bg-dark-color); border: none; padding: 10px 28px; font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; cursor: pointer; }
-    .btn-nav-menu { background: #d4a84b; color: #1c1412; text-decoration: none; }
-    .btn-nav-menu:hover { background: transparent; color: #d2a54b; box-shadow: 0 0 20px hsla(39, 48%, 57%, .35); }
-    #env-badge-display, #admin-scope-desc { display: none; }
-
-    /* Global display settings bar */
-    .global-settings-bar {
-      display: flex;
-      gap: 24px;
-      align-items: center;
-      flex-wrap: wrap;
-      background: linear-gradient(180deg, #16120e, #12100e);
-      border: 1px solid var(--border-color);
-      border-left: 3px solid var(--accent-gold);
-      border-radius: 4px;
-      padding: 14px 20px;
-      margin-bottom: 22px;
-    }
-    .global-settings-bar__label {
-      font-family: 'Oswald', sans-serif;
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--accent-gold);
-      margin-right: 10px;
-    }
-    .global-settings-bar__item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 12px;
-      color: var(--text-main);
-      letter-spacing: 0.4px;
-    }
-    .global-settings-bar__hint {
-      margin-left: auto;
-      font-size: 11px;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-    .global-settings-bar__status {
-      font-size: 10px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--text-darker);
-      min-width: 60px;
-      text-align: right;
-    }
-    .global-settings-bar__status.saved   { color: #7ac074; }
-    .global-settings-bar__status.saving  { color: var(--accent-gold); }
-    .global-settings-bar__status.error   { color: var(--danger-color); }
+    .cgs-dialog-box { background: var(--admin-bg); border: 1px solid var(--border-color); width: 100%; max-width: 520px; padding: 28px; border-radius: 4px; display: flex; flex-direction: column; gap: 14px; }
+    .cgs-dialog-title { font-family: 'Oswald', sans-serif; font-size: 18px; text-transform: uppercase; color: var(--accent-gold); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+    .cgs-dialog-body { font-size: 14px; line-height: 1.6; }
+    .cgs-dialog-footer { display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 14px; }
+    .double-confirm-gate { background: #211414; padding: 12px; border: 1px dashed #9c3a3a; border-radius: 2px; }
   </style>
 </head>
 <body>
-
   <div class="unsaved-ribbon-toast" id="unsaved-warning-bar">
     <div class="pulse-danger-dot"></div>
-    <span style="letter-spacing: 0.3px;">
-      <strong>⚠️ CRITICAL OPERATIONAL RISK:</strong> You have uncommitted workspace changes. Closing this window or refreshing will completely clear all local menu additions, pricing modifications, and structural adjustments.
-    </span>
-    <button class="btn-rollback-action" onclick="triggerRollbackWorkflow()">↩ Discard Changes & Reload</button>
+    <span>You have uncommitted print-menu layout changes.</span>
+    <button type="button" class="btn-rollback-action" onclick="triggerRollbackWorkflow()">Discard &amp; Reload</button>
   </div>
 
   <div class="admin-container" id="admin-panel">
     <div class="admin-header">
-      <div id="env-badge-display"></div>
-      <div id="admin-scope-desc"></div>
-      <div>
-        <h2>CGS LIVE MENU MANAGER</h2>
-      </div>
-      <div class="action-group" style="display: flex; gap: 15px; align-items: center;">
-        <button class="btn-edit-header" style="color: #ff6b6b; border-color: rgba(255,107,107,0.3);" onclick="handleSignOutRequest()">Sign Out</button>
-        <button class="btn-edit-header" style="padding: 10px 20px; border-style: dashed; color: var(--accent-gold); border-color: var(--accent-gold);" onclick="openTopCreationRow()">+ Create New Category</button>
-        <button class="primary-btn" id="save-btn" onclick="triggerPublishWorkflow()" disabled>
-          <svg class="sync-icon" viewBox="0 0 24 24">
-            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
-          </svg>
-          Publish the revised menu
-        </button>
-        <a href="index.html" class="btn-action btn-nav-menu" target="_blank">
-            📖 Live Menu
-        </a>
+      <h2>CGS PRINT MENU LAYOUT &amp; STRUCTURE</h2>
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <button type="button" class="btn-edit-header" style="padding: 10px 18px; border-style: dashed; color: var(--accent-gold); border-color: var(--accent-gold);" onclick="openTopCreationRow()">+ Create New Category</button>
+        <button type="button" class="primary-btn" id="save-btn" onclick="triggerPublishWorkflow()" disabled>Publish Layout</button>
+        <button type="button" class="btn-edit-header" style="color: #ff6b6b; border-color: rgba(255,107,107,0.3); padding: 10px 14px;" onclick="handleSignOutRequest()">Sign Out</button>
       </div>
     </div>
 
     <div class="controls-filter-row">
-      <input type="text" id="menu-search-filter" class="search-input-field" placeholder="Search menu by category headers or single product titles..." oninput="handleLiveSearchFilter(this.value)">
-      
+      <input type="text" id="menu-search-filter" class="search-input-field" placeholder="Search print menu by category headers or product titles..." oninput="handleLiveSearchFilter(this.value)" />
       <div class="origin-filter-pill-box">
-        <button id="filter-btn-all" class="filter-pill-btn active" onclick="handleOriginContextSwitch('all')">All</button>
-        <button id="filter-btn-beverages" class="filter-pill-btn" onclick="handleOriginContextSwitch('beverages')">Beverages</button>
-        <button id="filter-btn-eatables" class="filter-pill-btn" onclick="handleOriginContextSwitch('eatables')">Eatables</button>
+        <button type="button" id="filter-btn-all" class="filter-pill-btn active" onclick="handleOriginContextSwitch('all')">All</button>
+        <button type="button" id="filter-btn-beverages" class="filter-pill-btn" onclick="handleOriginContextSwitch('beverages')">Beverages</button>
+        <button type="button" id="filter-btn-eatables" class="filter-pill-btn" onclick="handleOriginContextSwitch('eatables')">Eatables</button>
       </div>
     </div>
 
     <div class="global-settings-bar" id="global-display-settings">
-      <span class="global-settings-bar__label">Global Display</span>
+      <span class="global-settings-bar__label">Print &amp; Display Flags</span>
       <label class="global-settings-bar__item">
-        <label class="switch-wrapper" title="Show or hide prices across the customer menu">
-          <input type="checkbox" class="switch-input" id="toggle-show-prices" onchange="handleGlobalSettingChange('show_prices', this.checked)">
+        <label class="switch-wrapper">
+          <input type="checkbox" class="switch-input" id="toggle-show-prices" onchange="handleGlobalSettingChange('show_prices', this.checked)" />
           <span class="switch-rail"><span class="switch-indicator"></span></span>
         </label>
-        <span>Show Prices</span>
+        <span>Include Prices on Print</span>
       </label>
       <label class="global-settings-bar__item">
-        <label class="switch-wrapper" title="Show or hide quantities across the customer menu">
-          <input type="checkbox" class="switch-input" id="toggle-show-quantities" onchange="handleGlobalSettingChange('show_quantities', this.checked)">
+        <label class="switch-wrapper">
+          <input type="checkbox" class="switch-input" id="toggle-show-quantities" onchange="handleGlobalSettingChange('show_quantities', this.checked)" />
           <span class="switch-rail"><span class="switch-indicator"></span></span>
         </label>
-        <span>Show Quantities</span>
+        <span>Include Quantities on Print</span>
       </label>
-      <span class="global-settings-bar__hint">Saves upon clicking "Publish the revised menu".</span>
+      <span class="global-settings-bar__hint">Print layout &amp; structure only — pricing is managed separately in Cost &amp; Price Matrix.</span>
       <span class="global-settings-bar__status" id="global-settings-status">Synced</span>
     </div>
 
     <div id="top-creation-stage" class="top-creation-stage-panel">
-      <div class="creation-stage-title">Add New Menu Section</div>
-      <div style="display: flex; flex-direction: column;">
-        <div class="category-edit-grid-row">
-          <input type="text" id="new-cat-super" class="db-input" style="font-family:'Oswald'; color:var(--accent-gold);" placeholder="Sidebar Group (e.g. HOT COFFEE)" title="Enter the broad core segment grouping name">
-          <input type="text" id="new-cat-sub" class="db-input" placeholder="Section Title (e.g. Classic Espressos)" title="Enter the localized display card subset name">
-          <input type="text" id="new-cat-desc" class="db-input" placeholder="Section Line Summary Description (Optional)" title="Optional context notes line summarized across live view boards">
-          <input type="text" id="new-cat-tag" class="db-input" placeholder="Sidebar Tag (Optional)" title="Metadata tag context values paired to sidebar items">
-          <select id="new-cat-origin" class="db-input" style="height:33px;">
-            <option value="beverages">Beverages</option>
-            <option value="eatables">Eatables</option>
-          </select>
-        </div>
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button class="primary-btn" style="padding: 8px 20px; font-size: 11px;" onclick="saveTopCreatedCategory()">Save Section</button>
-          <button class="btn-edit-header" onclick="closeTopCreationRow()">Cancel</button>
-        </div>
+      <div class="creation-stage-title">Add New Print Menu Section</div>
+      <div class="category-edit-grid-row">
+        <input type="text" id="new-cat-super" class="db-input" placeholder="Sidebar Group (e.g. ICED COFFEE)" />
+        <input type="text" id="new-cat-sub" class="db-input" placeholder="Section Title (e.g. Signature Cold)" />
+        <input type="text" id="new-cat-desc" class="db-input" placeholder="Section Description (Optional)" />
+        <input type="text" id="new-cat-tag" class="db-input" placeholder="Sidebar Tag (Optional)" />
+        <select id="new-cat-origin" class="db-input" style="height:35px;">
+          <option value="beverages">Beverages</option>
+          <option value="eatables">Eatables</option>
+        </select>
+      </div>
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button type="button" class="primary-btn" style="padding: 8px 18px; font-size: 11px;" onclick="saveTopCreatedCategory()">Save Section</button>
+        <button type="button" class="btn-edit-header" onclick="closeTopCreationRow()">Cancel</button>
       </div>
     </div>
 
-    <div id="accordion-render-target">Building workspace tree components...</div>
+    <div id="accordion-render-target">Loading print menu layout from Supabase...</div>
   </div>
 
   <div class="cgs-dialog-overlay" id="cgs-modal-overlay">
     <div class="cgs-dialog-box">
-      <div class="cgs-dialog-title" id="modal-title">System Alert</div>
-      <div class="cgs-dialog-body" id="modal-body">Message body content summary text details.</div>
-      
-      <div class="double-confirm-gate" id="modal-double-gate">
+      <div class="cgs-dialog-title" id="modal-title">Notice</div>
+      <div class="cgs-dialog-body" id="modal-body"></div>
+      <div class="double-confirm-gate" id="modal-double-gate" style="display:none;">
         <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:12px; color:#ff8888;">
-          <input type="checkbox" id="double-confirm-checkbox" onchange="toggleDoubleConfirmBtn(this.checked)">
-          I understand this action can disrupt live menu alignment layouts.
+          <input type="checkbox" id="double-confirm-checkbox" onchange="toggleDoubleConfirmBtn(this.checked)" />
+          Confirm this layout change.
         </label>
       </div>
-
       <div class="cgs-dialog-footer">
-        <button class="btn-edit-header" id="modal-cancel-btn" onclick="closeCgsDialog(false)">Cancel</button>
-        <button class="primary-btn" id="modal-confirm-btn" style="padding:8px 20px; font-size:12px;" onclick="closeCgsDialog(true)">Confirm</button>
+        <button type="button" class="btn-edit-header" id="modal-cancel-btn" onclick="closeCgsDialog(false)">Cancel</button>
+        <button type="button" class="primary-btn" id="modal-confirm-btn" style="padding:8px 18px; font-size:12px;" onclick="closeCgsDialog(true)">Confirm</button>
       </div>
     </div>
   </div>
-  <!-- CGS Publishing Overlay -->
-  <div id="publish-overlay" style="
-     display:none;
-     position:fixed;
-     top:0;
-     left:0;
-     width:100%;
-     height:100%;
-     background:rgba(8,8,8,.75);
-     backdrop-filter:blur(4px);
-     z-index:999999;
-     align-items:center;
-     justify-content:center;
-     ">
-     <div style="
-       width:460px;
-       background:linear-gradient(180deg,#1b1b1b,#111);
-       border:1px solid rgba(212,175,55,.45);
-       border-radius:20px;
-       padding:40px;
-       text-align:center;
-       box-shadow:0 20px 70px rgba(0,0,0,.6);
-       ">
-       <div style="
-          font-family:'Oswald';
-          color:#D4AF37;
-          font-size:30px;
-          letter-spacing:3px;
-          margin-bottom:6px;">
-          CGS
-       </div>
-       <div style="
-          color:#888;
-          font-size:13px;
-          letter-spacing:2px;
-          margin-bottom:30px;">
-          LIVE MENU MANAGER
-       </div>
-       <div style="
-          width:64px;
-          height:64px;
-          margin:auto;
-          border:5px solid rgba(212,175,55,.18);
-          border-top:5px solid #D4AF37;
-          border-radius:50%;
-          animation:cgsSpin .8s linear infinite;">
-       </div>
-       <h2 style="
-          color:#fff;
-          font-family:'Oswald';
-          margin-top:28px;">
-          Publishing Menu
-       </h2>
-       <p id="publish-status"
-          style="
-          color:#bdbdbd;
-          margin-top:12px;
-          line-height:1.7;">
-          Synchronizing menu with Supabase...
-       </p>
+
+  <div id="publish-overlay" style="display:none; position:fixed; inset:0; background:rgba(8,8,8,.75); z-index:999999; align-items:center; justify-content:center;">
+    <div style="width:420px; background:#151311; border:1px solid rgba(197,168,128,.45); border-radius:14px; padding:32px; text-align:center;">
+      <div style="width:52px; height:52px; margin:auto; border:4px solid rgba(197,168,128,.2); border-top:4px solid #c5a880; border-radius:50%; animation:cgsSpin .8s linear infinite;"></div>
+      <h3 style="color:#fff; font-family:'Oswald'; margin-top:20px;">Saving Layout</h3>
+      <p id="publish-status" style="color:#bdbdbd; margin-top:8px; font-size:13px;">Updating sections, items &amp; print flags...</p>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/js/environment.js"></script>
   <script src="/admin/session.js"></script>
   <script src="/authorization/auth-guard.js"></script>
-  <script src="./supabase-loader.js"></script>
   <script>
-    if (typeof MASTER_DATABASE === 'undefined') {
-      var MASTER_DATABASE = { categories: [] };
-    };
-    let FILE_SHA = "";
+    let MASTER_CATEGORIES = [];
     let EDITING_CATEGORIES = {};
-    let CURRENT_ACTIVE_OPEN_ACCORDION_IDX = null;
-    let CURRENT_SEARCH_STRING = "";
-    let CURRENT_ORIGIN_FILTER = "all";
-    let ACTIVE_PENDING_NEW_ROW_MAP = {};
+    let OPEN_ACCORDION_IDX = null;
+    let SEARCH_QUERY = "";
+    let ORIGIN_FILTER = "all";
+    let PENDING_NEW_CAT = {};
     let DELETED_CATEGORY_IDS = [];
     let DELETED_ITEM_IDS = [];
-    let IS_UNPUBLISHED_CHANGES_PENDING = false;
-
-    const CRITICAL_DRAG_WARNING = "⚠️ CRITICAL WARNING: Moving items or sections may alter page heights, causing text overflows, misalignments, or unexpected page breaks on the live/printed menu layout. Check on the lower environment before making this change as this change may cause page misalignment and page breaks for the live menu.";
-    const CURRENT_ENVIRONMENT = getCurrentEnvironment();
-    let dialogResolvePointer = null;
+    let HAS_UNSAVED = false;
     let APP_SETTINGS = { show_prices: true, show_quantities: true };
+    let dialogResolver = null;
 
     function setSettingsStatus(text, cls) {
       const el = document.getElementById("global-settings-status");
@@ -393,229 +236,152 @@
       el.textContent = text;
     }
 
+    function setPendingChanges(dirty) {
+      HAS_UNSAVED = Boolean(dirty);
+      document.getElementById("unsaved-warning-bar").style.display = HAS_UNSAVED ? "flex" : "none";
+      document.body.style.paddingTop = HAS_UNSAVED ? "62px" : "40px";
+      document.getElementById("save-btn").disabled = !HAS_UNSAVED;
+      if (HAS_UNSAVED) setSettingsStatus("Modified", "saving");
+      else setSettingsStatus("Synced", "saved");
+    }
+
+    window.addEventListener("beforeunload", (e) => {
+      if (HAS_UNSAVED) {
+        e.preventDefault();
+        e.returnValue = "You have unsaved print-menu layout changes.";
+      }
+    });
+
+    function showCgsDialog(title, message, requireCheck = false) {
+      document.getElementById("modal-title").textContent = title;
+      document.getElementById("modal-body").textContent = message;
+      const gate = document.getElementById("modal-double-gate");
+      const cb = document.getElementById("double-confirm-checkbox");
+      const btn = document.getElementById("modal-confirm-btn");
+      cb.checked = false;
+      gate.style.display = requireCheck ? "block" : "none";
+      btn.disabled = requireCheck;
+      document.getElementById("cgs-modal-overlay").classList.add("active");
+      return new Promise((resolve) => { dialogResolver = resolve; });
+    }
+
+    function toggleDoubleConfirmBtn(checked) {
+      document.getElementById("modal-confirm-btn").disabled = !checked;
+    }
+
+    function closeCgsDialog(confirmed) {
+      document.getElementById("cgs-modal-overlay").classList.remove("active");
+      if (dialogResolver) {
+        dialogResolver(confirmed);
+        dialogResolver = null;
+      }
+    }
+
     async function loadAppSettings() {
       try {
         setSettingsStatus("Loading…", "");
         const { data, error } = await supabaseClient
-          .from('app_settings')
-          .select('setting_key, value')
-          .in('setting_key', ['show_prices', 'show_quantities']);
+          .from("app_settings")
+          .select("setting_key, value")
+          .in("setting_key", ["show_prices", "show_quantities"]);
         if (error) throw error;
-        (data || []).forEach(row => {
+        (data || []).forEach((row) => {
           const raw = row.value;
-          const isTrue = !(raw === false || raw === 'false' || raw === 0 || raw === '0' || raw === null);
-          APP_SETTINGS[row.setting_key] = isTrue;
+          APP_SETTINGS[row.setting_key] = !(raw === false || raw === "false" || raw === 0 || raw === "0" || raw === null);
         });
-        const pEl = document.getElementById('toggle-show-prices');
-        const qEl = document.getElementById('toggle-show-quantities');
-        if (pEl) pEl.checked = !!APP_SETTINGS.show_prices;
-        if (qEl) qEl.checked = !!APP_SETTINGS.show_quantities;
+        document.getElementById("toggle-show-prices").checked = !!APP_SETTINGS.show_prices;
+        document.getElementById("toggle-show-quantities").checked = !!APP_SETTINGS.show_quantities;
         setSettingsStatus("Synced", "saved");
       } catch (err) {
         console.error(err);
-        setSettingsStatus("Load failed", "error");
+        setSettingsStatus("Error", "error");
       }
     }
 
     function handleGlobalSettingChange(key, checked) {
       APP_SETTINGS[key] = !!checked;
-      setSettingsStatus("Modified", "saving");
       setPendingChanges(true);
     }
 
-    window.addEventListener("beforeunload", (event) => {
-      if (IS_UNPUBLISHED_CHANGES_PENDING) {
-        event.preventDefault();
-        event.returnValue = "You have uncommitted modifications. Exiting or reloading will clear all local menu changes.";
-        return "You have uncommitted modifications. Exiting or reloading will clear all local menu changes.";
-      }
-    });
+    async function loadStructureFromSupabase() {
+      const [{ data: cats, error: catErr }, { data: items, error: itemErr }] = await Promise.all([
+        supabaseClient.from("categories").select("id, super_category, sub_category_name, sub_category_desc, origin_type, tag, is_hidden, sort_order").order("sort_order", { ascending: true }),
+        supabaseClient.from("items").select("id, category_id, name, description, is_featured, is_hidden, sort_order").order("sort_order", { ascending: true })
+      ]);
+      if (catErr) throw catErr;
+      if (itemErr) throw itemErr;
 
-    window.addEventListener("DOMContentLoaded", async () => {
-    // 1. Setup environment variables
-      const hostname = window.location.hostname;
-      const badge = document.getElementById("env-badge-display");
-      const subdesc = document.getElementById("admin-scope-desc");
-
-      await initializeDatabaseConnection(true);
-      // Safety check: Only proceed if both elements exist
-      if (!badge || !subdesc) {
-        console.error("Critical UI elements not found in the DOM.");
-        return;
+      const itemsByCat = new Map();
+      for (const it of (items || [])) {
+        if (!itemsByCat.has(it.category_id)) itemsByCat.set(it.category_id, []);
+        itemsByCat.get(it.category_id).push({
+          id: it.id,
+          name: it.name || "",
+          description: it.description || "",
+          featured: Boolean(it.is_featured),
+          hidden: Boolean(it.is_hidden),
+          sortOrder: Number(it.sort_order || 0)
+        });
       }
-      
-      if (hostname === "localhost" || hostname === "127.0.0.1") {
-        GIT_REPO = "cgscafe-dev";
-        badge.innerText = "Studio Local Sandbox [cgscafe-dev]";
-        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
-      } else if (hostname === "dev.cgscafe.in") {
-        GIT_REPO = "cgscafe-dev";
-        badge.innerText = "Development Sandbox [cgscafe-dev]";
-        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
-      } else if (hostname === "qa.cgscafe.in") {
-        GIT_REPO = "cgscafe-qa";
-        badge.innerText = "Quality Assurance Suite [cgscafe-qa]";
-        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-QA";
-      } else if (hostname === "cgscafe.in" || hostname === "www.cgscafe.in") {
-        GIT_REPO = "cgscafe";
-        badge.innerText = "Production Master Cluster [cgscafe]";
-        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE";
-      } else {
-        GIT_REPO = "cgscafe-dev";
-        badge.innerText = "Default Core Target [cgscafe-dev]";
-        subdesc.innerText = "LIVE MENU SOURCE - CGSCAFE-DEV";
-      }
-    });
 
-    function setPendingChanges(stateValue) {
-      IS_UNPUBLISHED_CHANGES_PENDING = stateValue;
-      const bar = document.getElementById("unsaved-warning-bar");
-      const pubBtn = document.getElementById("save-btn");
-      
-      if (IS_UNPUBLISHED_CHANGES_PENDING) {
-        bar.style.display = "flex";
-        document.body.style.paddingTop = "65px";
-        pubBtn.classList.add("pulse-publish-btn");
-        pubBtn.disabled = false; 
-      } else {
-        bar.style.display = "none";
-        document.body.style.paddingTop = "40px";
-        pubBtn.classList.remove("pulse-publish-btn");
-        pubBtn.disabled = true; 
-        setSettingsStatus("Synced", "saved");
+      MASTER_CATEGORIES = (cats || []).map((c, idx) => ({
+        id: c.id,
+        sortOrder: Number(c.sort_order ?? idx + 1),
+        superCategory: c.super_category || "MENU",
+        subCategoryName: c.sub_category_name || "Section",
+        subCategoryDesc: c.sub_category_desc || "",
+        originType: c.origin_type || "beverages",
+        tag: c.tag || "",
+        hidden: Boolean(c.is_hidden),
+        items: itemsByCat.get(c.id) || []
+      }));
+    }
+
+    async function initPage() {
+      if (typeof requireLogin === "function") {
+        const ok = await requireLogin();
+        if (!ok) return;
+      }
+      try {
+        await loadStructureFromSupabase();
+        await loadAppSettings();
+        DELETED_CATEGORY_IDS = [];
+        DELETED_ITEM_IDS = [];
+        PENDING_NEW_CAT = {};
+        EDITING_CATEGORIES = {};
+        document.getElementById("admin-panel").style.display = "block";
+        setPendingChanges(false);
+        renderPanel();
+      } catch (err) {
+        console.error(err);
+        showCgsDialog("Load Failed", err.message || "Could not load print menu layout.");
       }
     }
 
     async function triggerRollbackWorkflow() {
-      const confirmRollback = await showCgsDialog(
-        "Discard Changes & Revert State",
-        "Are you absolutely sure you want to discard your current work? This will completely clear your local changes and pull a clean snapshot from production storage.",
-        true
-      );
-      if (confirmRollback) {
-        executeRevertAndReload();
-      }
-    }
-
-    function executeRevertAndReload() {
-      const target = document.getElementById("accordion-render-target");
-      target.innerHTML = "Reverting components back to baseline...";
-      ACTIVE_PENDING_NEW_ROW_MAP = {};
-      EDITING_CATEGORIES = {};
-      initializeDatabaseConnection(true);
+      const ok = await showCgsDialog("Discard Changes", "Discard all unsaved layout changes and reload?", true);
+      if (ok) initPage();
     }
 
     async function handleSignOutRequest() {
-      if (IS_UNPUBLISHED_CHANGES_PENDING) {
-        const leave = await showCgsDialog(
-          "Unsaved Changes Alert",
-          "You have unpublished modifications. Signing out now will completely discard all current work. Do you still want to exit?",
-          true
-        );
-        if (!leave) return;
+      if (HAS_UNSAVED) {
+        const ok = await showCgsDialog("Unsaved Changes", "Sign out and discard unsaved changes?", true);
+        if (!ok) return;
       }
-      try {
-        await logout();
-      } catch (err) {
-        console.error(err);
-        showCgsDialog("Sign Out Failed", err.message || "Unable to sign out.");
-      }
+      if (typeof logout === "function") await logout();
     }
 
-    async function handleOriginContextSwitch(contextKey) {
-      if (IS_UNPUBLISHED_CHANGES_PENDING) {
-        const switchView = await showCgsDialog(
-          "Filter View Warning",
-          "Switching views hides sections that contain active unsaved modifications. Unsaved progress will remain in cache, but we recommend publishing before altering view scopes.",
-          false
-        );
-        if (!switchView) return;
-      }
-      setOriginContextFilter(contextKey);
+    function handleOriginContextSwitch(key) {
+      ORIGIN_FILTER = key;
+      document.getElementById("filter-btn-all").classList.toggle("active", key === "all");
+      document.getElementById("filter-btn-beverages").classList.toggle("active", key === "beverages");
+      document.getElementById("filter-btn-eatables").classList.toggle("active", key === "eatables");
+      renderPanel();
     }
 
-    function clearSavedSession() {
-        localStorage.clear();
-    }
-
-    function showCgsDialog(title, message, isDoubleConfirm = false) {
-      document.getElementById("modal-title").innerText = title;
-      document.getElementById("modal-body").innerText = message;
-      
-      const doubleGate = document.getElementById("modal-double-gate");
-      const confirmBtn = document.getElementById("modal-confirm-btn");
-      document.getElementById("double-confirm-checkbox").checked = false;
-
-      if (isDoubleConfirm) {
-        doubleGate.style.display = "block";
-        confirmBtn.disabled = true;
-      } else {
-        doubleGate.style.display = "none";
-        confirmBtn.disabled = false;
-      }
-
-      document.getElementById("cgs-modal-overlay").classList.add("active");
-      return new Promise((resolve) => {
-        dialogResolvePointer = resolve;
-      });
-    }
-
-    function toggleDoubleConfirmBtn(isChecked) {
-      document.getElementById("modal-confirm-btn").disabled = !isChecked;
-    }
-
-    function closeCgsDialog(isConfirmed) {
-      document.getElementById("cgs-modal-overlay").classList.remove("active");
-      if (dialogResolvePointer) {
-        dialogResolvePointer(isConfirmed);
-        dialogResolvePointer = null;
-      }
-    }
-
-    async function initializeDatabaseConnection(isAutoConnect = false) {
-      if (!(await requireLogin())) return;
-
-      try {
-        MASTER_DATABASE = await loadMenuFromSupabase();
-        if (!MASTER_DATABASE.categories) {
-          MASTER_DATABASE.categories = [];
-        }
-        MASTER_DATABASE.categories.forEach(cat => {
-          if (cat.hidden === undefined) cat.hidden = false;
-          if (cat.items) {
-            cat.items.forEach(item => {
-              if (item.hidden === undefined) item.hidden = false;
-            });
-          }
-        });
-        const authGate = document.getElementById("auth-gate");
-        if (authGate) {
-          authGate.style.display = "none";
-        }
-        document.getElementById("admin-panel").style.display = "block";
-        setPendingChanges(false);
-        renderAdminDatabasePanel();
-        loadAppSettings();
-      } catch (err) {
-        console.error(err);
-        const authGate = document.getElementById("auth-gate");
-        if (authGate) {
-          authGate.style.display = "block";
-        }
-        const adminPanel = document.getElementById("admin-panel");
-        if (adminPanel) {
-          adminPanel.style.display = "none";
-        }
-        showCgsDialog("Database Connection Failed", err.message);
-      }
-    }
-
-    function setOriginContextFilter(contextKey) {
-      CURRENT_ORIGIN_FILTER = contextKey;
-      document.getElementById("filter-btn-all").classList.toggle("active", contextKey === 'all');
-      document.getElementById("filter-btn-beverages").classList.toggle("active", contextKey === 'beverages');
-      document.getElementById("filter-btn-eatables").classList.toggle("active", contextKey === 'eatables');
-      renderAdminDatabasePanel();
+    function handleLiveSearchFilter(val) {
+      SEARCH_QUERY = String(val || "").toLowerCase().trim();
+      renderPanel();
     }
 
     function openTopCreationRow() {
@@ -630,700 +396,430 @@
       document.getElementById("top-creation-stage").style.display = "none";
     }
 
-    async function saveTopCreatedCategory() {
-      const superTitle = document.getElementById("new-cat-super").value.trim() || "NEW CATEGORY";
-      const subTitle = document.getElementById("new-cat-sub").value.trim() || "Sub Category Section";
-      const description = document.getElementById("new-cat-desc").value.trim();
-      const tagStr = document.getElementById("new-cat-tag").value.trim();
-      const originType = document.getElementById("new-cat-origin").value;
-
-      MASTER_DATABASE.categories.unshift({
-          id: "cat_" + Date.now(),
-          sortOrder: 0,
-          superCategory: superTitle,
-          subCategoryName: subTitle,
-          subCategoryDesc: description,
-          originType: originType,
-          tag: tagStr,
-          hidden: false,
-          items: []
+    function saveTopCreatedCategory() {
+      const superTitle = document.getElementById("new-cat-super").value.trim() || "NEW GROUP";
+      const subTitle = document.getElementById("new-cat-sub").value.trim() || "New Section";
+      MASTER_CATEGORIES.unshift({
+        id: "cat_" + Date.now(),
+        sortOrder: 0,
+        superCategory: superTitle,
+        subCategoryName: subTitle,
+        subCategoryDesc: document.getElementById("new-cat-desc").value.trim(),
+        tag: document.getElementById("new-cat-tag").value.trim(),
+        originType: document.getElementById("new-cat-origin").value,
+        hidden: false,
+        items: []
       });
-
       closeTopCreationRow();
-      CURRENT_ACTIVE_OPEN_ACCORDION_IDX = 0; 
+      OPEN_ACCORDION_IDX = 0;
       setPendingChanges(true);
-      renderAdminDatabasePanel();
-
-      await showCgsDialog(
-        "Empty Section Added", 
-        `"${subTitle}" has been successfully appended to the workspace list. Please add structural product rows to it now to prevent empty layout blocks from rendering on the customer-facing menu layout.`,
-        false
-      );
+      renderPanel();
     }
 
-    function toggleAccordionView(index, event) {
-      if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT' || event.target.tagName === 'BUTTON' || event.target.classList.contains('drag-handle-pill') || event.target.classList.contains('switch-rail') || event.target.classList.contains('switch-indicator')) {
-        return; 
-      }
-      CURRENT_ACTIVE_OPEN_ACCORDION_IDX = (CURRENT_ACTIVE_OPEN_ACCORDION_IDX === index) ? null : index;
-      renderAdminDatabasePanel();
+    function toggleAccordionView(idx, event) {
+      if (["INPUT", "SELECT", "BUTTON"].includes(event.target.tagName)) return;
+      OPEN_ACCORDION_IDX = OPEN_ACCORDION_IDX === idx ? null : idx;
+      renderPanel();
     }
 
-    function toggleCategoryEditMode(blockIndex, event) {
-      if(event) event.stopPropagation();
-      EDITING_CATEGORIES[blockIndex] = !EDITING_CATEGORIES[blockIndex];
-      renderAdminDatabasePanel();
+    function toggleCategoryEditMode(idx, event) {
+      if (event) event.stopPropagation();
+      EDITING_CATEGORIES[idx] = !EDITING_CATEGORIES[idx];
+      renderPanel();
     }
 
-    function cancelCategoryEditMode(blockIndex, event) {
-      if(event) event.stopPropagation();
-      delete EDITING_CATEGORIES[blockIndex];
-      renderAdminDatabasePanel();
+    function cancelCategoryEditMode(idx, event) {
+      if (event) event.stopPropagation();
+      delete EDITING_CATEGORIES[idx];
+      renderPanel();
     }
 
-    function modifyCategoryMetadata(blockIndex, property, value) {
-      MASTER_DATABASE.categories[blockIndex][property] = value;
+    function modifyCategoryMetadata(idx, prop, val) {
+      MASTER_CATEGORIES[idx][prop] = val;
       setPendingChanges(true);
     }
 
-    function toggleCategoryVisibilityMask(blockIndex, event) {
+    function toggleCategoryVisibilityMask(idx, event) {
       event.stopPropagation();
-      MASTER_DATABASE.categories[blockIndex].hidden = !MASTER_DATABASE.categories[blockIndex].hidden;
+      MASTER_CATEGORIES[idx].hidden = !MASTER_CATEGORIES[idx].hidden;
       setPendingChanges(true);
-      renderAdminDatabasePanel();
+      renderPanel();
     }
 
-    function toggleItemVisibilityMask(blockIndex, itemIndex) {
-      const itemRef = MASTER_DATABASE.categories[blockIndex].items[itemIndex];
-      itemRef.hidden = !itemRef.hidden;
-      
-      const trackingKey = `${blockIndex}-${itemIndex}`;
-      if (!itemRef.hidden && ACTIVE_PENDING_NEW_ROW_MAP[blockIndex]) {
-        ACTIVE_PENDING_NEW_ROW_MAP[trackingKey] = itemRef;
-      }
-
-      setPendingChanges(true);
-      renderAdminDatabasePanel();
-    }
-
-    async function removeWholeCategoryBlock(blockIndex, event) {
+    async function removeWholeCategoryBlock(idx, event) {
       event.stopPropagation();
-      const confirmed = await showCgsDialog(
-        "Delete Structural Component", 
-        `Are you absolutely sure you want to completely delete the category section "${MASTER_DATABASE.categories[blockIndex].subCategoryName}" along with all items?`,
-        true
-      );
-      if (confirmed) {
-        const category = MASTER_DATABASE.categories[blockIndex];
-        if (category.id && !String(category.id).startsWith("cat_")) {
-            DELETED_CATEGORY_IDS.push(category.id);
-        }
-        category.items.forEach(item => {
-            if (item.id && !String(item.id).startsWith("item_")) {
-                DELETED_ITEM_IDS.push(item.id);
-            }
-        });
-        MASTER_DATABASE.categories.splice(blockIndex, 1);
-        if (CURRENT_ACTIVE_OPEN_ACCORDION_IDX === blockIndex) CURRENT_ACTIVE_OPEN_ACCORDION_IDX = null;
+      const cat = MASTER_CATEGORIES[idx];
+      const ok = await showCgsDialog("Delete Section", `Delete "${cat.subCategoryName}" and its items?`, true);
+      if (!ok) return;
+      if (cat.id && !String(cat.id).startsWith("cat_")) DELETED_CATEGORY_IDS.push(cat.id);
+      (cat.items || []).forEach((it) => {
+        if (it.id && !String(it.id).startsWith("item_")) DELETED_ITEM_IDS.push(it.id);
+      });
+      MASTER_CATEGORIES.splice(idx, 1);
+      if (OPEN_ACCORDION_IDX === idx) OPEN_ACCORDION_IDX = null;
+      setPendingChanges(true);
+      renderPanel();
+    }
+
+    function modifyCell(catIdx, itemIdx, prop, val) {
+      MASTER_CATEGORIES[catIdx].items[itemIdx][prop] = val;
+      setPendingChanges(true);
+    }
+
+    function toggleItemVisibilityMask(catIdx, itemIdx) {
+      const it = MASTER_CATEGORIES[catIdx].items[itemIdx];
+      it.hidden = !it.hidden;
+      setPendingChanges(true);
+      renderPanel();
+    }
+
+    function insertNewRow(catIdx) {
+      if (PENDING_NEW_CAT[catIdx]) return;
+      MASTER_CATEGORIES[catIdx].items = MASTER_CATEGORIES[catIdx].items || [];
+      PENDING_NEW_CAT[catIdx] = true;
+      MASTER_CATEGORIES[catIdx].items.push({
+        id: "item_" + Math.random().toString(36).slice(2, 10),
+        name: "",
+        description: "",
+        featured: false,
+        hidden: false,
+        isPendingNew: true
+      });
+      renderPanel();
+    }
+
+    function savePendingInlineRow(catIdx, itemIdx) {
+      const it = MASTER_CATEGORIES[catIdx].items[itemIdx];
+      if (!String(it.name || "").trim()) {
+        showCgsDialog("Validation", "Enter a product name before saving.");
+        return;
+      }
+      delete it.isPendingNew;
+      delete PENDING_NEW_CAT[catIdx];
+      setPendingChanges(true);
+      renderPanel();
+    }
+
+    function cancelPendingNewRow(catIdx, itemIdx) {
+      MASTER_CATEGORIES[catIdx].items.splice(itemIdx, 1);
+      delete PENDING_NEW_CAT[catIdx];
+      renderPanel();
+    }
+
+    async function deleteRow(catIdx, itemIdx) {
+      const ok = await showCgsDialog("Delete Item", "Remove this item from the print menu layout?", false);
+      if (!ok) return;
+      const it = MASTER_CATEGORIES[catIdx].items[itemIdx];
+      if (it.id && !String(it.id).startsWith("item_")) DELETED_ITEM_IDS.push(it.id);
+      MASTER_CATEGORIES[catIdx].items.splice(itemIdx, 1);
+      setPendingChanges(true);
+      renderPanel();
+    }
+
+    let dragCatIdx = null;
+    let dragItemIdx = null;
+    let dragItemCatIdx = null;
+
+    function handleCategoryDragStart(e) {
+      const el = e.target.closest(".category-block");
+      if (!el || ["INPUT", "SELECT"].includes(e.target.tagName)) { e.preventDefault(); return; }
+      dragCatIdx = Number(el.dataset.catIndex);
+      dragItemIdx = null;
+      el.classList.add("is-dragging");
+    }
+    function handleCategoryDragOver(e) {
+      e.preventDefault();
+      const el = e.currentTarget.closest(".category-block");
+      if (el && dragCatIdx !== null && Number(el.dataset.catIndex) !== dragCatIdx) el.classList.add("drag-over");
+    }
+    function handleCategoryDragLeave(e) {
+      e.currentTarget.closest(".category-block")?.classList.remove("drag-over");
+    }
+    function handleCategoryDrop(e) {
+      e.preventDefault();
+      const el = e.currentTarget.closest(".category-block");
+      if (!el || dragCatIdx === null) return;
+      el.classList.remove("drag-over");
+      document.querySelector(".category-block.is-dragging")?.classList.remove("is-dragging");
+      const targetIdx = Number(el.dataset.catIndex);
+      if (dragCatIdx !== targetIdx) {
+        const [moved] = MASTER_CATEGORIES.splice(dragCatIdx, 1);
+        MASTER_CATEGORIES.splice(targetIdx, 0, moved);
+        OPEN_ACCORDION_IDX = targetIdx;
         setPendingChanges(true);
-        renderAdminDatabasePanel();
       }
+      dragCatIdx = null;
+      renderPanel();
     }
 
-    function handleLiveSearchFilter(val) {
-      CURRENT_SEARCH_STRING = val.toLowerCase().trim();
-      renderAdminDatabasePanel();
+    function handleItemDragStart(e) {
+      e.stopPropagation();
+      const row = e.currentTarget.closest("tr");
+      dragItemIdx = Number(row.dataset.itemIndex);
+      dragItemCatIdx = Number(row.dataset.parentCat);
+      dragCatIdx = null;
+      row.classList.add("is-dragging");
+    }
+    function handleItemDragOver(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const row = e.currentTarget.closest("tr");
+      if (row && dragItemIdx !== null) row.classList.add("drag-active-indicator");
+    }
+    function handleItemDragLeave(e) {
+      e.currentTarget.closest("tr")?.classList.remove("drag-active-indicator");
+    }
+    function handleItemDrop(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const row = e.currentTarget.closest("tr");
+      if (!row || dragItemIdx === null || dragItemCatIdx === null) return;
+      row.classList.remove("drag-active-indicator");
+      document.querySelector("tr.product-row-node.is-dragging")?.classList.remove("is-dragging");
+      const tCat = Number(row.dataset.parentCat);
+      const tIdx = Number(row.dataset.itemIndex);
+      if (!(dragItemCatIdx === tCat && dragItemIdx === tIdx)) {
+        const [moved] = MASTER_CATEGORIES[dragItemCatIdx].items.splice(dragItemIdx, 1);
+        MASTER_CATEGORIES[tCat].items.splice(tIdx, 0, moved);
+        OPEN_ACCORDION_IDX = tCat;
+        setPendingChanges(true);
+      }
+      dragItemIdx = null;
+      dragItemCatIdx = null;
+      renderPanel();
     }
 
-    function renderAdminDatabasePanel() {
+    function renderPanel() {
       const target = document.getElementById("accordion-render-target");
       target.innerHTML = "";
 
-      if (MASTER_DATABASE.categories.length === 0) {
-        target.innerHTML = `<div style="text-align:center; padding: 40px; color:var(--text-muted); font-family: 'Oswald'; letter-spacing:1px;">No data tracks configured.</div>`;
-        return;
-      }
+      MASTER_CATEGORIES.forEach((block, blockIndex) => {
+        if (ORIGIN_FILTER !== "all" && block.originType !== ORIGIN_FILTER) return;
 
-      MASTER_DATABASE.categories.forEach((block, blockIndex) => {
-        if (CURRENT_ORIGIN_FILTER !== "all" && block.originType !== CURRENT_ORIGIN_FILTER) {
-          return;
-        }
+        const catMatch =
+          block.superCategory.toLowerCase().includes(SEARCH_QUERY) ||
+          block.subCategoryName.toLowerCase().includes(SEARCH_QUERY);
 
-        const catMatched = block.superCategory.toLowerCase().includes(CURRENT_SEARCH_STRING) || 
-                           block.subCategoryName.toLowerCase().includes(CURRENT_SEARCH_STRING);
-        
-        let hasMatchingItem = false;
-        let visibleItemsCount = 0;
-        
-        if(block.items) {
-          block.items.forEach(i => {
-            if(CURRENT_SEARCH_STRING === "" || i.name.toLowerCase().includes(CURRENT_SEARCH_STRING) || (i.description && i.description.toLowerCase().includes(CURRENT_SEARCH_STRING)) || catMatched) {
-              visibleItemsCount++;
-            }
-          });
-          hasMatchingItem = block.items.some(i => i.name.toLowerCase().includes(CURRENT_SEARCH_STRING) || 
-                                                  (i.description && i.description.toLowerCase().includes(CURRENT_SEARCH_STRING)));
-        }
+        const matchingItems = (block.items || []).filter((it) =>
+          !SEARCH_QUERY ||
+          catMatch ||
+          (it.name || "").toLowerCase().includes(SEARCH_QUERY) ||
+          (it.description || "").toLowerCase().includes(SEARCH_QUERY)
+        );
 
-        if(CURRENT_SEARCH_STRING !== "" && !catMatched && !hasMatchingItem) {
-          return; 
-        }
+        if (SEARCH_QUERY && !catMatch && matchingItems.length === 0) return;
 
-        const isOpen = (CURRENT_ACTIVE_OPEN_ACCORDION_IDX === blockIndex) || (CURRENT_SEARCH_STRING !== "" && hasMatchingItem);
-        
-        const blockElement = document.createElement("div");
-        blockElement.className = `category-block ${isOpen ? 'open' : ''} ${block.hidden ? 'hidden-mask-dim' : ''}`;
-        blockElement.setAttribute("data-cat-index", blockIndex);
-        
-        blockElement.setAttribute("draggable", "true");
-        blockElement.addEventListener("dragstart", handleCategoryDragStart);
-        blockElement.addEventListener("dragover", handleCategoryDragOver);
-        blockElement.addEventListener("dragleave", handleCategoryDragLeave);
-        blockElement.addEventListener("drop", handleCategoryDrop);
-        
-        let headerContent = "";
-        if (EDITING_CATEGORIES[blockIndex]) {
-          headerContent = `
+        const isOpen = OPEN_ACCORDION_IDX === blockIndex || (SEARCH_QUERY && matchingItems.length > 0);
+        const blockEl = document.createElement("div");
+        blockEl.className = `category-block ${isOpen ? "open" : ""} ${block.hidden ? "hidden-mask-dim" : ""}`;
+        blockEl.dataset.catIndex = blockIndex;
+        blockEl.draggable = true;
+        blockEl.addEventListener("dragstart", handleCategoryDragStart);
+        blockEl.addEventListener("dragover", handleCategoryDragOver);
+        blockEl.addEventListener("dragleave", handleCategoryDragLeave);
+        blockEl.addEventListener("drop", handleCategoryDrop);
+
+        const headerHtml = EDITING_CATEGORIES[blockIndex]
+          ? `
             <div style="display:flex; flex-direction:column; width:100%;" onclick="event.stopPropagation()">
               <div class="category-edit-grid-row">
-                <input type="text" class="db-input" style="font-family:'Oswald'; color:var(--accent-gold);" value="${block.superCategory}" placeholder="Sidebar Title" oninput="modifyCategoryMetadata(${blockIndex},'superCategory',this.value)">
-                <input type="text" class="db-input" value="${block.subCategoryName}" placeholder="Section Title" oninput="modifyCategoryMetadata(${blockIndex},'subCategoryName',this.value)">
-                <input type="text" class="db-input" value="${block.subCategoryDesc || ''}" placeholder="Section Description" title="${block.subCategoryDesc || ''}" oninput="modifyCategoryMetadata(${blockIndex},'subCategoryDesc',this.value)">
-                <input type="text" class="db-input" value="${block.tag || ''}" placeholder="Sidebar Tag" oninput="modifyCategoryMetadata(${blockIndex},'tag',this.value)">
-                <select class="db-input" style="height:33px;" onchange="modifyCategoryMetadata(${blockIndex},'originType',this.value)">
-                  <option value="beverages" ${block.originType === 'beverages' ? 'selected' : ''}>Beverages</option>
-                  <option value="eatables" ${block.originType === 'eatables' ? 'selected' : ''}>Eatables</option>
+                <input type="text" class="db-input" value="${block.superCategory}" oninput="modifyCategoryMetadata(${blockIndex},'superCategory',this.value)" />
+                <input type="text" class="db-input" value="${block.subCategoryName}" oninput="modifyCategoryMetadata(${blockIndex},'subCategoryName',this.value)" />
+                <input type="text" class="db-input" value="${block.subCategoryDesc || ""}" oninput="modifyCategoryMetadata(${blockIndex},'subCategoryDesc',this.value)" />
+                <input type="text" class="db-input" value="${block.tag || ""}" oninput="modifyCategoryMetadata(${blockIndex},'tag',this.value)" />
+                <select class="db-input" style="height:35px;" onchange="modifyCategoryMetadata(${blockIndex},'originType',this.value)">
+                  <option value="beverages" ${block.originType === "beverages" ? "selected" : ""}>Beverages</option>
+                  <option value="eatables" ${block.originType === "eatables" ? "selected" : ""}>Eatables</option>
                 </select>
               </div>
               <div class="category-edit-actions-row">
-                <button class="btn-edit-header" style="color:var(--accent-gold); border-color:var(--accent-gold);" onclick="toggleCategoryEditMode(${blockIndex}, event)">SAVE</button>
-                <button class="btn-edit-header" onclick="cancelCategoryEditMode(${blockIndex}, event)">CANCEL</button>
-                <button class="btn-delete" onclick="removeWholeCategoryBlock(${blockIndex}, event)">DELETE</button>
+                <button type="button" class="btn-edit-header" style="color:var(--accent-gold); border-color:var(--accent-gold);" onclick="toggleCategoryEditMode(${blockIndex}, event)">Done</button>
+                <button type="button" class="btn-edit-header" onclick="cancelCategoryEditMode(${blockIndex}, event)">Cancel</button>
+                <button type="button" class="btn-delete" onclick="removeWholeCategoryBlock(${blockIndex}, event)">Delete</button>
               </div>
             </div>
-          `;
-        } else {
-          let processedDesc = "";
-          if (block.subCategoryDesc && block.subCategoryDesc.trim() !== "") {
-            const cleanDesc = block.subCategoryDesc.trim();
-            if (cleanDesc.length > 80) {
-              processedDesc = cleanDesc.substring(0, 80) + "...";
-            } else {
-              processedDesc = cleanDesc;
-            }
-          }
-
-          headerContent = `
+          `
+          : `
             <div class="category-title-display">
-              <span class="drag-handle-pill" style="margin-right: 12px;">☰</span>
-              <span style="color: var(--text-muted); font-size:11px; margin-right:8px;">[${block.originType.toUpperCase()}]</span>
-              <strong style="text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:180px;">${block.superCategory.toUpperCase()}</strong> 
-              <span style="color: var(--accent-gold); margin: 0 8px;">➔</span> 
-              <span style="text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:220px; font-weight:600;">${block.subCategoryName}</span>
-              ${processedDesc ? `<span style="font-family:'Plus Jakarta Sans'; font-size:12px; color:var(--text-muted); font-weight:400; margin-left:15px; letter-spacing:0;" title="${block.subCategoryDesc.replace(/"/g, '&quot;')}">${processedDesc}</span>` : ''}
+              <span class="drag-handle-pill" style="margin-right:10px;">☰</span>
+              <span style="color:var(--text-muted); font-size:11px; margin-right:8px;">[${(block.originType || "").toUpperCase()}]</span>
+              <strong>${block.superCategory.toUpperCase()}</strong>
+              <span style="color:var(--accent-gold); margin:0 8px;">➔</span>
+              <span style="font-weight:600;">${block.subCategoryName}</span>
             </div>
             <div style="display:flex; gap:10px; align-items:center;" onclick="event.stopPropagation()">
-              <label
-                 class="switch-wrapper"
-                 title="${(!block.items || block.items.length === 0)
-                 ? 'Add at least one product before making this section visible.'
-                 : 'Show/Hide Section'}">
-              <input
-              type="checkbox"
-              class="switch-input"
-              ${(!block.items || block.items.length === 0) ? "disabled" : ""}
-              ${(!block.items || block.items.length === 0)
-              ? ""
-              : (!block.hidden ? "checked" : "")}
-              onchange="toggleCategoryVisibilityMask(${blockIndex}, event)">
-              <span class="switch-rail">
-                <span class="switch-indicator"></span>
-                </span>
+              <label class="switch-wrapper" title="Show/Hide Section">
+                <input type="checkbox" class="switch-input" ${!block.hidden ? "checked" : ""} onchange="toggleCategoryVisibilityMask(${blockIndex}, event)" />
+                <span class="switch-rail"><span class="switch-indicator"></span></span>
               </label>
-              <button class="btn-edit-header" onclick="toggleCategoryEditMode(${blockIndex}, event)">EDIT HEADER</button>
+              <button type="button" class="btn-edit-header" onclick="toggleCategoryEditMode(${blockIndex}, event)">Edit Header</button>
             </div>
           `;
-        }
 
-        const isAddDisabled = ACTIVE_PENDING_NEW_ROW_MAP[blockIndex] === true ? "disabled" : "";
-
-        let tableInnerHtml = "";
-        if (visibleItemsCount === 0) {
-          tableInnerHtml = `
-            <div class="empty-section-notice">
-              There are no products configured in this section as of now. Click "+ Add Product" below to insert elements.
-            </div>
-            <table class="database-table">
-              <tbody id="tbody-cat-${blockIndex}" class="product-drop-zone" data-cat-id="${blockIndex}"></tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="8" style="text-align:right; padding:15px 20px; background-color:rgba(0,0,0,0.05); border-bottom:none;">
-                    <button class="btn-add-inline" ${isAddDisabled} onclick="insertNewRow(${blockIndex})">+ Add Product</button>
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          `;
-        } else {
-          tableInnerHtml = `
+        const addDisabled = PENDING_NEW_CAT[blockIndex] ? "disabled" : "";
+        const rowsHtml = matchingItems.length === 0
+          ? `<div class="empty-section-notice">No items in this section. Click "+ Add Product" below.</div>`
+          : `
             <table class="database-table">
               <thead>
                 <tr>
                   <th class="col-drag"></th>
                   <th class="col-name">Product Name</th>
-                  <th class="col-desc">Recipe & Description</th>
-                  <th class="col-size">Serving Size</th>
-                  <th class="col-price">Price</th>
+                  <th class="col-desc">Print Description</th>
                   <th class="col-star">Featured</th>
-                  <th class="col-vis">Visibility</th>
-                  <th class="col-ctrl" style="padding-right:20px; text-align:right;">Action</th>
+                  <th class="col-vis">Visible</th>
+                  <th class="col-ctrl">Action</th>
                 </tr>
               </thead>
-              <tbody id="tbody-cat-${blockIndex}" class="product-drop-zone" data-cat-id="${blockIndex}"></tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="8" style="text-align:right; padding:15px 20px; background-color:rgba(0,0,0,0.05);">
-                    <button class="btn-add-inline" ${isAddDisabled} onclick="insertNewRow(${blockIndex})">+ Add Product</button>
-                  </td>
-                </tr>
-              </tfoot>
+              <tbody>
+                ${matchingItems.map((item) => {
+                  const realIdx = block.items.indexOf(item);
+                  const isNew = Boolean(item.isPendingNew);
+                  const ctrlHtml = isNew
+                    ? `<button type="button" class="btn-save-inline" onclick="savePendingInlineRow(${blockIndex},${realIdx})">Save</button><button type="button" class="btn-delete" onclick="cancelPendingNewRow(${blockIndex},${realIdx})">Cancel</button>`
+                    : `<button type="button" class="btn-delete" onclick="deleteRow(${blockIndex},${realIdx})">Delete</button>`;
+                  return `
+                    <tr class="product-row-node ${item.hidden ? "hidden-mask-dim" : ""} ${isNew ? "newly-created" : ""}" draggable="${!isNew}" data-item-index="${realIdx}" data-parent-cat="${blockIndex}" ondragstart="handleItemDragStart(event)" ondragover="handleItemDragOver(event)" ondragleave="handleItemDragLeave(event)" ondrop="handleItemDrop(event)">
+                      <td class="col-drag"><span class="drag-handle-pill">⋮⋮</span></td>
+                      <td><input type="text" class="db-input db-input-name" value="${item.name || ""}" oninput="modifyCell(${blockIndex},${realIdx},'name',this.value)" /></td>
+                      <td><input type="text" class="db-input" value="${item.description || ""}" oninput="modifyCell(${blockIndex},${realIdx},'description',this.value)" /></td>
+                      <td style="text-align:center;">
+                        <label class="switch-wrapper">
+                          <input type="checkbox" class="switch-input" ${item.featured ? "checked" : ""} onchange="modifyCell(${blockIndex},${realIdx},'featured',this.checked)" />
+                          <span class="switch-rail"><span class="switch-indicator"></span></span>
+                        </label>
+                      </td>
+                      <td style="text-align:center;">
+                        <label class="switch-wrapper">
+                          <input type="checkbox" class="switch-input" ${!item.hidden ? "checked" : ""} onchange="toggleItemVisibilityMask(${blockIndex},${realIdx})" />
+                          <span class="switch-rail"><span class="switch-indicator"></span></span>
+                        </label>
+                      </td>
+                      <td style="text-align:right; white-space:nowrap;">${ctrlHtml}</td>
+                    </tr>
+                  `;
+                }).join("")}
+              </tbody>
             </table>
           `;
-        }
 
-        blockElement.innerHTML = `
-          <div class="category-header" onclick="toggleAccordionView(${blockIndex}, event)">${headerContent}</div>
+        blockEl.innerHTML = `
+          <div class="category-header" onclick="toggleAccordionView(${blockIndex}, event)">${headerHtml}</div>
           <div class="accordion-content">
-            ${tableInnerHtml}
+            ${rowsHtml}
+            <div style="text-align:right; padding:12px 16px;">
+              <button type="button" class="btn-add-inline" ${addDisabled} onclick="insertNewRow(${blockIndex})">+ Add Product</button>
+            </div>
           </div>
         `;
-        target.appendChild(blockElement);
-
-        const tbody = document.getElementById(`tbody-cat-${blockIndex}`);
-        (block.items || []).forEach((item, itemIndex) => {
-          if(CURRENT_SEARCH_STRING !== "" && !item.name.toLowerCase().includes(CURRENT_SEARCH_STRING) && !(item.description && item.description.toLowerCase().includes(CURRENT_SEARCH_STRING)) && !catMatched) {
-            return;
-          }
-
-          const isUnsavedNewItem = (item.isPendingNew === true);
-          const row = document.createElement("tr");
-          row.className = `product-row-node ${item.hidden ? 'hidden-mask-dim' : ''} ${isUnsavedNewItem ? 'newly-created' : ''}`;
-          row.setAttribute("draggable", isUnsavedNewItem ? "false" : "true");
-          row.setAttribute("data-item-index", itemIndex);
-          row.setAttribute("data-parent-cat", blockIndex);
-          
-          if (!isUnsavedNewItem) {
-            row.addEventListener("dragstart", handleItemDragStart);
-            row.addEventListener("dragover", handleItemDragOver);
-            row.addEventListener("dragleave", handleItemDragLeave);
-            row.addEventListener("drop", handleItemDrop);
-          }
-
-          let actionBtnHtml = `<button class="btn-delete" onclick="deleteRow(${blockIndex},${itemIndex})">Delete</button>`;
-          if (isUnsavedNewItem) {
-            actionBtnHtml = `
-              <button class="btn-save-inline" onclick="savePendingInlineRow(${blockIndex},${itemIndex})">SAVE</button>
-              <button class="btn-delete" style="color:var(--text-muted);" onclick="cancelPendingNewRow(${blockIndex},${itemIndex})">Cancel</button>
-            `;
-          }
-
-          row.innerHTML = `
-            <td class="col-drag">${isUnsavedNewItem ? '<span style="color:var(--accent-gold); font-size:12px;">●</span>' : '<span class="drag-handle-pill">⋮⋮</span>'}</td>
-            <td><input type="text" class="db-input db-input-name" value="${item.name || ''}" placeholder="Item Name..." oninput="modifyCell(${blockIndex},${itemIndex},'name',this.value)"></td>
-            <td><input type="text" class="db-input" value="${item.description || ''}" placeholder="Description summary parameters..." title="${item.description || ''}" oninput="modifyCell(${blockIndex},${itemIndex},'description',this.value)"></td>
-            <td class="col-size">
-                <input type="text" class="db-input disabled" value="${item.qty || ''}" readonly>
-            </td>
-            <td class="col-price">
-                <input type="text" class="db-input disabled" value="${item.price || Math.max(item.base_price || 0, item.custom_price || 0)}" readonly>
-            </td>
-            <td style="text-align: center;">
-              <label class="switch-wrapper">
-                <input type="checkbox" class="switch-input" ${item.featured ? 'checked' : ''} onchange="modifyCell(${blockIndex},${itemIndex},'featured',this.checked)">
-                <span class="switch-rail"><span class="switch-indicator"></span></span>
-              </label>
-            </td>
-            <td style="text-align: center;">
-              <label class="switch-wrapper" title="Show/Hide Item">
-                <input type="checkbox" class="switch-input" ${!item.hidden ? 'checked' : ''} onchange="toggleItemVisibilityMask(${blockIndex},${itemIndex})">
-                <span class="switch-rail"><span class="switch-indicator"></span></span>
-              </label>
-            </td>
-            <td style="text-align: right; padding-right:20px; white-space: nowrap;">
-              ${actionBtnHtml}
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
+        target.appendChild(blockEl);
       });
-    }
-
-    function modifyCell(blockIndex, itemIndex, prop, value) {
-      MASTER_DATABASE.categories[blockIndex].items[itemIndex][prop] = value;
-      setPendingChanges(true);
-    }
-
-    function savePendingInlineRow(blockIndex, itemIndex) {
-      const targetItem = MASTER_DATABASE.categories[blockIndex].items[itemIndex];
-      if(!targetItem.name.trim()) {
-        showCgsDialog("Validation Alert", "Please enter a valid product name configuration before saving.");
-        return;
-      }
-      delete targetItem.isPendingNew;
-      delete ACTIVE_PENDING_NEW_ROW_MAP[blockIndex];
-      setPendingChanges(true);
-      renderAdminDatabasePanel();
-    }
-
-    function insertNewRow(blockIndex) {
-      if (ACTIVE_PENDING_NEW_ROW_MAP[blockIndex] === true) return;
-      if(!MASTER_DATABASE.categories[blockIndex].items) {
-        MASTER_DATABASE.categories[blockIndex].items = [];
-      }
-      
-      ACTIVE_PENDING_NEW_ROW_MAP[blockIndex] = true;
-      MASTER_DATABASE.categories[blockIndex].items.push({
-        id: "item_" + Math.random().toString(36).substr(2, 9),
-        name: "",
-        description: "",
-        qty: "", 
-        price: "", 
-        featured: false, 
-        hidden: false,
-        isPendingNew: true
-      });
-      renderAdminDatabasePanel();
-    }
-
-    function cancelPendingNewRow(blockIndex, itemIndex) {
-      MASTER_DATABASE.categories[blockIndex].items.splice(itemIndex, 1);
-      delete ACTIVE_PENDING_NEW_ROW_MAP[blockIndex];
-      renderAdminDatabasePanel();
-    }
-
-    async function deleteRow(blockIndex, itemIndex) {
-      const confirmed = await showCgsDialog("Delete Item Configuration", "Permanently delete this product row layout from storage maps?", false);
-      if (confirmed) {
-          const item = MASTER_DATABASE.categories[blockIndex].items[itemIndex];
-          if (item.id && !String(item.id).startsWith("item_")) {
-              DELETED_ITEM_IDS.push(item.id);
-          }
-          MASTER_DATABASE.categories[blockIndex].items.splice(itemIndex, 1);
-          setPendingChanges(true);
-          renderAdminDatabasePanel();
-      }
-    }
-
-    let draggedCategoryIdx = null;
-    let draggedItemIdx = null;
-    let draggedItemParentCatIdx = null;
-
-    function handleCategoryDragStart(e) {
-      const targetBlock = e.target.closest('.category-block');
-      if (!targetBlock || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
-        e.preventDefault();
-        return;
-      }
-      draggedCategoryIdx = parseInt(targetBlock.getAttribute("data-cat-index"));
-      draggedItemIdx = null; 
-      targetBlock.classList.add("is-dragging");
-      e.dataTransfer.effectAllowed = "move";
-    }
-
-    function handleCategoryDragOver(e) {
-      e.preventDefault();
-      const el = e.currentTarget.closest('.category-block');
-      if (el && draggedCategoryIdx !== null && parseInt(el.getAttribute("data-cat-index")) !== draggedCategoryIdx) {
-        el.classList.add("drag-over");
-      }
-    }
-
-    function handleCategoryDragLeave(e) {
-      const el = e.currentTarget.closest('.category-block');
-      if(el) el.classList.remove("drag-over");
-    }
-
-    async function handleCategoryDrop(e) {
-      e.preventDefault();
-      const el = e.currentTarget.closest('.category-block');
-      if(!el) return;
-      el.classList.remove("drag-over");
-      
-      const sourceBlock = document.querySelector('.category-block.is-dragging');
-      if(sourceBlock) sourceBlock.classList.remove("is-dragging");
-      
-      if (draggedCategoryIdx !== null) {
-        const targetCategoryIdx = parseInt(el.getAttribute("data-cat-index"));
-        if (draggedCategoryIdx === targetCategoryIdx) return;
-        
-        const confirmed = await showCgsDialog("Confirm Structural Reorder", CRITICAL_DRAG_WARNING, true);
-        if (confirmed) {
-          const removed = MASTER_DATABASE.categories.splice(draggedCategoryIdx, 1)[0];
-          MASTER_DATABASE.categories.splice(targetCategoryIdx, 0, removed);
-          CURRENT_ACTIVE_OPEN_ACCORDION_IDX = targetCategoryIdx; 
-          setPendingChanges(true);
-        }
-        draggedCategoryIdx = null;
-        renderAdminDatabasePanel();
-      }
-    }
-
-    function handleItemDragStart(e) {
-      e.stopPropagation();
-      const row = e.currentTarget.closest('tr');
-      draggedItemIdx = parseInt(row.getAttribute("data-item-index"));
-      draggedItemParentCatIdx = parseInt(row.getAttribute("data-parent-cat"));
-      draggedCategoryIdx = null;
-      row.classList.add("is-dragging");
-      e.dataTransfer.effectAllowed = "move";
-    }
-
-    function handleItemDragOver(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      const row = e.currentTarget.closest('tr');
-      const targetCategoryBlock = e.currentTarget.closest('.category-block');
-      
-      if (row && targetCategoryBlock && draggedItemIdx !== null) {
-        const tCat = parseInt(row.getAttribute("data-parent-cat"));
-        const tIdx = parseInt(row.getAttribute("data-item-index"));
-        
-        if (CURRENT_ACTIVE_OPEN_ACCORDION_IDX !== tCat) {
-          CURRENT_ACTIVE_OPEN_ACCORDION_IDX = tCat;
-          renderAdminDatabasePanel();
-        }
-
-        if (!(draggedItemParentCatIdx === tCat && draggedItemIdx === tIdx)) {
-          row.classList.add("drag-active-indicator");
-        }
-      }
-    }
-
-    function handleItemDragLeave(e) {
-      e.preventDefault();
-      const row = e.currentTarget.closest('tr');
-      if(row) row.classList.remove("drag-active-indicator");
-    }
-
-    async function handleItemDrop(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      const targetRow = e.currentTarget.closest('tr');
-      if(!targetRow) return;
-      targetRow.classList.remove("drag-active-indicator");
-      
-      const sourceRow = document.querySelector('tr.product-row-node.is-dragging');
-      if(sourceRow) sourceRow.classList.remove("is-dragging");
-      
-      const targetCatIdx = parseInt(targetRow.getAttribute("data-parent-cat"));
-      const targetItemIdx = parseInt(targetRow.getAttribute("data-item-index"));
-      
-      if (draggedItemIdx !== null && draggedItemParentCatIdx !== null) {
-        if (draggedItemParentCatIdx === targetCatIdx && draggedItemIdx === targetItemIdx) return;
-        
-        const confirmed = await showCgsDialog("Confirm Structural Reorder", CRITICAL_DRAG_WARNING, true);
-        if (confirmed) {
-          const movingItem = MASTER_DATABASE.categories[draggedItemParentCatIdx].items.splice(draggedItemIdx, 1)[0];
-          MASTER_DATABASE.categories[targetCatIdx].items.splice(targetItemIdx, 0, movingItem);
-          CURRENT_ACTIVE_OPEN_ACCORDION_IDX = targetCatIdx; 
-          setPendingChanges(true);
-        }
-        draggedItemIdx = null;
-        draggedItemParentCatIdx = null;
-        renderAdminDatabasePanel();
-      }
     }
 
     async function triggerPublishWorkflow() {
-      const confirmed = await showCgsDialog(
-        "Publish Changes To Production", 
-        "You are about to push this menu layout update live. This operation overrides active display data maps across all digital cafe panels instantly.",
-        true
-      );
-      if (confirmed) {
-        commitDatabaseToServer();
+      const ok = await showCgsDialog("Publish Layout", "Save print-menu sections, item layout & flags to Supabase?", true);
+      if (ok) await commitStructureToServer();
+    }
+
+    async function commitStructureToServer() {
+      const overlay = document.getElementById("publish-overlay");
+      const saveBtn = document.getElementById("save-btn");
+      try {
+        saveBtn.disabled = true;
+        overlay.style.display = "flex";
+
+        const settingsRows = [
+          { setting_key: "show_prices", value: !!APP_SETTINGS.show_prices, updated_at: new Date().toISOString() },
+          { setting_key: "show_quantities", value: !!APP_SETTINGS.show_quantities, updated_at: new Date().toISOString() }
+        ];
+        for (const row of settingsRows) {
+          const { error } = await supabaseClient.from("app_settings").upsert(row, { onConflict: "setting_key" });
+          if (error) throw error;
+        }
+
+        if (DELETED_ITEM_IDS.length > 0) {
+          const { error } = await supabaseClient.from("items").delete().in("id", DELETED_ITEM_IDS);
+          if (error) throw error;
+        }
+        if (DELETED_CATEGORY_IDS.length > 0) {
+          const { error } = await supabaseClient.from("categories").delete().in("id", DELETED_CATEGORY_IDS);
+          if (error) throw error;
+        }
+
+        const itemsToInsert = [];
+        const itemsToUpdate = [];
+
+        for (let cIdx = 0; cIdx < MASTER_CATEGORIES.length; cIdx++) {
+          const cat = MASTER_CATEGORIES[cIdx];
+          cat.sortOrder = cIdx + 1;
+
+          const catPayload = {
+            super_category: cat.superCategory,
+            sub_category_name: cat.subCategoryName,
+            sub_category_desc: cat.subCategoryDesc || "",
+            origin_type: cat.originType || "beverages",
+            tag: cat.tag || "",
+            is_hidden: Boolean(cat.hidden),
+            sort_order: cat.sortOrder,
+            legacy_index: cat.sortOrder
+          };
+
+          if (!cat.id || String(cat.id).startsWith("cat_")) {
+            const { data, error } = await supabaseClient.from("categories").insert(catPayload).select().single();
+            if (error) throw error;
+            cat.id = data.id;
+          } else {
+            catPayload.id = cat.id;
+            const { error } = await supabaseClient.from("categories").upsert(catPayload);
+            if (error) throw error;
+          }
+
+          (cat.items || []).forEach((it, iIdx) => {
+            it.sortOrder = iIdx + 1;
+            const payload = {
+              category_id: cat.id,
+              name: it.name,
+              description: it.description || "",
+              is_featured: Boolean(it.featured),
+              is_hidden: Boolean(it.hidden),
+              sort_order: it.sortOrder,
+              legacy_index: it.sortOrder
+            };
+            if (!it.id || String(it.id).startsWith("item_")) {
+              itemsToInsert.push(payload);
+            } else {
+              payload.id = it.id;
+              itemsToUpdate.push(payload);
+            }
+          });
+        }
+
+        if (itemsToInsert.length > 0) {
+          const { error } = await supabaseClient.from("items").insert(itemsToInsert);
+          if (error) throw error;
+        }
+        if (itemsToUpdate.length > 0) {
+          const { error } = await supabaseClient.from("items").upsert(itemsToUpdate);
+          if (error) throw error;
+        }
+
+        DELETED_CATEGORY_IDS = [];
+        DELETED_ITEM_IDS = [];
+        PENDING_NEW_CAT = {};
+        await loadStructureFromSupabase();
+        setPendingChanges(false);
+        renderPanel();
+        await showCgsDialog("Published", "Print-menu layout and flags saved to Supabase.");
+      } catch (err) {
+        console.error(err);
+        showCgsDialog("Publish Failed", err.message || "Could not publish layout.");
+      } finally {
+        overlay.style.display = "none";
+        setPendingChanges(HAS_UNSAVED);
       }
     }
 
-    async function commitDatabaseToServer() {
-        const btn = document.getElementById("save-btn");
-        const overlay = document.getElementById("publish-overlay");
-        try {
-            MASTER_DATABASE.categories.forEach((category, categoryIndex) => {
-                category.sortOrder = categoryIndex + 1;
-                category.items.forEach((item, itemIndex) => {
-                    item.sortOrder = itemIndex + 1;
-                });
-            });
-            btn.innerText = "Publishing...";
-            btn.disabled = true;
-            overlay.style.display = "flex";
-            document.getElementById("publish-status").innerText = "Synchronizing settings & menu with Supabase...";
-            document.body.style.pointerEvents = "none";
-
-            // 1. Commit Global Display Settings to app_settings table
-            const settingsToSave = [
-                { setting_key: 'show_prices', value: !!APP_SETTINGS.show_prices, updated_at: new Date().toISOString() },
-                { setting_key: 'show_quantities', value: !!APP_SETTINGS.show_quantities, updated_at: new Date().toISOString() }
-            ];
-            for (const setting of settingsToSave) {
-                const { error: settingsError } = await supabaseClient
-                    .from('app_settings')
-                    .upsert(setting, { onConflict: 'setting_key' });
-                if (settingsError) throw settingsError;
-            }
-
-            // 2. Delete products/categories removed by the user
-            if (DELETED_ITEM_IDS.length > 0) {
-                const { error } = await supabaseClient.from("items").delete().in("id", DELETED_ITEM_IDS);
-                if (error) throw error;
-            }
-            if (DELETED_CATEGORY_IDS.length > 0) {
-                const { error } = await supabaseClient.from("categories").delete().in("id", DELETED_CATEGORY_IDS);
-                if (error) throw error;
-            }
-            document.body.style.opacity = "0.7";
-            btn.style.pointerEvents = "auto";
-
-            // 3. Separate categories and items into batch payload structures
-            const categoriesToInsert = [];
-            const categoriesToUpdate = [];
-            const itemsToInsert = [];
-            const itemsToUpdate = [];
-
-            // Temporary mapping map to track newly generated category IDs for their child items
-            for (const category of MASTER_DATABASE.categories) {
-                const categoryPayload = {
-                    super_category: category.superCategory,
-                    sub_category_name: category.subCategoryName,
-                    sub_category_desc: category.subCategoryDesc,
-                    origin_type: category.originType,
-                    tag: category.tag,
-                    is_hidden: category.hidden,
-                    sort_order: category.sortOrder || 0,
-                    legacy_index: category.sortOrder || 0
-                };
-
-                const isNewCategory = !category.id || String(category.id).startsWith("cat_");
-                
-                if (isNewCategory) {
-                    // For new categories, we insert them and securely capture the returned real ID
-                    const { data, error } = await supabaseClient.from('categories').insert(categoryPayload).select().single();
-                    if (error) throw error;
-                    category.id = data.id;
-                } else {
-                    categoryPayload.id = category.id;
-                    categoriesToUpdate.push(categoryPayload);
-                }
-
-                // Prepare items belonging to this category
-                for (const item of category.items) {
-                    const itemPayload = {
-                        category_id: category.id,
-                        name: item.name,
-                        description: item.description,
-                        qty: item.qty,
-                        display_price: item.display_price,
-                        is_featured: item.featured,
-                        is_hidden: item.hidden,
-                        sort_order: item.sortOrder || 0,
-                        legacy_index: item.sortOrder || 0,
-                        image_url: item.image_url || item.imageUrl || '',
-                        image_path: item.image_path || item.imagePath || ''
-                    };
-
-                    const isNewItem = !item.id || String(item.id).startsWith("item_");
-                    
-                    if (isNewItem) {
-                        itemsToInsert.push(itemPayload);
-                        // Keep a temporary reference or handle insert response cleanly below
-                    } else {
-                        itemPayload.id = item.id;
-                        itemsToUpdate.push(itemPayload);
-                    }
-                }
-            }
-
-            // Execute Batch Upserts for Categories (if any updates exist)
-            if (categoriesToUpdate.length > 0) {
-                const { error: catUpdateError } = await supabaseClient.from('categories').upsert(categoriesToUpdate);
-                if (catUpdateError) throw catUpdateError;
-            }
-
-            // Execute Batch Inserts for Brand New Items to capture their server-generated UUIDs
-            if (itemsToInsert.length > 0) {
-                const { data: insertedItemsData, error: itemInsertError } = await supabaseClient.from('items').insert(itemsToInsert).select();
-                if (itemInsertError) throw itemInsertError;
-                
-                // Map the returned real UUIDs back to the local items array so they aren't treated as new next time
-                let insertIndex = 0;
-                for (const category of MASTER_DATABASE.categories) {
-                    for (const item of category.items) {
-                        const isNewItem = !item.id || String(item.id).startsWith("item_");
-                        // If it was newly inserted and doesn't have a real UUID yet, assign it from response
-                        if (isNewItem && !item.db_assigned && insertedItemsData[insertIndex]) {
-                            item.id = insertedItemsData[insertIndex].id;
-                            insertIndex++;
-                        }
-                    }
-                }
-            }
-
-            // Execute Batch Upserts for Existing Items (updates)
-            if (itemsToUpdate.length > 0) {
-                const { error: itemUpdateError } = await supabaseClient.from('items').upsert(itemsToUpdate);
-                if (itemUpdateError) throw itemUpdateError;
-            }
-
-            ACTIVE_PENDING_NEW_ROW_MAP = {};
-            DELETED_ITEM_IDS = [];
-            DELETED_CATEGORY_IDS = [];
-            document.getElementById("publish-status").innerText = "Reloading latest menu...";
-            MASTER_DATABASE = await loadMenuFromSupabase();
-            document.getElementById("publish-status").innerText = "Generating Live Menu snapshot...";
-            
-            const { error: snapshotError } =
-                await supabaseClient
-                    .from("live_menu")
-                    .upsert({
-                        id: 1,
-                        menu_json: MASTER_DATABASE,
-                        updated_at: new Date().toISOString()
-                    });
-            if (snapshotError) {
-                throw snapshotError;
-            }
-            setPendingChanges(false);
-            loadAppSettings();
-            renderAdminDatabasePanel();
-            
-            const emptyCategories = MASTER_DATABASE.categories.filter(cat => !cat.items || cat.items.length === 0);
-            let successMessage = "Menu changes and global display settings were successfully published.\n\nThe latest menu has been reloaded from Supabase.";
-            if (emptyCategories.length > 0) {
-                successMessage += "\n\nNote:\nOne or more categories were published successfully but remain hidden from the Live Menu because they do not contain any products.";
-            }
-          document.body.style.pointerEvents = "";
-          document.body.style.opacity = "";
-          if (overlay) {
-              overlay.style.display = "none";
-          }
-            await showCgsDialog("Publish Complete", successMessage);
-        } catch (err) {
-            console.error(err);
-            showCgsDialog("Publish Failed", err.message || "Unknown error occurred.");
-        } finally {
-            document.body.style.pointerEvents = "";
-            document.body.style.opacity = "";
-            overlay.style.display = "none";
-            btn.innerHTML = `
-                <svg class="sync-icon" viewBox="0 0 24 24">
-                  <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
-                </svg>
-                Publish the revised menu`;
-            setPendingChanges(IS_UNPUBLISHED_CHANGES_PENDING);
-        }
-    }
+    window.addEventListener("DOMContentLoaded", initPage);
   </script>
 </body>
 </html>

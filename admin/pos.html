@@ -749,6 +749,7 @@
 
     .field input[type="number"],
     .field input[type="text"],
+    .field input[type="date"],
     .field select {
       width: 100%;
       padding: 7px 10px;
@@ -850,6 +851,68 @@
       background: var(--accent-soft);
     }
 
+    .history-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 12px;
+      font-size: 12px;
+    }
+
+    .tab-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .tab-pill {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tab-pill.active {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+    }
+
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .analytics-grid { grid-template-columns: 1fr; }
+    }
+
+    .chart-card {
+      border: 1px solid var(--border);
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
     #printMount {
       display: none;
     }
@@ -884,7 +947,7 @@
       </div>
       <div class="header-actions">
         <button type="button" class="btn" id="btnOpenSettings">Billing Rules &amp; Tax</button>
-        <button type="button" class="btn" id="btnOpenSales">Today's Bills (<span id="todayCount">0</span>)</button>
+        <button type="button" class="btn" id="btnOpenSales">Bills &amp; Analytics (<span id="todayCount">0</span>)</button>
         <button type="button" class="btn btn-primary" id="btnExportCsv">Export CSV</button>
         <button type="button" class="btn btn-danger btn-sm" id="btnPosLogout">Sign Out</button>
       </div>
@@ -1017,7 +1080,7 @@
       <div class="upi-manager">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
           <strong style="font-size:13px;">UPI Accounts (Multiple Saved • Only One Active)</strong>
-          <span class="muted" style="font-size:11px;">The active UPI automatically powers QR &amp; WhatsApp invoice details.</span>
+          <span class="muted" style="font-size:11px;">The active UPI powers receipt QR &amp; WhatsApp details.</span>
         </div>
 
         <div class="upi-add-row">
@@ -1041,42 +1104,35 @@
     </div>
   </dialog>
 
-  <dialog class="app-dialog" id="salesDialog" style="max-width: 1240px;">
+  <dialog class="app-dialog" id="salesDialog" style="max-width: 1280px;">
     <div class="dialog-header">
-      <strong>Today's Bills</strong>
+      <strong>Billing History &amp; Trends</strong>
       <button type="button" class="btn btn-sm" data-close-dialog="salesDialog">✕</button>
     </div>
     <div class="dialog-body">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-        <span class="muted" id="salesSummaryText">0 bills recorded</span>
-        <div style="display:flex; gap:8px;">
+      <div class="history-toolbar">
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+          <label>From: <input type="date" id="historyFromDate" /></label>
+          <label>To: <input type="date" id="historyToDate" /></label>
+          <button type="button" class="btn btn-sm btn-primary" id="btnLoadHistory">Load Range</button>
+          <button type="button" class="btn btn-sm" id="btnHistoryLast7">Last 7 Days</button>
+          <button type="button" class="btn btn-sm" id="btnHistoryToday">Today</button>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="muted" id="salesSummaryText">0 bills loaded</span>
           <button type="button" class="btn btn-sm btn-primary" id="btnExportCsvInner">Download CSV</button>
         </div>
       </div>
-      <div style="overflow-x:auto;">
-        <table class="bills-table">
-          <thead>
-            <tr>
-              <th>Bill #</th>
-              <th>Seat</th>
-              <th>Type / Token</th>
-              <th>Customer</th>
-              <th>Time</th>
-              <th>Items</th>
-              <th>Mode</th>
-              <th class="sortable" id="sortSubtotalHeader" title="Click to sort by Subtotal">
-                Subtotal <span id="subtotalSortIndicator">↕</span>
-              </th>
-              <th>Service Charges</th>
-              <th>CGST</th>
-              <th>SGST</th>
-              <th>Total</th>
-              <th>Receipt</th>
-            </tr>
-          </thead>
-          <tbody id="salesTableBody"></tbody>
-        </table>
+
+      <div class="tab-strip" id="historyTabStrip">
+        <button type="button" class="tab-pill active" data-htab="bills">Billing History &amp; Trend</button>
+        <button type="button" class="tab-pill" data-htab="products">Most Selling Products</button>
+        <button type="button" class="tab-pill" data-htab="rush">Rush Hours</button>
+        <button type="button" class="tab-pill" data-htab="tables">Table Turnaround &amp; Turnover</button>
+        <button type="button" class="tab-pill" data-htab="customers">Returning Customers</button>
       </div>
+
+      <div id="historyViewContainer"></div>
     </div>
     <div class="dialog-footer">
       <button type="button" class="btn" data-close-dialog="salesDialog">Close</button>
@@ -1104,12 +1160,13 @@
 
   <script>
     const CAFE_CONTACT_PHONE = "999-37-38-851";
+    const RECEIPTS_BUCKET = "receipts";
 
     const STORAGE_KEYS = {
       settings: "cgs_billing_settings_v1",
       sales: "cgs_billing_sales_v1",
       tables: "cgs_billing_tables_v1",
-      menuCache: "cgs_pos_menu_cache_v1"
+      menuCache: "cgs_pos_items_cache_v1"
     };
 
     const DEFAULT_UPI_VPA = "anuragbirthare1988-1@oksbi";
@@ -1150,9 +1207,7 @@
           details_json: details,
           actor_id: actorId
         }]);
-        if (error) {
-          console.warn("pos_activity_log insert failed:", error.message);
-        }
+        if (error) console.warn("pos_activity_log insert failed:", error.message);
       } catch (err) {
         console.warn("pos_activity_log error:", err);
       }
@@ -1282,13 +1337,47 @@
     }
 
     function parseCartItems(rawCartJson) {
-      if (Array.isArray(rawCartJson)) {
-        return rawCartJson;
-      }
+      if (Array.isArray(rawCartJson)) return rawCartJson;
       if (rawCartJson && typeof rawCartJson === "object" && Array.isArray(rawCartJson.items)) {
         return rawCartJson.items;
       }
       return [];
+    }
+
+    function mapBillRowToLocal(r) {
+      const extra = (r.consumption_json && typeof r.consumption_json === "object") ? r.consumption_json : {};
+      const receiptUrl = r.receipt_url || extra.receiptUrl || "";
+      const lineItems = Array.isArray(extra.consumedItems) ? extra.consumedItems : [];
+      return {
+        id: r.bill_number,
+        contactPhone: CAFE_CONTACT_PHONE,
+        tableName: formatSeatLabel(r.table_name || ""),
+        serviceType: r.service_type || "Dine-in",
+        tokenNumber: sanitizeToken(r.token_number || ""),
+        customerName: normalizeCustomerName(r.customer_name || ""),
+        customerPhone: sanitizeTenDigitPhone(r.customer_phone || ""),
+        date: r.bill_date,
+        time: r.bill_time,
+        createdAt: r.created_at || null,
+        dateTimeLabel: `${r.bill_date} ${r.bill_time}`,
+        lineItems,
+        services: Array.isArray(r.kots_json) ? r.kots_json : [],
+        itemsSummary: r.items_summary || "",
+        mode: r.payment_mode || "UPI",
+        upiVpa: r.upi_vpa || "",
+        receiptUrl,
+        subtotal: Number(r.subtotal || 0),
+        scEnabled: Number(r.service_charge || 0) > 0,
+        serviceCharge: Number(r.service_charge || 0),
+        cgstEnabled: Number(r.cgst_amount || 0) > 0,
+        cgstRate: Number(r.cgst_rate || 0),
+        cgstAmount: Number(r.cgst_amount || 0),
+        sgstEnabled: Number(r.sgst_amount || 0) > 0,
+        sgstRate: Number(r.sgst_rate || 0),
+        sgstAmount: Number(r.sgst_amount || 0),
+        gstAmount: Number(r.gst_amount || 0),
+        grandTotal: Number(r.grand_total || 0)
+      };
     }
 
     async function hydratePosFromSupabase() {
@@ -1346,6 +1435,7 @@
             return {
               id: row.table_id,
               name: formatSeatLabel(row.table_name),
+              startedAt: row.updated_at || new Date().toISOString(),
               cart: rawItems.map(normalizeCartItem),
               kots: Array.isArray(row.kots_json) ? row.kots_json : [],
               paymentMode: row.payment_mode || "UPI",
@@ -1380,33 +1470,7 @@
 
         if (!billsErr && Array.isArray(billRows)) {
           state.salesDateKey = todayKey;
-          state.sales = billRows.map(r => ({
-            id: r.bill_number,
-            contactPhone: CAFE_CONTACT_PHONE,
-            tableName: formatSeatLabel(r.table_name || ""),
-            serviceType: r.service_type || "Dine-in",
-            tokenNumber: sanitizeToken(r.token_number || ""),
-            customerName: normalizeCustomerName(r.customer_name || ""),
-            customerPhone: sanitizeTenDigitPhone(r.customer_phone || ""),
-            date: r.bill_date,
-            time: r.bill_time,
-            dateTimeLabel: `${r.bill_date} ${r.bill_time}`,
-            services: Array.isArray(r.kots_json) ? r.kots_json : [],
-            itemsSummary: r.items_summary || "",
-            mode: r.payment_mode || "UPI",
-            upiVpa: r.upi_vpa || "",
-            subtotal: Number(r.subtotal || 0),
-            scEnabled: Number(r.service_charge || 0) > 0,
-            serviceCharge: Number(r.service_charge || 0),
-            cgstEnabled: Number(r.cgst_amount || 0) > 0,
-            cgstRate: Number(r.cgst_rate || 0),
-            cgstAmount: Number(r.cgst_amount || 0),
-            sgstEnabled: Number(r.sgst_amount || 0) > 0,
-            sgstRate: Number(r.sgst_rate || 0),
-            sgstAmount: Number(r.sgst_amount || 0),
-            gstAmount: Number(r.gst_amount || 0),
-            grandTotal: Number(r.grand_total || 0)
-          }));
+          state.sales = billRows.map(mapBillRowToLocal);
           saveSalesState();
         }
 
@@ -1424,6 +1488,12 @@
       return `${yyyy}-${mm}-${dd}`;
     }
 
+    function shiftDateKey(baseKey, deltaDays) {
+      const [y, m, d] = String(baseKey || getLocalDateKey()).split("-").map(Number);
+      const dt = new Date(y, (m || 1) - 1, (d || 1) + deltaDays);
+      return getLocalDateKey(dt);
+    }
+
     function normalizeCartItem(item) {
       return {
         id: item.id,
@@ -1436,11 +1506,12 @@
     }
 
     function createDefaultTables() {
+      const nowIso = new Date().toISOString();
       return [
-        { id: "T1", name: "1", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "" },
-        { id: "T2", name: "2", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "" },
-        { id: "T3", name: "3", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "" },
-        { id: "T4", name: "4", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "" }
+        { id: "T1", name: "1", startedAt: nowIso, cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "" },
+        { id: "T2", name: "2", startedAt: nowIso, cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "" },
+        { id: "T3", name: "3", startedAt: nowIso, cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "" },
+        { id: "T4", name: "4", startedAt: nowIso, cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "" }
       ];
     }
 
@@ -1457,6 +1528,12 @@
       replacingQrForUpiId: "",
       lastQrStatusMsg: "",
       lastQrErrorMsg: "",
+      historyTab: "bills",
+      historyFromDate: getLocalDateKey(),
+      historyToDate: getLocalDateKey(),
+      historyBills: [],
+      historyKots: [],
+      historyLoading: false,
       settings: {
         cgstEnabled: false,
         cgstRate: 2.5,
@@ -1490,7 +1567,6 @@
         state.salesDateKey = todayKey;
         state.sales = [];
         saveSalesState();
-        renderSalesTable();
       }
     }
 
@@ -1576,16 +1652,170 @@
       queueTableSessionSync(getActiveTable(), immediateDbSync);
     }
 
-    window.getBillingItemPrice = function(item) {
-      const candidates = [item.price, item.selling_price, item.sellingPrice, item.unit_price];
-      for (const val of candidates) {
-        const num = Number(val);
-        if (Number.isFinite(num) && num >= 0 && val !== null && val !== undefined && val !== "") {
-          return num;
+    /**
+     * Single source of truth for item price in POS:
+     * 1) custom_price (if > 0) overrides base/cost-calculated price
+     * 2) recipe cost + margin (if ingredients_json & margin available) or base_price / display_price
+     */
+    function roundUpFriendlyPos(val) {
+      return Math.ceil(val / 5) * 5;
+    }
+
+    /**
+     * Option 2 Price Resolution for POS:
+     * Highest applicable price between base price and custom-margin-derived price
+     * (and display_price when already persisted).
+     */
+    window.getBillingItemPrice = function (item, globalMarginPct = null) {
+      if (!item) return 0;
+
+      const totalCost = Number(item.total_cost ?? 0);
+      const marginNum = Number(globalMarginPct);
+      const hasGlobalMargin = Number.isFinite(marginNum) && marginNum > 0 && marginNum < 100;
+
+      let basePrice = Number(item.base_price ?? 0);
+      if (totalCost > 0 && hasGlobalMargin) {
+        basePrice = roundUpFriendlyPos(totalCost / (1 - marginNum / 100));
+      }
+
+      const customMarginNum = Number(item.custom_margin ?? NaN);
+      const hasCustomMargin = Number.isFinite(customMarginNum) && customMarginNum > 0 && customMarginNum < 100;
+
+      const customPrice = (hasCustomMargin && totalCost > 0)
+        ? roundUpFriendlyPos(totalCost / (1 - customMarginNum / 100))
+        : 0;
+
+      const activeCalculated = Math.max(
+        Number.isFinite(basePrice) ? basePrice : 0,
+        Number.isFinite(customPrice) ? customPrice : 0
+      );
+
+      if (activeCalculated > 0) {
+        return Number(activeCalculated.toFixed(2));
+      }
+
+      const fallbackDisplay = Number(item.display_price ?? 0);
+      return Number.isFinite(fallbackDisplay) && fallbackDisplay > 0
+        ? Number(fallbackDisplay.toFixed(2))
+        : 0;
+    };
+    
+    async function fetchGlobalBaseMarginPos(client) {
+      try {
+        const { data: idRow } = await client
+          .from("app_settings")
+          .select("base_margin")
+          .eq("id", 1)
+          .maybeSingle();
+
+        const parsedIdMargin = Number(idRow?.base_margin ?? NaN);
+        if (Number.isFinite(parsedIdMargin) && parsedIdMargin > 0 && parsedIdMargin < 100) {
+          return parsedIdMargin;
+        }
+
+        const { data: keyRows } = await client
+          .from("app_settings")
+          .select("setting_key, value")
+          .eq("setting_key", "base_margin")
+          .limit(1);
+
+        const rawVal = keyRows?.[0]?.value;
+        const parsedKeyMargin = Number(rawVal ?? NaN);
+        if (Number.isFinite(parsedKeyMargin) && parsedKeyMargin > 0 && parsedKeyMargin < 100) {
+          return parsedKeyMargin;
+        }
+      } catch (_) {}
+      return null;
+    }
+
+    const CATEGORY_SEQUENCE = [
+      'ICED COFFEE', 'FRAPPES', 'SHAKES', 'CAD THICK CHOCOLATES',
+      'SOOTHING SIPS', 'BREADS & BUTTERS', 'REFRESHERS', 'SHOTS',
+      'SIGNATURE MELTS', 'TIMELESS COMFORT', 'ARTISAN PASTA',
+      'CRISP CUT FRIES', 'GOLDEN KERNELS', 'BOTANICAL SALADS',
+      "CHEF'S SPECIAL", 'DESSERTS'
+    ];
+
+    function getCategoryOrderRank(cat, fallbackSubCat) {
+      const subName = String(cat?.sub_category_name || fallbackSubCat || '').trim().toUpperCase();
+      const seqIdx = CATEGORY_SEQUENCE.indexOf(subName);
+      if (seqIdx !== -1) return seqIdx;
+      const dbOrder = Number(cat?.sort_order);
+      return Number.isFinite(dbOrder) ? CATEGORY_SEQUENCE.length + dbOrder : 9999;
+    }
+
+    async function loadMenu() {
+      state.menuLoadError = '';
+      const client = getDbClient();
+
+      if (client?.from) {
+        try {
+          const globalMargin = await fetchGlobalBaseMarginPos(client);
+
+          const [{ data: catsData, error: catsErr }, { data: itemsData, error: itemsErr }] = await Promise.all([
+            client.from('categories').select('*').order('sort_order', { ascending: true }),
+            client.from('items').select('*').order('sort_order', { ascending: true })
+          ]);
+          if (catsErr) throw catsErr;
+          if (itemsErr) throw itemsErr;
+
+          const catMap = new Map((catsData || []).map(c => [c.id, c]));
+
+          const sortedItems = [...(itemsData || [])].sort((a, b) => {
+            const catA = catMap.get(a.category_id);
+            const catB = catMap.get(b.category_id);
+            const rankA = getCategoryOrderRank(catA, a.sub_category_name);
+            const rankB = getCategoryOrderRank(catB, b.sub_category_name);
+            if (rankA !== rankB) return rankA - rankB;
+
+            const orderA = Number(a.sort_order ?? 9999);
+            const orderB = Number(b.sort_order ?? 9999);
+            if (orderA !== orderB) return orderA - orderB;
+
+            return String(a.name || '').localeCompare(String(b.name || ''));
+          });
+
+          const normalized = [];
+          for (const item of sortedItems) {
+            if (item.is_hidden || item.hidden || item.is_available === false) continue;
+            const cat = catMap.get(item.category_id);
+            if (cat && (cat.is_hidden || cat.hidden)) continue;
+
+            const superCategory = cat?.super_category || item.super_category || 'Menu';
+            const subCategory = cat?.sub_category_name || item.sub_category_name || 'General';
+            const resolvedPrice = window.getBillingItemPrice(item, globalMargin);
+
+            normalized.push({
+              id: item.id,
+              name: item.name,
+              superCategory,
+              subCategory,
+              price: resolvedPrice
+            });
+          }
+
+          state.menu = normalized;
+          try {
+            localStorage.setItem(STORAGE_KEYS.menuCache, JSON.stringify(normalized));
+          } catch (_) {}
+          populateCategoryFilter();
+          renderCatalog();
+          return;
+        } catch (err) {
+          state.menuLoadError = err?.message || 'Could not load items from database.';
         }
       }
-      return 0;
-    };
+
+      try {
+        const cached = JSON.parse(localStorage.getItem(STORAGE_KEYS.menuCache) || 'null');
+        if (Array.isArray(cached) && cached.length > 0) {
+          state.menu = cached;
+        }
+      } catch (_) {}
+
+      populateCategoryFilter();
+      renderCatalog();
+    }
 
     function renderUpiManagerDraft() {
       const listEl = document.getElementById("upiAccountsList");
@@ -1601,7 +1831,7 @@
               <div class="upi-mini-qr" data-qr-payload="${escapeAttr(qrPayload)}" data-custom-qr="${escapeAttr(acc.customQrDataUrl || "")}"></div>
               <div style="min-width:0;">
                 <div style="font-weight:700; word-break:break-all;">${escapeHtml(acc.vpa)}</div>
-                <div class="muted" style="font-size:11px;">${isActive ? "ACTIVE • Used for QR & WhatsApp" : (acc.customQrDataUrl ? "Custom QR saved" : "Auto QR from UPI ID")}</div>
+                <div class="muted" style="font-size:11px;">${isActive ? "ACTIVE • Used for receipt QR & WhatsApp" : (acc.customQrDataUrl ? "Custom QR saved" : "Auto QR from UPI ID")}</div>
               </div>
             </div>
             <div style="display:flex; gap:6px; flex-wrap:wrap; flex-shrink:0;">
@@ -1797,6 +2027,7 @@
             return {
               ...t,
               name: formatSeatLabel(t.name),
+              startedAt: t.startedAt || new Date().toISOString(),
               cart: Array.isArray(t.cart) ? t.cart.map(normalizeCartItem) : [],
               kots: Array.isArray(t.kots) ? t.kots : [],
               customerName: normalizeCustomerName(t.customerName || ""),
@@ -1914,6 +2145,7 @@
       const newTable = {
         id: `T${Date.now()}`,
         name: String(nextNum),
+        startedAt: new Date().toISOString(),
         cart: [],
         kots: [],
         paymentMode: "UPI",
@@ -1949,115 +2181,7 @@
       renderCart();
     }
 
-    function normalizeMenuCategories(rawCategories) {
-      const normalized = [];
-      for (const cat of (rawCategories || [])) {
-        if (cat.hidden || cat.is_hidden) continue;
-        const subName = cat.subCategoryName || cat.sub_category_name || cat.name || "General";
-        const superName = cat.superCategory || cat.super_category || "Menu";
-        for (const item of (cat.items || [])) {
-          if (item.hidden || item.is_hidden || item.is_available === false) continue;
-          normalized.push({
-            id: item.id,
-            name: item.name,
-            superCategory: superName,
-            subCategory: subName,
-            price: window.getBillingItemPrice(item)
-          });
-        }
-      }
-      return normalized;
-    }
-
-    async function fetchMenuDirectlyFromTables(client) {
-      const { data: itemsData, error: itemsErr } = await client
-        .from("menu_items")
-        .select("*");
-      if (itemsErr) throw itemsErr;
-
-      let catMap = new Map();
-      try {
-        const { data: catsData } = await client.from("menu_categories").select("*");
-        if (Array.isArray(catsData)) {
-          for (const c of catsData) {
-            catMap.set(c.id, c);
-          }
-        }
-      } catch (_) {}
-
-      const grouped = new Map();
-      for (const item of (itemsData || [])) {
-        if (item.hidden || item.is_hidden || item.is_available === false) continue;
-        const catObj = catMap.get(item.category_id);
-        const subName = item.sub_category_name || item.subCategoryName || catObj?.sub_category_name || catObj?.name || "General";
-        const superName = item.super_category || item.superCategory || catObj?.super_category || "Menu";
-        const key = `${superName}::${subName}`;
-        if (!grouped.has(key)) {
-          grouped.set(key, {
-            superCategory: superName,
-            subCategoryName: subName,
-            items: []
-          });
-        }
-        grouped.get(key).items.push(item);
-      }
-
-      return [...grouped.values()];
-    }
-
-    async function loadMenu() {
-      state.menuLoadError = "";
-      let rawCategories = [];
-      const client = getDbClient();
-
-      if (typeof window.fetchMasterMenuFromDatabase === "function") {
-        try {
-          const result = await window.fetchMasterMenuFromDatabase();
-          if (result && Array.isArray(result.categories) && result.categories.length > 0) {
-            rawCategories = result.categories;
-          }
-        } catch (err) {
-          state.menuLoadError = err?.message || "Could not reach menu service.";
-        }
-      }
-
-      if (rawCategories.length === 0 && client?.from) {
-        try {
-          const { data: liveRow, error: liveErr } = await client
-            .from("live_menu")
-            .select("menu_json")
-            .eq("id", 1)
-            .maybeSingle();
-          if (liveErr) throw liveErr;
-          if (liveRow?.menu_json?.categories?.length > 0) {
-            rawCategories = liveRow.menu_json.categories;
-          } else {
-            rawCategories = await fetchMenuDirectlyFromTables(client);
-          }
-          state.menuLoadError = "";
-        } catch (err) {
-          state.menuLoadError = err?.message || "Could not load menu & prices from database.";
-        }
-      }
-
-      if (rawCategories.length > 0) {
-        try {
-          localStorage.setItem(STORAGE_KEYS.menuCache, JSON.stringify(rawCategories));
-        } catch (_) {}
-      } else {
-        try {
-          const cached = JSON.parse(localStorage.getItem(STORAGE_KEYS.menuCache) || "null");
-          if (Array.isArray(cached) && cached.length > 0) {
-            rawCategories = cached;
-          }
-        } catch (_) {}
-      }
-
-      state.menu = normalizeMenuCategories(rawCategories);
-      populateCategoryFilter();
-      renderCatalog();
-    }
-
+    
     function populateCategoryFilter() {
       const select = document.getElementById("categoryFilter");
       const current = select.value;
@@ -2074,8 +2198,8 @@
 
       if (state.menu.length === 0) {
         const msg = state.menuLoadError
-          ? `Unable to load menu prices from database (${escapeHtml(state.menuLoadError)}).`
-          : "No active menu items found in database.";
+          ? `Unable to load menu prices from items table (${escapeHtml(state.menuLoadError)}).`
+          : "No active menu items found in items table.";
         container.innerHTML = `
           <div class="highlight-warning">
             <div style="margin-bottom:8px;">${msg}</div>
@@ -2133,6 +2257,9 @@
 
     function addToCart(itemId) {
       const table = getActiveTable();
+      if (table.cart.length === 0 && (!table.kots || table.kots.length === 0)) {
+        table.startedAt = new Date().toISOString();
+      }
       const existing = table.cart.find(c => c.id === itemId);
       if (existing) {
         existing.qty += 1;
@@ -2200,6 +2327,7 @@
       const kotEntry = {
         kotNumber,
         time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        createdAt: now.toISOString(),
         serviceType: table.serviceType || "Dine-in",
         tokenNumber: sanitizeToken(table.tokenNumber || ""),
         items: pendingItems
@@ -2413,77 +2541,307 @@
       document.getElementById("grandTotalText").textContent = `₹${grandTotal.toFixed(2)}`;
     }
 
-    function getQrDataUrlFromContainer(qrContainer, customQrDataUrl) {
-      if (customQrDataUrl) return customQrDataUrl;
-      const img = qrContainer?.querySelector("img");
-      if (img && img.src) return img.src;
-      const canvas = qrContainer?.querySelector("canvas");
-      if (canvas && typeof canvas.toDataURL === "function") return canvas.toDataURL("image/png");
-      return "";
+    function loadImageElement(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
     }
 
-    async function copyActiveQrToClipboard(qrContainer, customQrDataUrl) {
+    async function renderQrCanvasForPayment(vpa, amountStr, customQrDataUrl) {
+      if (customQrDataUrl) {
+        return await loadImageElement(customQrDataUrl);
+      }
+      const holder = document.createElement("div");
+      holder.style.position = "fixed";
+      holder.style.left = "-9999px";
+      document.body.appendChild(holder);
+      try {
+        const payload = `upi://pay?pa=${encodeURIComponent(vpa)}&pn=${encodeURIComponent("CGS - COFFEE, GRILL & SHOTS")}&am=${encodeURIComponent(amountStr)}&cu=INR`;
+        new QRCode(holder, { text: payload, width: 140, height: 140 });
+        await new Promise(r => setTimeout(r, 30));
+        const img = holder.querySelector("img");
+        if (img && img.src) return await loadImageElement(img.src);
+        const canvas = holder.querySelector("canvas");
+        if (canvas) return await loadImageElement(canvas.toDataURL("image/png"));
+        return null;
+      } finally {
+        holder.remove();
+      }
+    }
+
+    async function buildReceiptPngBlob(billData, activeUpi) {
+      const vpa = (billData.upiVpa || activeUpi?.vpa || DEFAULT_UPI_VPA).trim();
+      const amountStr = Number(billData.grandTotal || 0).toFixed(2);
+      const qrImg = await renderQrCanvasForPayment(vpa, amountStr, activeUpi?.customQrDataUrl || "");
+
+      const services = Array.isArray(billData.services) && billData.services.length > 0
+        ? billData.services
+        : [{
+          serviceLabel: "Service 1",
+          items: (billData.lineItems || []).map(li => ({
+            label: `${String(li.name || "").toUpperCase()} ${li.qty}`,
+            qty: li.qty,
+            rate: li.price,
+            amount: Number(li.price || 0) * Number(li.qty || 1)
+          }))
+        }];
+
+      const lineItemsCount = services.reduce((acc, s) => acc + 1 + ((s.items || []).length), 0);
+      const extraRowsCount =
+        (billData.scEnabled ? 1 : 0) +
+        (billData.cgstEnabled ? 1 : 0) +
+        (billData.sgstEnabled ? 1 : 0);
+
+      const width = 460;
+      const height = 430 + lineItemsCount * 22 + extraRowsCount * 20;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.strokeStyle = "#9d8c7a";
+      ctx.setLineDash([6, 4]);
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(12, 12, width - 24, height - 24);
+      ctx.setLineDash([]);
+
+      let y = 38;
+      ctx.fillStyle = "#1f1712";
+      ctx.textAlign = "center";
+      ctx.font = "bold 16px 'Courier New', monospace";
+      ctx.fillText("CGS - COFFEE, GRILL & SHOTS", width / 2, y);
+
+      y += 20;
+      ctx.font = "12px 'Courier New', monospace";
+      ctx.fillStyle = "#4a3b32";
+      ctx.fillText(`Phone: ${billData.contactPhone || CAFE_CONTACT_PHONE}`, width / 2, y);
+
+      y += 18;
+      ctx.fillText(billData.dateTimeLabel || `${billData.date || ""} ${billData.time || ""}`, width / 2, y);
+
+      y += 18;
+      const seatParts = [
+        `Seat ${formatSeatLabel(billData.tableName || "1")}`,
+        billData.serviceType || "Dine-in",
+        billData.tokenNumber ? `TKN:${sanitizeToken(billData.tokenNumber)}` : ""
+      ].filter(Boolean).join(" • ");
+      ctx.fillText(seatParts, width / 2, y);
+
+      if (billData.id) {
+        y += 18;
+        ctx.fillText(`Bill: ${billData.id}`, width / 2, y);
+      }
+
+      const custLine = [normalizeCustomerName(billData.customerName), billData.customerPhone].filter(Boolean).join(" • ");
+      if (custLine) {
+        y += 18;
+        ctx.font = "bold 12px 'Courier New', monospace";
+        ctx.fillStyle = "#1f1712";
+        ctx.fillText(`Guest: ${custLine}`, width / 2, y);
+      }
+
+      const drawRule = (posY) => {
+        ctx.strokeStyle = "#b8a999";
+        ctx.setLineDash([4, 3]);
+        ctx.beginPath();
+        ctx.moveTo(26, posY);
+        ctx.lineTo(width - 26, posY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      };
+
+      y += 14;
+      drawRule(y);
+      y += 18;
+
+      ctx.font = "bold 12px 'Courier New', monospace";
+      ctx.fillStyle = "#1f1712";
+      ctx.textAlign = "left";
+      ctx.fillText("Item", 26, y);
+      ctx.textAlign = "right";
+      ctx.fillText("Qty", width - 175, y);
+      ctx.fillText("Rate", width - 98, y);
+      ctx.fillText("Amt", width - 26, y);
+
+      y += 8;
+      drawRule(y);
+
+      for (const svc of services) {
+        y += 20;
+        ctx.textAlign = "left";
+        ctx.font = "bold 12px 'Courier New', monospace";
+        ctx.fillStyle = "#3b2319";
+        ctx.fillText(svc.serviceLabel || "Service 1", 26, y);
+
+        for (const item of (svc.items || [])) {
+          y += 20;
+          ctx.font = "12px 'Courier New', monospace";
+          ctx.fillStyle = "#1f1712";
+          const label = String(item.label || "").slice(0, 22);
+          ctx.textAlign = "left";
+          ctx.fillText(label, 26, y);
+          ctx.textAlign = "right";
+          ctx.fillText(String(Number(item.qty || 1)), width - 175, y);
+          ctx.fillText(`₹${Number(item.rate || 0).toFixed(2)}`, width - 98, y);
+          ctx.fillText(`₹${Number(item.amount || 0).toFixed(2)}`, width - 26, y);
+        }
+      }
+
+      y += 14;
+      drawRule(y);
+
+      const drawTotalRow = (label, valText, isGrand = false) => {
+        y += isGrand ? 24 : 20;
+        ctx.font = isGrand ? "bold 15px 'Courier New', monospace" : "12px 'Courier New', monospace";
+        ctx.fillStyle = isGrand ? "#3b2319" : "#1f1712";
+        ctx.textAlign = "left";
+        ctx.fillText(label, 26, y);
+        ctx.textAlign = "right";
+        ctx.fillText(valText, width - 26, y);
+      };
+
+      drawTotalRow("Subtotal", `₹${Number(billData.subtotal || 0).toFixed(2)}`, false);
+      if (billData.scEnabled) drawTotalRow("Service Charges", `₹${Number(billData.serviceCharge || 0).toFixed(2)}`, false);
+      if (billData.cgstEnabled) drawTotalRow(`CGST (${billData.cgstRate}%)`, `₹${Number(billData.cgstAmount || 0).toFixed(2)}`, false);
+      if (billData.sgstEnabled) drawTotalRow(`SGST (${billData.sgstRate}%)`, `₹${Number(billData.sgstAmount || 0).toFixed(2)}`, false);
+
+      y += 10;
+      drawRule(y);
+      drawTotalRow(`Total (${billData.mode || "UPI"})`, `₹${amountStr}`, true);
+
+      y += 16;
+      drawRule(y);
+      y += 16;
+
+      if (qrImg) {
+        const qrSize = 112;
+        const qrX = (width - qrSize) / 2;
+        ctx.drawImage(qrImg, qrX, y, qrSize, qrSize);
+        y += qrSize + 14;
+      }
+
+      ctx.textAlign = "center";
+      ctx.font = "bold 12px 'Courier New', monospace";
+      ctx.fillStyle = "#1f1712";
+      ctx.fillText(`Scan to Pay ₹${amountStr}`, width / 2, y);
+      y += 16;
+      ctx.font = "11px 'Courier New', monospace";
+      ctx.fillStyle = "#4a3b32";
+      ctx.fillText(`UPI: ${vpa}`, width / 2, y);
+
+      return await new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), "image/png"));
+    }
+
+    async function uploadReceiptImageToStorage(billData, activeUpi) {
+      const client = getDbClient();
+      if (!client?.storage) return "";
+      try {
+        const blob = await buildReceiptPngBlob(billData, activeUpi);
+        if (!blob) return "";
+        const safeId = String(billData.id || `DRAFT-${Date.now()}`).replace(/[^a-zA-Z0-9_-]/g, "_");
+        const datePart = billData.date || getLocalDateKey();
+        const filePath = `${datePart}/${safeId}.png`;
+
+        const { error: upErr } = await client.storage
+          .from(RECEIPTS_BUCKET)
+          .upload(filePath, blob, { contentType: "image/png", upsert: true });
+
+        if (upErr) {
+          console.warn("Receipt storage upload failed:", upErr.message);
+          return "";
+        }
+
+        const { data: pubData } = client.storage.from(RECEIPTS_BUCKET).getPublicUrl(filePath);
+        return pubData?.publicUrl || "";
+      } catch (err) {
+        console.warn("Receipt image upload error:", err);
+        return "";
+      }
+    }
+
+    async function copyReceiptImageToClipboard(billData, activeUpi) {
       const statusEl = document.getElementById("qrActionStatus");
       const errEl = document.getElementById("qrActionError");
       if (statusEl) statusEl.textContent = "";
       if (errEl) errEl.textContent = "";
 
-      const dataUrl = getQrDataUrlFromContainer(qrContainer, customQrDataUrl);
-      if (!dataUrl) {
-        if (errEl) errEl.textContent = "Add items to generate an active QR first.";
-        return;
-      }
-
       if (!navigator.clipboard || typeof ClipboardItem === "undefined" || typeof navigator.clipboard.write !== "function") {
-        state.lastQrErrorMsg = "Clipboard image copy isn't supported here—use Save QR to attach.";
+        state.lastQrErrorMsg = "Clipboard image copy isn't supported in this browser context.";
         if (errEl) errEl.textContent = state.lastQrErrorMsg;
         return;
       }
 
       try {
-        const res = await fetch(dataUrl);
-        const blob = await res.blob();
-        const pngBlob = blob.type === "image/png" ? blob : new Blob([blob], { type: "image/png" });
-        await navigator.clipboard.write([new ClipboardItem({ "image/png": pngBlob })]);
-        state.lastQrStatusMsg = "QR copied to clipboard—paste (Ctrl+V / Cmd+V) in WhatsApp.";
+        const blob = await buildReceiptPngBlob(billData, activeUpi);
+        if (!blob) throw new Error("Could not render receipt PNG");
+        await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+        state.lastQrStatusMsg = "Receipt + QR image copied—paste (Ctrl+V / Cmd+V) in WhatsApp.";
         state.lastQrErrorMsg = "";
         if (statusEl) statusEl.textContent = state.lastQrStatusMsg;
       } catch (_) {
-        state.lastQrErrorMsg = "Could not copy image automatically—use Save QR to attach.";
+        state.lastQrErrorMsg = "Could not copy receipt image—ensure clipboard permission is allowed.";
         if (errEl) errEl.textContent = state.lastQrErrorMsg;
       }
     }
 
-    function downloadActiveQr(qrContainer, customQrDataUrl, vpa) {
-      const errEl = document.getElementById("qrActionError");
-      const dataUrl = getQrDataUrlFromContainer(qrContainer, customQrDataUrl);
-      if (!dataUrl) {
-        if (errEl) errEl.textContent = "Add items to generate an active QR first.";
-        return;
-      }
-      const a = document.createElement("a");
-      a.href = dataUrl;
-      a.download = `cgs-upi-qr-${(vpa || "upi").replace(/[^a-zA-Z0-9._-]/g, "_")}.png`;
-      a.click();
+    function getCurrentDraftBillSnapshot(table, activeUpi, totals) {
+      const now = new Date();
+      return {
+        id: `PREVIEW-${formatSeatLabel(table.name)}`,
+        contactPhone: CAFE_CONTACT_PHONE,
+        tableName: formatSeatLabel(table.name),
+        serviceType: table.serviceType || "Dine-in",
+        tokenNumber: sanitizeToken(table.tokenNumber || ""),
+        customerName: normalizeCustomerName((table.customerName || "").trim()),
+        customerPhone: sanitizeTenDigitPhone(table.customerPhone || ""),
+        date: getLocalDateKey(now),
+        time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        dateTimeLabel: formatReceiptDateTime(now),
+        lineItems: table.cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
+        services: buildServiceGroups(table),
+        itemsSummary: table.cart.map(i => `${String(i.name || "").toUpperCase()} ${i.qty}`).join("; "),
+        mode: table.paymentMode,
+        upiVpa: activeUpi.vpa || "",
+        subtotal: Number(totals.subtotal.toFixed(2)),
+        scEnabled: totals.scEnabled,
+        serviceCharge: Number(totals.serviceCharge.toFixed(2)),
+        cgstEnabled: totals.cgstEnabled,
+        cgstRate: totals.cgstRate,
+        cgstAmount: Number(totals.cgstAmount.toFixed(2)),
+        sgstEnabled: totals.sgstEnabled,
+        sgstRate: totals.sgstRate,
+        sgstAmount: Number(totals.sgstAmount.toFixed(2)),
+        gstAmount: Number(totals.gstAmount.toFixed(2)),
+        grandTotal: Number(totals.grandTotal.toFixed(2))
+      };
     }
 
-    function buildInvoiceWhatsAppMessage(table, activeUpi, totals) {
+    function buildInvoiceWhatsAppMessage(table, activeUpi, totals, receiptUrl = "") {
       const custUpper = normalizeCustomerName(table.customerName);
       const seatNo = formatSeatLabel(table.name);
       const tokenPart = table.tokenNumber ? ` | TKN:${sanitizeToken(table.tokenNumber)}` : "";
       const custContactLine = [custUpper, table.customerPhone].filter(Boolean).join(" | ");
       const services = buildServiceGroups(table);
 
-      const greetingName = custUpper ? custUpper : "Friend";
+      const greetingLine = custUpper ? `Dear *${custUpper}*,` : "Dear Guest,";
       const thankYouBlock = [
-        `Hi *${greetingName}*,`,
+        greetingLine,
         "",
-        "Thank you for visiting *CGS - COFFEE, GRILL & SHOTS* today. We loved hosting you and hope our handcrafted food and coffee gave you a comforting break!",
+        "Thank you for visiting *CGS - COFFEE, GRILL & SHOTS* today. We loved hosting you and hope our handcrafted food and coffee gave you a comforting break.",
         "",
         "Pull up a chair again anytime—we're always ready to welcome you back.",
+        ...(receiptUrl ? [`View & download your receipt image: ${receiptUrl}`] : []),
         "Menu & story: https://cgscafe.in/",
-        "_See you again soon!_ *Team CGS*"
-      ].join("\n");
+        "_Warm regards,_%0A*Team CGS*"
+      ].join("\n").replace("%0A", "\n");
 
       const paymentAndInvoiceLines = [
         "====================================",
@@ -2496,9 +2854,7 @@
         `SEAT: ${seatNo} (${table.serviceType || "Dine-in"})${tokenPart}`
       ];
 
-      if (custContactLine) {
-        paymentAndInvoiceLines.push(`CUST: ${custContactLine}`);
-      }
+      if (custContactLine) paymentAndInvoiceLines.push(`CUST: ${custContactLine}`);
 
       paymentAndInvoiceLines.push("------------------------------------");
       paymentAndInvoiceLines.push("ITEM                      QTY  AMT");
@@ -2518,9 +2874,7 @@
 
       paymentAndInvoiceLines.push("------------------------------------");
       paymentAndInvoiceLines.push(`SUBTOTAL               ₹${Number(totals.subtotal).toFixed(2).padStart(9, " ")}`);
-      if (totals.scEnabled) {
-        paymentAndInvoiceLines.push(`SERVICE CHARGES        ₹${Number(totals.serviceCharge).toFixed(2).padStart(9, " ")}`);
-      }
+      if (totals.scEnabled) paymentAndInvoiceLines.push(`SERVICE CHARGES        ₹${Number(totals.serviceCharge).toFixed(2).padStart(9, " ")}`);
       if (totals.cgstEnabled) {
         const cgstTag = `CGST (${totals.cgstRate}%)`.padEnd(22, " ");
         paymentAndInvoiceLines.push(`${cgstTag} ₹${Number(totals.cgstAmount).toFixed(2).padStart(9, " ")}`);
@@ -2566,8 +2920,7 @@
             <div class="muted" style="font-size:11px; word-break:break-all;">Active UPI: ${escapeHtml(vpa)}</div>
           </div>
           <div class="qr-actions">
-            <button type="button" class="btn btn-sm" id="btnCopyQr">Copy QR</button>
-            <button type="button" class="btn btn-sm" id="btnSaveQr">Save QR</button>
+            <button type="button" class="btn btn-sm" id="btnCopyReceiptImg">Copy Receipt</button>
           </div>
         </div>
         <div class="field-status" id="qrActionStatus">${escapeHtml(state.lastQrStatusMsg)}</div>
@@ -2599,12 +2952,14 @@
         }
       }
 
-      document.getElementById("btnCopyQr").addEventListener("click", () => {
-        copyActiveQrToClipboard(qrContainer, activeUpi.customQrDataUrl);
-      });
-
-      document.getElementById("btnSaveQr").addEventListener("click", () => {
-        downloadActiveQr(qrContainer, activeUpi.customQrDataUrl, vpa);
+      document.getElementById("btnCopyReceiptImg").addEventListener("click", async () => {
+        if (table.cart.length === 0 || !(totals.grandTotal > 0)) {
+          const errEl = document.getElementById("qrActionError");
+          if (errEl) errEl.textContent = "Add items to generate a receipt image first.";
+          return;
+        }
+        const snap = getCurrentDraftBillSnapshot(table, activeUpi, totals);
+        await copyReceiptImageToClipboard(snap, activeUpi);
       });
 
       const phoneInput = document.getElementById("waPhoneInput");
@@ -2628,11 +2983,14 @@
         }
 
         phoneError.textContent = "";
-        const message = buildInvoiceWhatsAppMessage(table, activeUpi, totals);
+        const snap = getCurrentDraftBillSnapshot(table, activeUpi, totals);
+        const receiptUrl = await uploadReceiptImageToStorage(snap, activeUpi);
+        const message = buildInvoiceWhatsAppMessage(table, activeUpi, totals, receiptUrl);
         await logPosActivity("WA_INVOICE_SENT", {
           phone: tenDigit,
           grandTotal: Number(totals.grandTotal.toFixed(2)),
-          upiVpa: activeUpi.vpa
+          upiVpa: activeUpi.vpa,
+          receiptUrl: receiptUrl || null
         }, table);
         const waUrl = `https://wa.me/91${tenDigit}?text=${encodeURIComponent(message)}`;
         window.open(waUrl, "_blank", "noopener,noreferrer");
@@ -2698,14 +3056,8 @@
 
       let bodyRowsHtml = "";
       services.forEach((svc, svcIdx) => {
-        if (svcIdx > 0) {
-          bodyRowsHtml += `<tr class="receipt-gap-row"><td colspan="4"></td></tr>`;
-        }
-        bodyRowsHtml += `
-          <tr class="receipt-service-row">
-            <td colspan="4">${escapeHtml(svc.serviceLabel)}</td>
-          </tr>
-        `;
+        if (svcIdx > 0) bodyRowsHtml += `<tr class="receipt-gap-row"><td colspan="4"></td></tr>`;
+        bodyRowsHtml += `<tr class="receipt-service-row"><td colspan="4">${escapeHtml(svc.serviceLabel)}</td></tr>`;
         for (const item of (svc.items || [])) {
           bodyRowsHtml += `
             <tr>
@@ -2761,6 +3113,10 @@
         `;
       }
 
+      const receiptLinkHtml = bill.receiptUrl
+        ? `<div style="margin-top:8px; word-break:break-all;"><a href="${escapeAttr(bill.receiptUrl)}" target="_blank" rel="noopener">Open Receipt Image</a></div>`
+        : "";
+
       return `
         <div class="receipt-sheet">
           <div class="receipt-center">
@@ -2796,6 +3152,7 @@
               <span class="receipt-total-val">₹${Number(bill.grandTotal).toFixed(2)}</span>
             </div>
           </div>
+          ${receiptLinkHtml}
         </div>
       `;
     }
@@ -2811,6 +3168,9 @@
       const now = new Date();
       const billNumber = `CGS-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${String(state.sales.length + 1).padStart(3, "0")}`;
 
+      const startMs = table.startedAt ? new Date(table.startedAt).getTime() : now.getTime();
+      const turnaroundMinutes = Math.max(1, Math.round((now.getTime() - startMs) / 60000));
+
       state.pendingClosureBill = {
         id: billNumber,
         contactPhone: CAFE_CONTACT_PHONE,
@@ -2821,12 +3181,11 @@
         customerPhone: sanitizeTenDigitPhone(table.customerPhone || ""),
         date: getLocalDateKey(now),
         time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        createdAt: now.toISOString(),
         dateTimeLabel: formatReceiptDateTime(now),
-        lineItems: table.cart.map(i => ({
-          name: i.name,
-          qty: i.qty,
-          price: i.price
-        })),
+        turnaroundMinutes,
+        receiptUrl: "",
+        lineItems: table.cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
         services: buildServiceGroups(table),
         itemsSummary: table.cart.map(i => `${String(i.name || "").toUpperCase()} ${i.qty}`).join("; "),
         mode: table.paymentMode,
@@ -2855,7 +3214,9 @@
       try {
         const actorId = await getCurrentStaffId();
         const consumptionPayload = {
-          consumedItems: bill.lineItems
+          consumedItems: bill.lineItems,
+          turnaroundMinutes: bill.turnaroundMinutes || null,
+          receiptUrl: bill.receiptUrl || null
         };
 
         const { error } = await client.from("bills").upsert([{
@@ -2872,6 +3233,7 @@
           consumption_json: consumptionPayload,
           payment_mode: bill.mode,
           upi_vpa: bill.upiVpa || null,
+          receipt_url: bill.receiptUrl || null,
           subtotal: bill.subtotal,
           service_charge: bill.serviceCharge,
           cgst_rate: bill.cgstEnabled ? bill.cgstRate : 0,
@@ -2893,6 +3255,8 @@
           cgstAmount: bill.cgstAmount,
           sgstAmount: bill.sgstAmount,
           grandTotal: bill.grandTotal,
+          turnaroundMinutes: bill.turnaroundMinutes || null,
+          receiptUrl: bill.receiptUrl || null,
           consumedItems: bill.lineItems
         }, table, bill.id);
 
@@ -2910,6 +3274,9 @@
       enforceMidnightRolloverForSales();
 
       const table = getActiveTable();
+      const activeUpi = getActiveUpiAccount(state.settings);
+      bill.receiptUrl = await uploadReceiptImageToStorage(bill, activeUpi);
+
       state.salesDateKey = getLocalDateKey();
       state.sales.unshift(bill);
       saveSalesState();
@@ -2917,6 +3284,7 @@
 
       table.cart = [];
       table.kots = [];
+      table.startedAt = new Date().toISOString();
       table.customerName = "";
       table.customerPhone = "";
       table.waPhone = "";
@@ -2932,14 +3300,14 @@
       document.getElementById("confirmCloseDialog").close();
       renderTableTabs();
       renderCart();
-      renderSalesTable();
+      renderHistoryAndAnalytics();
 
       document.getElementById("printMount").innerHTML = renderReceiptHtml(bill);
       window.print();
     }
 
     async function printPastBill(billId) {
-      const bill = state.sales.find(b => b.id === billId);
+      const bill = state.historyBills.find(b => b.id === billId) || state.sales.find(b => b.id === billId);
       if (!bill) return;
       await logPosActivity("RECEIPT_REPRINTED", { billNumber: bill.id }, null, bill.id);
       document.getElementById("printMount").innerHTML = renderReceiptHtml(bill);
@@ -2947,7 +3315,8 @@
     }
 
     function getSortedSales() {
-      const list = [...state.sales];
+      const source = state.historyBills.length > 0 ? state.historyBills : state.sales;
+      const list = [...source];
       if (!state.subtotalSortDir) return list;
       return list.sort((a, b) => {
         const diff = Number(a.subtotal || 0) - Number(b.subtotal || 0);
@@ -2959,56 +3328,392 @@
       if (state.subtotalSortDir === null) state.subtotalSortDir = "asc";
       else if (state.subtotalSortDir === "asc") state.subtotalSortDir = "desc";
       else state.subtotalSortDir = null;
-      renderSalesTable();
+      renderHistoryAndAnalytics();
     }
 
-    function renderSalesTable() {
-      document.getElementById("todayCount").textContent = String(state.sales.length);
-      const totalRevenue = state.sales.reduce((sum, b) => sum + Number(b.grandTotal || 0), 0);
-      document.getElementById("salesSummaryText").textContent =
-        `${state.sales.length} bill(s) recorded (${state.salesDateKey}) • Net Revenue: ₹${totalRevenue.toFixed(2)}`;
+    async function fetchBillingHistoryRange(fromDate, toDate) {
+      const safeFrom = fromDate || getLocalDateKey();
+      const safeTo = toDate || safeFrom;
+      state.historyFromDate = safeFrom;
+      state.historyToDate = safeTo;
+      state.historyLoading = true;
+      renderHistoryAndAnalytics();
 
-      const indicator = document.getElementById("subtotalSortIndicator");
-      if (state.subtotalSortDir === "asc") indicator.textContent = "↑";
-      else if (state.subtotalSortDir === "desc") indicator.textContent = "↓";
-      else indicator.textContent = "↕";
+      const client = getDbClient();
+      if (client?.from) {
+        try {
+          const { data: rows, error } = await client
+            .from("bills")
+            .select("*")
+            .gte("bill_date", safeFrom)
+            .lte("bill_date", safeTo)
+            .order("bill_date", { ascending: false })
+            .order("created_at", { ascending: false });
+          if (error) throw error;
+          state.historyBills = (rows || []).map(mapBillRowToLocal);
 
-      const tbody = document.getElementById("salesTableBody");
-      const rows = getSortedSales();
-      if (rows.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="13" class="muted">No completed bills recorded yet.</td></tr>`;
+          const { data: kotsRows } = await client
+            .from("pos_kots")
+            .select("*")
+            .gte("created_at", `${safeFrom}T00:00:00`)
+            .lte("created_at", `${safeTo}T23:59:59`);
+          state.historyKots = Array.isArray(kotsRows) ? kotsRows : [];
+        } catch (err) {
+          console.warn("History query failed, falling back to local sales:", err);
+          state.historyBills = state.sales.filter(b => b.date >= safeFrom && b.date <= safeTo);
+          state.historyKots = [];
+        }
+      } else {
+        state.historyBills = state.sales.filter(b => b.date >= safeFrom && b.date <= safeTo);
+        state.historyKots = [];
+      }
+
+      state.historyLoading = false;
+      renderHistoryAndAnalytics();
+    }
+
+    function renderBarChartSvg(rows, labelKey, valueKey, titleText, formatVal = v => `₹${Number(v).toFixed(0)}`) {
+      if (!rows || rows.length === 0) {
+        return `<div class="chart-card"><strong>${escapeHtml(titleText)}</strong><p class="muted" style="margin:12px 0 0;">No data in selected date range.</p></div>`;
+      }
+      const maxVal = Math.max(...rows.map(r => Number(r[valueKey] || 0)), 1);
+      const barH = 22;
+      const gap = 8;
+      const topPad = 26;
+      const svgH = topPad + rows.length * (barH + gap) + 10;
+      const svgW = 460;
+
+      const barsHtml = rows.slice(0, 12).map((r, i) => {
+        const val = Number(r[valueKey] || 0);
+        const pct = Math.max(0.03, val / maxVal);
+        const barW = Math.round(pct * 220);
+        const y = topPad + i * (barH + gap);
+        const lbl = String(r[labelKey] || "").slice(0, 18);
+        return `
+          <text x="8" y="${y + 15}" font-size="11" fill="#241914" font-family="system-ui, sans-serif">${escapeHtml(lbl)}</text>
+          <rect x="150" y="${y + 2}" width="${barW}" height="${barH - 4}" rx="4" fill="#3b2319" />
+          <text x="${156 + barW}" y="${y + 15}" font-size="11" font-weight="600" fill="#6e5c52" font-family="system-ui, sans-serif">${escapeHtml(formatVal(val))}</text>
+        `;
+      }).join("");
+
+      return `
+        <div class="chart-card">
+          <strong style="font-size:13px; color:var(--accent);">${escapeHtml(titleText)}</strong>
+          <svg class="chart-svg" viewBox="0 0 ${svgW} ${svgH}">${barsHtml}</svg>
+        </div>
+      `;
+    }
+
+    function extractBillItems(bill) {
+      if (Array.isArray(bill.lineItems) && bill.lineItems.length > 0) {
+        return bill.lineItems.map(li => ({
+          name: String(li.name || "").trim().toUpperCase(),
+          qty: Number(li.qty || 1),
+          amount: Number(li.price || 0) * Number(li.qty || 1)
+        }));
+      }
+      const out = [];
+      for (const svc of (bill.services || [])) {
+        for (const it of (svc.items || [])) {
+          const cleanName = String(it.label || "").replace(/\s+\d+$/, "").trim().toUpperCase();
+          out.push({
+            name: cleanName || "ITEM",
+            qty: Number(it.qty || 1),
+            amount: Number(it.amount || 0)
+          });
+        }
+      }
+      if (out.length === 0 && bill.itemsSummary) {
+        for (const part of String(bill.itemsSummary).split(";")) {
+          const m = part.trim().match(/^(.*?)\s+(\d+)$/);
+          if (m) out.push({ name: m[1].trim().toUpperCase(), qty: Number(m[2]), amount: 0 });
+        }
+      }
+      return out;
+    }
+
+    function parseHourFromTimeStr(timeStr) {
+      const s = String(timeStr || "").trim();
+      const ampmMatch = s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?\s*(AM|PM)$/i);
+      if (ampmMatch) {
+        let h = Number(ampmMatch[1]) % 12;
+        if (ampmMatch[3].toUpperCase() === "PM") h += 12;
+        return h;
+      }
+      const h24Match = s.match(/^(\d{1,2}):(\d{2})/);
+      if (h24Match) return Math.min(23, Math.max(0, Number(h24Match[1])));
+      return null;
+    }
+
+    function renderHistoryAndAnalytics() {
+      const todayKey = getLocalDateKey();
+      const todayBills = state.sales.filter(b => b.date === todayKey);
+      document.getElementById("todayCount").textContent = String(todayBills.length);
+
+      const bills = state.historyBills.length > 0 || state.historyFromDate !== todayKey || state.historyToDate !== todayKey
+        ? state.historyBills
+        : todayBills;
+
+      const totalRevenue = bills.reduce((sum, b) => sum + Number(b.grandTotal || 0), 0);
+      document.getElementById("salesSummaryText").textContent = state.historyLoading
+        ? "Loading history..."
+        : `${bills.length} bill(s) • Total: ₹${totalRevenue.toFixed(2)}`;
+
+      document.querySelectorAll("#historyTabStrip .tab-pill").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.htab === state.historyTab);
+      });
+
+      const container = document.getElementById("historyViewContainer");
+      if (!container) return;
+
+      if (state.historyLoading) {
+        container.innerHTML = `<p class="muted">Loading billing records...</p>`;
         return;
       }
 
-      tbody.innerHTML = rows.map(b => {
-        const custText = [normalizeCustomerName(b.customerName), b.customerPhone].filter(Boolean).join(" • ") || "-";
-        const modeTokenText = [b.serviceType || "Dine-in", b.tokenNumber ? `#${sanitizeToken(b.tokenNumber)}` : ""].filter(Boolean).join(" • ");
-        const cgstVal = b.cgstAmount !== undefined ? Number(b.cgstAmount) : Number(b.gstAmount || 0) / 2;
-        const sgstVal = b.sgstAmount !== undefined ? Number(b.sgstAmount) : Number(b.gstAmount || 0) / 2;
-        return `
-          <tr>
-            <td>${escapeHtml(b.id)}</td>
-            <td>Seat ${escapeHtml(formatSeatLabel(b.tableName || "-"))}</td>
-            <td>${escapeHtml(modeTokenText)}</td>
-            <td>${escapeHtml(custText)}</td>
-            <td>${escapeHtml(b.date)} ${escapeHtml(b.time)}</td>
-            <td>${escapeHtml(b.itemsSummary)}</td>
-            <td>${escapeHtml(b.mode)}</td>
-            <td>₹${Number(b.subtotal).toFixed(2)}</td>
-            <td>₹${Number(b.serviceCharge || 0).toFixed(2)}</td>
-            <td>₹${cgstVal.toFixed(2)}</td>
-            <td>₹${sgstVal.toFixed(2)}</td>
-            <td><strong>₹${Number(b.grandTotal).toFixed(2)}</strong></td>
-            <td><button type="button" class="btn btn-sm" onclick="printPastBill('${escapeAttr(b.id)}')">Print</button></td>
-          </tr>
+      if (state.historyTab === "bills") {
+        const byDateMap = new Map();
+        for (const b of bills) {
+          const d = b.date || todayKey;
+          const cur = byDateMap.get(d) || { date: d, bills: 0, total: 0 };
+          cur.bills += 1;
+          cur.total += Number(b.grandTotal || 0);
+          byDateMap.set(d, cur);
+        }
+        const dailyTrend = [...byDateMap.values()].sort((a, b) => a.date.localeCompare(b.date));
+        const sortedRows = getSortedSales();
+        const sortInd = state.subtotalSortDir === "asc" ? "↑" : (state.subtotalSortDir === "desc" ? "↓" : "↕");
+
+        container.innerHTML = `
+          <div class="analytics-grid" style="margin-bottom:14px;">
+            ${renderBarChartSvg(dailyTrend, "date", "total", "Billing Trend by Date (₹)")}
+            <div class="chart-card">
+              <strong style="font-size:13px; color:var(--accent);">Daily Summary</strong>
+              <table class="bills-table">
+                <thead><tr><th>Date</th><th>Bills</th><th>Total</th></tr></thead>
+                <tbody>
+                  ${dailyTrend.length === 0
+                    ? `<tr><td colspan="3" class="muted">No records</td></tr>`
+                    : dailyTrend.map(d => `<tr><td>${escapeHtml(d.date)}</td><td>${d.bills}</td><td><strong>₹${d.total.toFixed(2)}</strong></td></tr>`).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="bills-table">
+              <thead>
+                <tr>
+                  <th>Bill #</th>
+                  <th>Seat</th>
+                  <th>Type / Token</th>
+                  <th>Customer</th>
+                  <th>Date &amp; Time</th>
+                  <th>Items</th>
+                  <th>Mode</th>
+                  <th class="sortable" id="sortSubtotalHeader" onclick="toggleSubtotalSort()">Subtotal ${sortInd}</th>
+                  <th>Service Charges</th>
+                  <th>CGST</th>
+                  <th>SGST</th>
+                  <th>Total</th>
+                  <th>Receipt</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${sortedRows.length === 0
+                  ? `<tr><td colspan="13" class="muted">No completed bills in this date range.</td></tr>`
+                  : sortedRows.map(b => {
+                    const custText = [normalizeCustomerName(b.customerName), b.customerPhone].filter(Boolean).join(" • ") || "-";
+                    const modeTokenText = [b.serviceType || "Dine-in", b.tokenNumber ? `#${sanitizeToken(b.tokenNumber)}` : ""].filter(Boolean).join(" • ");
+                    const cgstVal = b.cgstAmount !== undefined ? Number(b.cgstAmount) : Number(b.gstAmount || 0) / 2;
+                    const sgstVal = b.sgstAmount !== undefined ? Number(b.sgstAmount) : Number(b.gstAmount || 0) / 2;
+                    return `
+                      <tr>
+                        <td>${escapeHtml(b.id)}</td>
+                        <td>Seat ${escapeHtml(formatSeatLabel(b.tableName || "-"))}</td>
+                        <td>${escapeHtml(modeTokenText)}</td>
+                        <td>${escapeHtml(custText)}</td>
+                        <td>${escapeHtml(b.date)} ${escapeHtml(b.time)}</td>
+                        <td>${escapeHtml(b.itemsSummary)}</td>
+                        <td>${escapeHtml(b.mode)}</td>
+                        <td>₹${Number(b.subtotal).toFixed(2)}</td>
+                        <td>₹${Number(b.serviceCharge || 0).toFixed(2)}</td>
+                        <td>₹${cgstVal.toFixed(2)}</td>
+                        <td>₹${sgstVal.toFixed(2)}</td>
+                        <td><strong>₹${Number(b.grandTotal).toFixed(2)}</strong></td>
+                        <td><button type="button" class="btn btn-sm" onclick="printPastBill('${escapeAttr(b.id)}')">Print</button></td>
+                      </tr>
+                    `;
+                  }).join("")}
+              </tbody>
+            </table>
+          </div>
         `;
-      }).join("");
+        return;
+      }
+
+      if (state.historyTab === "products") {
+        const prodMap = new Map();
+        for (const b of bills) {
+          for (const it of extractBillItems(b)) {
+            const cur = prodMap.get(it.name) || { name: it.name, qty: 0, revenue: 0 };
+            cur.qty += Number(it.qty || 0);
+            cur.revenue += Number(it.amount || 0);
+            prodMap.set(it.name, cur);
+          }
+        }
+        const ranked = [...prodMap.values()].sort((a, b) => b.qty - a.qty);
+        container.innerHTML = `
+          <div class="analytics-grid">
+            ${renderBarChartSvg(ranked, "name", "qty", "Most Selling Products (Qty Sold)", v => `${v} sold`)}
+            <div class="chart-card">
+              <strong style="font-size:13px; color:var(--accent);">Product Sales Breakdown</strong>
+              <table class="bills-table">
+                <thead><tr><th>Item</th><th>Qty Sold</th><th>Revenue</th></tr></thead>
+                <tbody>
+                  ${ranked.length === 0
+                    ? `<tr><td colspan="3" class="muted">No item sales in range</td></tr>`
+                    : ranked.map(p => `<tr><td>${escapeHtml(p.name)}</td><td><strong>${p.qty}</strong></td><td>₹${p.revenue.toFixed(2)}</td></tr>`).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      if (state.historyTab === "rush") {
+        const hourMap = new Map();
+        for (const b of bills) {
+          const h = parseHourFromTimeStr(b.time);
+          if (h === null) continue;
+          const label = `${String(h).padStart(2, "0")}:00`;
+          const cur = hourMap.get(label) || { hour: label, bills: 0, sales: 0 };
+          cur.bills += 1;
+          cur.sales += Number(b.grandTotal || 0);
+          hourMap.set(label, cur);
+        }
+        const hourly = [...hourMap.values()].sort((a, b) => a.hour.localeCompare(b.hour));
+        container.innerHTML = `
+          <div class="analytics-grid">
+            ${renderBarChartSvg(hourly, "hour", "sales", "Rush Hours by Sales (₹)")}
+            <div class="chart-card">
+              <strong style="font-size:13px; color:var(--accent);">Hourly Sales &amp; Bill Count</strong>
+              <table class="bills-table">
+                <thead><tr><th>Hour</th><th>Bills</th><th>Sales</th></tr></thead>
+                <tbody>
+                  ${hourly.length === 0
+                    ? `<tr><td colspan="3" class="muted">No hourly data in range</td></tr>`
+                    : hourly.map(r => `<tr><td>${escapeHtml(r.hour)}</td><td>${r.bills}</td><td><strong>₹${r.sales.toFixed(2)}</strong></td></tr>`).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      if (state.historyTab === "tables") {
+        const seatCount = Math.max(1, state.tables.length);
+        const daysSpan = Math.max(1, new Set(bills.map(b => b.date)).size);
+        const seatMap = new Map();
+        for (const t of state.tables) {
+          const s = formatSeatLabel(t.name);
+          seatMap.set(s, { seat: `Seat ${s}`, bills: 0, revenue: 0, turnaroundSum: 0, turnaroundSamples: 0 });
+        }
+        for (const b of bills) {
+          const s = formatSeatLabel(b.tableName || "1");
+          const cur = seatMap.get(s) || { seat: `Seat ${s}`, bills: 0, revenue: 0, turnaroundSum: 0, turnaroundSamples: 0 };
+          cur.bills += 1;
+          cur.revenue += Number(b.grandTotal || 0);
+          const mins = Number(b.turnaroundMinutes || 0);
+          if (mins > 0) {
+            cur.turnaroundSum += mins;
+            cur.turnaroundSamples += 1;
+          }
+          seatMap.set(s, cur);
+        }
+        const rows = [...seatMap.values()].map(r => ({
+          ...r,
+          avgTurnaround: r.turnaroundSamples > 0 ? Math.round(r.turnaroundSum / r.turnaroundSamples) : 0,
+          turnoverRate: Number((r.bills / daysSpan).toFixed(2))
+        }));
+        const overallTurnover = Number((bills.length / (seatCount * daysSpan)).toFixed(2));
+
+        container.innerHTML = `
+          <div class="analytics-grid">
+            ${renderBarChartSvg(rows, "seat", "bills", "Settled Bills per Seat", v => `${v} bills`)}
+            <div class="chart-card">
+              <strong style="font-size:13px; color:var(--accent);">Table Turnaround &amp; Turnover (Avg Turnover: ${overallTurnover}x / seat / day)</strong>
+              <table class="bills-table">
+                <thead><tr><th>Seat</th><th>Bills</th><th>Turnover / Day</th><th>Avg Turnaround</th><th>Revenue</th></tr></thead>
+                <tbody>
+                  ${rows.map(r => `
+                    <tr>
+                      <td>${escapeHtml(r.seat)}</td>
+                      <td>${r.bills}</td>
+                      <td><strong>${r.turnoverRate}x</strong></td>
+                      <td>${r.avgTurnaround > 0 ? `${r.avgTurnaround} min` : "—"}</td>
+                      <td>₹${r.revenue.toFixed(2)}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const custMap = new Map();
+      for (const b of bills) {
+        const phone = sanitizeTenDigitPhone(b.customerPhone || "");
+        const name = normalizeCustomerName(b.customerName || "");
+        const key = phone || (name ? `NAME:${name}` : "");
+        if (!key) continue;
+        const cur = custMap.get(key) || {
+          customer: [name || "GUEST", phone].filter(Boolean).join(" • "),
+          visits: 0,
+          totalSpend: 0,
+          lastVisit: b.date || ""
+        };
+        cur.visits += 1;
+        cur.totalSpend += Number(b.grandTotal || 0);
+        if ((b.date || "") > cur.lastVisit) cur.lastVisit = b.date || "";
+        custMap.set(key, cur);
+      }
+      const customers = [...custMap.values()].sort((a, b) => b.visits - a.visits || b.totalSpend - a.totalSpend);
+      const returningCount = customers.filter(c => c.visits > 1).length;
+
+      container.innerHTML = `
+        <div class="analytics-grid">
+          ${renderBarChartSvg(customers, "customer", "visits", "Customer Visits", v => `${v} visit${v > 1 ? "s" : ""}`)}
+          <div class="chart-card">
+            <strong style="font-size:13px; color:var(--accent);">Customer History (${returningCount} Returning of ${customers.length} Identified)</strong>
+            <table class="bills-table">
+              <thead><tr><th>Customer</th><th>Visits</th><th>Last Visit</th><th>Total Spend</th></tr></thead>
+              <tbody>
+                ${customers.length === 0
+                  ? `<tr><td colspan="4" class="muted">No customer mobile/name recorded in range</td></tr>`
+                  : customers.map(c => `
+                    <tr>
+                      <td>${escapeHtml(c.customer)}</td>
+                      <td><strong>${c.visits}</strong> ${c.visits > 1 ? '<span class="kot-tag">Returning</span>' : ""}</td>
+                      <td>${escapeHtml(c.lastVisit)}</td>
+                      <td>₹${c.totalSpend.toFixed(2)}</td>
+                    </tr>
+                  `).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
     }
 
     function exportSalesCsv() {
       enforceMidnightRolloverForSales();
+      const rowsSource = state.historyBills.length > 0 ? state.historyBills : state.sales;
 
-      if (state.sales.length === 0) {
+      if (rowsSource.length === 0) {
         alert("No sales records to export yet.");
         return;
       }
@@ -3016,10 +3721,10 @@
       const headers = [
         "Bill ID", "Seat", "Service Type", "Token #", "Customer Name", "Customer Phone",
         "Date", "Time", "Items", "Payment Mode",
-        "Subtotal", "Service Charges", "CGST", "SGST", "Grand Total"
+        "Subtotal", "Service Charges", "CGST", "SGST", "Grand Total", "Receipt URL"
       ];
 
-      const rows = state.sales.map(b => {
+      const rows = rowsSource.map(b => {
         const cgstVal = b.cgstAmount !== undefined ? Number(b.cgstAmount) : Number(b.gstAmount || 0) / 2;
         const sgstVal = b.sgstAmount !== undefined ? Number(b.sgstAmount) : Number(b.gstAmount || 0) / 2;
         return [
@@ -3027,7 +3732,8 @@
           normalizeCustomerName(b.customerName || ""), b.customerPhone || "",
           b.date, b.time, b.itemsSummary, b.mode,
           Number(b.subtotal).toFixed(2), Number(b.serviceCharge || 0).toFixed(2),
-          cgstVal.toFixed(2), sgstVal.toFixed(2), Number(b.grandTotal).toFixed(2)
+          cgstVal.toFixed(2), sgstVal.toFixed(2), Number(b.grandTotal).toFixed(2),
+          b.receiptUrl || ""
         ];
       });
 
@@ -3039,7 +3745,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `cgs-cafe-sales-${state.salesDateKey || getLocalDateKey()}.csv`;
+      a.download = `cgs-cafe-sales-${state.historyFromDate || getLocalDateKey()}-to-${state.historyToDate || getLocalDateKey()}.csv`;
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -3057,9 +3763,7 @@
     }
 
     document.getElementById("btnPosLogout").addEventListener("click", async () => {
-      if (typeof logout === "function") {
-        await logout({ clearStorage: false });
-      }
+      if (typeof logout === "function") await logout({ clearStorage: false });
     });
 
     document.getElementById("btnOpenSettings").addEventListener("click", openSettingsDialog);
@@ -3134,10 +3838,45 @@
       reader.readAsDataURL(file);
     });
 
-    document.getElementById("btnOpenSales").addEventListener("click", () => {
+    document.getElementById("btnOpenSales").addEventListener("click", async () => {
       enforceMidnightRolloverForSales();
-      renderSalesTable();
+      const todayKey = getLocalDateKey();
+      document.getElementById("historyFromDate").value = state.historyFromDate || todayKey;
+      document.getElementById("historyToDate").value = state.historyToDate || todayKey;
       document.getElementById("salesDialog").showModal();
+      await fetchBillingHistoryRange(
+        document.getElementById("historyFromDate").value,
+        document.getElementById("historyToDate").value
+      );
+    });
+
+    document.getElementById("btnLoadHistory").addEventListener("click", async () => {
+      await fetchBillingHistoryRange(
+        document.getElementById("historyFromDate").value,
+        document.getElementById("historyToDate").value
+      );
+    });
+
+    document.getElementById("btnHistoryLast7").addEventListener("click", async () => {
+      const toKey = getLocalDateKey();
+      const fromKey = shiftDateKey(toKey, -6);
+      document.getElementById("historyFromDate").value = fromKey;
+      document.getElementById("historyToDate").value = toKey;
+      await fetchBillingHistoryRange(fromKey, toKey);
+    });
+
+    document.getElementById("btnHistoryToday").addEventListener("click", async () => {
+      const todayKey = getLocalDateKey();
+      document.getElementById("historyFromDate").value = todayKey;
+      document.getElementById("historyToDate").value = todayKey;
+      await fetchBillingHistoryRange(todayKey, todayKey);
+    });
+
+    document.querySelectorAll("#historyTabStrip .tab-pill").forEach(btn => {
+      btn.addEventListener("click", () => {
+        state.historyTab = btn.dataset.htab;
+        renderHistoryAndAnalytics();
+      });
     });
 
     document.querySelectorAll("[data-close-dialog]").forEach(btn => {
@@ -3153,7 +3892,6 @@
     document.getElementById("btnRemoveTable").addEventListener("click", removeCurrentTable);
     document.getElementById("btnSendKot").addEventListener("click", sendKotForActiveTable);
     document.getElementById("btnReprintKot").addEventListener("click", reprintLastKotForActiveTable);
-    document.getElementById("sortSubtotalHeader").addEventListener("click", toggleSubtotalSort);
 
     document.getElementById("customerNameInput").addEventListener("input", (e) => {
       const upper = normalizeCustomerName(e.target.value);
@@ -3221,12 +3959,12 @@
       loadPersistedState();
       renderTableTabs();
       renderCart();
-      renderSalesTable();
+      renderHistoryAndAnalytics();
 
       await hydratePosFromSupabase();
       renderTableTabs();
       renderCart();
-      renderSalesTable();
+      renderHistoryAndAnalytics();
       await loadMenu();
     }
 

@@ -34,7 +34,6 @@ CREATE TABLE public.items (
   image_url text,
   image_path text,
   total_cost numeric DEFAULT 0.00,
-  custom_price numeric DEFAULT 0.00,
   custom_margin numeric DEFAULT 0.00,
   base_price numeric,
   used_qty numeric,
@@ -83,13 +82,6 @@ CREATE TABLE public.site_settings (
   value text NOT NULL,
   updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()),
   CONSTRAINT site_settings_pkey PRIMARY KEY (id)
-);
-
-CREATE TABLE public.live_menu (
-  id integer NOT NULL,
-  menu_json jsonb,
-  updated_at timestamp with time zone,
-  CONSTRAINT live_menu_pkey PRIMARY KEY (id)
 );
 
 CREATE TABLE public.app_settings (

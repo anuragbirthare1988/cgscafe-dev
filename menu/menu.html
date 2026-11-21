@@ -179,12 +179,86 @@
         };
     }
 
+    function roundUpPrintPrice(val) {
+      return Math.ceil(val / 5) * 5;
+    }
+
+    function resolvePrintItemPrice(item, globalMarginPct) {
+      const totalCost = Number(item.total_cost ?? 0);
+      const marginNum = Number(globalMarginPct);
+      const hasGlobal = Number.isFinite(marginNum) && marginNum > 0 && marginNum < 100;
+
+      const basePrice = (totalCost > 0 && hasGlobal)
+        ? roundUpPrintPrice(totalCost / (1 - marginNum / 100))
+        : Number(item.base_price ?? 0);
+
+      const customMarginNum = Number(item.custom_margin ?? NaN);
+      const hasCustom = Number.isFinite(customMarginNum) && customMarginNum > 0 && customMarginNum < 100;
+
+      const customPrice = (hasCustom && totalCost > 0)
+        ? roundUpPrintPrice(totalCost / (1 - customMarginNum / 100))
+        : 0;
+
+      const calculatedWinner = Math.max(
+        Number.isFinite(basePrice) ? basePrice : 0,
+        Number.isFinite(customPrice) ? customPrice : 0
+      );
+
+      if (calculatedWinner > 0) return calculatedWinner;
+
+      const storedDisplay = Number(item.display_price ?? item.price ?? 0);
+      return Number.isFinite(storedDisplay) && storedDisplay > 0 ? storedDisplay : '';
+    }
+
     async function loadMenuFromSupabase(client) {
-      // Fetch the structured menu directly from the normalized items and categories tables
-      const masterMenu = await window.fetchMasterMenuFromDatabase();
-      console.log(masterMenu);
-      return masterMenu;
-  }
+      let globalMargin = null;
+      try {
+        const { data: marginRow } = await client
+          .from('app_settings')
+          .select('base_margin')
+          .eq('id', 1)
+          .maybeSingle();
+        const parsed = Number(marginRow?.base_margin ?? NaN);
+        if (Number.isFinite(parsed) && parsed > 0 && parsed < 100) {
+          globalMargin = parsed;
+        }
+      } catch (_) {}
+
+      const [{ data: cats, error: catErr }, { data: items, error: itemErr }] = await Promise.all([
+        client.from('categories').select('*').order('sort_order', { ascending: true }),
+        client.from('items').select('*').order('sort_order', { ascending: true })
+      ]);
+      if (catErr) throw catErr;
+      if (itemErr) throw itemErr;
+
+      const itemsByCat = new Map();
+      (items || []).forEach(it => {
+        if (!itemsByCat.has(it.category_id)) itemsByCat.set(it.category_id, []);
+        const resolved = resolvePrintItemPrice(it, globalMargin);
+        itemsByCat.get(it.category_id).push({
+          id: it.id,
+          name: it.name || '',
+          description: it.description || '',
+          qty: it.qty ? String(it.qty).trim() : '',
+          price: resolved ? String(resolved) : '',
+          featured: Boolean(it.is_featured),
+          hidden: Boolean(it.is_hidden)
+        });
+      });
+
+      return {
+        categories: (cats || []).map(c => ({
+          id: c.id,
+          superCategory: c.super_category || 'MENU',
+          subCategoryName: c.sub_category_name || 'Section',
+          subCategoryDesc: c.sub_category_desc || '',
+          originType: c.origin_type || 'beverages',
+          tag: c.tag || '',
+          hidden: Boolean(c.is_hidden),
+          items: itemsByCat.get(c.id) || []
+        }))
+      };
+    }
     
     function switchCanvasTab(canvasKey) {
       ACTIVE_CANVAS = canvasKey;
@@ -196,7 +270,7 @@
     function generateProductionMenuLayout() {
       const target = document.getElementById("print-canvas-render-target");
       target.innerHTML = "";
-      
+
       const activeDataSet = (MASTER_DATABASE.categories || []).filter(cat => {
         return cat.originType === ACTIVE_CANVAS;
       });
