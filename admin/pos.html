@@ -479,61 +479,6 @@
       gap: 6px;
     }
 
-    .promo-controls {
-      border: 1px solid var(--border);
-      background: var(--surface-alt);
-      border-radius: 10px;
-      padding: 7px 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      flex-wrap: wrap;
-      font-size: 12px;
-      flex-shrink: 0;
-    }
-
-    .discount-row {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      flex-wrap: wrap;
-    }
-
-    .discount-chip {
-      border: 1px solid var(--border);
-      background: #ffffff;
-      color: var(--ink);
-      padding: 3px 7px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .discount-chip.active {
-      background: var(--accent);
-      color: var(--accent-ink);
-      border-color: var(--accent);
-    }
-
-    .discount-custom-wrap {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-    }
-
-    .discount-custom-wrap input {
-      width: 58px;
-      padding: 3px 6px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: #ffffff;
-      font-size: 12px;
-      font-weight: 600;
-      text-align: right;
-    }
-
     .totals-box {
       font-size: 13px;
       display: grid;
@@ -544,11 +489,6 @@
     .totals-line {
       display: flex;
       justify-content: space-between;
-    }
-
-    .totals-discount {
-      color: var(--ok);
-      font-weight: 600;
     }
 
     .totals-grand {
@@ -995,28 +935,10 @@
           <p class="muted" style="text-align:center; padding:18px 0;">Tap any menu item to add.</p>
         </div>
 
-        <div class="promo-controls">
-          <div class="discount-row" id="discountPresetRow">
-            <span class="muted" style="font-weight:600;">Discount:</span>
-            <button type="button" class="discount-chip active" data-disc="0">0%</button>
-            <button type="button" class="discount-chip" data-disc="10">10%</button>
-            <button type="button" class="discount-chip" data-disc="15">15%</button>
-            <button type="button" class="discount-chip" data-disc="20">20%</button>
-            <div class="discount-custom-wrap">
-              <input type="number" id="customDiscountInput" min="0" max="100" step="0.5" value="0" aria-label="Custom discount percentage" />
-              <span>%</span>
-            </div>
-          </div>
-        </div>
-
         <div class="totals-box">
           <div class="totals-line">
             <span>Subtotal</span>
             <strong id="subtotalText">₹0.00</strong>
-          </div>
-          <div class="totals-line totals-discount" id="discountRow" style="display:none;">
-            <span id="discountLabel">Discount</span>
-            <span id="discountText">-₹0.00</span>
           </div>
           <div class="totals-line" id="scRow" style="display:none;">
             <span id="scLabel">Service Charges</span>
@@ -1145,7 +1067,6 @@
               <th class="sortable" id="sortSubtotalHeader" title="Click to sort by Subtotal">
                 Subtotal <span id="subtotalSortIndicator">↕</span>
               </th>
-              <th>Discount</th>
               <th>Service Charges</th>
               <th>CGST</th>
               <th>SGST</th>
@@ -1300,10 +1221,7 @@
           customer_phone: table.customerPhone || null,
           wa_phone: table.waPhone || null,
           payment_mode: table.paymentMode || "UPI",
-          cart_json: {
-            items: table.cart || [],
-            discountPercent: Number(table.discountPercent || 0)
-          },
+          cart_json: Array.isArray(table.cart) ? table.cart : [],
           kots_json: table.kots || [],
           updated_at: new Date().toISOString()
         }], { onConflict: "table_id" });
@@ -1363,17 +1281,14 @@
       }
     }
 
-    function parseCartPayload(rawCartJson) {
+    function parseCartItems(rawCartJson) {
       if (Array.isArray(rawCartJson)) {
-        return { cart: rawCartJson, discountPercent: 0 };
+        return rawCartJson;
       }
       if (rawCartJson && typeof rawCartJson === "object" && Array.isArray(rawCartJson.items)) {
-        return {
-          cart: rawCartJson.items,
-          discountPercent: Math.max(0, Math.min(100, Number(rawCartJson.discountPercent || 0)))
-        };
+        return rawCartJson.items;
       }
-      return { cart: [], discountPercent: 0 };
+      return [];
     }
 
     async function hydratePosFromSupabase() {
@@ -1427,11 +1342,11 @@
             const custPhone = sanitizeTenDigitPhone(row.customer_phone || "");
             const rawWa = sanitizeTenDigitPhone(row.wa_phone || "");
             const isManual = Boolean(rawWa && custPhone && rawWa !== custPhone);
-            const parsedCart = parseCartPayload(row.cart_json);
+            const rawItems = parseCartItems(row.cart_json);
             return {
               id: row.table_id,
               name: formatSeatLabel(row.table_name),
-              cart: parsedCart.cart.map(normalizeCartItem),
+              cart: rawItems.map(normalizeCartItem),
               kots: Array.isArray(row.kots_json) ? row.kots_json : [],
               paymentMode: row.payment_mode || "UPI",
               customerName: normalizeCustomerName(row.customer_name || ""),
@@ -1439,8 +1354,7 @@
               waPhone: isManual ? rawWa : custPhone,
               waPhoneManual: isManual,
               serviceType: row.service_type === "Take away" ? "Take away" : "Dine-in",
-              tokenNumber: sanitizeToken(row.token_number || ""),
-              discountPercent: parsedCart.discountPercent
+              tokenNumber: sanitizeToken(row.token_number || "")
             };
           });
           if (!state.tables.some(t => t.id === state.activeTableId)) {
@@ -1466,40 +1380,33 @@
 
         if (!billsErr && Array.isArray(billRows)) {
           state.salesDateKey = todayKey;
-          state.sales = billRows.map(r => {
-            const extra = (r.consumption_json && typeof r.consumption_json === "object")
-              ? r.consumption_json
-              : {};
-            return {
-              id: r.bill_number,
-              contactPhone: CAFE_CONTACT_PHONE,
-              tableName: formatSeatLabel(r.table_name || ""),
-              serviceType: r.service_type || "Dine-in",
-              tokenNumber: sanitizeToken(r.token_number || ""),
-              customerName: normalizeCustomerName(r.customer_name || ""),
-              customerPhone: sanitizeTenDigitPhone(r.customer_phone || ""),
-              date: r.bill_date,
-              time: r.bill_time,
-              dateTimeLabel: `${r.bill_date} ${r.bill_time}`,
-              services: Array.isArray(r.kots_json) ? r.kots_json : [],
-              itemsSummary: r.items_summary || "",
-              mode: r.payment_mode || "UPI",
-              upiVpa: r.upi_vpa || "",
-              discountPercent: Number(extra.discountPercent ?? 0),
-              discountAmount: Number(extra.discountAmount ?? 0),
-              subtotal: Number(r.subtotal || 0),
-              scEnabled: Number(r.service_charge || 0) > 0,
-              serviceCharge: Number(r.service_charge || 0),
-              cgstEnabled: Number(r.cgst_amount || 0) > 0,
-              cgstRate: Number(r.cgst_rate || 0),
-              cgstAmount: Number(r.cgst_amount || 0),
-              sgstEnabled: Number(r.sgst_amount || 0) > 0,
-              sgstRate: Number(r.sgst_rate || 0),
-              sgstAmount: Number(r.sgst_amount || 0),
-              gstAmount: Number(r.gst_amount || 0),
-              grandTotal: Number(r.grand_total || 0)
-            };
-          });
+          state.sales = billRows.map(r => ({
+            id: r.bill_number,
+            contactPhone: CAFE_CONTACT_PHONE,
+            tableName: formatSeatLabel(r.table_name || ""),
+            serviceType: r.service_type || "Dine-in",
+            tokenNumber: sanitizeToken(r.token_number || ""),
+            customerName: normalizeCustomerName(r.customer_name || ""),
+            customerPhone: sanitizeTenDigitPhone(r.customer_phone || ""),
+            date: r.bill_date,
+            time: r.bill_time,
+            dateTimeLabel: `${r.bill_date} ${r.bill_time}`,
+            services: Array.isArray(r.kots_json) ? r.kots_json : [],
+            itemsSummary: r.items_summary || "",
+            mode: r.payment_mode || "UPI",
+            upiVpa: r.upi_vpa || "",
+            subtotal: Number(r.subtotal || 0),
+            scEnabled: Number(r.service_charge || 0) > 0,
+            serviceCharge: Number(r.service_charge || 0),
+            cgstEnabled: Number(r.cgst_amount || 0) > 0,
+            cgstRate: Number(r.cgst_rate || 0),
+            cgstAmount: Number(r.cgst_amount || 0),
+            sgstEnabled: Number(r.sgst_amount || 0) > 0,
+            sgstRate: Number(r.sgst_rate || 0),
+            sgstAmount: Number(r.sgst_amount || 0),
+            gstAmount: Number(r.gst_amount || 0),
+            grandTotal: Number(r.grand_total || 0)
+          }));
           saveSalesState();
         }
 
@@ -1530,10 +1437,10 @@
 
     function createDefaultTables() {
       return [
-        { id: "T1", name: "1", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0 },
-        { id: "T2", name: "2", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0 },
-        { id: "T3", name: "3", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0 },
-        { id: "T4", name: "4", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "", discountPercent: 0 }
+        { id: "T1", name: "1", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "" },
+        { id: "T2", name: "2", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "" },
+        { id: "T3", name: "3", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "" },
+        { id: "T4", name: "4", cart: [], kots: [], paymentMode: "UPI", customerName: "", customerPhone: "", waPhone: "", waPhoneManual: false, serviceType: "Dine-in", tokenNumber: "" }
       ];
     }
 
@@ -1898,8 +1805,7 @@
               waPhoneManual: isManual,
               serviceType: t.serviceType === "Take away" ? "Take away" : "Dine-in",
               tokenNumber: sanitizeToken(t.tokenNumber || ""),
-              paymentMode: t.paymentMode || "UPI",
-              discountPercent: Math.max(0, Math.min(100, Number(t.discountPercent || 0)))
+              paymentMode: t.paymentMode || "UPI"
             };
           });
           state.activeTableId = savedTables.activeTableId || state.tables[0].id;
@@ -1988,13 +1894,6 @@
       document.getElementById("serviceTypeSelect").value = active.serviceType || "Dine-in";
       document.getElementById("tokenNumberInput").value = sanitizeToken(active.tokenNumber || "");
 
-      const discVal = Number(active.discountPercent || 0);
-      document.getElementById("customDiscountInput").value = discVal;
-      document.querySelectorAll(".discount-chip").forEach(chip => {
-        const chipVal = Number(chip.dataset.disc);
-        chip.classList.toggle("active", chipVal === discVal);
-      });
-
       document.querySelectorAll(".pay-mode-btn").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.mode === active.paymentMode);
       });
@@ -2023,8 +1922,7 @@
         waPhone: "",
         waPhoneManual: false,
         serviceType: "Dine-in",
-        tokenNumber: "",
-        discountPercent: 0
+        tokenNumber: ""
       };
       state.tables.push(newTable);
       state.activeTableId = newTable.id;
@@ -2377,17 +2275,9 @@
 
     function computeBillTotals() {
       const table = getActiveTable();
-      const discountPercent = Math.max(0, Math.min(100, Number(table.discountPercent || 0)));
-
-      const grossSubtotal = table.cart.reduce((sum, item) => {
+      const subtotal = table.cart.reduce((sum, item) => {
         return sum + (Number(item.price || 0) * Number(item.qty || 0));
       }, 0);
-
-      const discountAmount = grossSubtotal > 0
-        ? (grossSubtotal * discountPercent) / 100
-        : 0;
-
-      const subtotal = Math.max(0, grossSubtotal - discountAmount);
 
       const scEnabled = Boolean(state.settings.scEnabled);
       let serviceCharge = 0;
@@ -2415,9 +2305,6 @@
       const grandTotal = subtotal + serviceCharge + cgstAmount + sgstAmount;
 
       return {
-        grossSubtotal,
-        discountPercent,
-        discountAmount,
         subtotal,
         scEnabled,
         serviceCharge,
@@ -2480,8 +2367,6 @@
 
     function renderTotals() {
       const {
-        discountPercent,
-        discountAmount,
         subtotal,
         scEnabled,
         serviceCharge,
@@ -2495,15 +2380,6 @@
       } = computeBillTotals();
 
       document.getElementById("subtotalText").textContent = `₹${subtotal.toFixed(2)}`;
-
-      const discountRow = document.getElementById("discountRow");
-      if (discountAmount > 0) {
-        discountRow.style.display = "flex";
-        document.getElementById("discountLabel").textContent = `Discount (${discountPercent}%)`;
-        document.getElementById("discountText").textContent = `-₹${discountAmount.toFixed(2)}`;
-      } else {
-        discountRow.style.display = "none";
-      }
 
       const scRow = document.getElementById("scRow");
       if (scEnabled) {
@@ -2642,10 +2518,6 @@
 
       paymentAndInvoiceLines.push("------------------------------------");
       paymentAndInvoiceLines.push(`SUBTOTAL               ₹${Number(totals.subtotal).toFixed(2).padStart(9, " ")}`);
-      if (totals.discountAmount > 0) {
-        const dTag = `DISCOUNT (${totals.discountPercent}%)`.padEnd(22, " ");
-        paymentAndInvoiceLines.push(`${dTag} -₹${Number(totals.discountAmount).toFixed(2).padStart(8, " ")}`);
-      }
       if (totals.scEnabled) {
         paymentAndInvoiceLines.push(`SERVICE CHARGES        ₹${Number(totals.serviceCharge).toFixed(2).padStart(9, " ")}`);
       }
@@ -2862,15 +2734,6 @@
       const showSgst = bill.sgstEnabled !== undefined ? Boolean(bill.sgstEnabled) : Number(bill.sgstAmount || 0) > 0;
 
       let optionalTotalsHtml = "";
-      if (Number(bill.discountAmount || 0) > 0) {
-        const dLabel = `Discount (${Number(bill.discountPercent || 0)}%)`;
-        optionalTotalsHtml += `
-          <div class="receipt-total-row">
-            <span class="receipt-total-label">${escapeHtml(dLabel)}</span>
-            <span class="receipt-total-val">-₹${Number(bill.discountAmount).toFixed(2)}</span>
-          </div>
-        `;
-      }
       if (showSc) {
         optionalTotalsHtml += `
           <div class="receipt-total-row">
@@ -2968,8 +2831,6 @@
         itemsSummary: table.cart.map(i => `${String(i.name || "").toUpperCase()} ${i.qty}`).join("; "),
         mode: table.paymentMode,
         upiVpa: table.paymentMode === "UPI" ? (activeUpi.vpa || "") : "",
-        discountPercent: Number(totals.discountPercent.toFixed(2)),
-        discountAmount: Number(totals.discountAmount.toFixed(2)),
         subtotal: Number(totals.subtotal.toFixed(2)),
         scEnabled: totals.scEnabled,
         serviceCharge: Number(totals.serviceCharge.toFixed(2)),
@@ -2994,9 +2855,7 @@
       try {
         const actorId = await getCurrentStaffId();
         const consumptionPayload = {
-          consumedItems: bill.lineItems,
-          discountPercent: bill.discountPercent,
-          discountAmount: bill.discountAmount
+          consumedItems: bill.lineItems
         };
 
         const { error } = await client.from("bills").upsert([{
@@ -3029,8 +2888,6 @@
         await logPosActivity("BILL_SETTLED", {
           billNumber: bill.id,
           mode: bill.mode,
-          discountPercent: bill.discountPercent,
-          discountAmount: bill.discountAmount,
           subtotal: bill.subtotal,
           serviceCharge: bill.serviceCharge,
           cgstAmount: bill.cgstAmount,
@@ -3067,7 +2924,6 @@
       table.tokenNumber = "";
       table.serviceType = "Dine-in";
       table.paymentMode = "UPI";
-      table.discountPercent = 0;
       state.pendingClosureBill = null;
       state.lastQrStatusMsg = "";
       state.lastQrErrorMsg = "";
@@ -3120,7 +2976,7 @@
       const tbody = document.getElementById("salesTableBody");
       const rows = getSortedSales();
       if (rows.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="14" class="muted">No completed bills recorded yet.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="13" class="muted">No completed bills recorded yet.</td></tr>`;
         return;
       }
 
@@ -3139,7 +2995,6 @@
             <td>${escapeHtml(b.itemsSummary)}</td>
             <td>${escapeHtml(b.mode)}</td>
             <td>₹${Number(b.subtotal).toFixed(2)}</td>
-            <td>₹${Number(b.discountAmount || 0).toFixed(2)}</td>
             <td>₹${Number(b.serviceCharge || 0).toFixed(2)}</td>
             <td>₹${cgstVal.toFixed(2)}</td>
             <td>₹${sgstVal.toFixed(2)}</td>
@@ -3160,7 +3015,7 @@
 
       const headers = [
         "Bill ID", "Seat", "Service Type", "Token #", "Customer Name", "Customer Phone",
-        "Date", "Time", "Items", "Payment Mode", "Discount %", "Discount Amount",
+        "Date", "Time", "Items", "Payment Mode",
         "Subtotal", "Service Charges", "CGST", "SGST", "Grand Total"
       ];
 
@@ -3171,8 +3026,6 @@
           b.id, formatSeatLabel(b.tableName || ""), b.serviceType || "Dine-in", sanitizeToken(b.tokenNumber || ""),
           normalizeCustomerName(b.customerName || ""), b.customerPhone || "",
           b.date, b.time, b.itemsSummary, b.mode,
-          Number(b.discountPercent || 0).toFixed(2),
-          Number(b.discountAmount || 0).toFixed(2),
           Number(b.subtotal).toFixed(2), Number(b.serviceCharge || 0).toFixed(2),
           cgstVal.toFixed(2), sgstVal.toFixed(2), Number(b.grandTotal).toFixed(2)
         ];
@@ -3207,32 +3060,6 @@
       if (typeof logout === "function") {
         await logout({ clearStorage: false });
       }
-    });
-
-    document.querySelectorAll(".discount-chip").forEach(chip => {
-      chip.addEventListener("click", () => {
-        const table = getActiveTable();
-        const pct = Math.max(0, Math.min(100, Number(chip.dataset.disc) || 0));
-        table.discountPercent = pct;
-        saveTablesState(false);
-        renderTableTabs();
-        renderTotals();
-        renderPaymentFlow();
-      });
-    });
-
-    document.getElementById("customDiscountInput").addEventListener("input", (e) => {
-      const table = getActiveTable();
-      let val = Number(e.target.value);
-      if (!Number.isFinite(val) || val < 0) val = 0;
-      if (val > 100) val = 100;
-      table.discountPercent = val;
-      saveTablesState(false);
-      document.querySelectorAll(".discount-chip").forEach(chip => {
-        chip.classList.toggle("active", Number(chip.dataset.disc) === val);
-      });
-      renderTotals();
-      renderPaymentFlow();
     });
 
     document.getElementById("btnOpenSettings").addEventListener("click", openSettingsDialog);
