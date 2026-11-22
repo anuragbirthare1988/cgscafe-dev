@@ -149,6 +149,10 @@
                 </div>
             
                 <!-- ROW 2 -->
+                 <div class="field-group">
+                    <label class="compact-label" for="landmark">Landmark</label>
+                    <input type="text" id="landmark" class="compact-control" placeholder="e.g. Opp Maa Vihar Colony">
+                </div>
                 <div class="field-group">
                     <label class="compact-label" for="addr_line3">City</label>
                     <input type="text" id="addr_line3" class="compact-control" required>
@@ -160,14 +164,14 @@
                         <option value="Madhya Pradesh">Madhya Pradesh</option>
                     </select>
                 </div>
+
+                <!-- ROW 3 -->
                 <div class="field-group">
                     <label class="compact-label" for="zip">ZIP Code</label>
                     <input type="text" id="zip" class="compact-control" 
                         pattern="\d{6}" maxlength="6" 
                         placeholder="6-digit code" required>
                 </div>
-
-                <!-- ROW 3 -->
                 <div class="field-group">
                     <label class="compact-label" for="maps_url">Google Maps URL</label>
                     <input type="url" id="maps_url" class="compact-control" placeholder="https://maps.app.goo.gl/...">
@@ -176,6 +180,8 @@
                     <label class="compact-label" for="timings">Business Timings</label>
                     <input type="text" id="timings" class="compact-control" placeholder="e.g. 10:00 AM - 11:00 PM" required>
                 </div>
+                
+                <!-- ROW 4 -->
                 <div class="field-group">
                     <label class="compact-label" for="phone">Phone</label>
                     <div class="phone-input-wrapper">
@@ -183,8 +189,6 @@
                         <input type="text" id="phone" class="phone-digits" maxlength="10" placeholder="10-digit number" required>
                     </div>
                 </div>
-                
-                <!-- ROW 4 -->
                 <div class="field-group">
                     <label class="compact-label" for="whatsapp_number">WhatsApp Number</label>
                     <div class="phone-input-wrapper">
@@ -292,6 +296,7 @@
                 'phone', 
                 'timings', 
                 'short_address',
+                'landmark',
                 'maps_url',
                 'whatsapp_number',
                 'whatsapp_message'

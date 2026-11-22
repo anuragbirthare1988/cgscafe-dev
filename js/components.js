@@ -45,7 +45,12 @@ function populateUI() {
 
         // Special handling for Address block (Multiple locations)
         document.querySelectorAll('.display-address').forEach(el => {
-            el.innerHTML = `${window.SITE_CONFIG['addr_line1'] || ''}<br>${window.SITE_CONFIG['addr_line2'] || ''}<br>${window.SITE_CONFIG['addr_line3'] || ''} (${window.SITE_CONFIG['state'] || ''}) - ${window.SITE_CONFIG['zip'] || ''}`;
+            const landmark = window.SITE_CONFIG['landmark']?.trim();
+            const landmarkLine = landmark
+                ? `<br><span class="address-landmark" style="display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; padding: 4px 10px; border-radius: 999px; background: rgba(209, 117, 51, 0.14); border: 1px solid rgba(209, 117, 51, 0.35); font-size: 0.85em; font-weight: 500; line-height: 1.3;">&#128205; ${landmark}</span>`
+                : '';
+
+            el.innerHTML = `${window.SITE_CONFIG['addr_line1'] || ''}<br>${window.SITE_CONFIG['addr_line2'] || ''}<br>${window.SITE_CONFIG['addr_line3'] || ''} (${window.SITE_CONFIG['state'] || ''}) - ${window.SITE_CONFIG['zip'] || ''}${landmarkLine}`;
         });
 
         // 2. Interactive Links

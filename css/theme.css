@@ -5336,3 +5336,181 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .careers-openings-section ul { list-style: square;}
+
+/* Side-by-Side Directory & Map Layout */
+.findus-section {
+    padding-top: 0;
+    padding-bottom: var(--space-12, 3rem);
+}
+
+.findus-quote {
+    max-width: 640px;
+    margin: 0 auto var(--space-8, 2rem);
+}
+
+.findus-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.35fr);
+    gap: var(--space-6, 1.5rem);
+    align-items: stretch;
+}
+
+.directory-card {
+    background: var(--surface-card, var(--bg-card, #fdf8f2));
+    border: 1px solid var(--border-subtle, rgba(92, 51, 23, 0.14));
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.directory-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.15rem 1.35rem;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid var(--border-subtle, rgba(92, 51, 23, 0.12));
+    transition: background-color 0.2s ease;
+}
+
+.directory-row:last-child {
+    border-bottom: none;
+}
+
+a.directory-row:hover,
+a.directory-row:focus-visible {
+    background: var(--surface-hover, rgba(209, 117, 51, 0.07));
+}
+
+.directory-row__icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-soft, rgba(209, 117, 51, 0.14));
+    color: var(--accent-primary, #b4692d);
+    margin-top: 2px;
+}
+
+.directory-row__icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.directory-row__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.directory-row__title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    color: var(--text-primary, #282220);
+}
+
+.directory-row__text {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--text-secondary, #4a3f3a);
+}
+
+/* Address & Landmark Badge */
+.address-block {
+    line-height: 1.55;
+}
+
+.address-block .address-lines {
+    display: block;
+}
+
+.address-block .address-landmark {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 12px;
+    max-width: 100%;
+    border-radius: 999px;
+    background: var(--badge-bg, rgba(209, 117, 51, 0.16));
+    border: 1px solid var(--badge-border, rgba(180, 105, 45, 0.35));
+    color: var(--badge-text, #5c3317);
+    font-size: 0.82em;
+    font-weight: 500;
+    line-height: 1.35;
+}
+
+/* Dark Footer Override for Landmark Badge */
+.site-footer .address-block .address-landmark {
+    background: rgba(209, 117, 51, 0.18);
+    border-color: rgba(218, 187, 160, 0.35);
+    color: #dabba0;
+}
+
+/* Botanica Theme Overrides */
+[data-theme="botanica"] .directory-row__icon {
+    background: rgba(74, 103, 65, 0.14);
+    color: #3b5934;
+}
+
+[data-theme="botanica"] a.directory-row:hover,
+[data-theme="botanica"] a.directory-row:focus-visible {
+    background: rgba(74, 103, 65, 0.07);
+}
+
+[data-theme="botanica"] .address-block .address-landmark {
+    background: rgba(74, 103, 65, 0.14);
+    border-color: rgba(74, 103, 65, 0.35);
+    color: #2f4529;
+}
+
+[data-theme="botanica"] .site-footer .address-block .address-landmark {
+    background: rgba(143, 178, 132, 0.18);
+    border-color: rgba(143, 178, 132, 0.35);
+    color: #d6e5d1;
+}
+
+/* Map Container */
+.findus-map-panel {
+    display: flex;
+    min-height: 100%;
+}
+
+.map-container {
+    width: 100%;
+    display: flex;
+}
+
+.map-responsive {
+    position: relative;
+    width: 100%;
+    min-height: 420px;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-subtle, rgba(92, 51, 23, 0.14));
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.map-responsive iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    border: 0;
+    display: block;
+}
+
+@media (max-width: 900px) {
+    .findus-split {
+        grid-template-columns: 1fr;
+    }
+
+    .map-responsive,
+    .map-responsive iframe {
+        min-height: 360px;
+    }
+}

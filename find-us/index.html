@@ -8,7 +8,7 @@
         "url": "https://cgscafe.in/find-us",
         "logo": "https://cgscafe.in/images/cgs-logo.webp",
         "image": "https://cgscafe.in/images/sitemap-images/find-us.webp",
-        "description": "CGS Cafe in Scheme No 59, Indore offering exceptional coffee, grill items, mocktail shots and refreshing beverages. A modern boutique cafe experience. Jumpstart Your Mood.",
+        "description": "CGS Cafe in Scheme No 59, Indore offering coffee, grill items, mocktail shots and refreshing beverages. Jumpstart Your Mood.",
         "address": {
             "@type": "PostalAddress",
             "streetAddress": "Scheme No 59",
@@ -67,29 +67,6 @@
         <script src="/js/components.js"></script>
         <script src="/js/custom.js"></script>
         <script src="/js/animations.js"></script>
-
-        <!-- Inline CSS for Responsive Map Container -->
-        <style>
-            .map-container {
-                width: 100%;
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 0 var(--space-4, 1rem);
-            }
-            .map-responsive {
-                position: relative;
-                width: 100%;
-                height: 420px;
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            }
-            .map-responsive iframe {
-                width: 100%;
-                height: 100%;
-                border: 0;
-            }
-        </style>
     </head>
     <body>
         <!-- Header Section -->
@@ -101,61 +78,75 @@
             <div class="divider"></div>
         </section>
 
-        <section class="section" style="padding-top:0;">
+        <section class="section findus-section">
             <div class="container">
-                <p class="quote-block__text text-center" style="max-width:640px;margin:0 auto var(--space-8);">
+                <p class="quote-block__text text-center findus-quote">
                     Drop by for a smooth coffee, comforting bites, or a refreshing pause &mdash; we&rsquo;re always ready to welcome you.
                 </p>
-                <div class="info-grid">
-                    <!-- Location Tile -->
-                    <a class="map-link" target="_blank" rel="noopener noreferrer">
-                        <div class="card card--icon">
-                            <div class="card__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg></div>
-                            <div class="card__title">Location</div>
-                            <div class="card__text display-short-address"></div>
+
+                <div class="findus-split">
+                    <!-- Left: Unified Directory Card -->
+                    <div class="directory-card">
+                        <!-- Location Row -->
+                        <a class="directory-row map-link" target="_blank" rel="noopener noreferrer" title="Open in Google Maps">
+                            <span class="directory-row__icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                            </span>
+                            <div class="directory-row__body">
+                                <div class="directory-row__title">Location</div>
+                                <div class="directory-row__text display-address address-block"></div>
+                            </div>
+                        </a>
+
+                        <!-- Hours Row -->
+                        <div class="directory-row">
+                            <span class="directory-row__icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </span>
+                            <div class="directory-row__body">
+                                <div class="directory-row__title">Hours</div>
+                                <div class="directory-row__text display-timings"></div>
+                            </div>
                         </div>
-                    </a>
-                    
-                    <!-- Hours Tile -->
-                    <div class="card card--icon">
-                        <div class="card__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-                        <div class="card__title">Hours</div>
-                        <div class="card__text display-timings"></div>
+
+                        <!-- Call Row -->
+                        <a class="directory-row call-link" title="Click to Call">
+                            <span class="directory-row__icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            </span>
+                            <div class="directory-row__body">
+                                <div class="directory-row__title">Call</div>
+                                <div class="directory-row__text display-phone"></div>
+                            </div>
+                        </a>
+
+                        <!-- WhatsApp Row -->
+                        <a class="directory-row whatsapp-link" target="_blank" rel="noopener noreferrer" title="Click to Chat">
+                            <span class="directory-row__icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2z"/></svg>
+                            </span>
+                            <div class="directory-row__body">
+                                <div class="directory-row__title">WhatsApp</div>
+                                <div class="directory-row__text">Start Chat</div>
+                            </div>
+                        </a>
                     </div>
-                    
-                    <!-- Call Tile -->
-                    <a class="call-link" title="Click to Call">
-                        <div class="card card--icon">
-                            <div class="card__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
-                            <div class="card__title">Call</div>
-                            <div class="card__text display-phone"></div>
+
+                    <!-- Right: Interactive Map -->
+                    <div class="findus-map-panel">
+                        <div class="map-container">
+                            <div class="map-responsive">
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3681.345399040273!2d75.84730557427375!3d22.678182529094254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962fd05e1f6ee11%3A0xf3cc3fff8af27c0!2sCGS%20-%20Coffee%2C%20Grill%20%26%20Shots!5e0!3m2!1sen!2sin!4v1787344082785!5m2!1sen!2sin" width="800" height="600" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                            </div>
                         </div>
-                    </a>
-                    
-                    <!-- WhatsApp Tile -->
-                    <a class="whatsapp-link" target="_blank" title="Click to Chat">
-                        <div class="card card--icon">
-                            <div class="card__icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2z"/></svg></div>
-                            <div class="card__title">WhatsApp</div>
-                            <div class="card__text">Start Chat</div>
-                        </div>
-                    </a>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Interactive Map Section -->
-        <section class="section" style="padding-top: 0; padding-bottom: var(--space-12, 3rem);">
-            <div class="map-container">
-                <div class="map-responsive">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3681.345399040273!2d75.84730557427375!3d22.678182529094254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962fd05e1f6ee11%3A0xf3cc3fff8af27c0!2sCGS%20-%20Coffee%2C%20Grill%20%26%20Shots!5e0!3m2!1sen!2sin!4v1787344082785!5m2!1sen!2sin" width="800" height="600" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-                </div>
-            </div>
-        </section>
-
-       <!-- Footer Section -->
-       <footer class="site-footer" id="footer"></footer>
-	<!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
-       <div id="preloader"></div>
+        <!-- Footer Section -->
+        <footer class="site-footer" id="footer"></footer>
+        <!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
+        <div id="preloader"></div>
     </body>
 </html>
