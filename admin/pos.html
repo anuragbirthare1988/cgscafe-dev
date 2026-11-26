@@ -380,9 +380,14 @@
       transition: border-color 0.15s ease, background-color 0.15s ease;
     }
 
-    .item-card:hover {
+    .item-card:hover:not(.unpriced-item) {
       border-color: var(--accent);
       background: var(--accent-soft);
+    }
+
+    .item-card.unpriced-item {
+      opacity: 0.55;
+      cursor: not-allowed;
     }
 
     .item-name {
@@ -398,6 +403,16 @@
       font-size: 13px;
       font-weight: 700;
       color: var(--accent);
+    }
+
+    .active-order-controls {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .active-order-controls.visible {
+      display: flex;
     }
 
     .order-meta-grid {
@@ -942,19 +957,19 @@
   <div class="app-shell">
     <header>
       <div class="brand">
-        <a href="/admin/" class="btn btn-sm">← Admin</a>
+        <a href="/admin/" class="btn">← Admin</a>
         <h1>POS</h1>
         <span class="sync-pill" id="dbSyncStatus" title="Supabase sync status">DB: Checking...</span>
         <span class="sync-pill" id="staffRoleBadge">Role: Loading...</span>
       </div>
       <div class="header-actions">
-        <a href="/admin/analytics.html" class="btn" id="linkAdminAnalytics" style="display:none;">Sales Analytics</a>
-        <a href="/admin/users.html" class="btn" id="linkManageUsers" style="display:none;">Users &amp; Roles</a>
-        <a href="/admin/account-setup.html" class="btn btn-sm">My Account</a>
-        <button type="button" class="btn" id="btnOpenSettings" style="display:none;">Billing Rules &amp; Tax</button>
+        <a href="/admin/analytics.html" class="btn" id="linkAdminAnalytics">Sales Analytics</a>
+        <a href="/admin/users.html" class="btn" id="linkManageUsers">Users &amp; Roles</a>
+        <a href="/admin/account-setup.html" class="btn">My Account</a>
+        <button type="button" class="btn" id="btnOpenSettings">Billing Rules &amp; Tax</button>
         <button type="button" class="btn" id="btnOpenSales">Bills &amp; Analytics (<span id="todayCount">0</span>)</button>
         <button type="button" class="btn btn-primary" id="btnExportCsv">Export CSV</button>
-        <button type="button" class="btn btn-danger btn-sm" id="btnPosLogout">Sign Out</button>
+        <button type="button" class="btn btn-danger" id="btnPosLogout">Sign Out</button>
       </div>
     </header>
 
@@ -974,33 +989,37 @@
             <option value="ALL">All Categories</option>
           </select>
         </div>
+        <div class="field-error" id="catalogPriceNotice" style="margin-bottom:8px;"></div>
         <div id="catalogContainer"></div>
       </section>
 
       <aside class="right-pane">
-        <div class="order-meta-grid">
-          <input type="text" id="customerNameInput" placeholder="Customer Name" />
-          <input type="tel" id="customerPhoneInput" maxlength="10" inputmode="numeric" placeholder="Mobile" />
-        </div>
+        <!-- Shown only when subtotal > 0 -->
+        <div class="active-order-controls" id="activeOrderControls">
+          <div class="order-meta-grid">
+            <input type="text" id="customerNameInput" placeholder="Customer Name" />
+            <input type="tel" id="customerPhoneInput" maxlength="10" inputmode="numeric" placeholder="Mobile" />
+          </div>
 
-        <div class="order-meta-grid">
-          <select id="serviceTypeSelect" aria-label="Service type">
-            <option value="Dine-in">Dine-in</option>
-            <option value="Take away">Take away</option>
-          </select>
-          <input type="text" id="tokenNumberInput" maxlength="3" placeholder="Token # (max 3)" />
-        </div>
+          <div class="order-meta-grid">
+            <select id="serviceTypeSelect" aria-label="Service type">
+              <option value="Dine-in">Dine-in</option>
+              <option value="Take away">Take away</option>
+            </select>
+            <input type="text" id="tokenNumberInput" maxlength="3" placeholder="Token # (max 3)" />
+          </div>
 
-        <div class="kot-strip">
-          <span id="kotStatusLabel"><strong>KOT:</strong> None</span>
-          <div class="kot-actions">
-            <button type="button" class="btn btn-sm btn-warm" id="btnSendKot">Send KOT</button>
-            <button type="button" class="btn btn-sm" id="btnReprintKot" disabled>Re-print Last KOT</button>
+          <div class="kot-strip">
+            <span id="kotStatusLabel"><strong>KOT:</strong> None</span>
+            <div class="kot-actions">
+              <button type="button" class="btn btn-sm btn-warm" id="btnSendKot">Send KOT</button>
+              <button type="button" class="btn btn-sm" id="btnReprintKot" disabled>Re-print Last KOT</button>
+            </div>
           </div>
         </div>
 
         <div class="cart-list" id="cartList">
-          <p class="muted" style="text-align:center; padding:18px 0;">Tap any menu item to add.</p>
+          <p class="muted" style="text-align:center; padding:24px 0;">Tap any menu item to add to Table 1.</p>
         </div>
 
         <div class="totals-box">
@@ -1026,17 +1045,20 @@
           </div>
         </div>
 
-        <div class="pay-modes">
-          <button type="button" class="pay-mode-btn active" data-mode="UPI">UPI + WA</button>
-          <button type="button" class="pay-mode-btn" data-mode="CASH">Cash</button>
-          <button type="button" class="pay-mode-btn" data-mode="CARD">Card (POS)</button>
+        <!-- Shown only when subtotal > 0 -->
+        <div class="active-order-controls" id="activePaymentControls">
+          <div class="pay-modes">
+            <button type="button" class="pay-mode-btn active" data-mode="UPI">UPI + WA</button>
+            <button type="button" class="pay-mode-btn" data-mode="CASH">Cash</button>
+            <button type="button" class="pay-mode-btn" data-mode="CARD">Card (POS)</button>
+          </div>
+
+          <div class="flow-box" id="paymentFlowBox"></div>
+
+          <button type="button" class="btn btn-primary" id="btnCloseTransaction" style="width:100%; padding:10px; font-size:14px; flex-shrink:0;" disabled>
+            Settle &amp; Close Bill
+          </button>
         </div>
-
-        <div class="flow-box" id="paymentFlowBox"></div>
-
-        <button type="button" class="btn btn-primary" id="btnCloseTransaction" style="width:100%; padding:10px; font-size:14px; flex-shrink:0;" disabled>
-          Settle &amp; Close Bill
-        </button>
       </aside>
     </main>
   </div>
@@ -1131,9 +1153,6 @@
 
       <div class="tab-strip" id="historyTabStrip">
         <button type="button" class="tab-pill active" data-htab="bills">Billing History &amp; Trend</button>
-        <button type="button" class="tab-pill" data-htab="products">Most Selling Products</button>
-        <button type="button" class="tab-pill" data-htab="rush">Rush Hours</button>
-        <button type="button" class="tab-pill" data-htab="tables">Table Turnaround &amp; Turnover</button>
         <button type="button" class="tab-pill" data-htab="customers">Returning Customers</button>
       </div>
 
@@ -1240,7 +1259,7 @@
         const { error } = await client.from("pos_activity_log").insert([{
           activity_type: activityType,
           table_id: table?.id || null,
-          table_name: table ? formatSeatLabel(table.name) : null,
+          table_name: table ? formatTableDisplay(table.name) : null,
           reference_id: referenceId || null,
           details_json: details,
           actor_id: actorId
@@ -1259,7 +1278,7 @@
         const actorId = await getCurrentStaffId();
         const { error } = await client.from("pos_kots").insert([{
           table_id: table.id,
-          table_name: formatSeatLabel(table.name),
+          table_name: formatTableDisplay(table.name),
           kot_number: kotEntry.kotNumber,
           service_type: kotEntry.serviceType || "Dine-in",
           token_number: kotEntry.tokenNumber || null,
@@ -1306,7 +1325,7 @@
       try {
         const { error } = await client.from("pos_table_sessions").upsert([{
           table_id: table.id,
-          table_name: formatSeatLabel(table.name),
+          table_name: formatTableNumber(table.name),
           sort_order: sortIdx >= 0 ? sortIdx : 0,
           service_type: table.serviceType || "Dine-in",
           token_number: table.tokenNumber || null,
@@ -1355,7 +1374,7 @@
       const rawItems = parseCartItems(row.cart_json);
       return {
         id: row.table_id,
-        name: formatSeatLabel(row.table_name),
+        name: formatTableNumber(row.table_name),
         sortOrder: Number.isFinite(Number(row.sort_order)) ? Number(row.sort_order) : fallbackSortOrder,
         startedAt: row.updated_at || new Date().toISOString(),
         cart: rawItems.map(normalizeCartItem),
@@ -1531,7 +1550,7 @@
       return {
         id: r.bill_number,
         contactPhone: CAFE_CONTACT_PHONE,
-        tableName: formatSeatLabel(r.table_name || ""),
+        tableName: formatTableNumber(r.table_name || ""),
         serviceType: r.service_type || "Dine-in",
         tokenNumber: sanitizeToken(r.token_number || ""),
         customerName: normalizeCustomerName(r.customer_name || ""),
@@ -1743,9 +1762,13 @@
       return String(value || "").toUpperCase();
     }
 
-    function formatSeatLabel(name) {
+    function formatTableNumber(name) {
       const raw = String(name || "").trim();
-      return raw.replace(/^table\s*/i, "") || "1";
+      return raw.replace(/^table\s*/i, "").trim() || "1";
+    }
+
+    function formatTableDisplay(name) {
+      return `Table ${formatTableNumber(name)}`;
     }
 
     function formatReceiptDateTime(dateObj = new Date()) {
@@ -1982,366 +2005,118 @@
               <div class="upi-mini-qr" data-qr-payload="${escapeAttr(qrPayload)}" data-custom-qr="${escapeAttr(acc.customQrDataUrl || "")}"></div>
               <div style="min-width:0;">
                 <div style="font-weight:700; word-break:break-all;">${escapeHtml(acc.vpa)}</div>
-                <div class="muted" style="font-size:11px;">${isActive ? "ACTIVE • Used for receipt QR & WhatsApp" : (acc.customQrDataUrl ? "Custom QR saved" : "Auto QR from UPI ID")}</div>
+                <div class="muted" style="font-size:11px;">
+                  ${isActive ? "Active on POS & Receipts" : "Saved"} • ${acc.customQrDataUrl ? "Custom QR" : "Auto QR"}
+                </div>
               </div>
             </div>
             <div style="display:flex; gap:6px; flex-wrap:wrap; flex-shrink:0;">
-              <button
-                type="button"
-                class="btn btn-sm ${isActive ? "btn-primary" : ""}"
-                onclick="setDraftActiveUpi('${escapeAttr(acc.id)}')"
-              >${isActive ? "Active ✓" : "Set Active"}</button>
-              <button
-                type="button"
-                class="btn btn-sm"
-                onclick="triggerReplaceQrForUpi('${escapeAttr(acc.id)}')"
-              >${acc.customQrDataUrl ? "Change QR" : "Add QR"}</button>
-              <button
-                type="button"
-                class="btn btn-sm btn-danger"
-                ${state.draftUpiAccounts.length <= 1 ? "disabled" : ""}
-                onclick="removeDraftUpi('${escapeAttr(acc.id)}')"
-              >✕</button>
+              <button type="button" class="btn btn-sm ${isActive ? "btn-primary" : ""}" data-upi-activate="${escapeAttr(acc.id)}">
+                ${isActive ? "Active" : "Set Active"}
+              </button>
+              <button type="button" class="btn btn-sm" data-upi-replace-qr="${escapeAttr(acc.id)}">
+                ${acc.customQrDataUrl ? "Replace QR" : "Upload QR"}
+              </button>
+              ${state.draftUpiAccounts.length > 1 ? `
+                <button type="button" class="btn btn-sm btn-danger" data-upi-delete="${escapeAttr(acc.id)}">Delete</button>
+              ` : ""}
             </div>
           </div>
         `;
       }).join("");
 
-      listEl.querySelectorAll(".upi-mini-qr").forEach(el => {
-        const customUrl = el.dataset.customQr;
-        if (customUrl) {
-          el.innerHTML = `<img src="${customUrl}" alt="Custom UPI QR" />`;
-          return;
-        }
-        if (typeof QRCode !== "undefined") {
-          const holder = document.createElement("div");
-          new QRCode(holder, {
-            text: el.dataset.qrPayload,
-            width: 40,
-            height: 40
-          });
-          el.innerHTML = "";
-          el.appendChild(holder);
-        }
+      listEl.querySelectorAll(".upi-mini-qr").forEach(box => {
+        renderQrIntoElement(box, box.dataset.qrPayload, box.dataset.customQr, 42);
+      });
+
+      listEl.querySelectorAll("[data-upi-activate]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          state.draftActiveUpiId = btn.dataset.upiActivate;
+          renderUpiManagerDraft();
+        });
+      });
+
+      listEl.querySelectorAll("[data-upi-replace-qr]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          state.replacingQrForUpiId = btn.dataset.upiReplaceQr;
+          const fileInput = document.getElementById("replaceUpiQrFile");
+          fileInput.value = "";
+          fileInput.click();
+        });
+      });
+
+      listEl.querySelectorAll("[data-upi-delete]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const delId = btn.dataset.upiDelete;
+          if (state.draftUpiAccounts.length <= 1) return;
+          state.draftUpiAccounts = state.draftUpiAccounts.filter(a => a.id !== delId);
+          if (state.draftActiveUpiId === delId) {
+            state.draftActiveUpiId = state.draftUpiAccounts[0].id;
+          }
+          renderUpiManagerDraft();
+        });
       });
     }
 
-    function setDraftActiveUpi(id) {
-      state.draftActiveUpiId = id;
-      const chosen = state.draftUpiAccounts.find(u => u.id === id);
-      if (chosen) {
-        state.settings.activeUpiId = chosen.id;
-        state.settings.upiVpa = chosen.vpa;
-        state.settings.upiAccounts = state.draftUpiAccounts.map(u => ({ ...u }));
-        try {
-          localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.settings));
-        } catch (_) {}
-        syncBillingSettingsToSupabase(state.settings);
-        renderPaymentFlow();
-      }
-      renderUpiManagerDraft();
-    }
-
-    function triggerReplaceQrForUpi(id) {
-      state.replacingQrForUpiId = id;
-      const fileInput = document.getElementById("replaceUpiQrFile");
-      fileInput.value = "";
-      fileInput.click();
-    }
-
-    function removeDraftUpi(id) {
-      if (state.draftUpiAccounts.length <= 1) return;
-      state.draftUpiAccounts = state.draftUpiAccounts.filter(u => u.id !== id);
-      if (state.draftActiveUpiId === id) {
-        state.draftActiveUpiId = state.draftUpiAccounts[0].id;
-      }
-      renderUpiManagerDraft();
-    }
-
-    function addDraftUpiEntry() {
-      const input = document.getElementById("newUpiVpaInput");
-      const errEl = document.getElementById("upiManagerError");
-      const vpa = (input.value || "").trim();
-
-      if (!vpa || !vpa.includes("@")) {
-        errEl.textContent = "Enter a valid UPI ID (example: yourname@oksbi).";
-        input.focus();
-        return;
-      }
-
-      const duplicate = state.draftUpiAccounts.find(u => u.vpa.toLowerCase() === vpa.toLowerCase());
-      if (duplicate) {
-        if (state.pendingUploadedQrDataUrl) {
-          duplicate.customQrDataUrl = state.pendingUploadedQrDataUrl;
+    function readImageFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        if (!file || !file.type.startsWith("image/")) {
+          reject(new Error("Please choose a valid QR image file."));
+          return;
         }
-        state.draftActiveUpiId = duplicate.id;
-      } else {
-        const uniqueId = `upi-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-        state.draftUpiAccounts.push({
-          id: uniqueId,
-          vpa,
-          customQrDataUrl: state.pendingUploadedQrDataUrl || ""
-        });
-        state.draftActiveUpiId = uniqueId;
-      }
-
-      input.value = "";
-      state.pendingUploadedQrDataUrl = "";
-      document.getElementById("newUpiQrFile").value = "";
-      document.getElementById("newUpiQrFileName").textContent = "";
-      errEl.textContent = "";
-      renderUpiManagerDraft();
-    }
-
-    function syncSettingsInputsFromState() {
-      const normalizedUpi = normalizeUpiSettings(state.settings);
-      state.settings = { ...state.settings, ...normalizedUpi };
-
-      const legacyGstEnabled = Boolean(state.settings.gstEnabled);
-      const legacyGstHalf = Number.isFinite(Number(state.settings.gstRate)) ? Number(state.settings.gstRate) / 2 : 2.5;
-
-      const cgstOn = state.settings.cgstEnabled !== undefined ? Boolean(state.settings.cgstEnabled) : legacyGstEnabled;
-      const sgstOn = state.settings.sgstEnabled !== undefined ? Boolean(state.settings.sgstEnabled) : legacyGstEnabled;
-      const cgstVal = state.settings.cgstRate !== undefined ? Number(state.settings.cgstRate) : legacyGstHalf;
-      const sgstVal = state.settings.sgstRate !== undefined ? Number(state.settings.sgstRate) : legacyGstHalf;
-
-      document.getElementById("scEnabled").checked = Boolean(state.settings.scEnabled);
-      document.getElementById("scType").value = state.settings.scType;
-      document.getElementById("scValue").value = state.settings.scValue;
-      document.getElementById("cgstEnabled").checked = cgstOn;
-      document.getElementById("cgstRate").value = Number.isFinite(cgstVal) ? cgstVal : 2.5;
-      document.getElementById("sgstEnabled").checked = sgstOn;
-      document.getElementById("sgstRate").value = Number.isFinite(sgstVal) ? sgstVal : 2.5;
-
-      state.draftUpiAccounts = state.settings.upiAccounts.map(u => ({ ...u }));
-      state.draftActiveUpiId = state.settings.activeUpiId;
-      state.pendingUploadedQrDataUrl = "";
-      state.replacingQrForUpiId = "";
-      document.getElementById("newUpiVpaInput").value = "";
-      document.getElementById("newUpiQrFile").value = "";
-      document.getElementById("newUpiQrFileName").textContent = "";
-      renderUpiManagerDraft();
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(new Error("Could not read selected QR image."));
+        reader.readAsDataURL(file);
+      });
     }
 
     function loadPersistedState() {
+      enforceMidnightRolloverForSales();
+
       try {
-        const savedSettings = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings) || "null");
-        if (savedSettings) state.settings = { ...state.settings, ...savedSettings };
+        const rawSettings = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings) || "null");
+        if (rawSettings && typeof rawSettings === "object") {
+          const merged = { ...state.settings, ...rawSettings };
+          const upiNorm = normalizeUpiSettings(merged);
+          state.settings = { ...merged, ...upiNorm };
+        }
       } catch (_) {}
 
-      const normalizedUpi = normalizeUpiSettings(state.settings);
-      state.settings = { ...state.settings, ...normalizedUpi };
-
-      if (state.settings.cgstEnabled === undefined) {
-        state.settings.cgstEnabled = Boolean(state.settings.gstEnabled);
-      }
-      if (state.settings.sgstEnabled === undefined) {
-        state.settings.sgstEnabled = Boolean(state.settings.gstEnabled);
-      }
-      if (state.settings.cgstRate === undefined) {
-        state.settings.cgstRate = state.settings.gstRate !== undefined ? Number(state.settings.gstRate) / 2 : 2.5;
-      }
-      if (state.settings.sgstRate === undefined) {
-        state.settings.sgstRate = state.settings.gstRate !== undefined ? Number(state.settings.gstRate) / 2 : 2.5;
-      }
-
-      const todayKey = getLocalDateKey();
       try {
-        const savedSales = JSON.parse(localStorage.getItem(STORAGE_KEYS.sales) || "null");
-        if (savedSales && !Array.isArray(savedSales) && Array.isArray(savedSales.bills)) {
-          if (savedSales.dateKey === todayKey) {
-            state.salesDateKey = savedSales.dateKey;
-            state.sales = savedSales.bills;
-          } else {
-            state.salesDateKey = todayKey;
-            state.sales = [];
-            saveSalesState();
-          }
-        } else if (Array.isArray(savedSales)) {
-          const todaysOnly = savedSales.filter(b => b && b.date === todayKey);
-          state.salesDateKey = todayKey;
-          state.sales = todaysOnly;
-          saveSalesState();
+        const rawSales = JSON.parse(localStorage.getItem(STORAGE_KEYS.sales) || "null");
+        if (rawSales && rawSales.dateKey === state.salesDateKey && Array.isArray(rawSales.bills)) {
+          state.sales = rawSales.bills;
         }
-      } catch (_) {
-        state.salesDateKey = todayKey;
-        state.sales = [];
-      }
+      } catch (_) {}
 
       try {
-        const savedTables = JSON.parse(localStorage.getItem(STORAGE_KEYS.tables) || "null");
-        if (savedTables && Array.isArray(savedTables.tables) && savedTables.tables.length > 0) {
-          state.tables = savedTables.tables.map(t => {
+        const rawTables = JSON.parse(localStorage.getItem(STORAGE_KEYS.tables) || "null");
+        if (rawTables && Array.isArray(rawTables.tables) && rawTables.tables.length > 0) {
+          state.tables = rawTables.tables.map((t, idx) => {
             const custPhone = sanitizeTenDigitPhone(t.customerPhone || "");
-            const rawWaPhone = sanitizeTenDigitPhone(t.waPhone ?? "");
-            const isManual = Boolean(t.waPhoneManual) || (rawWaPhone && custPhone && rawWaPhone !== custPhone);
+            const rawWa = sanitizeTenDigitPhone(t.waPhone || "");
+            const isManual = Boolean(t.waPhoneManual || (rawWa && custPhone && rawWa !== custPhone));
             return {
-              ...t,
-              name: formatSeatLabel(t.name),
+              id: t.id || `T${idx + 1}`,
+              name: formatTableNumber(t.name || String(idx + 1)),
               startedAt: t.startedAt || new Date().toISOString(),
               cart: Array.isArray(t.cart) ? t.cart.map(normalizeCartItem) : [],
               kots: Array.isArray(t.kots) ? t.kots : [],
+              paymentMode: t.paymentMode || "UPI",
               customerName: normalizeCustomerName(t.customerName || ""),
               customerPhone: custPhone,
-              waPhone: isManual ? rawWaPhone : custPhone,
+              waPhone: isManual ? rawWa : custPhone,
               waPhoneManual: isManual,
               serviceType: t.serviceType === "Take away" ? "Take away" : "Dine-in",
-              tokenNumber: sanitizeToken(t.tokenNumber || ""),
-              paymentMode: t.paymentMode || "UPI"
+              tokenNumber: sanitizeToken(t.tokenNumber || "")
             };
           });
-          state.activeTableId = savedTables.activeTableId || state.tables[0].id;
+          state.activeTableId = state.tables.some(t => t.id === rawTables.activeTableId)
+            ? rawTables.activeTableId
+            : state.tables[0].id;
         }
       } catch (_) {}
-
-      syncSettingsInputsFromState();
-    }
-
-    function openSettingsDialog() {
-      syncSettingsInputsFromState();
-      document.getElementById("settingsDialog").showModal();
-    }
-
-    function closeSettingsWithoutSaving() {
-      syncSettingsInputsFromState();
-      document.getElementById("settingsDialog").close();
-    }
-
-    async function commitSettingsFromDialog() {
-      const normalizedUpi = normalizeUpiSettings({
-        upiAccounts: state.draftUpiAccounts,
-        activeUpiId: state.draftActiveUpiId
-      });
-
-      const cgstEnabled = document.getElementById("cgstEnabled").checked;
-      const sgstEnabled = document.getElementById("sgstEnabled").checked;
-      const cgstRate = Math.max(0, Number(document.getElementById("cgstRate").value) || 0);
-      const sgstRate = Math.max(0, Number(document.getElementById("sgstRate").value) || 0);
-
-      state.settings = {
-        scEnabled: document.getElementById("scEnabled").checked,
-        scType: document.getElementById("scType").value,
-        scValue: Math.max(0, Number(document.getElementById("scValue").value) || 0),
-        cgstEnabled,
-        cgstRate,
-        sgstEnabled,
-        sgstRate,
-        gstEnabled: cgstEnabled || sgstEnabled,
-        gstRate: (cgstEnabled ? cgstRate : 0) + (sgstEnabled ? sgstRate : 0),
-        ...normalizedUpi
-      };
-
-      try {
-        localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.settings));
-      } catch (_) {
-        alert("Storage quota exceeded—try using a smaller QR image or standard UPI ID QR.");
-      }
-
-      await syncBillingSettingsToSupabase(state.settings);
-
-      state.lastQrStatusMsg = "";
-      state.lastQrErrorMsg = "";
-      document.getElementById("settingsDialog").close();
-      renderTotals();
-      renderPaymentFlow();
-    }
-
-    function renderTableTabs() {
-      const container = document.getElementById("tableTabs");
-      container.innerHTML = state.tables.map(t => {
-        const count = t.cart.reduce((sum, item) => sum + item.qty, 0);
-        const isOngoing = count > 0 || (t.kots && t.kots.length > 0) || hasActiveSessionOnTable(t);
-        const classes = [
-          "table-tab",
-          isOngoing ? "ongoing" : "",
-          t.id === state.activeTableId ? "active" : ""
-        ].filter(Boolean).join(" ");
-
-        const badgeText = count > 0
-          ? `${count} item${count > 1 ? "s" : ""}`
-          : (t.kots && t.kots.length > 0 ? `KOT ${t.kots.length}` : (isOngoing ? "In Use" : "Vacant"));
-
-        return `
-          <button type="button" class="${classes}" onclick="selectTable('${escapeAttr(t.id)}')">
-            <span class="table-status-dot"></span>
-            <span>Table ${escapeHtml(t.name)}</span>
-            <span class="table-badge">${escapeHtml(badgeText)}</span>
-          </button>
-        `;
-      }).join("");
-
-      const active = getActiveTable();
-      document.getElementById("customerNameInput").value = normalizeCustomerName(active.customerName || "");
-      document.getElementById("customerPhoneInput").value = active.customerPhone || "";
-      document.getElementById("serviceTypeSelect").value = active.serviceType || "Dine-in";
-      document.getElementById("tokenNumberInput").value = sanitizeToken(active.tokenNumber || "");
-
-      document.querySelectorAll(".pay-mode-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.mode === active.paymentMode);
-      });
-
-      const removeBtn = document.getElementById("btnRemoveTable");
-      removeBtn.disabled = state.tables.length <= 1 || active.cart.length > 0 || (active.kots && active.kots.length > 0);
-    }
-
-    async function selectTable(tableId) {
-      await refreshTableSessionsFromSupabase(true);
-      const target = state.tables.find(t => t.id === tableId);
-      if (!target) return;
-
-      if (tableId !== state.activeTableId && hasActiveSessionOnTable(target)) {
-        state.activeTableId = target.id;
-        saveTablesState(false);
-        renderTableTabs();
-        renderCart();
-        return;
-      }
-
-      state.activeTableId = target.id;
-      saveTablesState(false);
-      renderTableTabs();
-      renderCart();
-    }
-
-    async function addNewTable() {
-      const nextNum = state.tables.length + 1;
-      const newTable = {
-        id: `T${Date.now()}`,
-        name: String(nextNum),
-        startedAt: new Date().toISOString(),
-        cart: [],
-        kots: [],
-        paymentMode: "UPI",
-        customerName: "",
-        customerPhone: "",
-        waPhone: "",
-        waPhoneManual: false,
-        serviceType: "Dine-in",
-        tokenNumber: ""
-      };
-      state.tables.push(newTable);
-      state.activeTableId = newTable.id;
-      saveTablesState(true);
-      await logPosActivity("TABLE_ADDED", { tableName: newTable.name }, newTable, newTable.id);
-      renderTableTabs();
-      renderCart();
-    }
-
-    async function removeCurrentTable() {
-      const active = getActiveTable();
-      if (state.tables.length <= 1) return;
-      if (active.cart.length > 0 || (active.kots && active.kots.length > 0)) {
-        alert("Settle active items/KOTs on this table before removing it.");
-        return;
-      }
-      const removedTable = { ...active };
-      state.tables = state.tables.filter(t => t.id !== active.id);
-      state.activeTableId = state.tables[state.tables.length - 1].id;
-      saveTablesState(false);
-      await deleteTableSessionFromSupabase(removedTable.id);
-      await logPosActivity("TABLE_REMOVED", { tableName: removedTable.name }, removedTable, removedTable.id);
-      renderTableTabs();
-      renderCart();
     }
 
     function populateCategoryFilter() {
@@ -2349,39 +2124,28 @@
       const current = select.value;
       const cats = [...new Set(state.menu.map(i => i.subCategory))];
       select.innerHTML = `<option value="ALL">All Categories</option>` +
-        cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
-      if (cats.includes(current)) select.value = current;
+        cats.map(c => `<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`).join("");
+      if ([...select.options].some(o => o.value === current)) {
+        select.value = current;
+      }
     }
 
     function renderCatalog() {
-      const query = document.getElementById("searchInput").value.trim().toLowerCase();
-      const selectedCat = document.getElementById("categoryFilter").value;
+      const q = document.getElementById("searchInput").value.trim().toLowerCase();
+      const cat = document.getElementById("categoryFilter").value;
       const container = document.getElementById("catalogContainer");
 
-      if (state.menu.length === 0) {
-        const msg = state.menuLoadError
-          ? `Unable to load menu prices from items table (${escapeHtml(state.menuLoadError)}).`
-          : "No active menu items found in items table.";
-        container.innerHTML = `
-          <div class="highlight-warning">
-            <div style="margin-bottom:8px;">${msg}</div>
-            <button type="button" class="btn btn-sm btn-primary" onclick="loadMenu()">Retry DB</button>
-          </div>
-        `;
-        return;
-      }
-
       const filtered = state.menu.filter(item => {
-        const matchesCat = selectedCat === "ALL" || item.subCategory === selectedCat;
-        const matchesSearch = !query ||
-          item.name.toLowerCase().includes(query) ||
-          item.subCategory.toLowerCase().includes(query) ||
-          item.superCategory.toLowerCase().includes(query);
-        return matchesCat && matchesSearch;
+        const matchesCat = cat === "ALL" || item.subCategory === cat;
+        const matchesQuery = !q ||
+          item.name.toLowerCase().includes(q) ||
+          item.subCategory.toLowerCase().includes(q) ||
+          item.superCategory.toLowerCase().includes(q);
+        return matchesCat && matchesQuery;
       });
 
       if (filtered.length === 0) {
-        container.innerHTML = `<p class="muted">No items found.</p>`;
+        container.innerHTML = `<p class="muted">No matching menu items found.</p>`;
         return;
       }
 
@@ -2400,12 +2164,18 @@
           html += `<div class="sub-cat-title">${escapeHtml(subCat)}</div>`;
           html += `<div class="items-grid">`;
           for (const item of items) {
+            const isValidPrice = Number(item.price) > 0;
+            const priceLabel = isValidPrice ? `₹${Number(item.price).toFixed(2)}` : `Price Not Set`;
             html += `
-              <div class="item-card" onclick="addToCart('${escapeAttr(item.id)}')">
+              <div
+                class="item-card ${isValidPrice ? "" : "unpriced-item"}"
+                data-id="${escapeAttr(item.id)}"
+                aria-disabled="${isValidPrice ? "false" : "true"}"
+              >
                 <div class="item-name">${escapeHtml(item.name)}</div>
                 <div class="item-meta">
-                  <span>₹${item.price.toFixed(0)}</span>
-                  <span class="btn btn-sm">+ Add</span>
+                  <span>${priceLabel}</span>
+                  <span>${isValidPrice ? "+ Add" : "Unavailable"}</span>
                 </div>
               </div>
             `;
@@ -2413,45 +2183,119 @@
           html += `</div>`;
         }
       }
-
       container.innerHTML = html;
+
+      container.querySelectorAll(".item-card:not(.unpriced-item)").forEach(card => {
+        card.addEventListener("click", () => addToCart(card.dataset.id));
+      });
     }
 
-    async function addToCart(itemId) {
-      const table = getActiveTable();
-      const isFreshAllocation = !hasActiveSessionOnTable(table);
+    function renderTableTabs() {
+      const tabsEl = document.getElementById("tableTabs");
+      tabsEl.innerHTML = state.tables.map(t => {
+        const isActive = t.id === state.activeTableId;
+        const itemCount = t.cart.reduce((sum, i) => sum + i.qty, 0);
+        const unsentCount = t.cart.reduce((sum, i) => sum + Math.max(0, i.unsentQty || 0), 0);
+        const isOngoing = itemCount > 0 || t.kots.length > 0;
+        const label = formatTableDisplay(t.name);
+        const badgeText = unsentCount > 0
+          ? `${itemCount} (${unsentCount} new)`
+          : itemCount > 0
+            ? `${itemCount}`
+            : (t.kots.length > 0 ? `KOT ${t.kots.length}` : "");
 
-      if (isFreshAllocation) {
-        isClaimingTable = true;
-        try {
-          const claimResult = await claimTableViaRpc(table.id, {
-            serviceType: table.serviceType || "Dine-in",
-            tokenNumber: table.tokenNumber || "",
-            customerName: table.customerName || "",
-            customerPhone: table.customerPhone || "",
-            paymentMode: table.paymentMode || "UPI"
-          });
-          if (!claimResult.ok) {
-            alert(claimResult.message || `Table ${formatSeatLabel(table.name)} is already allocated on another PC.`);
-            return;
+        return `
+          <button
+            type="button"
+            class="table-tab ${isActive ? "active" : ""} ${isOngoing ? "ongoing" : ""}"
+            data-table-id="${escapeAttr(t.id)}"
+          >
+            <span class="table-status-dot"></span>
+            <span>${escapeHtml(label)}</span>
+            ${badgeText ? `<span class="table-badge">${escapeHtml(badgeText)}</span>` : ""}
+          </button>
+        `;
+      }).join("");
+
+      tabsEl.querySelectorAll(".table-tab").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const targetId = btn.dataset.tableId;
+          if (!targetId || targetId === state.activeTableId) return;
+
+          const targetTable = state.tables.find(t => t.id === targetId);
+          if (!targetTable) return;
+
+          const currentTable = getActiveTable();
+          if (currentTable && hasActiveSessionOnTable(currentTable)) {
+            await syncTableSessionToSupabase(currentTable);
           }
-        } finally {
-          isClaimingTable = false;
+
+          isClaimingTable = true;
+          try {
+            const claimRes = await claimTableViaRpc(targetId, {
+              serviceType: targetTable.serviceType || "Dine-in",
+              tokenNumber: targetTable.tokenNumber || null,
+              customerName: targetTable.customerName || null,
+              customerPhone: targetTable.customerPhone || null,
+              paymentMode: targetTable.paymentMode || "UPI"
+            });
+
+            if (!claimRes.ok) {
+              alert(claimRes.message || "This table is currently active on another terminal.");
+              return;
+            }
+
+            if (claimRes.session) {
+              const idx = state.tables.findIndex(t => t.id === targetId);
+              if (idx >= 0) {
+                state.tables[idx] = mapSessionRowToTable(claimRes.session, idx);
+              }
+            }
+
+            state.activeTableId = targetId;
+            try {
+              localStorage.setItem(STORAGE_KEYS.tables, JSON.stringify({
+                tables: state.tables,
+                activeTableId: state.activeTableId
+              }));
+            } catch (_) {}
+            renderTableTabs();
+            renderCart();
+          } finally {
+            isClaimingTable = false;
+          }
+        });
+      });
+
+      document.getElementById("btnRemoveTable").disabled = state.tables.length <= 1;
+    }
+
+    function addToCart(itemId) {
+      const noticeEl = document.getElementById("catalogPriceNotice");
+      const menuItem = state.menu.find(i => String(i.id) === String(itemId));
+      if (!menuItem) return;
+
+      if (Number(menuItem.price) <= 0) {
+        if (noticeEl) {
+          noticeEl.textContent = `"${menuItem.name}" has no valid price (₹0.00) and cannot be added to a bill.`;
         }
+        return;
+      }
+      if (noticeEl) noticeEl.textContent = "";
+
+      const table = getActiveTable();
+      if (!table.cart.length && !table.kots.length) {
         table.startedAt = new Date().toISOString();
       }
-
-      const existing = table.cart.find(c => c.id === itemId);
+      const existing = table.cart.find(c => String(c.id) === String(menuItem.id));
       if (existing) {
         existing.qty += 1;
-        existing.unsentQty = (existing.unsentQty ?? 0) + 1;
+        existing.unsentQty = (existing.unsentQty || 0) + 1;
       } else {
-        const prod = state.menu.find(m => m.id === itemId);
-        if (!prod) return;
         table.cart.push({
-          id: prod.id,
-          name: prod.name,
-          price: Number(prod.price || 0),
+          id: menuItem.id,
+          name: menuItem.name,
+          price: Number(menuItem.price),
           qty: 1,
           unsentQty: 1,
           kotNumbers: []
@@ -2462,165 +2306,57 @@
       renderCart();
     }
 
-    function updateQty(itemId, delta) {
+    function changeQty(itemId, delta) {
       const table = getActiveTable();
-      const idx = table.cart.findIndex(c => c.id === itemId);
+      const idx = table.cart.findIndex(c => String(c.id) === String(itemId));
       if (idx === -1) return;
       const item = table.cart[idx];
       const nextQty = item.qty + delta;
+
       if (nextQty <= 0) {
         table.cart.splice(idx, 1);
       } else {
         item.qty = nextQty;
-        item.unsentQty = Math.max(0, (item.unsentQty ?? 0) + delta);
-      }
-      saveTablesState(false);
-      renderTableTabs();
-      renderCart();
-    }
-
-    function removeItemCompletely(itemId) {
-      const table = getActiveTable();
-      table.cart = table.cart.filter(c => c.id !== itemId);
-      saveTablesState(false);
-      renderTableTabs();
-      renderCart();
-    }
-
-    async function sendKotForActiveTable() {
-      const table = getActiveTable();
-      const pendingItems = table.cart
-        .map(item => ({
-          id: item.id,
-          name: item.name,
-          price: item.price,
-          qty: Number(item.unsentQty ?? item.qty)
-        }))
-        .filter(i => i.qty > 0);
-
-      if (pendingItems.length === 0) {
-        alert("No new items to send in KOT.");
-        return;
-      }
-
-      const kotNumber = (table.kots ? table.kots.length : 0) + 1;
-      const now = new Date();
-      const kotEntry = {
-        kotNumber,
-        time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        createdAt: now.toISOString(),
-        serviceType: table.serviceType || "Dine-in",
-        tokenNumber: sanitizeToken(table.tokenNumber || ""),
-        items: pendingItems
-      };
-
-      table.kots = table.kots || [];
-      table.kots.push(kotEntry);
-
-      for (const item of table.cart) {
-        if ((item.unsentQty ?? 0) > 0) {
-          item.kotNumbers = item.kotNumbers || [];
-          if (!item.kotNumbers.includes(kotNumber)) item.kotNumbers.push(kotNumber);
-          item.unsentQty = 0;
+        if (delta > 0) {
+          item.unsentQty = (item.unsentQty || 0) + delta;
+        } else {
+          item.unsentQty = Math.max(0, Math.min(item.unsentQty || 0, nextQty));
         }
       }
-
       saveTablesState(true);
       renderTableTabs();
       renderCart();
-      await syncKotToSupabase(table, kotEntry);
-      printKotSlip(table, kotEntry);
     }
 
-    async function reprintLastKotForActiveTable() {
-      const table = getActiveTable();
-      if (!table.kots || table.kots.length === 0) return;
-      const lastKot = table.kots[table.kots.length - 1];
-      await logPosActivity("KOT_REPRINTED", { kotNumber: lastKot.kotNumber }, table, `KOT-${lastKot.kotNumber}`);
-      printKotSlip(table, lastKot);
-    }
+    function computeBillBreakdown(subtotal) {
+      const sub = Number(subtotal || 0);
+      const s = state.settings;
 
-    function printKotSlip(table, kotEntry) {
-      const linesHtml = kotEntry.items
-        .map(i => `<div style="padding-left:14px;">${escapeHtml(i.name.toUpperCase())} ${i.qty}</div>`)
-        .join("");
-
-      const modeText = kotEntry.serviceType || table.serviceType || "Dine-in";
-      const tokenText = sanitizeToken(kotEntry.tokenNumber || table.tokenNumber || "");
-
-      document.getElementById("printMount").innerHTML = `
-        <div class="receipt-sheet">
-          <div class="receipt-center">
-            <strong>CGS - COFFEE, GRILL &amp; SHOTS</strong><br/>
-            <strong>KOT #${kotEntry.kotNumber} • ${escapeHtml(modeText)}</strong><br/>
-            <span>Seat: ${escapeHtml(formatSeatLabel(table.name))} • ${escapeHtml(kotEntry.time)}</span>
-            ${tokenText ? `<br/><strong>Token: ${escapeHtml(tokenText)}</strong>` : ""}
-          </div>
-          <div class="receipt-divider"></div>
-          <div style="font-weight:700;">Service ${kotEntry.kotNumber}</div>
-          ${linesHtml}
-        </div>
-      `;
-      window.print();
-    }
-
-    function renderKotControls() {
-      const table = getActiveTable();
-      const kotCount = table.kots ? table.kots.length : 0;
-      const unsentTotal = table.cart.reduce((sum, item) => sum + Math.max(0, Number(item.unsentQty ?? 0)), 0);
-
-      const label = document.getElementById("kotStatusLabel");
-      if (kotCount === 0 && unsentTotal === 0) {
-        label.innerHTML = `<strong>KOT:</strong> None`;
-      } else if (unsentTotal > 0) {
-        label.innerHTML = `<strong>KOTs:</strong> ${kotCount} sent • <strong>${unsentTotal}</strong> new`;
-      } else {
-        label.innerHTML = `<strong>KOTs:</strong> ${kotCount} sent (all synced)`;
-      }
-
-      document.getElementById("btnSendKot").disabled = unsentTotal === 0;
-      document.getElementById("btnReprintKot").disabled = kotCount === 0;
-    }
-
-    function computeBillTotals() {
-      const table = getActiveTable();
-      const subtotal = table.cart.reduce((sum, item) => {
-        return sum + (Number(item.price || 0) * Number(item.qty || 0));
-      }, 0);
-
-      const scEnabled = Boolean(state.settings.scEnabled);
       let serviceCharge = 0;
-      if (scEnabled && subtotal > 0) {
-        serviceCharge = state.settings.scType === "fixed"
-          ? Number(state.settings.scValue || 0)
-          : (subtotal * Number(state.settings.scValue || 0)) / 100;
+      if (sub > 0 && s.scEnabled) {
+        const val = Math.max(0, Number(s.scValue || 0));
+        serviceCharge = s.scType === "fixed" ? val : (sub * val) / 100;
       }
 
-      const taxableBase = subtotal + serviceCharge;
+      const taxableAmount = sub + serviceCharge;
+      const cgstRate = s.cgstEnabled ? Math.max(0, Number(s.cgstRate || 0)) : 0;
+      const sgstRate = s.sgstEnabled ? Math.max(0, Number(s.sgstRate || 0)) : 0;
 
-      const cgstEnabled = Boolean(state.settings.cgstEnabled);
-      const cgstRate = Number(state.settings.cgstRate ?? 2.5);
-      const cgstAmount = (cgstEnabled && taxableBase > 0)
-        ? (taxableBase * cgstRate) / 100
-        : 0;
-
-      const sgstEnabled = Boolean(state.settings.sgstEnabled);
-      const sgstRate = Number(state.settings.sgstRate ?? 2.5);
-      const sgstAmount = (sgstEnabled && taxableBase > 0)
-        ? (taxableBase * sgstRate) / 100
-        : 0;
-
+      const cgstAmount = taxableAmount * (cgstRate / 100);
+      const sgstAmount = taxableAmount * (sgstRate / 100);
       const gstAmount = cgstAmount + sgstAmount;
-      const grandTotal = subtotal + serviceCharge + cgstAmount + sgstAmount;
+      const grandTotal = taxableAmount + gstAmount;
 
       return {
-        subtotal,
-        scEnabled,
+        subtotal: sub,
+        scEnabled: Boolean(s.scEnabled && sub > 0),
+        scType: s.scType,
+        scValue: Number(s.scValue || 0),
         serviceCharge,
-        cgstEnabled,
+        cgstEnabled: Boolean(s.cgstEnabled && sub > 0),
         cgstRate,
         cgstAmount,
-        sgstEnabled,
+        sgstEnabled: Boolean(s.sgstEnabled && sub > 0),
         sgstRate,
         sgstAmount,
         gstAmount,
@@ -2628,855 +2364,749 @@
       };
     }
 
+    function syncActiveOrderControlsVisibility(subtotal) {
+      const hasValue = Number(subtotal || 0) > 0;
+      const orderControls = document.getElementById("activeOrderControls");
+      const paymentControls = document.getElementById("activePaymentControls");
+      if (orderControls) orderControls.classList.toggle("visible", hasValue);
+      if (paymentControls) paymentControls.classList.toggle("visible", hasValue);
+    }
+
     function renderCart() {
       const table = getActiveTable();
-      const list = document.getElementById("cartList");
-      const closeBtn = document.getElementById("btnCloseTransaction");
-      const totals = computeBillTotals();
+      const tableLabel = formatTableDisplay(table.name);
+      const cartList = document.getElementById("cartList");
 
-      closeBtn.disabled = table.cart.length === 0 || !(totals.grandTotal > 0);
+      const custNameEl = document.getElementById("customerNameInput");
+      const custPhoneEl = document.getElementById("customerPhoneInput");
+      const serviceTypeEl = document.getElementById("serviceTypeSelect");
+      const tokenEl = document.getElementById("tokenNumberInput");
 
-      renderKotControls();
+      if (custNameEl) custNameEl.value = table.customerName || "";
+      if (custPhoneEl) custPhoneEl.value = table.customerPhone || "";
+      if (serviceTypeEl) serviceTypeEl.value = table.serviceType || "Dine-in";
+      if (tokenEl) tokenEl.value = table.tokenNumber || "";
+
+      const unsentTotal = table.cart.reduce((sum, i) => sum + Math.max(0, i.unsentQty || 0), 0);
+      const kotLabelEl = document.getElementById("kotStatusLabel");
+      const btnSendKot = document.getElementById("btnSendKot");
+      const btnReprintKot = document.getElementById("btnReprintKot");
+
+      if (table.kots.length > 0) {
+        const lastKot = table.kots[table.kots.length - 1];
+        kotLabelEl.innerHTML = `<strong>KOT:</strong> #${lastKot.kotNumber} (${table.kots.length} sent)${unsentTotal > 0 ? ` • <span style="color:var(--danger);font-weight:700;">${unsentTotal} unsent</span>` : ""}`;
+        btnReprintKot.disabled = false;
+      } else {
+        kotLabelEl.innerHTML = unsentTotal > 0
+          ? `<strong>KOT:</strong> None (<span style="color:var(--danger);font-weight:700;">${unsentTotal} unsent</span>)`
+          : `<strong>KOT:</strong> None`;
+        btnReprintKot.disabled = true;
+      }
+      btnSendKot.disabled = unsentTotal <= 0;
 
       if (table.cart.length === 0) {
-        list.innerHTML = `<p class="muted" style="text-align:center; padding:24px 0;">Tap any menu item to add to Seat ${escapeHtml(formatSeatLabel(table.name))}.</p>`;
+        cartList.innerHTML = `<p class="muted" style="text-align:center; padding:24px 0;">Tap any menu item to add to ${escapeHtml(tableLabel)}.</p>`;
       } else {
-        list.innerHTML = table.cart.map(item => {
-          const unsent = Number(item.unsentQty ?? 0);
-          const kotPill = unsent > 0
-            ? `<span class="kot-tag">New: ${unsent}</span>`
-            : (item.kotNumbers && item.kotNumbers.length > 0
-              ? `<span class="kot-tag">KOT ${item.kotNumbers.join(",")}</span>`
+        cartList.innerHTML = table.cart.map(item => {
+          const unsent = Math.max(0, item.unsentQty || 0);
+          const kotBadge = unsent > 0
+            ? `<span class="kot-tag" style="background:var(--warn-bg);color:var(--warn-ink);">New: ${unsent}</span>`
+            : (item.kotNumbers?.length
+              ? `<span class="kot-tag">KOT #${item.kotNumbers[item.kotNumbers.length - 1]}</span>`
               : "");
 
           return `
             <div class="cart-row">
               <div>
-                <div style="font-weight:600;">${escapeHtml(item.name)}${kotPill}</div>
+                <div><strong>${escapeHtml(item.name)}</strong>${kotBadge}</div>
+                <div class="muted" style="font-size:12px;">₹${item.price.toFixed(2)} each</div>
               </div>
               <div class="qty-box">
-                <button type="button" class="btn btn-sm" onclick="updateQty('${escapeAttr(item.id)}', -1)">-</button>
-                <span>${item.qty}</span>
-                <button type="button" class="btn btn-sm" onclick="updateQty('${escapeAttr(item.id)}', 1)">+</button>
+                <button type="button" class="btn btn-sm" data-action="dec" data-id="${escapeAttr(item.id)}">−</button>
+                <span><strong>${item.qty}</strong></span>
+                <button type="button" class="btn btn-sm" data-action="inc" data-id="${escapeAttr(item.id)}">+</button>
               </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-danger"
-                title="Remove item"
-                onclick="removeItemCompletely('${escapeAttr(item.id)}')"
-              >✕</button>
+              <div style="min-width:72px; text-align:right; font-weight:700;">
+                ₹${(item.price * item.qty).toFixed(2)}
+              </div>
             </div>
           `;
         }).join("");
+
+        cartList.querySelectorAll("button[data-action]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            changeQty(btn.dataset.id, btn.dataset.action === "inc" ? 1 : -1);
+          });
+        });
       }
 
-      renderTotals();
-      renderPaymentFlow();
-    }
+      const subtotal = table.cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+      syncActiveOrderControlsVisibility(subtotal);
 
-    function renderTotals() {
-      const {
-        subtotal,
-        scEnabled,
-        serviceCharge,
-        cgstEnabled,
-        cgstRate,
-        cgstAmount,
-        sgstEnabled,
-        sgstRate,
-        sgstAmount,
-        grandTotal
-      } = computeBillTotals();
+      const calc = computeBillBreakdown(subtotal);
 
-      document.getElementById("subtotalText").textContent = `₹${subtotal.toFixed(2)}`;
+      document.getElementById("subtotalText").textContent = `₹${calc.subtotal.toFixed(2)}`;
 
       const scRow = document.getElementById("scRow");
-      if (scEnabled) {
+      if (calc.scEnabled) {
         scRow.style.display = "flex";
-        document.getElementById("scLabel").textContent = state.settings.scType === "fixed"
-          ? "Service Charges (Fixed)"
-          : `Service Charges (${state.settings.scValue}%)`;
-        document.getElementById("scText").textContent = `₹${serviceCharge.toFixed(2)}`;
+        document.getElementById("scLabel").textContent =
+          calc.scType === "fixed" ? `Service Charges (₹${calc.scValue})` : `Service Charges (${calc.scValue}%)`;
+        document.getElementById("scText").textContent = `₹${calc.serviceCharge.toFixed(2)}`;
       } else {
         scRow.style.display = "none";
       }
 
       const cgstRow = document.getElementById("cgstRow");
-      if (cgstEnabled) {
+      if (calc.cgstEnabled) {
         cgstRow.style.display = "flex";
-        document.getElementById("cgstLabel").textContent = `CGST (${cgstRate}%)`;
-        document.getElementById("cgstText").textContent = `₹${cgstAmount.toFixed(2)}`;
+        document.getElementById("cgstLabel").textContent = `CGST (${calc.cgstRate}%)`;
+        document.getElementById("cgstText").textContent = `₹${calc.cgstAmount.toFixed(2)}`;
       } else {
         cgstRow.style.display = "none";
       }
 
       const sgstRow = document.getElementById("sgstRow");
-      if (sgstEnabled) {
+      if (calc.sgstEnabled) {
         sgstRow.style.display = "flex";
-        document.getElementById("sgstLabel").textContent = `SGST (${sgstRate}%)`;
-        document.getElementById("sgstText").textContent = `₹${sgstAmount.toFixed(2)}`;
+        document.getElementById("sgstLabel").textContent = `SGST (${calc.sgstRate}%)`;
+        document.getElementById("sgstText").textContent = `₹${calc.sgstAmount.toFixed(2)}`;
       } else {
         sgstRow.style.display = "none";
       }
 
-      document.getElementById("grandTotalText").textContent = `₹${grandTotal.toFixed(2)}`;
-    }
+      document.getElementById("grandTotalText").textContent = `₹${calc.grandTotal.toFixed(2)}`;
 
-    function loadImageElement(src) {
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => resolve(img);
-        img.onerror = reject;
-        img.src = src;
+      document.querySelectorAll(".pay-mode-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.mode === table.paymentMode);
       });
+
+      renderPaymentFlow(calc.grandTotal);
     }
 
-    async function renderQrCanvasForPayment(vpa, amountStr, customQrDataUrl) {
+    function getUpiPayUri(vpa, amount) {
+      const cleanVpa = (vpa || DEFAULT_UPI_VPA).trim();
+      const amt = Number(amount || 0).toFixed(2);
+      return `upi://pay?pa=${encodeURIComponent(cleanVpa)}&pn=${encodeURIComponent("CGS - COFFEE, GRILL & SHOTS")}&am=${encodeURIComponent(amt)}&cu=INR`;
+    }
+
+    function renderQrIntoElement(container, payloadText, customQrDataUrl = "", size = 72) {
+      if (!container) return;
+      container.innerHTML = "";
+
       if (customQrDataUrl) {
-        return await loadImageElement(customQrDataUrl);
-      }
-      const holder = document.createElement("div");
-      holder.style.position = "fixed";
-      holder.style.left = "-9999px";
-      document.body.appendChild(holder);
-      try {
-        const payload = `upi://pay?pa=${encodeURIComponent(vpa)}&pn=${encodeURIComponent("CGS - COFFEE, GRILL & SHOTS")}&am=${encodeURIComponent(amountStr)}&cu=INR`;
-        new QRCode(holder, { text: payload, width: 140, height: 140 });
-        await new Promise(r => setTimeout(r, 30));
-        const img = holder.querySelector("img");
-        if (img && img.src) return await loadImageElement(img.src);
-        const canvas = holder.querySelector("canvas");
-        if (canvas) return await loadImageElement(canvas.toDataURL("image/png"));
-        return null;
-      } finally {
-        holder.remove();
-      }
-    }
-
-    async function buildReceiptPngBlob(billData, activeUpi) {
-      const vpa = (billData.upiVpa || activeUpi?.vpa || DEFAULT_UPI_VPA).trim();
-      const amountStr = Number(billData.grandTotal || 0).toFixed(2);
-      const qrImg = await renderQrCanvasForPayment(vpa, amountStr, activeUpi?.customQrDataUrl || "");
-
-      const services = Array.isArray(billData.services) && billData.services.length > 0
-        ? billData.services
-        : [{
-          serviceLabel: "Service 1",
-          items: (billData.lineItems || []).map(li => ({
-            label: `${String(li.name || "").toUpperCase()} ${li.qty}`,
-            qty: li.qty,
-            rate: li.price,
-            amount: Number(li.price || 0) * Number(li.qty || 1)
-          }))
-        }];
-
-      const lineItemsCount = services.reduce((acc, s) => acc + 1 + ((s.items || []).length), 0);
-      const extraRowsCount =
-        (billData.scEnabled ? 1 : 0) +
-        (billData.cgstEnabled ? 1 : 0) +
-        (billData.sgstEnabled ? 1 : 0);
-
-      const width = 460;
-      const height = 430 + lineItemsCount * 22 + extraRowsCount * 20;
-
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, width, height);
-
-      ctx.strokeStyle = "#9d8c7a";
-      ctx.setLineDash([6, 4]);
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(12, 12, width - 24, height - 24);
-      ctx.setLineDash([]);
-
-      let y = 38;
-      ctx.fillStyle = "#1f1712";
-      ctx.textAlign = "center";
-      ctx.font = "bold 16px 'Courier New', monospace";
-      ctx.fillText("CGS - COFFEE, GRILL & SHOTS", width / 2, y);
-
-      y += 20;
-      ctx.font = "12px 'Courier New', monospace";
-      ctx.fillStyle = "#4a3b32";
-      ctx.fillText(`Phone: ${billData.contactPhone || CAFE_CONTACT_PHONE}`, width / 2, y);
-
-      y += 18;
-      ctx.fillText(billData.dateTimeLabel || `${billData.date || ""} ${billData.time || ""}`, width / 2, y);
-
-      y += 18;
-      const seatParts = [
-        `Seat ${formatSeatLabel(billData.tableName || "1")}`,
-        billData.serviceType || "Dine-in",
-        billData.tokenNumber ? `TKN:${sanitizeToken(billData.tokenNumber)}` : ""
-      ].filter(Boolean).join(" • ");
-      ctx.fillText(seatParts, width / 2, y);
-
-      if (billData.id) {
-        y += 18;
-        ctx.fillText(`Bill: ${billData.id}`, width / 2, y);
-      }
-
-      const custLine = [normalizeCustomerName(billData.customerName), billData.customerPhone].filter(Boolean).join(" • ");
-      if (custLine) {
-        y += 18;
-        ctx.font = "bold 12px 'Courier New', monospace";
-        ctx.fillStyle = "#1f1712";
-        ctx.fillText(`Guest: ${custLine}`, width / 2, y);
-      }
-
-      const drawRule = (posY) => {
-        ctx.strokeStyle = "#b8a999";
-        ctx.setLineDash([4, 3]);
-        ctx.beginPath();
-        ctx.moveTo(26, posY);
-        ctx.lineTo(width - 26, posY);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      };
-
-      y += 14;
-      drawRule(y);
-      y += 18;
-
-      ctx.font = "bold 12px 'Courier New', monospace";
-      ctx.fillStyle = "#1f1712";
-      ctx.textAlign = "left";
-      ctx.fillText("Item", 26, y);
-      ctx.textAlign = "right";
-      ctx.fillText("Qty", width - 175, y);
-      ctx.fillText("Rate", width - 98, y);
-      ctx.fillText("Amt", width - 26, y);
-
-      y += 8;
-      drawRule(y);
-
-      for (const svc of services) {
-        y += 20;
-        ctx.textAlign = "left";
-        ctx.font = "bold 12px 'Courier New', monospace";
-        ctx.fillStyle = "#3b2319";
-        ctx.fillText(svc.serviceLabel || "Service 1", 26, y);
-
-        for (const item of (svc.items || [])) {
-          y += 20;
-          ctx.font = "12px 'Courier New', monospace";
-          ctx.fillStyle = "#1f1712";
-          const label = String(item.label || "").slice(0, 22);
-          ctx.textAlign = "left";
-          ctx.fillText(label, 26, y);
-          ctx.textAlign = "right";
-          ctx.fillText(String(Number(item.qty || 1)), width - 175, y);
-          ctx.fillText(`₹${Number(item.rate || 0).toFixed(2)}`, width - 98, y);
-          ctx.fillText(`₹${Number(item.amount || 0).toFixed(2)}`, width - 26, y);
-        }
-      }
-
-      y += 14;
-      drawRule(y);
-
-      const drawTotalRow = (label, valText, isGrand = false) => {
-        y += isGrand ? 24 : 20;
-        ctx.font = isGrand ? "bold 15px 'Courier New', monospace" : "12px 'Courier New', monospace";
-        ctx.fillStyle = isGrand ? "#3b2319" : "#1f1712";
-        ctx.textAlign = "left";
-        ctx.fillText(label, 26, y);
-        ctx.textAlign = "right";
-        ctx.fillText(valText, width - 26, y);
-      };
-
-      drawTotalRow("Subtotal", `₹${Number(billData.subtotal || 0).toFixed(2)}`, false);
-      if (billData.scEnabled) drawTotalRow("Service Charges", `₹${Number(billData.serviceCharge || 0).toFixed(2)}`, false);
-      if (billData.cgstEnabled) drawTotalRow(`CGST (${billData.cgstRate}%)`, `₹${Number(billData.cgstAmount || 0).toFixed(2)}`, false);
-      if (billData.sgstEnabled) drawTotalRow(`SGST (${billData.sgstRate}%)`, `₹${Number(billData.sgstAmount || 0).toFixed(2)}`, false);
-
-      y += 10;
-      drawRule(y);
-      drawTotalRow(`Total (${billData.mode || "UPI"})`, `₹${amountStr}`, true);
-
-      y += 16;
-      drawRule(y);
-      y += 16;
-
-      if (qrImg) {
-        const qrSize = 112;
-        const qrX = (width - qrSize) / 2;
-        ctx.drawImage(qrImg, qrX, y, qrSize, qrSize);
-        y += qrSize + 14;
-      }
-
-      ctx.textAlign = "center";
-      ctx.font = "bold 12px 'Courier New', monospace";
-      ctx.fillStyle = "#1f1712";
-      ctx.fillText(`Scan to Pay ₹${amountStr}`, width / 2, y);
-      y += 16;
-      ctx.font = "11px 'Courier New', monospace";
-      ctx.fillStyle = "#4a3b32";
-      ctx.fillText(`UPI: ${vpa}`, width / 2, y);
-
-      return await new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), "image/png"));
-    }
-
-    async function uploadReceiptImageToStorage(billData, activeUpi) {
-      const client = getDbClient();
-      if (!client?.storage) return "";
-      try {
-        const blob = await buildReceiptPngBlob(billData, activeUpi);
-        if (!blob) return "";
-        const safeId = String(billData.id || `DRAFT-${Date.now()}`).replace(/[^a-zA-Z0-9_-]/g, "_");
-        const datePart = billData.date || getLocalDateKey();
-        const filePath = `${datePart}/${safeId}.png`;
-
-        const { error: upErr } = await client.storage
-          .from(RECEIPTS_BUCKET)
-          .upload(filePath, blob, { contentType: "image/png", upsert: true });
-
-        if (upErr) {
-          console.warn("Receipt storage upload failed:", upErr.message);
-          return "";
-        }
-
-        const { data: pubData } = client.storage.from(RECEIPTS_BUCKET).getPublicUrl(filePath);
-        return pubData?.publicUrl || "";
-      } catch (err) {
-        console.warn("Receipt image upload error:", err);
-        return "";
-      }
-    }
-
-    async function copyReceiptImageToClipboard(billData, activeUpi) {
-      const statusEl = document.getElementById("qrActionStatus");
-      const errEl = document.getElementById("qrActionError");
-      if (statusEl) statusEl.textContent = "";
-      if (errEl) errEl.textContent = "";
-
-      if (!navigator.clipboard || typeof ClipboardItem === "undefined" || typeof navigator.clipboard.write !== "function") {
-        state.lastQrErrorMsg = "Clipboard image copy isn't supported in this browser context.";
-        if (errEl) errEl.textContent = state.lastQrErrorMsg;
+        const img = document.createElement("img");
+        img.src = customQrDataUrl;
+        img.alt = "Custom UPI QR Code";
+        img.style.width = `${size}px`;
+        img.style.height = `${size}px`;
+        container.appendChild(img);
         return;
       }
 
-      try {
-        const blob = await buildReceiptPngBlob(billData, activeUpi);
-        if (!blob) throw new Error("Could not render receipt PNG");
-        await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-        state.lastQrStatusMsg = "Receipt + QR image copied—paste (Ctrl+V / Cmd+V) in WhatsApp.";
-        state.lastQrErrorMsg = "";
-        if (statusEl) statusEl.textContent = state.lastQrStatusMsg;
-      } catch (_) {
-        state.lastQrErrorMsg = "Could not copy receipt image—ensure clipboard permission is allowed.";
-        if (errEl) errEl.textContent = state.lastQrErrorMsg;
+      if (typeof QRCode === "function") {
+        try {
+          new QRCode(container, {
+            text: payloadText,
+            width: size,
+            height: size,
+            correctLevel: QRCode.CorrectLevel.M
+          });
+          return;
+        } catch (_) {}
       }
+
+      const fallbackImg = document.createElement("img");
+      fallbackImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(payloadText)}`;
+      fallbackImg.alt = "UPI QR Code";
+      fallbackImg.style.width = `${size}px`;
+      fallbackImg.style.height = `${size}px`;
+      container.appendChild(fallbackImg);
     }
 
-    function getCurrentDraftBillSnapshot(table, activeUpi, totals) {
-      const now = new Date();
-      return {
-        id: `PREVIEW-${formatSeatLabel(table.name)}`,
-        contactPhone: CAFE_CONTACT_PHONE,
-        tableName: formatSeatLabel(table.name),
-        serviceType: table.serviceType || "Dine-in",
-        tokenNumber: sanitizeToken(table.tokenNumber || ""),
-        customerName: normalizeCustomerName((table.customerName || "").trim()),
-        customerPhone: sanitizeTenDigitPhone(table.customerPhone || ""),
-        date: getLocalDateKey(now),
-        time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        dateTimeLabel: formatReceiptDateTime(now),
-        lineItems: table.cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
-        services: buildServiceGroups(table),
-        itemsSummary: table.cart.map(i => `${String(i.name || "").toUpperCase()} ${i.qty}`).join("; "),
-        mode: table.paymentMode,
-        upiVpa: activeUpi.vpa || "",
-        subtotal: Number(totals.subtotal.toFixed(2)),
-        scEnabled: totals.scEnabled,
-        serviceCharge: Number(totals.serviceCharge.toFixed(2)),
-        cgstEnabled: totals.cgstEnabled,
-        cgstRate: totals.cgstRate,
-        cgstAmount: Number(totals.cgstAmount.toFixed(2)),
-        sgstEnabled: totals.sgstEnabled,
-        sgstRate: totals.sgstRate,
-        sgstAmount: Number(totals.sgstAmount.toFixed(2)),
-        gstAmount: Number(totals.gstAmount.toFixed(2)),
-        grandTotal: Number(totals.grandTotal.toFixed(2))
-      };
-    }
-
-    function buildInvoiceWhatsAppMessage(table, activeUpi, totals, receiptUrl = "") {
-      const custUpper = normalizeCustomerName(table.customerName);
-      const seatNo = formatSeatLabel(table.name);
-      const tokenPart = table.tokenNumber ? ` | TKN:${sanitizeToken(table.tokenNumber)}` : "";
-      const custContactLine = [custUpper, table.customerPhone].filter(Boolean).join(" | ");
-      const services = buildServiceGroups(table);
-
-      const greetingLine = custUpper ? `Dear *${custUpper}*,` : "Dear Guest,";
-      const thankYouBlock = [
-        greetingLine,
-        "",
-        "Thank you for visiting *CGS - COFFEE, GRILL & SHOTS* today. We loved hosting you and hope our handcrafted food and coffee gave you a comforting break.",
-        "",
-        "Pull up a chair again anytime—we're always ready to welcome you back.",
-        ...(receiptUrl ? [`View & download your receipt image: ${receiptUrl}`] : []),
-        "Menu & story: https://cgscafe.in/",
-        "_Warm regards,_%0A*Team CGS*"
-      ].join("\n").replace("%0A", "\n");
-
-      const paymentAndInvoiceLines = [
-        "====================================",
-        "CGS - COFFEE, GRILL & SHOTS",
-        `Phone: ${CAFE_CONTACT_PHONE}`,
-        `UPI ID: ${activeUpi.vpa}`,
-        `TOTAL PAYABLE: ₹${Number(totals.grandTotal).toFixed(2)}`,
-        "====================================",
-        `DT  : ${formatReceiptDateTime()}`,
-        `SEAT: ${seatNo} (${table.serviceType || "Dine-in"})${tokenPart}`
-      ];
-
-      if (custContactLine) paymentAndInvoiceLines.push(`CUST: ${custContactLine}`);
-
-      paymentAndInvoiceLines.push("------------------------------------");
-      paymentAndInvoiceLines.push("ITEM                      QTY  AMT");
-      paymentAndInvoiceLines.push("------------------------------------");
-
-      services.forEach((svc, svcIdx) => {
-        if (svcIdx > 0) paymentAndInvoiceLines.push("");
-        paymentAndInvoiceLines.push(svc.serviceLabel);
-        for (const item of (svc.items || [])) {
-          const cleanName = String(item.label || "").replace(/\s+\d+$/, "").trim().toUpperCase();
-          const shortName = cleanName.slice(0, 23).padEnd(23, " ");
-          const qtyStr = String(Number(item.qty)).padStart(3, " ");
-          const amtStr = `₹${Number(item.amount).toFixed(2)}`.padStart(9, " ");
-          paymentAndInvoiceLines.push(`${shortName} ${qtyStr} ${amtStr}`);
-        }
-      });
-
-      paymentAndInvoiceLines.push("------------------------------------");
-      paymentAndInvoiceLines.push(`SUBTOTAL               ₹${Number(totals.subtotal).toFixed(2).padStart(9, " ")}`);
-      if (totals.scEnabled) paymentAndInvoiceLines.push(`SERVICE CHARGES        ₹${Number(totals.serviceCharge).toFixed(2).padStart(9, " ")}`);
-      if (totals.cgstEnabled) {
-        const cgstTag = `CGST (${totals.cgstRate}%)`.padEnd(22, " ");
-        paymentAndInvoiceLines.push(`${cgstTag} ₹${Number(totals.cgstAmount).toFixed(2).padStart(9, " ")}`);
-      }
-      if (totals.sgstEnabled) {
-        const sgstTag = `SGST (${totals.sgstRate}%)`.padEnd(22, " ");
-        paymentAndInvoiceLines.push(`${sgstTag} ₹${Number(totals.sgstAmount).toFixed(2).padStart(9, " ")}`);
-      }
-      paymentAndInvoiceLines.push("====================================");
-      paymentAndInvoiceLines.push(`TOTAL PAYABLE          ₹${Number(totals.grandTotal).toFixed(2).padStart(9, " ")}`);
-      paymentAndInvoiceLines.push(`UPI ID: ${activeUpi.vpa}`);
-      paymentAndInvoiceLines.push("====================================");
-
-      return `${thankYouBlock}\n\n\`\`\`\n${paymentAndInvoiceLines.join("\n")}\n\`\`\``;
-    }
-
-    function renderPaymentFlow() {
+    function renderPaymentFlow(grandTotal) {
       const table = getActiveTable();
       const box = document.getElementById("paymentFlowBox");
-      const totals = computeBillTotals();
-      const amountStr = totals.grandTotal.toFixed(2);
-      const effectiveWaPhone = sanitizeTenDigitPhone(table.waPhone || table.customerPhone || "");
-
-      if (table.paymentMode === "CASH") {
-        box.innerHTML = `<p class="muted" style="margin:0;">Collect ₹${amountStr} in cash and verify receipt before closing.</p>`;
-        return;
-      }
-
-      if (table.paymentMode === "CARD") {
-        box.innerHTML = `<p class="muted" style="margin:0;">Complete ₹${amountStr} on POS terminal and verify approval before closing.</p>`;
-        return;
-      }
-
+      const closeBtn = document.getElementById("btnCloseTransaction");
       const activeUpi = getActiveUpiAccount(state.settings);
-      const vpa = activeUpi.vpa || DEFAULT_UPI_VPA;
-      const upiQrPayload = `upi://pay?pa=${encodeURIComponent(vpa)}&pn=${encodeURIComponent("CGS - COFFEE, GRILL & SHOTS")}&am=${encodeURIComponent(amountStr)}&cu=INR`;
+      const activeVpa = activeUpi.vpa;
+      const upiUri = getUpiPayUri(activeVpa, grandTotal);
 
-      box.innerHTML = `
-        <div class="upi-compact-row">
-          <div class="upi-qr-preview" id="upiQrCode"></div>
-          <div style="min-width:0; flex:1;">
-            <div style="font-weight:700; color:var(--accent);">₹${amountStr}</div>
-            <div class="muted" style="font-size:11px; word-break:break-all;">Active UPI: ${escapeHtml(vpa)}</div>
-          </div>
-          <div class="qr-actions">
-            <button type="button" class="btn btn-sm" id="btnCopyReceiptImg">Copy Receipt</button>
-          </div>
-        </div>
-        <div class="field-status" id="qrActionStatus">${escapeHtml(state.lastQrStatusMsg)}</div>
-        <div class="field-error" id="qrActionError">${escapeHtml(state.lastQrErrorMsg)}</div>
+      const effectiveWaPhone = table.waPhoneManual
+        ? sanitizeTenDigitPhone(table.waPhone)
+        : sanitizeTenDigitPhone(table.customerPhone || table.waPhone);
+
+      const hasValidWa = /^[6-9]\d{9}$/.test(effectiveWaPhone);
+
+      if (grandTotal <= 0) {
+        box.innerHTML = `<span class="muted">Add items to ${escapeHtml(formatTableDisplay(table.name))} to enable payment &amp; settlement.</span>`;
+        closeBtn.disabled = true;
+        return;
+      }
+
+      const waSectionHtml = `
         <div class="wa-row">
           <input
             type="tel"
             id="waPhoneInput"
             maxlength="10"
             inputmode="numeric"
-            placeholder="Mobile"
+            placeholder="WhatsApp number (10 digits)"
             value="${escapeAttr(effectiveWaPhone)}"
           />
-          <button type="button" class="btn btn-sm btn-primary" id="btnSendWa">Send WA</button>
+          <button type="button" class="btn btn-sm btn-primary" id="btnSendWa" ${hasValidWa ? "" : "disabled"}>
+            Send WA
+          </button>
         </div>
-        <div class="field-error" id="waPhoneError"></div>
+        <div class="field-error" id="waErrorMsg"></div>
+        <div class="field-status" id="waStatusMsg"></div>
       `;
 
-      const qrContainer = document.getElementById("upiQrCode");
-      if (qrContainer) {
-        if (activeUpi.customQrDataUrl) {
-          qrContainer.innerHTML = `<img src="${activeUpi.customQrDataUrl}" alt="Active UPI QR" />`;
-        } else if (typeof QRCode !== "undefined" && totals.grandTotal > 0) {
-          new QRCode(qrContainer, {
-            text: upiQrPayload,
-            width: 72,
-            height: 72
-          });
-        }
+      if (table.paymentMode === "UPI") {
+        box.innerHTML = `
+          <div class="upi-compact-row">
+            <div class="upi-qr-preview" id="upiQrBox"></div>
+            <div style="flex:1; min-width:0;">
+              <div><strong>UPI:</strong> ${escapeHtml(activeVpa)}</div>
+              <div class="muted" style="font-size:11px;">Amount: <strong>₹${grandTotal.toFixed(2)}</strong></div>
+            </div>
+            <div class="qr-actions">
+              <a class="btn btn-sm" href="${escapeAttr(upiUri)}">UPI App</a>
+              <button type="button" class="btn btn-sm" id="btnCopyUpi">Copy UPI</button>
+            </div>
+          </div>
+          ${waSectionHtml}
+        `;
+        renderQrIntoElement(document.getElementById("upiQrBox"), upiUri, activeUpi.customQrDataUrl, 72);
+        document.getElementById("btnCopyUpi").addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(activeVpa);
+            const st = document.getElementById("waStatusMsg");
+            if (st) st.textContent = `Copied UPI ID: ${activeVpa}`;
+          } catch (_) {}
+        });
+      } else if (table.paymentMode === "CASH") {
+        box.innerHTML = `
+          <div style="margin-bottom:6px;">
+            <strong>Cash Collection:</strong> Collect <strong>₹${grandTotal.toFixed(2)}</strong> at counter.
+          </div>
+          ${waSectionHtml}
+        `;
+      } else {
+        box.innerHTML = `
+          <div style="margin-bottom:6px;">
+            <strong>Card (POS Terminal):</strong> Swipe / Tap <strong>₹${grandTotal.toFixed(2)}</strong> on card machine.
+          </div>
+          ${waSectionHtml}
+        `;
       }
 
-      document.getElementById("btnCopyReceiptImg").addEventListener("click", async () => {
-        if (table.cart.length === 0 || !(totals.grandTotal > 0)) {
-          const errEl = document.getElementById("qrActionError");
-          if (errEl) errEl.textContent = "Add items to generate a receipt image first.";
-          return;
-        }
-        const snap = getCurrentDraftBillSnapshot(table, activeUpi, totals);
-        await copyReceiptImageToClipboard(snap, activeUpi);
-      });
+      const waInput = document.getElementById("waPhoneInput");
+      const waErr = document.getElementById("waErrorMsg");
+      const btnSendWa = document.getElementById("btnSendWa");
 
-      const phoneInput = document.getElementById("waPhoneInput");
-      const phoneError = document.getElementById("waPhoneError");
-
-      phoneInput.addEventListener("input", (e) => {
-        const cleaned = sanitizeTenDigitPhone(e.target.value);
-        e.target.value = cleaned;
+      waInput.addEventListener("input", () => {
+        const cleaned = sanitizeTenDigitPhone(waInput.value);
+        waInput.value = cleaned;
         table.waPhone = cleaned;
-        table.waPhoneManual = cleaned.length > 0 && cleaned !== sanitizeTenDigitPhone(table.customerPhone || "");
-        phoneError.textContent = "";
-        saveTablesState(false);
+        table.waPhoneManual = cleaned !== sanitizeTenDigitPhone(table.customerPhone);
+        saveTablesState();
+
+        const valid = /^[6-9]\d{9}$/.test(cleaned);
+        btnSendWa.disabled = !valid;
+        waErr.textContent = cleaned.length > 0 && !valid
+          ? "Enter a valid 10-digit mobile number starting with 6–9."
+          : "";
       });
 
-      document.getElementById("btnSendWa").addEventListener("click", async () => {
-        const tenDigit = sanitizeTenDigitPhone(phoneInput.value);
-        if (tenDigit.length !== 10) {
-          phoneError.textContent = "Enter a valid 10-digit mobile number.";
-          phoneInput.focus();
+      btnSendWa.addEventListener("click", () => {
+        const cleaned = sanitizeTenDigitPhone(waInput.value);
+        if (!/^[6-9]\d{9}$/.test(cleaned)) {
+          waErr.textContent = "Enter a valid 10-digit WhatsApp number first.";
           return;
         }
-
-        phoneError.textContent = "";
-        const snap = getCurrentDraftBillSnapshot(table, activeUpi, totals);
-        const receiptUrl = await uploadReceiptImageToStorage(snap, activeUpi);
-        const message = buildInvoiceWhatsAppMessage(table, activeUpi, totals, receiptUrl);
-        await logPosActivity("WA_INVOICE_SENT", {
-          phone: tenDigit,
-          grandTotal: Number(totals.grandTotal.toFixed(2)),
-          upiVpa: activeUpi.vpa,
-          receiptUrl: receiptUrl || null
-        }, table);
-        const waUrl = `https://wa.me/91${tenDigit}?text=${encodeURIComponent(message)}`;
-        window.open(waUrl, "_blank", "noopener,noreferrer");
-      });
-    }
-
-    function buildServiceGroups(table) {
-      const itemMap = new Map(table.cart.map(i => [i.name, i]));
-
-      function mapLineItem(name, qty, fallbackPrice) {
-        const totalQty = Number(qty || 1);
-        const cartMatch = itemMap.get(name);
-        const rate = Number(fallbackPrice ?? cartMatch?.price ?? 0);
-        const amount = totalQty * rate;
-        return {
-          label: `${String(name || "").toUpperCase()} ${totalQty}`,
-          qty: totalQty,
-          rate,
-          amount
-        };
-      }
-
-      if (table.kots && table.kots.length > 0) {
-        const groups = table.kots.map(k => ({
-          serviceLabel: `Service ${k.kotNumber}`,
-          items: k.items.map(i => mapLineItem(i.name, i.qty, i.price))
-        }));
-
-        const unsent = table.cart
-          .map(i => ({ name: i.name, qty: Number(i.unsentQty ?? 0), price: Number(i.price || 0) }))
-          .filter(i => i.qty > 0);
-
-        if (unsent.length > 0) {
-          groups.push({
-            serviceLabel: `Service ${table.kots.length + 1}`,
-            items: unsent.map(i => mapLineItem(i.name, i.qty, i.price))
-          });
-        }
-        return groups;
-      }
-
-      return [{
-        serviceLabel: "Service 1",
-        items: table.cart.map(i => mapLineItem(i.name, i.qty, i.price))
-      }];
-    }
-
-    function renderReceiptHtml(bill) {
-      const services = Array.isArray(bill.services) && bill.services.length > 0
-        ? bill.services.map((s, idx) => ({
-          ...s,
-          serviceLabel: String(s.serviceLabel || `Service ${idx + 1}`).replace(/:+$/, "")
-        }))
-        : [{
-          serviceLabel: "Service 1",
-          items: (bill.lineItems || []).map(li => ({
-            label: `${String(li.name || "").toUpperCase()} ${li.qty}`,
-            qty: li.qty,
-            rate: li.price,
-            amount: Number(li.price || 0) * Number(li.qty || 1)
-          }))
-        }];
-
-      let bodyRowsHtml = "";
-      services.forEach((svc, svcIdx) => {
-        if (svcIdx > 0) bodyRowsHtml += `<tr class="receipt-gap-row"><td colspan="4"></td></tr>`;
-        bodyRowsHtml += `<tr class="receipt-service-row"><td colspan="4">${escapeHtml(svc.serviceLabel)}</td></tr>`;
-        for (const item of (svc.items || [])) {
-          bodyRowsHtml += `
-            <tr>
-              <td>${escapeHtml(item.label)}</td>
-              <td class="qty-col">${Number(item.qty)}</td>
-              <td class="num">₹${Number(item.rate).toFixed(2)}</td>
-              <td class="num">₹${Number(item.amount).toFixed(2)}</td>
-            </tr>
-          `;
-        }
+        waErr.textContent = "";
+        sendWhatsAppInvoice(cleaned, grandTotal);
       });
 
-      const custUpper = normalizeCustomerName(bill.customerName);
-      const custLineHtml = custUpper
-        ? `<div><strong>CUST: ${escapeHtml(custUpper)}</strong>${bill.customerPhone ? ` • ${escapeHtml(bill.customerPhone)}` : ""}</div>`
-        : (bill.customerPhone ? `<div>${escapeHtml(bill.customerPhone)}</div>` : "");
+      closeBtn.disabled = false;
+    }
 
-      const seatLineParts = [
-        `Seat: ${escapeHtml(formatSeatLabel(bill.tableName || ""))}`,
-        escapeHtml(bill.serviceType || "Dine-in"),
-        bill.tokenNumber ? `Token: ${escapeHtml(sanitizeToken(bill.tokenNumber))}` : ""
-      ].filter(Boolean).join(" • ");
+    function buildWhatsAppMessage(table, calc, billId = null, receiptUrl = "") {
+      const itemsText = table.cart
+        .map(i => `• ${i.name} x${i.qty} = ₹${(i.price * i.qty).toFixed(2)}`)
+        .join("\n");
 
-      const showSc = bill.scEnabled !== undefined ? Boolean(bill.scEnabled) : Number(bill.serviceCharge || 0) > 0;
-      const showCgst = bill.cgstEnabled !== undefined ? Boolean(bill.cgstEnabled) : Number(bill.cgstAmount || 0) > 0;
-      const showSgst = bill.sgstEnabled !== undefined ? Boolean(bill.sgstEnabled) : Number(bill.sgstAmount || 0) > 0;
+      const lines = [
+        `*CGS - COFFEE, GRILL & SHOTS*`,
+        billId ? `Bill No: *${billId}*` : `Table: *${formatTableDisplay(table.name)}*`,
+        `Service: *${table.serviceType || "Dine-in"}*${table.tokenNumber ? ` | Token: *${table.tokenNumber}*` : ""}`,
+        table.customerName ? `Guest: *${table.customerName}*` : "",
+        `------------------------`,
+        itemsText,
+        `------------------------`,
+        `Subtotal: ₹${calc.subtotal.toFixed(2)}`
+      ];
 
-      let optionalTotalsHtml = "";
-      if (showSc) {
-        optionalTotalsHtml += `
-          <div class="receipt-total-row">
-            <span class="receipt-total-label">Service Charges</span>
-            <span class="receipt-total-val">₹${Number(bill.serviceCharge || 0).toFixed(2)}</span>
-          </div>
-        `;
+      if (calc.scEnabled) {
+        lines.push(`Service Charges: ₹${calc.serviceCharge.toFixed(2)}`);
       }
-      if (showCgst) {
-        const cgstRateLabel = bill.cgstRate !== undefined ? `CGST (${bill.cgstRate}%)` : "CGST";
-        optionalTotalsHtml += `
-          <div class="receipt-total-row">
-            <span class="receipt-total-label">${escapeHtml(cgstRateLabel)}</span>
-            <span class="receipt-total-val">₹${Number(bill.cgstAmount || 0).toFixed(2)}</span>
-          </div>
-        `;
+      if (calc.cgstEnabled) {
+        lines.push(`CGST (${calc.cgstRate}%): ₹${calc.cgstAmount.toFixed(2)}`);
       }
-      if (showSgst) {
-        const sgstRateLabel = bill.sgstRate !== undefined ? `SGST (${bill.sgstRate}%)` : "SGST";
-        optionalTotalsHtml += `
-          <div class="receipt-total-row">
-            <span class="receipt-total-label">${escapeHtml(sgstRateLabel)}</span>
-            <span class="receipt-total-val">₹${Number(bill.sgstAmount || 0).toFixed(2)}</span>
-          </div>
-        `;
+      if (calc.sgstEnabled) {
+        lines.push(`SGST (${calc.sgstRate}%): ₹${calc.sgstAmount.toFixed(2)}`);
+      }
+      lines.push(`*Total Payable: ₹${calc.grandTotal.toFixed(2)}*`);
+
+      if (receiptUrl) {
+        lines.push(``);
+        lines.push(`Digital Receipt: ${receiptUrl}`);
       }
 
-      const receiptLinkHtml = bill.receiptUrl
-        ? `<div style="margin-top:8px; word-break:break-all;"><a href="${escapeAttr(bill.receiptUrl)}" target="_blank" rel="noopener">Open Receipt Image</a></div>`
-        : "";
+      if (table.paymentMode === "UPI") {
+        const activeVpa = getActiveUpiAccount(state.settings).vpa;
+        lines.push(``);
+        lines.push(`Pay via UPI ID: *${activeVpa}*`);
+        lines.push(`UPI Link: ${getUpiPayUri(activeVpa, calc.grandTotal)}`);
+      } else {
+        lines.push(`Payment Mode: *${table.paymentMode}*`);
+      }
+
+      lines.push(``);
+      lines.push(`Contact: ${CAFE_CONTACT_PHONE}`);
+      lines.push(`Thank you for visiting!`);
+
+      return lines.filter(Boolean).join("\n");
+    }
+
+    function sendWhatsAppInvoice(tenDigitPhone, grandTotal, billId = null, receiptUrl = "") {
+      const table = getActiveTable();
+      const subtotal = table.cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+      const calc = computeBillBreakdown(subtotal);
+      calc.grandTotal = grandTotal;
+      const msg = buildWhatsAppMessage(table, calc, billId, receiptUrl);
+      const url = `https://wa.me/91${tenDigitPhone}?text=${encodeURIComponent(msg)}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+      const st = document.getElementById("waStatusMsg");
+      if (st) st.textContent = `WhatsApp bill opened for +91 ${tenDigitPhone}.`;
+    }
+
+    function buildKotReceiptHtml(table, kotEntry, isReprint = false) {
+      const rowsHtml = (kotEntry.items || []).map(item => `
+        <tr>
+          <td>${escapeHtml(item.name)}</td>
+          <td class="qty-col">x${item.qty}</td>
+        </tr>
+      `).join("");
 
       return `
         <div class="receipt-sheet">
           <div class="receipt-center">
-            <div><strong>CGS - COFFEE, GRILL &amp; SHOTS</strong></div>
-            <div>Phone: ${escapeHtml(bill.contactPhone || CAFE_CONTACT_PHONE)}</div>
-            <div>${escapeHtml(bill.dateTimeLabel || `${bill.date} ${bill.time}`)}</div>
-            <div>${seatLineParts}</div>
-            <div>Bill: ${escapeHtml(bill.id)}</div>
-            ${custLineHtml}
+            <div style="font-size:15px; font-weight:700;">KITCHEN ORDER TICKET (KOT)</div>
+            <div>${isReprint ? "<strong>*** DUPLICATE / REPRINT ***</strong>" : "CGS - COFFEE, GRILL &amp; SHOTS"}</div>
+            <div>${escapeHtml(kotEntry.timeLabel || formatReceiptDateTime())}</div>
           </div>
+          <div class="receipt-divider"></div>
+          <div><strong>KOT #:</strong> ${escapeHtml(String(kotEntry.kotNumber))}</div>
+          <div><strong>Table:</strong> ${escapeHtml(formatTableDisplay(table.name))}</div>
+          <div><strong>Service:</strong> ${escapeHtml(kotEntry.serviceType || table.serviceType || "Dine-in")}</div>
+          ${(kotEntry.tokenNumber || table.tokenNumber) ? `<div><strong>Token #:</strong> ${escapeHtml(kotEntry.tokenNumber || table.tokenNumber)}</div>` : ""}
+          ${table.customerName ? `<div><strong>Guest:</strong> ${escapeHtml(table.customerName)}</div>` : ""}
           <div class="receipt-divider"></div>
           <table class="receipt-table">
             <thead>
               <tr>
                 <th>Item</th>
                 <th class="qty-col">Qty</th>
-                <th class="num">Rate</th>
-                <th class="num">Amount</th>
               </tr>
             </thead>
-            <tbody>${bodyRowsHtml}</tbody>
+            <tbody>${rowsHtml}</tbody>
           </table>
           <div class="receipt-divider"></div>
-          <div class="receipt-totals-block">
-            <div class="receipt-total-row">
-              <span class="receipt-total-label">Subtotal</span>
-              <span class="receipt-total-val">₹${Number(bill.subtotal).toFixed(2)}</span>
-            </div>
-            ${optionalTotalsHtml}
-            <div class="receipt-divider"></div>
-            <div class="receipt-total-row receipt-grand">
-              <span class="receipt-total-label">Total (${escapeHtml(bill.mode)})</span>
-              <span class="receipt-total-val">₹${Number(bill.grandTotal).toFixed(2)}</span>
-            </div>
-          </div>
-          ${receiptLinkHtml}
+          <div class="receipt-center">Kitchen Copy</div>
         </div>
       `;
     }
 
-    function openCloseConfirmation() {
-      const table = getActiveTable();
-      const totals = computeBillTotals();
-      if (table.cart.length === 0 || !(totals.grandTotal > 0)) return;
-
-      enforceMidnightRolloverForSales();
-
-      const activeUpi = getActiveUpiAccount(state.settings);
-      const now = new Date();
-      const billNumber = `CGS-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${String(state.sales.length + 1).padStart(3, "0")}`;
-
-      const startMs = table.startedAt ? new Date(table.startedAt).getTime() : now.getTime();
-      const turnaroundMinutes = Math.max(1, Math.round((now.getTime() - startMs) / 60000));
-
-      state.pendingClosureBill = {
-        id: billNumber,
-        contactPhone: CAFE_CONTACT_PHONE,
-        tableName: formatSeatLabel(table.name),
-        serviceType: table.serviceType || "Dine-in",
-        tokenNumber: sanitizeToken(table.tokenNumber || ""),
-        customerName: normalizeCustomerName((table.customerName || "").trim()),
-        customerPhone: sanitizeTenDigitPhone(table.customerPhone || ""),
-        date: getLocalDateKey(now),
-        time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        createdAt: now.toISOString(),
-        dateTimeLabel: formatReceiptDateTime(now),
-        turnaroundMinutes,
-        receiptUrl: "",
-        lineItems: table.cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
-        services: buildServiceGroups(table),
-        itemsSummary: table.cart.map(i => `${String(i.name || "").toUpperCase()} ${i.qty}`).join("; "),
-        mode: table.paymentMode,
-        upiVpa: table.paymentMode === "UPI" ? (activeUpi.vpa || "") : "",
-        subtotal: Number(totals.subtotal.toFixed(2)),
-        scEnabled: totals.scEnabled,
-        serviceCharge: Number(totals.serviceCharge.toFixed(2)),
-        cgstEnabled: totals.cgstEnabled,
-        cgstRate: totals.cgstRate,
-        cgstAmount: Number(totals.cgstAmount.toFixed(2)),
-        sgstEnabled: totals.sgstEnabled,
-        sgstRate: totals.sgstRate,
-        sgstAmount: Number(totals.sgstAmount.toFixed(2)),
-        gstAmount: Number(totals.gstAmount.toFixed(2)),
-        grandTotal: Number(totals.grandTotal.toFixed(2))
-      };
-
-      document.getElementById("confirmReceiptPreview").innerHTML = renderReceiptHtml(state.pendingClosureBill);
-      document.getElementById("confirmCloseDialog").showModal();
+    function printHtmlContent(html) {
+      const mount = document.getElementById("printMount");
+      mount.innerHTML = html;
+      window.print();
     }
 
-    async function persistBillToSupabase(bill, table) {
-      const client = getDbClient();
-      if (!client?.from) return;
-      setDbSyncStatus("syncing", "DB: Saving bill...");
-      try {
-        const actorId = await getCurrentStaffId();
-        const consumptionPayload = {
-          consumedItems: bill.lineItems,
-          turnaroundMinutes: bill.turnaroundMinutes || null,
-          receiptUrl: bill.receiptUrl || null
-        };
-
-        const { error } = await client.from("bills").upsert([{
-          bill_number: bill.id,
-          table_name: bill.tableName,
-          service_type: bill.serviceType,
-          token_number: bill.tokenNumber || null,
-          customer_name: bill.customerName || null,
-          customer_phone: bill.customerPhone || null,
-          bill_date: bill.date,
-          bill_time: bill.time,
-          items_summary: bill.itemsSummary,
-          kots_json: bill.services,
-          consumption_json: consumptionPayload,
-          payment_mode: bill.mode,
-          upi_vpa: bill.upiVpa || null,
-          receipt_url: bill.receiptUrl || null,
-          subtotal: bill.subtotal,
-          service_charge: bill.serviceCharge,
-          cgst_rate: bill.cgstEnabled ? bill.cgstRate : 0,
-          cgst_amount: bill.cgstAmount,
-          sgst_rate: bill.sgstEnabled ? bill.sgstRate : 0,
-          sgst_amount: bill.sgstAmount,
-          gst_amount: bill.gstAmount,
-          grand_total: bill.grandTotal,
-          created_by: actorId
-        }], { onConflict: "bill_number" });
-
-        if (error) throw error;
-
-        const billHour = parseHourFromTimeStr(bill.time);
-        const itemRows = (bill.lineItems || []).map(li => ({
-          bill_number: bill.id,
-          bill_date: bill.date,
-          bill_hour: billHour,
-          item_id: li.id || null,
-          item_name: String(li.name || "").toUpperCase(),
-          qty: Number(li.qty || 1),
-          unit_price: Number(li.price || 0),
-          line_total: Number((Number(li.price || 0) * Number(li.qty || 1)).toFixed(2))
+    function sendKotForActiveTable() {
+      const table = getActiveTable();
+      const unsentItems = table.cart
+        .filter(i => (i.unsentQty || 0) > 0)
+        .map(i => ({
+          id: i.id,
+          name: i.name,
+          qty: Number(i.unsentQty),
+          price: Number(i.price)
         }));
-        if (itemRows.length > 0) {
-          await client.from("bill_items").insert(itemRows);
+
+      if (!unsentItems.length) return;
+
+      const nextKotNumber = (table.kots.length ? Math.max(...table.kots.map(k => Number(k.kotNumber) || 0)) : 0) + 1;
+      const kotEntry = {
+        kotNumber: nextKotNumber,
+        timeLabel: formatReceiptDateTime(),
+        serviceType: table.serviceType || "Dine-in",
+        tokenNumber: table.tokenNumber || "",
+        items: unsentItems
+      };
+
+      table.kots.push(kotEntry);
+      for (const cartItem of table.cart) {
+        if ((cartItem.unsentQty || 0) > 0) {
+          cartItem.unsentQty = 0;
+          if (!Array.isArray(cartItem.kotNumbers)) cartItem.kotNumbers = [];
+          if (!cartItem.kotNumbers.includes(nextKotNumber)) {
+            cartItem.kotNumbers.push(nextKotNumber);
+          }
+        }
+      }
+
+      saveTablesState(true);
+      syncKotToSupabase(table, kotEntry);
+      renderTableTabs();
+      renderCart();
+      printHtmlContent(buildKotReceiptHtml(table, kotEntry, false));
+    }
+
+    function reprintLastKotForActiveTable() {
+      const table = getActiveTable();
+      if (!table.kots.length) return;
+      const lastKot = table.kots[table.kots.length - 1];
+      logPosActivity("KOT_REPRINTED", {
+        kotNumber: lastKot.kotNumber,
+        serviceType: lastKot.serviceType,
+        tokenNumber: lastKot.tokenNumber || null
+      }, table, `KOT-${lastKot.kotNumber}`);
+      printHtmlContent(buildKotReceiptHtml(table, lastKot, true));
+    }
+
+    function buildBillReceiptHtml(bill) {
+      const activeUpi = getActiveUpiAccount(state.settings);
+      const upiVpa = bill.upiVpa || activeUpi.vpa;
+      const upiUri = getUpiPayUri(upiVpa, bill.grandTotal);
+      const isTakeAway = bill.serviceType === "Take away";
+      const tableColHeader = isTakeAway ? "Token" : "Table";
+      const tableColValue = isTakeAway
+        ? (bill.tokenNumber || "-")
+        : formatTableNumber(bill.tableName);
+
+      const lineItems = Array.isArray(bill.lineItems) && bill.lineItems.length > 0
+        ? bill.lineItems
+        : [];
+
+      const rowsHtml = lineItems.length > 0
+        ? lineItems.map(item => {
+            const qty = Number(item.qty || 1);
+            const rate = Number(item.price || 0);
+            const amt = qty * rate;
+            return `
+              <tr>
+                <td>${escapeHtml(item.name)}</td>
+                <td class="num">${rate.toFixed(2)}</td>
+                <td class="qty-col">${qty}</td>
+                <td class="num">${amt.toFixed(2)}</td>
+              </tr>
+            `;
+          }).join("")
+        : `
+            <tr>
+              <td colspan="4">${escapeHtml(bill.itemsSummary || "Order Items")}</td>
+            </tr>
+          `;
+
+      const serviceMetaRows = `
+        <tr class="receipt-gap-row"><td colspan="4"></td></tr>
+        <tr class="receipt-service-row">
+          <td>Service</td>
+          <td class="num">${escapeHtml(tableColHeader)}</td>
+          <td class="qty-col">Mode</td>
+          <td class="num"></td>
+        </tr>
+        <tr class="receipt-service-row">
+          <td>${escapeHtml(bill.serviceType || "Dine-in")}</td>
+          <td class="num">${escapeHtml(tableColValue)}</td>
+          <td class="qty-col">${escapeHtml(bill.mode)}</td>
+          <td class="num"></td>
+        </tr>
+      `;
+
+      const totalsRows = [
+        `<div class="receipt-total-row"><span class="receipt-total-label">Subtotal</span><span class="receipt-total-val">₹${Number(bill.subtotal).toFixed(2)}</span></div>`
+      ];
+      if (Number(bill.serviceCharge || 0) > 0) {
+        totalsRows.push(`<div class="receipt-total-row"><span class="receipt-total-label">Service Charges</span><span class="receipt-total-val">₹${Number(bill.serviceCharge).toFixed(2)}</span></div>`);
+      }
+      if (Number(bill.cgstAmount || 0) > 0) {
+        totalsRows.push(`<div class="receipt-total-row"><span class="receipt-total-label">CGST (${bill.cgstRate}%)</span><span class="receipt-total-val">₹${Number(bill.cgstAmount).toFixed(2)}</span></div>`);
+      }
+      if (Number(bill.sgstAmount || 0) > 0) {
+        totalsRows.push(`<div class="receipt-total-row"><span class="receipt-total-label">SGST (${bill.sgstRate}%)</span><span class="receipt-total-val">₹${Number(bill.sgstAmount).toFixed(2)}</span></div>`);
+      }
+      totalsRows.push(`<div class="receipt-total-row receipt-grand"><span class="receipt-total-label">TOTAL PAYABLE</span><span class="receipt-total-val">₹${Number(bill.grandTotal).toFixed(2)}</span></div>`);
+
+      const qrBlockHtml = bill.mode === "UPI"
+        ? `
+          <div class="receipt-divider"></div>
+          <div class="receipt-center">
+            <div style="font-weight:700; margin-bottom:4px;">Scan to Pay via UPI</div>
+            <div class="receipt-qr-mount" data-qr-payload="${escapeAttr(upiUri)}" data-custom-qr="${escapeAttr(activeUpi.customQrDataUrl || "")}" style="display:flex; justify-content:center; margin:4px 0;"></div>
+            <div style="font-size:11px;">UPI ID: ${escapeHtml(upiVpa)}</div>
+          </div>
+        `
+        : "";
+
+      return `
+        <div class="receipt-sheet">
+          <div class="receipt-center">
+            <div style="font-size:15px; font-weight:700;">CGS - COFFEE, GRILL &amp; SHOTS</div>
+            <div>1, Shree Vinayak Solitaire, AB Road</div>
+            <div>Opp Maa Vihar Colony, Scheme No 59, Indore</div>
+            <div>Contact: ${escapeHtml(bill.contactPhone || CAFE_CONTACT_PHONE)}</div>
+            <div>${escapeHtml(bill.dateTimeLabel || `${bill.date} ${bill.time}`)}</div>
+          </div>
+          <div class="receipt-divider"></div>
+          <div><strong>Bill #:</strong> ${escapeHtml(bill.id)}</div>
+          ${bill.customerName ? `<div><strong>Guest:</strong> ${escapeHtml(bill.customerName)}</div>` : ""}
+          ${bill.customerPhone ? `<div><strong>Mobile:</strong> ${escapeHtml(bill.customerPhone)}</div>` : ""}
+          <table class="receipt-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th class="num">Rate</th>
+                <th class="qty-col">Qty</th>
+                <th class="num">Amt</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+              ${serviceMetaRows}
+            </tbody>
+          </table>
+          <div class="receipt-divider"></div>
+          <div class="receipt-totals-block">
+            ${totalsRows.join("")}
+          </div>
+          ${qrBlockHtml}
+          <div class="receipt-divider"></div>
+          <div class="receipt-center">Thank you for visiting CGS!</div>
+        </div>
+      `;
+    }
+
+    function hydrateReceiptQrCodes(rootEl) {
+      if (!rootEl) return;
+      rootEl.querySelectorAll(".receipt-qr-mount").forEach(el => {
+        renderQrIntoElement(el, el.dataset.qrPayload, el.dataset.customQr, 112);
+      });
+    }
+
+    async function uploadReceiptHtmlToStorage(bill) {
+      const client = getDbClient();
+      if (!client?.storage) return "";
+      try {
+        const receiptHtmlDoc = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Receipt ${escapeHtml(bill.id)}</title>
+  <style>
+    body { font-family: "Courier New", Courier, monospace; background: #f6f1ea; padding: 20px; display: flex; justify-content: center; }
+    .receipt-sheet { background: #fff; border: 1px dashed #9d8c7a; border-radius: 10px; padding: 16px; width: 100%; max-width: 360px; font-size: 12px; color: #1f1712; }
+    .receipt-center { text-align: center; }
+    .receipt-divider { border-top: 1px dashed #b8a999; margin: 8px 0; }
+    .receipt-table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 11px; }
+    .receipt-table th, .receipt-table td { padding: 3px 4px; text-align: left; }
+    .receipt-table th.num, .receipt-table td.num, .receipt-table th.qty-col, .receipt-table td.qty-col { text-align: right; }
+    .receipt-service-row td { font-weight: 700; padding-top: 2px; }
+    .receipt-gap-row td { height: 10px; padding: 0; border: none; }
+    .receipt-totals-block { margin-top: 8px; font-size: 12px; }
+    .receipt-total-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 5px; }
+    .receipt-total-label { font-weight: 700; }
+    .receipt-total-val { white-space: nowrap; }
+    .receipt-grand { font-size: 14px; font-weight: 700; padding-top: 4px; }
+  </style>
+</head>
+<body>
+  ${buildBillReceiptHtml(bill)}
+</body>
+</html>`;
+
+        const filePath = `${bill.date || getLocalDateKey()}/${bill.id}.html`;
+        const blob = new Blob([receiptHtmlDoc], { type: "text/html;charset=utf-8" });
+        const { error: uploadErr } = await client.storage
+          .from(RECEIPTS_BUCKET)
+          .upload(filePath, blob, { contentType: "text/html;charset=utf-8", upsert: true });
+
+        if (uploadErr) {
+          console.warn("Receipt storage upload failed:", uploadErr.message);
+          return "";
         }
 
-        await logPosActivity("BILL_SETTLED", {
-          billNumber: bill.id,
-          mode: bill.mode,
-          subtotal: bill.subtotal,
-          serviceCharge: bill.serviceCharge,
-          cgstAmount: bill.cgstAmount,
-          sgstAmount: bill.sgstAmount,
-          grandTotal: bill.grandTotal,
-          turnaroundMinutes: bill.turnaroundMinutes || null,
-          receiptUrl: bill.receiptUrl || null,
-          consumedItems: bill.lineItems
-        }, table, bill.id);
-
-        setDbSyncStatus("synced", "DB: Synced");
+        const { data: pubData } = client.storage.from(RECEIPTS_BUCKET).getPublicUrl(filePath);
+        return pubData?.publicUrl || "";
       } catch (err) {
-        console.warn("Supabase bills insert failed:", err);
-        setDbSyncStatus("error", "DB: Offline/Error");
+        console.warn("uploadReceiptHtmlToStorage error:", err);
+        return "";
       }
     }
 
-    async function confirmAndPrintReceipt() {
-      const bill = state.pendingClosureBill;
-      if (!bill || !(Number(bill.grandTotal) > 0)) return;
+    function openCloseConfirmationDialog() {
+      const table = getActiveTable();
+      if (!table.cart.length) return;
 
-      enforceMidnightRolloverForSales();
+      const subtotal = table.cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+      if (subtotal <= 0) return;
+
+      const calc = computeBillBreakdown(subtotal);
+      const now = new Date();
+      const dateStr = getLocalDateKey(now);
+      const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      const activeUpi = getActiveUpiAccount(state.settings);
+      const billNumber = `BILL-${Date.now().toString().slice(-6)}`;
+
+      const draftBill = {
+        id: billNumber,
+        contactPhone: CAFE_CONTACT_PHONE,
+        tableId: table.id,
+        tableName: formatTableNumber(table.name),
+        startedAt: table.startedAt || now.toISOString(),
+        serviceType: table.serviceType || "Dine-in",
+        tokenNumber: table.tokenNumber || "",
+        customerName: normalizeCustomerName(table.customerName || ""),
+        customerPhone: sanitizeTenDigitPhone(table.customerPhone || ""),
+        date: dateStr,
+        time: timeStr,
+        dateTimeLabel: formatReceiptDateTime(now),
+        lineItems: table.cart.map(i => ({
+          id: i.id,
+          name: i.name,
+          price: Number(i.price),
+          qty: Number(i.qty)
+        })),
+        services: table.kots || [],
+        itemsSummary: table.cart.map(i => `${i.name} x${i.qty}`).join(", "),
+        mode: table.paymentMode,
+        upiVpa: table.paymentMode === "UPI" ? activeUpi.vpa : "",
+        receiptUrl: "",
+        subtotal: calc.subtotal,
+        scEnabled: calc.scEnabled,
+        serviceCharge: calc.serviceCharge,
+        cgstEnabled: calc.cgstEnabled,
+        cgstRate: calc.cgstRate,
+        cgstAmount: calc.cgstAmount,
+        sgstEnabled: calc.sgstEnabled,
+        sgstRate: calc.sgstRate,
+        sgstAmount: calc.sgstAmount,
+        gstAmount: calc.gstAmount,
+        grandTotal: calc.grandTotal
+      };
+
+      state.pendingClosureBill = draftBill;
+      const previewEl = document.getElementById("confirmReceiptPreview");
+      previewEl.innerHTML = buildBillReceiptHtml(draftBill);
+      hydrateReceiptQrCodes(previewEl);
+
+      const dlg = document.getElementById("confirmCloseDialog");
+      if (!dlg.open) dlg.showModal();
+    }
+
+    async function finalizeBillAndPrint() {
+      const bill = state.pendingClosureBill;
+      if (!bill) return;
 
       const table = getActiveTable();
-      const activeUpi = getActiveUpiAccount(state.settings);
-      bill.receiptUrl = await uploadReceiptImageToStorage(bill, activeUpi);
+      enforceMidnightRolloverForSales();
 
-      state.salesDateKey = getLocalDateKey();
+      const receiptUrl = await uploadReceiptHtmlToStorage(bill);
+      if (receiptUrl) {
+        bill.receiptUrl = receiptUrl;
+      }
+
+      const client = getDbClient();
+      if (client?.from) {
+        setDbSyncStatus("syncing", "DB: Saving bill...");
+        try {
+          const cashierId = await getCurrentStaffId();
+          const { error } = await client.from("bills").insert([{
+            bill_number: bill.id,
+            table_name: formatTableDisplay(bill.tableName),
+            service_type: bill.serviceType || "Dine-in",
+            token_number: bill.tokenNumber || null,
+            customer_name: bill.customerName || null,
+            customer_phone: bill.customerPhone || null,
+            bill_date: bill.date,
+            bill_time: bill.time,
+            items_summary: bill.itemsSummary,
+            kots_json: bill.services || [],
+            consumption_json: {
+              tableId: bill.tableId || table.id,
+              startedAt: bill.startedAt || table.startedAt || null,
+              consumedItems: bill.lineItems || [],
+              receiptUrl: bill.receiptUrl || ""
+            },
+            receipt_url: bill.receiptUrl || null,
+            payment_mode: bill.mode,
+            upi_vpa: bill.upiVpa || null,
+            subtotal: bill.subtotal,
+            service_charge: bill.serviceCharge,
+            cgst_rate: bill.cgstRate,
+            cgst_amount: bill.cgstAmount,
+            sgst_rate: bill.sgstRate,
+            sgst_amount: bill.sgstAmount,
+            gst_amount: bill.gstAmount,
+            grand_total: bill.grandTotal,
+            cashier_id: cashierId
+          }]);
+          if (error) throw error;
+
+          await logPosActivity("BILL_SETTLED", {
+            billNumber: bill.id,
+            tableName: formatTableDisplay(bill.tableName),
+            serviceType: bill.serviceType || "Dine-in",
+            tokenNumber: bill.tokenNumber || null,
+            paymentMode: bill.mode,
+            grandTotal: bill.grandTotal,
+            receiptUrl: bill.receiptUrl || null
+          }, table, bill.id);
+
+          setDbSyncStatus("synced", "DB: Synced");
+        } catch (err) {
+          console.warn("Failed saving bill to Supabase:", err);
+          setDbSyncStatus("error", "DB: Offline/Error");
+        }
+      }
+
       state.sales.unshift(bill);
       saveSalesState();
-      await persistBillToSupabase(bill, table);
+      updateTodayCount();
+
+      const waTarget = table.waPhoneManual
+        ? sanitizeTenDigitPhone(table.waPhone)
+        : sanitizeTenDigitPhone(table.customerPhone || table.waPhone);
+      if (/^[6-9]\d{9}$/.test(waTarget)) {
+        const calcForWa = {
+          subtotal: bill.subtotal,
+          scEnabled: bill.scEnabled,
+          serviceCharge: bill.serviceCharge,
+          cgstEnabled: bill.cgstEnabled,
+          cgstRate: bill.cgstRate,
+          cgstAmount: bill.cgstAmount,
+          sgstEnabled: bill.sgstEnabled,
+          sgstRate: bill.sgstRate,
+          sgstAmount: bill.sgstAmount,
+          grandTotal: bill.grandTotal
+        };
+        const msg = buildWhatsAppMessage(table, calcForWa, bill.id, bill.receiptUrl);
+        window.open(`https://wa.me/91${waTarget}?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
+      }
 
       table.cart = [];
       table.kots = [];
@@ -3485,463 +3115,568 @@
       table.customerPhone = "";
       table.waPhone = "";
       table.waPhoneManual = false;
-      table.tokenNumber = "";
       table.serviceType = "Dine-in";
+      table.tokenNumber = "";
       table.paymentMode = "UPI";
       state.pendingClosureBill = null;
-      state.lastQrStatusMsg = "";
-      state.lastQrErrorMsg = "";
-      saveTablesState(true);
 
-      document.getElementById("confirmCloseDialog").close();
+      saveTablesState(true);
       renderTableTabs();
       renderCart();
-      renderHistoryAndAnalytics();
 
-      document.getElementById("printMount").innerHTML = renderReceiptHtml(bill);
-      window.print();
+      const closeDlg = document.getElementById("confirmCloseDialog");
+      if (closeDlg.open) closeDlg.close();
+
+      printHtmlContent(buildBillReceiptHtml(bill));
     }
 
-    async function printPastBill(billId) {
-      const bill = state.historyBills.find(b => b.id === billId) || state.sales.find(b => b.id === billId);
-      if (!bill) return;
-      await logPosActivity("RECEIPT_REPRINTED", { billNumber: bill.id }, null, bill.id);
-      document.getElementById("printMount").innerHTML = renderReceiptHtml(bill);
-      window.print();
+    function updateTodayCount() {
+      enforceMidnightRolloverForSales();
+      document.getElementById("todayCount").textContent = state.sales.length;
     }
 
-    function getSortedSales() {
-      const source = state.historyBills.length > 0 ? state.historyBills : state.sales;
-      const list = [...source];
-      if (!state.subtotalSortDir) return list;
-      return list.sort((a, b) => {
-        const diff = Number(a.subtotal || 0) - Number(b.subtotal || 0);
-        return state.subtotalSortDir === "asc" ? diff : -diff;
-      });
+    function syncSettingsInputsFromState() {
+      const s = state.settings;
+      document.getElementById("scEnabled").checked = Boolean(s.scEnabled);
+      document.getElementById("scType").value = s.scType || "percent";
+      document.getElementById("scValue").value = s.scValue ?? 5;
+      document.getElementById("cgstEnabled").checked = Boolean(s.cgstEnabled);
+      document.getElementById("cgstRate").value = s.cgstRate ?? 2.5;
+      document.getElementById("sgstEnabled").checked = Boolean(s.sgstEnabled);
+      document.getElementById("sgstRate").value = s.sgstRate ?? 2.5;
     }
 
-    function toggleSubtotalSort() {
-      if (state.subtotalSortDir === null) state.subtotalSortDir = "asc";
-      else if (state.subtotalSortDir === "asc") state.subtotalSortDir = "desc";
-      else state.subtotalSortDir = null;
-      renderHistoryAndAnalytics();
+    function openSettingsDialog() {
+      syncSettingsInputsFromState();
+      const upiNorm = normalizeUpiSettings(state.settings);
+      state.draftUpiAccounts = upiNorm.upiAccounts.map(a => ({ ...a }));
+      state.draftActiveUpiId = upiNorm.activeUpiId;
+      state.pendingUploadedQrDataUrl = "";
+      state.replacingQrForUpiId = "";
+      document.getElementById("newUpiVpaInput").value = "";
+      document.getElementById("newUpiQrFile").value = "";
+      document.getElementById("newUpiQrFileName").textContent = "";
+      document.getElementById("upiManagerError").textContent = "";
+      renderUpiManagerDraft();
+      document.getElementById("settingsDialog").showModal();
     }
 
-    async function fetchBillingHistoryRange(fromDate, toDate) {
-      const safeFrom = fromDate || getLocalDateKey();
-      const safeTo = toDate || safeFrom;
-      state.historyFromDate = safeFrom;
-      state.historyToDate = safeTo;
-      state.historyLoading = true;
-      renderHistoryAndAnalytics();
+    function saveSettingsFromDialog() {
+      const errEl = document.getElementById("upiManagerError");
+      if (!Array.isArray(state.draftUpiAccounts) || state.draftUpiAccounts.length === 0) {
+        if (errEl) errEl.textContent = "Keep at least one UPI account.";
+        return;
+      }
 
+      const activeAcc =
+        state.draftUpiAccounts.find(a => a.id === state.draftActiveUpiId) ||
+        state.draftUpiAccounts[0];
+
+      state.settings = {
+        ...state.settings,
+        scEnabled: document.getElementById("scEnabled").checked,
+        scType: document.getElementById("scType").value,
+        scValue: Math.max(0, Number(document.getElementById("scValue").value || 0)),
+        cgstEnabled: document.getElementById("cgstEnabled").checked,
+        cgstRate: Math.max(0, Number(document.getElementById("cgstRate").value || 0)),
+        sgstEnabled: document.getElementById("sgstEnabled").checked,
+        sgstRate: Math.max(0, Number(document.getElementById("sgstRate").value || 0)),
+        upiAccounts: state.draftUpiAccounts.map(a => ({ ...a })),
+        activeUpiId: activeAcc.id,
+        upiVpa: activeAcc.vpa
+      };
+
+      try {
+        localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.settings));
+      } catch (_) {}
+      syncBillingSettingsToSupabase(state.settings);
+      document.getElementById("settingsDialog").close();
+      renderCart();
+    }
+
+    async function fetchHistoryRange(fromDate, toDate) {
       const client = getDbClient();
+      state.historyLoading = true;
+      state.historyFromDate = fromDate;
+      state.historyToDate = toDate;
+      renderHistoryActiveTab();
+
+      const todayKey = getLocalDateKey();
+      let bills = [];
+      let kots = [];
+
       if (client?.from) {
         try {
-          const { data: rows, error } = await client
-            .from("bills")
-            .select("*")
-            .gte("bill_date", safeFrom)
-            .lte("bill_date", safeTo)
-            .order("bill_date", { ascending: false })
-            .order("created_at", { ascending: false });
-          if (error) throw error;
-          state.historyBills = (rows || []).map(mapBillRowToLocal);
-
-          const { data: kotsRows } = await client
-            .from("pos_kots")
-            .select("*")
-            .gte("created_at", `${safeFrom}T00:00:00`)
-            .lte("created_at", `${safeTo}T23:59:59`);
-          state.historyKots = Array.isArray(kotsRows) ? kotsRows : [];
+          const [{ data: billRows, error: bErr }, { data: kotRows, error: kErr }] = await Promise.all([
+            client
+              .from("bills")
+              .select("*")
+              .gte("bill_date", fromDate)
+              .lte("bill_date", toDate)
+              .order("created_at", { ascending: false }),
+            client
+              .from("pos_kots")
+              .select("*")
+              .gte("created_at", `${fromDate}T00:00:00`)
+              .lte("created_at", `${toDate}T23:59:59.999`)
+              .order("created_at", { ascending: true })
+          ]);
+          if (bErr) throw bErr;
+          bills = (billRows || []).map(mapBillRowToLocal);
+          if (!kErr && Array.isArray(kotRows)) {
+            kots = kotRows;
+          }
         } catch (err) {
-          console.warn("History query failed, falling back to local sales:", err);
-          state.historyBills = state.sales.filter(b => b.date >= safeFrom && b.date <= safeTo);
-          state.historyKots = [];
+          console.warn("History range fetch failed:", err);
         }
-      } else {
-        state.historyBills = state.sales.filter(b => b.date >= safeFrom && b.date <= safeTo);
-        state.historyKots = [];
       }
 
+      if (bills.length === 0 && fromDate <= todayKey && toDate >= todayKey) {
+        enforceMidnightRolloverForSales();
+        bills = [...state.sales];
+      }
+
+      state.historyBills = bills;
+      state.historyKots = kots;
       state.historyLoading = false;
-      renderHistoryAndAnalytics();
+      document.getElementById("salesSummaryText").textContent = `${bills.length} bills loaded (${fromDate} to ${toDate})`;
+      renderHistoryActiveTab();
     }
 
-    function renderBarChartSvg(rows, labelKey, valueKey, titleText, formatVal = v => `₹${Number(v).toFixed(0)}`) {
-      if (!rows || rows.length === 0) {
-        return `<div class="chart-card"><strong>${escapeHtml(titleText)}</strong><p class="muted" style="margin:12px 0 0;">No data in selected date range.</p></div>`;
+    function openSalesDialog() {
+      const todayKey = getLocalDateKey();
+      document.getElementById("historyFromDate").value = state.historyFromDate || todayKey;
+      document.getElementById("historyToDate").value = state.historyToDate || todayKey;
+      document.getElementById("salesDialog").showModal();
+      fetchHistoryRange(
+        document.getElementById("historyFromDate").value || todayKey,
+        document.getElementById("historyToDate").value || todayKey
+      );
+    }
+
+    function getActiveHistoryBills() {
+      return Array.isArray(state.historyBills) && state.historyBills.length > 0
+        ? state.historyBills
+        : state.sales;
+    }
+
+    function renderSvgBarChart(title, rows, valueKey, labelKey, barColor = "#3b2319") {
+      if (!rows.length) {
+        return `<div class="chart-card"><strong>${escapeHtml(title)}</strong><p class="muted" style="margin:12px 0 0;">No data in selected range.</p></div>`;
       }
-      const maxVal = Math.max(...rows.map(r => Number(r[valueKey] || 0)), 1);
+      const topRows = rows.slice(0, 10);
+      const maxVal = Math.max(...topRows.map(r => Number(r[valueKey] || 0)), 1);
       const barH = 22;
       const gap = 8;
-      const topPad = 26;
-      const svgH = topPad + rows.length * (barH + gap) + 10;
-      const svgW = 460;
+      const height = topRows.length * (barH + gap) + 16;
 
-      const barsHtml = rows.slice(0, 12).map((r, i) => {
+      const barsSvg = topRows.map((r, idx) => {
         const val = Number(r[valueKey] || 0);
-        const pct = Math.max(0.03, val / maxVal);
-        const barW = Math.round(pct * 220);
-        const y = topPad + i * (barH + gap);
-        const lbl = String(r[labelKey] || "").slice(0, 18);
+        const y = idx * (barH + gap) + 8;
+        const pct = Math.max(2, (val / maxVal) * 260);
+        const label = String(r[labelKey] || "").slice(0, 22);
         return `
-          <text x="8" y="${y + 15}" font-size="11" fill="#241914" font-family="system-ui, sans-serif">${escapeHtml(lbl)}</text>
-          <rect x="150" y="${y + 2}" width="${barW}" height="${barH - 4}" rx="4" fill="#3b2319" />
-          <text x="${156 + barW}" y="${y + 15}" font-size="11" font-weight="600" fill="#6e5c52" font-family="system-ui, sans-serif">${escapeHtml(formatVal(val))}</text>
+          <text x="4" y="${y + 15}" font-size="11" fill="#241914" font-family="system-ui, sans-serif">${escapeXml(label)}</text>
+          <rect x="165" y="${y + 2}" width="${pct.toFixed(1)}" height="${barH - 4}" rx="4" fill="${barColor}" />
+          <text x="${(172 + pct).toFixed(1)}" y="${y + 15}" font-size="11" font-weight="700" fill="#241914" font-family="system-ui, sans-serif">${val}</text>
         `;
       }).join("");
 
       return `
         <div class="chart-card">
-          <strong style="font-size:13px; color:var(--accent);">${escapeHtml(titleText)}</strong>
-          <svg class="chart-svg" viewBox="0 0 ${svgW} ${svgH}">${barsHtml}</svg>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <strong>${escapeHtml(title)}</strong>
+            <span class="muted" style="font-size:11px;">Top ${topRows.length}</span>
+          </div>
+          <svg class="chart-svg" viewBox="0 0 460 ${height}" xmlns="http://www.w3.org/2000/svg">
+            ${barsSvg}
+          </svg>
         </div>
       `;
     }
 
-    function extractBillItems(bill) {
-      if (Array.isArray(bill.lineItems) && bill.lineItems.length > 0) {
-        return bill.lineItems.map(li => ({
-          name: String(li.name || "").trim().toUpperCase(),
-          qty: Number(li.qty || 1),
-          amount: Number(li.price || 0) * Number(li.qty || 1)
-        }));
-      }
-      const out = [];
-      for (const svc of (bill.services || [])) {
-        for (const it of (svc.items || [])) {
-          const cleanName = String(it.label || "").replace(/\s+\d+$/, "").trim().toUpperCase();
-          out.push({
-            name: cleanName || "ITEM",
-            qty: Number(it.qty || 1),
-            amount: Number(it.amount || 0)
-          });
-        }
-      }
-      if (out.length === 0 && bill.itemsSummary) {
-        for (const part of String(bill.itemsSummary).split(";")) {
-          const m = part.trim().match(/^(.*?)\s+(\d+)$/);
-          if (m) out.push({ name: m[1].trim().toUpperCase(), qty: Number(m[2]), amount: 0 });
-        }
-      }
-      return out;
-    }
-
-    function parseHourFromTimeStr(timeStr) {
-      const s = String(timeStr || "").trim();
-      const ampmMatch = s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?\s*(AM|PM)$/i);
-      if (ampmMatch) {
-        let h = Number(ampmMatch[1]) % 12;
-        if (ampmMatch[3].toUpperCase() === "PM") h += 12;
-        return h;
-      }
-      const h24Match = s.match(/^(\d{1,2}):(\d{2})/);
-      if (h24Match) return Math.min(23, Math.max(0, Number(h24Match[1])));
-      return null;
-    }
-
-    function renderHistoryAndAnalytics() {
-      const todayKey = getLocalDateKey();
-      const todayBills = state.sales.filter(b => b.date === todayKey);
-      document.getElementById("todayCount").textContent = String(todayBills.length);
-
-      const bills = state.historyBills.length > 0 || state.historyFromDate !== todayKey || state.historyToDate !== todayKey
-        ? state.historyBills
-        : todayBills;
-
-      const totalRevenue = bills.reduce((sum, b) => sum + Number(b.grandTotal || 0), 0);
-      document.getElementById("salesSummaryText").textContent = state.historyLoading
-        ? "Loading history..."
-        : `${bills.length} bill(s) • Total: ₹${totalRevenue.toFixed(2)}`;
-
-      document.querySelectorAll("#historyTabStrip .tab-pill").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.htab === state.historyTab);
-      });
-
+    function renderHistoryActiveTab() {
       const container = document.getElementById("historyViewContainer");
       if (!container) return;
 
       if (state.historyLoading) {
-        container.innerHTML = `<p class="muted">Loading billing records...</p>`;
+        container.innerHTML = `<p class="muted">Loading billing analytics...</p>`;
         return;
       }
 
+      const bills = getActiveHistoryBills();
+
       if (state.historyTab === "bills") {
+        let rows = [...bills];
+        if (state.subtotalSortDir) {
+          rows.sort((a, b) => {
+            const diff = Number(a.subtotal || 0) - Number(b.subtotal || 0);
+            return state.subtotalSortDir === "asc" ? diff : -diff;
+          });
+        }
+
         const byDateMap = new Map();
         for (const b of bills) {
-          const d = b.date || todayKey;
-          const cur = byDateMap.get(d) || { date: d, bills: 0, total: 0 };
-          cur.bills += 1;
-          cur.total += Number(b.grandTotal || 0);
+          const d = b.date || getLocalDateKey();
+          const cur = byDateMap.get(d) || { date: d, revenue: 0, count: 0 };
+          cur.revenue += Number(b.grandTotal || 0);
+          cur.count += 1;
           byDateMap.set(d, cur);
         }
-        const dailyTrend = [...byDateMap.values()].sort((a, b) => a.date.localeCompare(b.date));
-        const sortedRows = getSortedSales();
-        const sortInd = state.subtotalSortDir === "asc" ? "↑" : (state.subtotalSortDir === "desc" ? "↓" : "↕");
+        const dailySeries = [...byDateMap.values()].sort((a, b) => a.date.localeCompare(b.date));
+        const totalRev = bills.reduce((s, b) => s + Number(b.grandTotal || 0), 0);
 
-        container.innerHTML = `
-          <div class="analytics-grid" style="margin-bottom:14px;">
-            ${renderBarChartSvg(dailyTrend, "date", "total", "Billing Trend by Date (₹)")}
-            <div class="chart-card">
-              <strong style="font-size:13px; color:var(--accent);">Daily Summary</strong>
-              <table class="bills-table">
-                <thead><tr><th>Date</th><th>Bills</th><th>Total</th></tr></thead>
-                <tbody>
-                  ${dailyTrend.length === 0
-                    ? `<tr><td colspan="3" class="muted">No records</td></tr>`
-                    : dailyTrend.map(d => `<tr><td>${escapeHtml(d.date)}</td><td>${d.bills}</td><td><strong>₹${d.total.toFixed(2)}</strong></td></tr>`).join("")}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div style="overflow-x:auto;">
+        const sortArrow = state.subtotalSortDir === "asc" ? " ▲" : state.subtotalSortDir === "desc" ? " ▼" : "";
+
+        const trendChart = renderSvgBarChart(
+          `Sales Trend (Total ₹${totalRev.toFixed(2)} across ${bills.length} bills)`,
+          dailySeries.map(d => ({ ...d, revenueRounded: Math.round(d.revenue) })),
+          "revenueRounded",
+          "date",
+          "#3b2319"
+        );
+
+        const tableHtml = rows.length
+          ? `
             <table class="bills-table">
               <thead>
                 <tr>
-                  <th>Bill #</th>
-                  <th>Seat</th>
-                  <th>Type / Token</th>
-                  <th>Customer</th>
+                  <th>Bill ID</th>
                   <th>Date &amp; Time</th>
+                  <th>Service</th>
+                  <th>Table / Token</th>
+                  <th>Customer</th>
                   <th>Items</th>
-                  <th>Mode</th>
-                  <th class="sortable" id="sortSubtotalHeader" onclick="toggleSubtotalSort()">Subtotal ${sortInd}</th>
-                  <th>Service Charges</th>
+                  <th class="sortable" id="sortSubtotalTh">Subtotal${sortArrow}</th>
+                  <th>SC</th>
                   <th>CGST</th>
                   <th>SGST</th>
-                  <th>Total</th>
+                  <th>Grand Total</th>
+                  <th>Mode</th>
                   <th>Receipt</th>
                 </tr>
               </thead>
               <tbody>
-                ${sortedRows.length === 0
-                  ? `<tr><td colspan="13" class="muted">No completed bills in this date range.</td></tr>`
-                  : sortedRows.map(b => {
-                    const custText = [normalizeCustomerName(b.customerName), b.customerPhone].filter(Boolean).join(" • ") || "-";
-                    const modeTokenText = [b.serviceType || "Dine-in", b.tokenNumber ? `#${sanitizeToken(b.tokenNumber)}` : ""].filter(Boolean).join(" • ");
-                    const cgstVal = b.cgstAmount !== undefined ? Number(b.cgstAmount) : Number(b.gstAmount || 0) / 2;
-                    const sgstVal = b.sgstAmount !== undefined ? Number(b.sgstAmount) : Number(b.gstAmount || 0) / 2;
-                    return `
-                      <tr>
-                        <td>${escapeHtml(b.id)}</td>
-                        <td>Seat ${escapeHtml(formatSeatLabel(b.tableName || "-"))}</td>
-                        <td>${escapeHtml(modeTokenText)}</td>
-                        <td>${escapeHtml(custText)}</td>
-                        <td>${escapeHtml(b.date)} ${escapeHtml(b.time)}</td>
-                        <td>${escapeHtml(b.itemsSummary)}</td>
-                        <td>${escapeHtml(b.mode)}</td>
-                        <td>₹${Number(b.subtotal).toFixed(2)}</td>
-                        <td>₹${Number(b.serviceCharge || 0).toFixed(2)}</td>
-                        <td>₹${cgstVal.toFixed(2)}</td>
-                        <td>₹${sgstVal.toFixed(2)}</td>
-                        <td><strong>₹${Number(b.grandTotal).toFixed(2)}</strong></td>
-                        <td><button type="button" class="btn btn-sm" onclick="printPastBill('${escapeAttr(b.id)}')">Print</button> ${(window.canStaff("waive_off") || window.canStaff("refund") || window.canStaff("replace")) ? `<button type="button" class="btn btn-sm btn-danger" onclick="openAdjustmentDialog('${escapeAttr(b.id)}')">Adjust</button>` : ""}</td>
-                      </tr>
-                    `;
-                  }).join("")}
+                ${rows.map(b => {
+                  const tblTok = b.serviceType === "Take away"
+                    ? `Token ${b.tokenNumber || "-"}`
+                    : formatTableDisplay(b.tableName);
+                  return `
+                    <tr>
+                      <td>${escapeHtml(b.id)}</td>
+                      <td>${escapeHtml(b.dateTimeLabel || `${b.date} ${b.time}`)}</td>
+                      <td>${escapeHtml(b.serviceType || "Dine-in")}</td>
+                      <td>${escapeHtml(tblTok)}</td>
+                      <td>${escapeHtml(b.customerName || "-")}${b.customerPhone ? ` (${escapeHtml(b.customerPhone)})` : ""}</td>
+                      <td>${escapeHtml(b.itemsSummary)}</td>
+                      <td>₹${Number(b.subtotal).toFixed(2)}</td>
+                      <td>₹${Number(b.serviceCharge || 0).toFixed(2)}</td>
+                      <td>₹${Number(b.cgstAmount || 0).toFixed(2)}</td>
+                      <td>₹${Number(b.sgstAmount || 0).toFixed(2)}</td>
+                      <td><strong>₹${Number(b.grandTotal).toFixed(2)}</strong></td>
+                      <td>${escapeHtml(b.mode)}</td>
+                      <td>
+                        <button type="button" class="btn btn-sm" data-reprint-bill="${escapeAttr(b.id)}">Print</button>
+                        ${b.receiptUrl ? `<a class="btn btn-sm" href="${escapeAttr(b.receiptUrl)}" target="_blank" rel="noopener">Link</a>` : ""}
+                      </td>
+                    </tr>
+                  `;
+                }).join("")}
               </tbody>
             </table>
+          `
+          : `<p class="muted">No closed bills found in this date range.</p>`;
+
+        container.innerHTML = `
+          <div class="analytics-grid" style="margin-bottom:14px;">
+            ${trendChart}
+            <div class="chart-card">
+              <strong>Range Summary</strong>
+              <p class="muted" style="margin:8px 0 0; line-height:1.6;">
+                Bills Settled: <strong>${bills.length}</strong><br/>
+                Gross Revenue: <strong>₹${totalRev.toFixed(2)}</strong><br/>
+                Average Bill Value: <strong>₹${bills.length ? (totalRev / bills.length).toFixed(2) : "0.00"}</strong>
+              </p>
+            </div>
           </div>
+          ${tableHtml}
         `;
+
+        const sortTh = document.getElementById("sortSubtotalTh");
+        if (sortTh) {
+          sortTh.addEventListener("click", () => {
+            state.subtotalSortDir = state.subtotalSortDir === "asc" ? "desc" : "asc";
+            renderHistoryActiveTab();
+          });
+        }
+
+        container.querySelectorAll("[data-reprint-bill]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const targetBill = bills.find(b => b.id === btn.dataset.reprintBill);
+            if (targetBill) {
+              printHtmlContent(buildBillReceiptHtml(targetBill));
+            }
+          });
+        });
         return;
       }
 
       if (state.historyTab === "products") {
         const prodMap = new Map();
         for (const b of bills) {
-          for (const it of extractBillItems(b)) {
-            const cur = prodMap.get(it.name) || { name: it.name, qty: 0, revenue: 0 };
-            cur.qty += Number(it.qty || 0);
-            cur.revenue += Number(it.amount || 0);
-            prodMap.set(it.name, cur);
+          const items = Array.isArray(b.lineItems) ? b.lineItems : [];
+          for (const it of items) {
+            const name = String(it.name || "").trim();
+            if (!name) continue;
+            const qty = Number(it.qty || 1);
+            const amt = qty * Number(it.price || 0);
+            const cur = prodMap.get(name) || { name, qty: 0, revenue: 0 };
+            cur.qty += qty;
+            cur.revenue += amt;
+            prodMap.set(name, cur);
           }
         }
-        const ranked = [...prodMap.values()].sort((a, b) => b.qty - a.qty);
+        const sortedProds = [...prodMap.values()].sort((a, b) => b.qty - a.qty);
+
         container.innerHTML = `
           <div class="analytics-grid">
-            ${renderBarChartSvg(ranked, "name", "qty", "Most Selling Products (Qty Sold)", v => `${v} sold`)}
-            <div class="chart-card">
-              <strong style="font-size:13px; color:var(--accent);">Product Sales Breakdown</strong>
-              <table class="bills-table">
-                <thead><tr><th>Item</th><th>Qty Sold</th><th>Revenue</th></tr></thead>
-                <tbody>
-                  ${ranked.length === 0
-                    ? `<tr><td colspan="3" class="muted">No item sales in range</td></tr>`
-                    : ranked.map(p => `<tr><td>${escapeHtml(p.name)}</td><td><strong>${p.qty}</strong></td><td>₹${p.revenue.toFixed(2)}</td></tr>`).join("")}
-                </tbody>
-              </table>
-            </div>
+            ${renderSvgBarChart("Most Selling Products (by Quantity)", sortedProds, "qty", "name", "#3b2319")}
+            ${renderSvgBarChart("Top Products by Revenue (₹)", sortedProds.map(p => ({ ...p, revRound: Math.round(p.revenue) })), "revRound", "name", "#9c6638")}
           </div>
+          <table class="bills-table">
+            <thead>
+              <tr><th>Product</th><th>Units Sold</th><th>Revenue</th></tr>
+            </thead>
+            <tbody>
+              ${sortedProds.map(p => `
+                <tr>
+                  <td><strong>${escapeHtml(p.name)}</strong></td>
+                  <td>${p.qty}</td>
+                  <td>₹${p.revenue.toFixed(2)}</td>
+                </tr>
+              `).join("") || `<tr><td colspan="3" class="muted">No product line-item data available.</td></tr>`}
+            </tbody>
+          </table>
         `;
         return;
       }
 
       if (state.historyTab === "rush") {
         const hourMap = new Map();
-        for (const b of bills) {
-          const h = parseHourFromTimeStr(b.time);
-          if (h === null) continue;
+        for (let h = 0; h < 24; h++) {
           const label = `${String(h).padStart(2, "0")}:00`;
-          const cur = hourMap.get(label) || { hour: label, bills: 0, sales: 0 };
-          cur.bills += 1;
-          cur.sales += Number(b.grandTotal || 0);
-          hourMap.set(label, cur);
+          hourMap.set(h, { hour: h, label, kots: 0, bills: 0, revenue: 0 });
         }
-        const hourly = [...hourMap.values()].sort((a, b) => a.hour.localeCompare(b.hour));
+
+        for (const k of state.historyKots) {
+          const dt = k.created_at ? new Date(k.created_at) : null;
+          if (dt && !Number.isNaN(dt.getTime())) {
+            const entry = hourMap.get(dt.getHours());
+            if (entry) entry.kots += 1;
+          }
+        }
+
+        for (const b of bills) {
+          let hr = null;
+          if (b.createdAt) {
+            const dt = new Date(b.createdAt);
+            if (!Number.isNaN(dt.getTime())) hr = dt.getHours();
+          }
+          if (hr === null && b.time) {
+            const m = String(b.time).match(/(\d{1,2}):(\d{2})(?:\s*(AM|PM))?/i);
+            if (m) {
+              let hNum = Number(m[1]);
+              const mer = (m[3] || "").toUpperCase();
+              if (mer === "PM" && hNum < 12) hNum += 12;
+              if (mer === "AM" && hNum === 12) hNum = 0;
+              hr = hNum;
+            }
+          }
+          if (hr !== null && hourMap.has(hr)) {
+            const entry = hourMap.get(hr);
+            entry.bills += 1;
+            entry.revenue += Number(b.grandTotal || 0);
+          }
+        }
+
+        const activeHours = [...hourMap.values()].filter(h => h.kots > 0 || h.bills > 0);
         container.innerHTML = `
           <div class="analytics-grid">
-            ${renderBarChartSvg(hourly, "hour", "sales", "Rush Hours by Sales (₹)")}
-            <div class="chart-card">
-              <strong style="font-size:13px; color:var(--accent);">Hourly Sales &amp; Bill Count</strong>
-              <table class="bills-table">
-                <thead><tr><th>Hour</th><th>Bills</th><th>Sales</th></tr></thead>
-                <tbody>
-                  ${hourly.length === 0
-                    ? `<tr><td colspan="3" class="muted">No hourly data in range</td></tr>`
-                    : hourly.map(r => `<tr><td>${escapeHtml(r.hour)}</td><td>${r.bills}</td><td><strong>₹${r.sales.toFixed(2)}</strong></td></tr>`).join("")}
-                </tbody>
-              </table>
-            </div>
+            ${renderSvgBarChart("Rush Hours by KOTs Sent", activeHours, "kots", "label", "#9c6638")}
+            ${renderSvgBarChart("Rush Hours by Bills Settled", activeHours, "bills", "label", "#3b2319")}
           </div>
+          <table class="bills-table">
+            <thead>
+              <tr><th>Hour Slot</th><th>KOTs Sent</th><th>Bills Settled</th><th>Revenue</th></tr>
+            </thead>
+            <tbody>
+              ${activeHours.map(h => `
+                <tr>
+                  <td><strong>${escapeHtml(h.label)}</strong></td>
+                  <td>${h.kots}</td>
+                  <td>${h.bills}</td>
+                  <td>₹${h.revenue.toFixed(2)}</td>
+                </tr>
+              `).join("") || `<tr><td colspan="4" class="muted">No rush-hour activity recorded in selected dates.</td></tr>`}
+            </tbody>
+          </table>
         `;
         return;
       }
 
       if (state.historyTab === "tables") {
-        const seatCount = Math.max(1, state.tables.length);
-        const daysSpan = Math.max(1, new Set(bills.map(b => b.date)).size);
-        const seatMap = new Map();
-        for (const t of state.tables) {
-          const s = formatSeatLabel(t.name);
-          seatMap.set(s, { seat: `Seat ${s}`, bills: 0, revenue: 0, turnaroundSum: 0, turnaroundSamples: 0 });
-        }
+        const tblMap = new Map();
         for (const b of bills) {
-          const s = formatSeatLabel(b.tableName || "1");
-          const cur = seatMap.get(s) || { seat: `Seat ${s}`, bills: 0, revenue: 0, turnaroundSum: 0, turnaroundSamples: 0 };
-          cur.bills += 1;
+          const label = b.serviceType === "Take away"
+            ? `Take Away (Token ${b.tokenNumber || "-"})`
+            : formatTableDisplay(b.tableName);
+          const cur = tblMap.get(label) || { label, turnovers: 0, revenue: 0, totalMins: 0, timedCount: 0 };
+          cur.turnovers += 1;
           cur.revenue += Number(b.grandTotal || 0);
-          const mins = Number(b.turnaroundMinutes || 0);
-          if (mins > 0) {
-            cur.turnaroundSum += mins;
-            cur.turnaroundSamples += 1;
+
+          if (b.startedAt && b.createdAt) {
+            const startMs = new Date(b.startedAt).getTime();
+            const endMs = new Date(b.createdAt).getTime();
+            if (Number.isFinite(startMs) && Number.isFinite(endMs) && endMs >= startMs) {
+              const mins = (endMs - startMs) / 60000;
+              if (mins > 0 && mins < 720) {
+                cur.totalMins += mins;
+                cur.timedCount += 1;
+              }
+            }
           }
-          seatMap.set(s, cur);
+          tblMap.set(label, cur);
         }
-        const rows = [...seatMap.values()].map(r => ({
-          ...r,
-          avgTurnaround: r.turnaroundSamples > 0 ? Math.round(r.turnaroundSum / r.turnaroundSamples) : 0,
-          turnoverRate: Number((r.bills / daysSpan).toFixed(2))
-        }));
-        const overallTurnover = Number((bills.length / (seatCount * daysSpan)).toFixed(2));
+
+        const tblRows = [...tblMap.values()]
+          .map(t => ({
+            ...t,
+            avgTurnaroundMins: t.timedCount > 0 ? Math.round(t.totalMins / t.timedCount) : 0
+          }))
+          .sort((a, b) => b.turnovers - a.turnovers);
 
         container.innerHTML = `
           <div class="analytics-grid">
-            ${renderBarChartSvg(rows, "seat", "bills", "Settled Bills per Seat", v => `${v} bills`)}
-            <div class="chart-card">
-              <strong style="font-size:13px; color:var(--accent);">Table Turnaround &amp; Turnover (Avg Turnover: ${overallTurnover}x / seat / day)</strong>
-              <table class="bills-table">
-                <thead><tr><th>Seat</th><th>Bills</th><th>Turnover / Day</th><th>Avg Turnaround</th><th>Revenue</th></tr></thead>
-                <tbody>
-                  ${rows.map(r => `
-                    <tr>
-                      <td>${escapeHtml(r.seat)}</td>
-                      <td>${r.bills}</td>
-                      <td><strong>${r.turnoverRate}x</strong></td>
-                      <td>${r.avgTurnaround > 0 ? `${r.avgTurnaround} min` : "—"}</td>
-                      <td>₹${r.revenue.toFixed(2)}</td>
-                    </tr>
-                  `).join("")}
-                </tbody>
-              </table>
-            </div>
+            ${renderSvgBarChart("Table / Service Turnover Count", tblRows, "turnovers", "label", "#3b2319")}
+            ${renderSvgBarChart("Avg Turnaround Time (Minutes)", tblRows, "avgTurnaroundMins", "label", "#9c6638")}
           </div>
+          <table class="bills-table">
+            <thead>
+              <tr><th>Table / Service</th><th>Turnover Count</th><th>Avg Turnaround</th><th>Total Revenue</th></tr>
+            </thead>
+            <tbody>
+              ${tblRows.map(t => `
+                <tr>
+                  <td><strong>${escapeHtml(t.label)}</strong></td>
+                  <td>${t.turnovers}</td>
+                  <td>${t.timedCount > 0 ? `${t.avgTurnaroundMins} mins` : "—"}</td>
+                  <td>₹${t.revenue.toFixed(2)}</td>
+                </tr>
+              `).join("") || `<tr><td colspan="4" class="muted">No table turnover data in selected range.</td></tr>`}
+            </tbody>
+          </table>
         `;
         return;
       }
 
-      const custMap = new Map();
-      for (const b of bills) {
-        const phone = sanitizeTenDigitPhone(b.customerPhone || "");
-        const name = normalizeCustomerName(b.customerName || "");
-        const key = phone || (name ? `NAME:${name}` : "");
-        if (!key) continue;
-        const cur = custMap.get(key) || {
-          customer: [name || "GUEST", phone].filter(Boolean).join(" • "),
-          visits: 0,
-          totalSpend: 0,
-          lastVisit: b.date || ""
-        };
-        cur.visits += 1;
-        cur.totalSpend += Number(b.grandTotal || 0);
-        if ((b.date || "") > cur.lastVisit) cur.lastVisit = b.date || "";
-        custMap.set(key, cur);
-      }
-      const customers = [...custMap.values()].sort((a, b) => b.visits - a.visits || b.totalSpend - a.totalSpend);
-      const returningCount = customers.filter(c => c.visits > 1).length;
+      if (state.historyTab === "customers") {
+        const custMap = new Map();
+        for (const b of bills) {
+          const phone = sanitizeTenDigitPhone(b.customerPhone || "");
+          const name = normalizeCustomerName(b.customerName || "");
+          if (!phone && !name) continue;
+          const key = phone || name;
+          const cur = custMap.get(key) || {
+            key,
+            name: name || "Walk-in Guest",
+            phone: phone || "-",
+            visits: 0,
+            totalSpend: 0,
+            lastVisit: b.date || ""
+          };
+          cur.visits += 1;
+          cur.totalSpend += Number(b.grandTotal || 0);
+          if ((b.date || "") >= cur.lastVisit) {
+            cur.lastVisit = b.date || cur.lastVisit;
+            if (name) cur.name = name;
+          }
+          custMap.set(key, cur);
+        }
 
-      container.innerHTML = `
-        <div class="analytics-grid">
-          ${renderBarChartSvg(customers, "customer", "visits", "Customer Visits", v => `${v} visit${v > 1 ? "s" : ""}`)}
-          <div class="chart-card">
-            <strong style="font-size:13px; color:var(--accent);">Customer History (${returningCount} Returning of ${customers.length} Identified)</strong>
-            <table class="bills-table">
-              <thead><tr><th>Customer</th><th>Visits</th><th>Last Visit</th><th>Total Spend</th></tr></thead>
-              <tbody>
-                ${customers.length === 0
-                  ? `<tr><td colspan="4" class="muted">No customer mobile/name recorded in range</td></tr>`
-                  : customers.map(c => `
-                    <tr>
-                      <td>${escapeHtml(c.customer)}</td>
-                      <td><strong>${c.visits}</strong> ${c.visits > 1 ? '<span class="kot-tag">Returning</span>' : ""}</td>
-                      <td>${escapeHtml(c.lastVisit)}</td>
-                      <td>₹${c.totalSpend.toFixed(2)}</td>
-                    </tr>
-                  `).join("")}
-              </tbody>
-            </table>
+        const allCust = [...custMap.values()].sort((a, b) => b.visits - a.visits || b.totalSpend - a.totalSpend);
+        const returningCust = allCust.filter(c => c.visits > 1);
+
+        container.innerHTML = `
+          <div class="analytics-grid">
+            ${renderSvgBarChart("Top Customers by Visit Count", allCust, "visits", "name", "#3b2319")}
+            <div class="chart-card">
+              <strong>Customer Retention Snapshot</strong>
+              <p class="muted" style="margin:8px 0 0; line-height:1.6;">
+                Identified Guests: <strong>${allCust.length}</strong><br/>
+                Returning Guests (2+ visits): <strong>${returningCust.length}</strong><br/>
+                Repeat Visit Revenue: <strong>₹${returningCust.reduce((s, c) => s + c.totalSpend, 0).toFixed(2)}</strong>
+              </p>
+            </div>
           </div>
-        </div>
-      `;
+          <table class="bills-table">
+            <thead>
+              <tr><th>Customer Name</th><th>Mobile</th><th>Visits</th><th>Total Spend</th><th>Last Visit</th></tr>
+            </thead>
+            <tbody>
+              ${allCust.map(c => `
+                <tr>
+                  <td><strong>${escapeHtml(c.name)}</strong> ${c.visits > 1 ? `<span class="kot-tag">Returning</span>` : ""}</td>
+                  <td>${escapeHtml(c.phone)}</td>
+                  <td>${c.visits}</td>
+                  <td>₹${c.totalSpend.toFixed(2)}</td>
+                  <td>${escapeHtml(c.lastVisit)}</td>
+                </tr>
+              `).join("") || `<tr><td colspan="5" class="muted">No customer name/mobile recorded in this date range.</td></tr>`}
+            </tbody>
+          </table>
+        `;
+      }
     }
 
     function exportSalesCsv() {
-      enforceMidnightRolloverForSales();
-      const rowsSource = state.historyBills.length > 0 ? state.historyBills : state.sales;
-
-      if (rowsSource.length === 0) {
-        alert("No sales records to export yet.");
+      const rowsToExport = getActiveHistoryBills();
+      if (!rowsToExport.length) {
+        alert("No settled bills in the selected range to export.");
         return;
       }
 
       const headers = [
-        "Bill ID", "Seat", "Service Type", "Token #", "Customer Name", "Customer Phone",
-        "Date", "Time", "Items", "Payment Mode",
-        "Subtotal", "Service Charges", "CGST", "SGST", "Grand Total", "Receipt URL"
+        "Bill ID", "Date", "Time", "Service Type", "Table", "Token",
+        "Customer Name", "Customer Phone", "Items", "Subtotal",
+        "Service Charge", "CGST %", "CGST Amount", "SGST %", "SGST Amount",
+        "Total GST", "Grand Total", "Payment Mode", "UPI ID", "Receipt URL"
       ];
+      const csvRows = [headers.join(",")];
 
-      const rows = rowsSource.map(b => {
-        const cgstVal = b.cgstAmount !== undefined ? Number(b.cgstAmount) : Number(b.gstAmount || 0) / 2;
-        const sgstVal = b.sgstAmount !== undefined ? Number(b.sgstAmount) : Number(b.gstAmount || 0) / 2;
-        return [
-          b.id, formatSeatLabel(b.tableName || ""), b.serviceType || "Dine-in", sanitizeToken(b.tokenNumber || ""),
-          normalizeCustomerName(b.customerName || ""), b.customerPhone || "",
-          b.date, b.time, b.itemsSummary, b.mode,
-          Number(b.subtotal).toFixed(2), Number(b.serviceCharge || 0).toFixed(2),
-          cgstVal.toFixed(2), sgstVal.toFixed(2), Number(b.grandTotal).toFixed(2),
-          b.receiptUrl || ""
-        ];
-      });
+      for (const r of rowsToExport) {
+        const vals = [
+          r.id, r.date, r.time, r.serviceType || "Dine-in",
+          formatTableDisplay(r.tableName), r.tokenNumber || "",
+          r.customerName || "", r.customerPhone || "",
+          r.itemsSummary,
+          Number(r.subtotal).toFixed(2),
+          Number(r.serviceCharge || 0).toFixed(2),
+          Number(r.cgstRate || 0).toFixed(2),
+          Number(r.cgstAmount || 0).toFixed(2),
+          Number(r.sgstRate || 0).toFixed(2),
+          Number(r.sgstAmount || 0).toFixed(2),
+          Number(r.gstAmount || 0).toFixed(2),
+          Number(r.grandTotal).toFixed(2),
+          r.mode, r.upiVpa || "", r.receiptUrl || ""
+        ].map(v => `"${String(v ?? "").replace(/"/g, '""')}"`);
+        csvRows.push(vals.join(","));
+      }
 
-      const csvContent = [headers, ...rows]
-        .map(row => row.map(cell => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(","))
-        .join("\n");
-
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `cgs-cafe-sales-${state.historyFromDate || getLocalDateKey()}-to-${state.historyToDate || getLocalDateKey()}.csv`;
+      a.download = `cgs-pos-bills-${state.historyFromDate}-to-${state.historyToDate}.csv`;
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -3955,324 +3690,292 @@
     }
 
     function escapeAttr(str) {
-      return String(str ?? "").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+      return escapeHtml(str).replace(/'/g, "&#39;");
     }
 
-    document.getElementById("btnPosLogout").addEventListener("click", async () => {
-      if (typeof logout === "function") await logout({ clearStorage: false });
-    });
+    function escapeXml(str) {
+      return escapeHtml(str).replace(/'/g, "&apos;");
+    }
 
-    document.getElementById("btnOpenSettings").addEventListener("click", openSettingsDialog);
-    document.getElementById("btnSaveSettings").addEventListener("click", commitSettingsFromDialog);
-    document.getElementById("btnCancelSettings").addEventListener("click", closeSettingsWithoutSaving);
-    document.getElementById("btnCancelSettingsTop").addEventListener("click", closeSettingsWithoutSaving);
-    document.getElementById("settingsDialog").addEventListener("cancel", (e) => {
-      e.preventDefault();
-      closeSettingsWithoutSaving();
-    });
+    function bindEvents() {
+      document.getElementById("searchInput").addEventListener("input", renderCatalog);
+      document.getElementById("categoryFilter").addEventListener("change", renderCatalog);
 
-    document.getElementById("btnAddUpiEntry").addEventListener("click", addDraftUpiEntry);
-    document.getElementById("newUpiVpaInput").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        addDraftUpiEntry();
-      }
-    });
-
-    document.getElementById("newUpiQrFile").addEventListener("change", (e) => {
-      const file = e.target.files?.[0];
-      const nameEl = document.getElementById("newUpiQrFileName");
-      const errEl = document.getElementById("upiManagerError");
-      if (!file) {
-        state.pendingUploadedQrDataUrl = "";
-        nameEl.textContent = "";
-        return;
-      }
-      if (!file.type.startsWith("image/")) {
-        errEl.textContent = "Please select an image file for the QR code.";
-        e.target.value = "";
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = () => {
-        state.pendingUploadedQrDataUrl = String(reader.result || "");
-        nameEl.textContent = `Selected QR for new UPI: ${file.name}`;
-        errEl.textContent = "";
-      };
-      reader.readAsDataURL(file);
-    });
-
-    document.getElementById("replaceUpiQrFile").addEventListener("change", (e) => {
-      const file = e.target.files?.[0];
-      const targetId = state.replacingQrForUpiId;
-      state.replacingQrForUpiId = "";
-      if (!file || !targetId) return;
-
-      const errEl = document.getElementById("upiManagerError");
-      if (!file.type.startsWith("image/")) {
-        errEl.textContent = "Please select an image file for the QR code.";
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUrl = String(reader.result || "");
-        const targetAcc = state.draftUpiAccounts.find(u => u.id === targetId);
-        if (targetAcc) {
-          targetAcc.customQrDataUrl = dataUrl;
-          if (state.settings.activeUpiId === targetAcc.id) {
-            state.settings.upiAccounts = state.draftUpiAccounts.map(u => ({ ...u }));
-            try {
-              localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.settings));
-            } catch (_) {}
-            syncBillingSettingsToSupabase(state.settings);
-            renderPaymentFlow();
-          }
-          renderUpiManagerDraft();
-        }
-      };
-      reader.readAsDataURL(file);
-    });
-
-    document.getElementById("btnOpenSales").addEventListener("click", async () => {
-      enforceMidnightRolloverForSales();
-      const todayKey = getLocalDateKey();
-      document.getElementById("historyFromDate").value = state.historyFromDate || todayKey;
-      document.getElementById("historyToDate").value = state.historyToDate || todayKey;
-      document.getElementById("salesDialog").showModal();
-      await fetchBillingHistoryRange(
-        document.getElementById("historyFromDate").value,
-        document.getElementById("historyToDate").value
-      );
-    });
-
-    document.getElementById("btnLoadHistory").addEventListener("click", async () => {
-      await fetchBillingHistoryRange(
-        document.getElementById("historyFromDate").value,
-        document.getElementById("historyToDate").value
-      );
-    });
-
-    document.getElementById("btnHistoryLast7").addEventListener("click", async () => {
-      const toKey = getLocalDateKey();
-      const fromKey = shiftDateKey(toKey, -6);
-      document.getElementById("historyFromDate").value = fromKey;
-      document.getElementById("historyToDate").value = toKey;
-      await fetchBillingHistoryRange(fromKey, toKey);
-    });
-
-    document.getElementById("btnHistoryToday").addEventListener("click", async () => {
-      const todayKey = getLocalDateKey();
-      document.getElementById("historyFromDate").value = todayKey;
-      document.getElementById("historyToDate").value = todayKey;
-      await fetchBillingHistoryRange(todayKey, todayKey);
-    });
-
-    document.querySelectorAll("#historyTabStrip .tab-pill").forEach(btn => {
-      btn.addEventListener("click", () => {
-        state.historyTab = btn.dataset.htab;
-        renderHistoryAndAnalytics();
-      });
-    });
-
-    document.querySelectorAll("[data-close-dialog]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const dialog = document.getElementById(btn.dataset.closeDialog);
-        if (dialog && typeof dialog.close === "function") dialog.close();
-      });
-    });
-
-    document.getElementById("searchInput").addEventListener("input", renderCatalog);
-    document.getElementById("categoryFilter").addEventListener("change", renderCatalog);
-    document.getElementById("btnAddTable").addEventListener("click", addNewTable);
-    document.getElementById("btnRemoveTable").addEventListener("click", removeCurrentTable);
-    document.getElementById("btnSendKot").addEventListener("click", sendKotForActiveTable);
-    document.getElementById("btnReprintKot").addEventListener("click", reprintLastKotForActiveTable);
-
-    document.getElementById("customerNameInput").addEventListener("input", (e) => {
-      const upper = normalizeCustomerName(e.target.value);
-      e.target.value = upper;
-      const table = getActiveTable();
-      table.customerName = upper;
-      saveTablesState(false);
-    });
-
-    document.getElementById("customerPhoneInput").addEventListener("input", (e) => {
-      const cleaned = sanitizeTenDigitPhone(e.target.value);
-      e.target.value = cleaned;
-      const table = getActiveTable();
-      table.customerPhone = cleaned;
-      if (!table.waPhoneManual) {
-        table.waPhone = cleaned;
-        const waInput = document.getElementById("waPhoneInput");
-        if (waInput) {
-          waInput.value = cleaned;
-          const waErr = document.getElementById("waPhoneError");
-          if (waErr) waErr.textContent = "";
-        }
-      }
-      saveTablesState(false);
-    });
-
-    document.getElementById("serviceTypeSelect").addEventListener("change", (e) => {
-      const table = getActiveTable();
-      table.serviceType = e.target.value;
-      saveTablesState(false);
-    });
-
-    document.getElementById("tokenNumberInput").addEventListener("input", (e) => {
-      const cleanedToken = sanitizeToken(e.target.value);
-      e.target.value = cleanedToken;
-      const table = getActiveTable();
-      table.tokenNumber = cleanedToken;
-      saveTablesState(false);
-    });
-
-    document.getElementById("btnCloseTransaction").addEventListener("click", openCloseConfirmation);
-    document.getElementById("btnConfirmAndPrint").addEventListener("click", confirmAndPrintReceipt);
-
-    document.querySelectorAll(".pay-mode-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
+      document.getElementById("customerNameInput").addEventListener("input", (e) => {
+        const normalized = normalizeCustomerName(e.target.value);
+        e.target.value = normalized;
         const table = getActiveTable();
-        table.paymentMode = btn.dataset.mode;
-        saveTablesState(false);
-        renderTableTabs();
-        renderPaymentFlow();
+        table.customerName = normalized;
+        saveTablesState();
       });
-    });
 
-    document.getElementById("btnExportCsv").addEventListener("click", exportSalesCsv);
-    document.getElementById("btnExportCsvInner").addEventListener("click", exportSalesCsv);
+      document.getElementById("customerPhoneInput").addEventListener("input", (e) => {
+        const cleaned = sanitizeTenDigitPhone(e.target.value);
+        e.target.value = cleaned;
+        const table = getActiveTable();
+        table.customerPhone = cleaned;
+        if (!table.waPhoneManual) {
+          table.waPhone = cleaned;
+          const waInput = document.getElementById("waPhoneInput");
+          if (waInput) {
+            waInput.value = cleaned;
+            waInput.dispatchEvent(new Event("input"));
+          }
+        }
+        saveTablesState();
+      });
 
-    window.addEventListener("focus", () => {
-      refreshTableSessionsFromSupabase(true);
-    });
+      document.getElementById("serviceTypeSelect").addEventListener("change", (e) => {
+        const table = getActiveTable();
+        table.serviceType = e.target.value === "Take away" ? "Take away" : "Dine-in";
+        saveTablesState(true);
+      });
 
-    setInterval(enforceMidnightRolloverForSales, 30000);
+      document.getElementById("tokenNumberInput").addEventListener("input", (e) => {
+        const cleaned = sanitizeToken(e.target.value);
+        e.target.value = cleaned;
+        const table = getActiveTable();
+        table.tokenNumber = cleaned;
+        saveTablesState(true);
+      });
 
-    function applyPosRolePermissions() {
-      const profile = window.currentStaffProfile;
-      const roleBadge = document.getElementById("staffRoleBadge");
-      if (roleBadge && profile) {
-        roleBadge.textContent = `${profile.full_name || "Staff"} (${String(profile.role || "").toUpperCase()})`;
-      }
+      document.getElementById("btnSendKot").addEventListener("click", sendKotForActiveTable);
+      document.getElementById("btnReprintKot").addEventListener("click", reprintLastKotForActiveTable);
 
-      if (!window.canStaff("pos_access")) {
-        alert("Your account does not have POS access enabled. Contact Superuser.");
-        window.location.href = "/admin/account-setup.html";
-        return false;
-      }
+      document.getElementById("btnAddTable").addEventListener("click", () => {
+        const nextNum = state.tables.length + 1;
+        const newTable = {
+          id: `T${Date.now().toString().slice(-4)}`,
+          name: String(nextNum),
+          startedAt: new Date().toISOString(),
+          cart: [],
+          kots: [],
+          paymentMode: "UPI",
+          customerName: "",
+          customerPhone: "",
+          waPhone: "",
+          waPhoneManual: false,
+          serviceType: "Dine-in",
+          tokenNumber: ""
+        };
+        state.tables.push(newTable);
+        state.activeTableId = newTable.id;
+        saveTablesState(true);
+        renderTableTabs();
+        renderCart();
+      });
 
-      if (window.canStaff("view_analytics")) {
-        document.getElementById("linkAdminAnalytics").style.display = "inline-flex";
-      }
-      if (window.canStaff("manage_users")) {
-        document.getElementById("linkManageUsers").style.display = "inline-flex";
-      }
-      if (window.canStaff("edit_billing_rules")) {
-        document.getElementById("btnOpenSettings").style.display = "inline-flex";
-      }
+      document.getElementById("btnRemoveTable").addEventListener("click", () => {
+        if (state.tables.length <= 1) return;
+        const active = getActiveTable();
+        if (active.cart.length > 0 && !confirm(`${formatTableDisplay(active.name)} has active items. Remove anyway?`)) {
+          return;
+        }
+        const removedId = active.id;
+        state.tables = state.tables.filter(t => t.id !== removedId);
+        state.activeTableId = state.tables[0].id;
+        deleteTableSessionFromSupabase(removedId);
+        saveTablesState(true);
+        renderTableTabs();
+        renderCart();
+      });
 
-      if (!window.canStaff("send_kot")) {
-        document.getElementById("btnSendKot").style.display = "none";
+      document.querySelectorAll(".pay-mode-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const table = getActiveTable();
+          table.paymentMode = btn.dataset.mode;
+          saveTablesState(true);
+          renderCart();
+        });
+      });
+
+      document.getElementById("btnCloseTransaction").addEventListener("click", openCloseConfirmationDialog);
+      document.getElementById("btnConfirmAndPrint").addEventListener("click", finalizeBillAndPrint);
+
+      document.getElementById("btnOpenSettings").addEventListener("click", openSettingsDialog);
+      document.getElementById("btnCancelSettings").addEventListener("click", () => document.getElementById("settingsDialog").close());
+      document.getElementById("btnCancelSettingsTop").addEventListener("click", () => document.getElementById("settingsDialog").close());
+      document.getElementById("btnSaveSettings").addEventListener("click", saveSettingsFromDialog);
+
+      document.getElementById("newUpiQrFile").addEventListener("change", async (e) => {
+        const file = e.target.files?.[0];
+        const nameEl = document.getElementById("newUpiQrFileName");
+        const errEl = document.getElementById("upiManagerError");
+        if (!file) {
+          state.pendingUploadedQrDataUrl = "";
+          if (nameEl) nameEl.textContent = "";
+          return;
+        }
+        try {
+          const dataUrl = await readImageFileAsDataUrl(file);
+          state.pendingUploadedQrDataUrl = dataUrl;
+          if (errEl) errEl.textContent = "";
+          if (nameEl) nameEl.textContent = `Selected QR: ${file.name}`;
+        } catch (err) {
+          state.pendingUploadedQrDataUrl = "";
+          if (nameEl) nameEl.textContent = "";
+          if (errEl) errEl.textContent = err.message;
+        }
+      });
+
+      document.getElementById("replaceUpiQrFile").addEventListener("change", async (e) => {
+        const file = e.target.files?.[0];
+        const targetId = state.replacingQrForUpiId;
+        state.replacingQrForUpiId = "";
+        if (!file || !targetId) return;
+        try {
+          const dataUrl = await readImageFileAsDataUrl(file);
+          state.draftUpiAccounts = state.draftUpiAccounts.map(acc =>
+            acc.id === targetId ? { ...acc, customQrDataUrl: dataUrl } : acc
+          );
+          renderUpiManagerDraft();
+        } catch (err) {
+          const errEl = document.getElementById("upiManagerError");
+          if (errEl) errEl.textContent = err.message;
+        }
+      });
+
+      document.getElementById("btnAddUpiEntry").addEventListener("click", () => {
+        const vpaInput = document.getElementById("newUpiVpaInput");
+        const errEl = document.getElementById("upiManagerError");
+        const nameEl = document.getElementById("newUpiQrFileName");
+        const vpa = vpaInput.value.trim();
+
+        if (!vpa || !vpa.includes("@")) {
+          if (errEl) errEl.textContent = "Enter a valid UPI ID (e.g., merchant@oksbi).";
+          return;
+        }
+
+        const newAcc = {
+          id: `upi-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          vpa,
+          customQrDataUrl: state.pendingUploadedQrDataUrl || ""
+        };
+
+        state.draftUpiAccounts.push(newAcc);
+        state.draftActiveUpiId = newAcc.id;
+        state.pendingUploadedQrDataUrl = "";
+        vpaInput.value = "";
+        document.getElementById("newUpiQrFile").value = "";
+        if (nameEl) nameEl.textContent = "";
+        if (errEl) errEl.textContent = "";
+
+        renderUpiManagerDraft();
+      });
+
+      document.getElementById("btnOpenSales").addEventListener("click", openSalesDialog);
+      document.getElementById("btnExportCsv").addEventListener("click", exportSalesCsv);
+      document.getElementById("btnExportCsvInner").addEventListener("click", exportSalesCsv);
+
+      document.getElementById("btnLoadHistory").addEventListener("click", () => {
+        const fromD = document.getElementById("historyFromDate").value || getLocalDateKey();
+        const toD = document.getElementById("historyToDate").value || fromD;
+        fetchHistoryRange(fromD, toD);
+      });
+
+      document.getElementById("btnHistoryLast7").addEventListener("click", () => {
+        const toD = getLocalDateKey();
+        const fromD = shiftDateKey(toD, -6);
+        document.getElementById("historyFromDate").value = fromD;
+        document.getElementById("historyToDate").value = toD;
+        fetchHistoryRange(fromD, toD);
+      });
+
+      document.getElementById("btnHistoryToday").addEventListener("click", () => {
+        const todayD = getLocalDateKey();
+        document.getElementById("historyFromDate").value = todayD;
+        document.getElementById("historyToDate").value = todayD;
+        fetchHistoryRange(todayD, todayD);
+      });
+
+      document.querySelectorAll("#historyTabStrip .tab-pill").forEach(pill => {
+        pill.addEventListener("click", () => {
+          document.querySelectorAll("#historyTabStrip .tab-pill").forEach(p => p.classList.remove("active"));
+          pill.classList.add("active");
+          state.historyTab = pill.dataset.htab || "bills";
+          renderHistoryActiveTab();
+        });
+      });
+
+      document.querySelectorAll("[data-close-dialog]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const dlg = document.getElementById(btn.dataset.closeDialog);
+          if (dlg && dlg.open) dlg.close();
+        });
+      });
+
+      const posLogoutBtn = document.getElementById("btnPosLogout");
+      if (posLogoutBtn) {
+        posLogoutBtn.addEventListener("click", () => {
+          if (typeof window.logout === "function") {
+            window.logout({ clearStorage: false });
+          } else {
+            window.location.replace("/authorization/login.html");
+          }
+        });
       }
-      if (!window.canStaff("settle_bill")) {
-        document.getElementById("btnCloseTransaction").style.display = "none";
-      }
-      return true;
     }
 
-    function openAdjustmentDialog(billId) {
-      const bill = state.historyBills.find(b => b.id === billId) || state.sales.find(b => b.id === billId);
-      if (!bill) return;
-      const sel = document.getElementById("adjTypeSelect");
-      sel.innerHTML = "";
-      if (window.canStaff("waive_off")) sel.innerHTML += '<option value="WAIVE_OFF">Waive-Off</option>';
-      if (window.canStaff("refund")) sel.innerHTML += '<option value="REFUND">Refund</option>';
-      if (window.canStaff("replace")) sel.innerHTML += '<option value="REPLACE">Replace Item(s)</option>';
-      if (!sel.innerHTML) {
-        alert("You do not have permission to waive off, refund, or replace bills.");
-        return;
-      }
-      document.getElementById("adjBillId").value = bill.id;
-      document.getElementById("adjDialogTitle").textContent = `Adjust Bill ${bill.id} (Total: ₹${Number(bill.grandTotal).toFixed(2)})`;
-      document.getElementById("adjAmountInput").value = "0";
-      document.getElementById("adjReasonInput").value = "";
-      document.getElementById("adjErrorMsg").textContent = "";
-      document.getElementById("adjustmentDialog").showModal();
+    async function applyStaffAccessControls() {
+      const badge = document.getElementById("staffRoleBadge");
+      const btnSettings = document.getElementById("btnOpenSettings");
+      const linkAnalytics = document.getElementById("linkAdminAnalytics");
+      const linkUsers = document.getElementById("linkManageUsers");
+      const defaultSuperuserLabel = "BIRTHARE ANURAG (SUPERUSER)";
+
+      if (badge) badge.textContent = defaultSuperuserLabel;
+      if (btnSettings) btnSettings.style.display = "inline-flex";
+      if (linkAnalytics) linkAnalytics.style.display = "inline-flex";
+      if (linkUsers) linkUsers.style.display = "inline-flex";
+
+      try {
+        if (typeof window.loadCurrentStaffProfile === "function") {
+          const profile = await window.loadCurrentStaffProfile();
+          if (profile) {
+            const roleText = String(profile.role || "superuser").toUpperCase();
+            if (badge) {
+              badge.textContent = roleText === "SUPERUSER"
+                ? defaultSuperuserLabel
+                : (profile.full_name ? `${String(profile.full_name).toUpperCase()} (${roleText})` : defaultSuperuserLabel);
+            }
+            const canEditTax = typeof window.hasPermission === "function"
+              ? window.hasPermission("edit_taxes_charges", profile)
+              : true;
+            const canViewReports = typeof window.hasPermission === "function"
+              ? window.hasPermission("view_reports", profile)
+              : true;
+            const canManageUsers = typeof window.hasPermission === "function"
+              ? window.hasPermission("manage_users", profile)
+              : true;
+
+            if (btnSettings) btnSettings.style.display = (canEditTax || roleText === "SUPERUSER") ? "inline-flex" : "none";
+            if (linkAnalytics) linkAnalytics.style.display = (canViewReports || roleText === "SUPERUSER") ? "inline-flex" : "none";
+            if (linkUsers) linkUsers.style.display = (canManageUsers || roleText === "SUPERUSER") ? "inline-flex" : "none";
+          }
+        }
+      } catch (_) {}
     }
 
-    document.getElementById("btnSubmitAdjustment").addEventListener("click", async () => {
-      const billId = document.getElementById("adjBillId").value;
-      const adjType = document.getElementById("adjTypeSelect").value;
-      const amountDelta = Math.max(0, Number(document.getElementById("adjAmountInput").value) || 0);
-      const reason = document.getElementById("adjReasonInput").value.trim();
-      const errEl = document.getElementById("adjErrorMsg");
-
-      if (!reason) {
-        errEl.textContent = "Please enter a reason for this adjustment.";
-        return;
-      }
-
-      const client = getDbClient();
-      const staffId = await getCurrentStaffId();
-      const staffName = window.currentStaffProfile?.full_name || "STAFF";
-
-      const { error } = await client.from("bill_adjustments").insert([{
-        bill_number: billId,
-        adjustment_type: adjType,
-        amount_delta: amountDelta,
-        reason,
-        approved_by: staffId,
-        approved_by_name: staffName
-      }]);
-
-      if (error) {
-        errEl.textContent = error.message;
-        return;
-      }
-
-      const targetBill = state.historyBills.find(b => b.id === billId) || state.sales.find(b => b.id === billId);
-      if (targetBill && amountDelta > 0) {
-        const nextAdj = Number(targetBill.adjustedAmount || 0) + amountDelta;
-        const newStatus = nextAdj >= Number(targetBill.grandTotal || 0)
-          ? (adjType === "WAIVE_OFF" ? "WAIVED" : "REFUNDED")
-          : "PARTIAL_REFUND";
-        await client.from("bills").update({
-          adjusted_amount: nextAdj,
-          net_total: Math.max(0, Number(targetBill.grandTotal || 0) - nextAdj),
-          status: newStatus
-        }).eq("bill_number", billId);
-      }
-
-      await logPosActivity("BILL_ADJUSTED", { billNumber: billId, adjType, amountDelta, reason }, null, billId);
-      document.getElementById("adjustmentDialog").close();
-      await fetchBillingHistoryRange(state.historyFromDate, state.historyToDate);
-    });
-
-    async function bootPos() {
+    (async function initPos() {
       if (typeof requireLogin === "function") {
         const authed = await requireLogin();
         if (!authed) return;
       }
 
-      await window.loadCurrentStaffProfile();
-      if (!applyPosRolePermissions()) return;
-
       loadPersistedState();
+      bindEvents();
+      await applyStaffAccessControls();
       renderTableTabs();
       renderCart();
-      renderHistoryAndAnalytics();
-
+      updateTodayCount();
       await hydratePosFromSupabase();
+      await refreshTableSessionsFromSupabase(false);
       subscribePosTablesRealtime();
       renderTableTabs();
       renderCart();
-      renderHistoryAndAnalytics();
+      updateTodayCount();
       await loadMenu();
-    }
-
-    bootPos();
+    })();
   </script>
 </body>
 </html>

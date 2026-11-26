@@ -10,6 +10,12 @@ function isAccountSetupPage() {
   return window.location.pathname.replace(/\/+$/, "").endsWith("/admin/account-setup.html");
 }
 
+function isAdminRoute() {
+  if (typeof window === "undefined") return false;
+  const path = window.location.pathname.replace(/\/+$/, "");
+  return path === "/admin" || path.startsWith("/admin/") || path.endsWith("/pos.html");
+}
+
 function setAdminAuthCloak(isPending) {
   if (typeof document === "undefined" || !document.body) return;
   document.body.classList.toggle("admin-auth-pending", Boolean(isPending));
@@ -22,8 +28,21 @@ async function getCurrentUser() {
   return user;
 }
 
+async function logout({ clearStorage = true } = {}) {
+  const client = getAdminSupabaseClient();
+  if (client?.auth) {
+    try {
+      await client.auth.signOut();
+    } catch (_) {}
+  }
+  if (clearStorage) {
+    localStorage.clear();
+    sessionStorage.clear();
+  }
+  window.location.replace(ADMIN_LOGIN_URL);
+}
+
 async function requireLogin() {
-  // account-setup.html handles invite/recovery token exchange & session transitions directly
   if (isAccountSetupPage()) {
     setAdminAuthCloak(false);
     return true;
@@ -43,12 +62,10 @@ async function requireLogin() {
     return false;
   }
 
-  // Session confirmed: reveal page content
   setAdminAuthCloak(false);
 
-  // Keep every other /admin/* view guarded if session expires or is signed out elsewhere
   client.auth.onAuthStateChange((_event, nextSession) => {
-    if (!nextSession && window.location.pathname.startsWith("/admin/") && !isAccountSetupPage()) {
+    if (!nextSession && isAdminRoute() && !isAccountSetupPage()) {
       setAdminAuthCloak(true);
       window.location.replace(ADMIN_LOGIN_URL);
     }
@@ -57,28 +74,15 @@ async function requireLogin() {
   return true;
 }
 
-async function logout({ clearStorage = true } = {}) {
-  const client = getAdminSupabaseClient();
-  if (client?.auth) {
-    await client.auth.signOut();
-  }
-  if (clearStorage) {
-    localStorage.clear();
-    sessionStorage.clear();
-  }
-  window.location.replace(ADMIN_LOGIN_URL);
-}
-
 async function isAdmin() {
   const user = await getCurrentUser();
   if (!user) return false;
   return true;
 }
 
-// Auto-enforce on protected pages under /admin/ once DOM is ready (excluding account-setup.html)
 if (
   typeof window !== "undefined" &&
-  window.location.pathname.startsWith("/admin/") &&
+  isAdminRoute() &&
   !isAccountSetupPage()
 ) {
   const runGlobalAdminGuard = () => {

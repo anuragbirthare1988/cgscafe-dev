@@ -1,6 +1,6 @@
 window.onload = async () => {
     if (!(await requireLogin())) return;
-    
+
     // Check if ADMIN_MODULES is loaded to prevent the ReferenceError
     if (typeof ADMIN_MODULES !== 'undefined') {
         renderDashboard();
@@ -11,10 +11,11 @@ window.onload = async () => {
 
 function renderDashboard() {
     const grid = document.getElementById('admin-grid');
+    if (!grid || !Array.isArray(ADMIN_MODULES)) return;
     grid.innerHTML = ADMIN_MODULES.map(mod => `
         <div class="tile" onclick="location.href='${mod.url}'">
-            <div class="icon">${mod.icon}</div>
-            <div>
+            <div class="tile-badge">${mod.icon}</div>
+            <div class="tile-content">
                 <h2>${mod.title}</h2>
                 <p>${mod.subtitle}</p>
             </div>

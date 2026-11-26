@@ -1,5 +1,5 @@
 /* Import Google Fonts directly as a safeguard against local font overrides */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap');
 
 body {
     margin: 0;
@@ -7,11 +7,16 @@ body {
     color: #1B1412;
 }
 
+body.admin-auth-pending .grid,
+body.admin-auth-pending #cgs-common-admin-bar {
+    visibility: hidden;
+}
+
 /* 3-column compact grid to show more tiles at once with less scrolling */
 .grid {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 155px 28px 40px;
+    padding: 76px 28px 40px;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px 18px;
@@ -21,7 +26,7 @@ body {
 @media (max-width: 1024px) {
     .grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        padding: 150px 22px 36px;
+        padding: 96px 22px 36px;
         gap: 14px 16px;
     }
 }
@@ -29,7 +34,7 @@ body {
 @media (max-width: 640px) {
     .grid {
         grid-template-columns: 1fr;
-        padding: 140px 16px 32px;
+        padding: 112px 16px 32px;
         gap: 12px;
     }
 }
