@@ -66,6 +66,8 @@
     .btn-edit-header { background: none; border: 1px solid var(--border-color); color: var(--text-muted); padding: 6px 14px; font-family: 'Oswald', sans-serif; font-size: 11px; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
     .btn-edit-header:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
 
+    .btn-edit-header, button[onclick*="editHeader"], button[onclick*="openEditHeader"] { white-space: nowrap; flex-shrink: 0; }
+
     .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background-color: rgba(0,0,0,0.15); }
     .category-block.open .accordion-content { max-height: 4000px; }
 
@@ -746,6 +748,8 @@
           if (error) throw error;
         }
 
+        const categoriesToUpdate = [];
+        const pendingNewCategoryItems = [];
         const itemsToInsert = [];
         const itemsToUpdate = [];
 
@@ -764,14 +768,14 @@
             legacy_index: cat.sortOrder
           };
 
-          if (!cat.id || String(cat.id).startsWith("cat_")) {
+          const isNewCategory = !cat.id || String(cat.id).startsWith("cat_");
+          if (isNewCategory) {
             const { data, error } = await supabaseClient.from("categories").insert(catPayload).select().single();
             if (error) throw error;
             cat.id = data.id;
           } else {
             catPayload.id = cat.id;
-            const { error } = await supabaseClient.from("categories").upsert(catPayload);
-            if (error) throw error;
+            categoriesToUpdate.push(catPayload);
           }
 
           (cat.items || []).forEach((it, iIdx) => {
@@ -786,13 +790,27 @@
               legacy_index: it.sortOrder
             };
             if (!it.id || String(it.id).startsWith("item_")) {
-              itemsToInsert.push(payload);
+              if (isNewCategory) {
+                pendingNewCategoryItems.push({ cat, payload });
+              } else {
+                itemsToInsert.push(payload);
+              }
             } else {
               payload.id = it.id;
               itemsToUpdate.push(payload);
             }
           });
         }
+
+        if (categoriesToUpdate.length > 0) {
+          const { error } = await supabaseClient.from("categories").upsert(categoriesToUpdate);
+          if (error) throw error;
+        }
+
+        pendingNewCategoryItems.forEach(({ cat, payload }) => {
+          payload.category_id = cat.id;
+          itemsToInsert.push(payload);
+        });
 
         if (itemsToInsert.length > 0) {
           const { error } = await supabaseClient.from("items").insert(itemsToInsert);
@@ -809,9 +827,11 @@
         await loadStructureFromSupabase();
         setPendingChanges(false);
         renderPanel();
+        overlay.style.display = "none";
         await showCgsDialog("Published", "Print-menu layout and flags saved to Supabase.");
       } catch (err) {
         console.error(err);
+        overlay.style.display = "none";
         showCgsDialog("Publish Failed", err.message || "Could not publish layout.");
       } finally {
         overlay.style.display = "none";

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sales & Operations Analytics • CGS Admin</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/environment.js"></script>
+  <script src="/admin/session.js"></script>
+  <script src="/admin/rbac.js"></script>
+  <style>
+    :root {
+      --bg: #f6f1ea;
+      --surface: #fffdf9;
+      --surface-alt: #f2ece2;
+      --ink: #241914;
+      --muted: #6e5c52;
+      --border: #dfd4c5;
+      --accent: #3b2319;
+      --accent-ink: #fffdf9;
+      --accent-soft: #efe5d8;
+      --warm-gold: #9c6638;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    header h1 { margin: 0; font-size: 18px; color: var(--accent); }
+    .container {
+      max-width: 1360px;
+      margin: 18px auto;
+      padding: 0 20px 36px;
+    }
+    .toolbar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    input[type="date"] {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-alt);
+      font: inherit;
+    }
+    .btn {
+      border: 1px solid var(--accent);
+      background: var(--surface);
+      color: var(--accent);
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn:hover { background: var(--accent-soft); }
+    .btn-primary { background: var(--accent); color: var(--accent-ink); }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .kpi-label { font-size: 12px; color: var(--muted); font-weight: 600; }
+    .kpi-val { font-size: 22px; font-weight: 700; color: var(--accent); margin-top: 4px; }
+    .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 960px) { .grid-2 { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      color: var(--accent);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th, td {
+      text-align: left;
+      padding: 7px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    svg.chart { width: 100%; height: auto; display: block; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <a href="/admin/pos.html" class="btn">← Back to POS</a>
+      <a href="/admin/users.html" class="btn" id="navUsersBtn" style="display:none;">Users &amp; Roles</a>
+      <h1>Sales &amp; Operations Analytics</h1>
+    </div>
+    <button type="button" class="btn btn-primary" id="btnExportAnalyticsCsv">Export CSV</button>
+  </header>
+
+  <main class="container" id="analyticsMain" style="display:none;">
+    <div class="toolbar">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+        <label>From: <input type="date" id="fromDate" /></label>
+        <label>To: <input type="date" id="toDate" /></label>
+        <button type="button" class="btn btn-primary" id="btnApplyRange">Load</button>
+        <button type="button" class="btn" id="btnPresetToday">Today</button>
+        <button type="button" class="btn" id="btnPreset7">Last 7 Days</button>
+        <button type="button" class="btn" id="btnPreset30">Last 30 Days</button>
+      </div>
+      <span id="rangeSummary" style="color:var(--muted); font-weight:600;"></span>
+    </div>
+
+    <div class="kpi-grid" id="kpiGrid"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h2>Daily Sales Trend</h2>
+        <div id="dailyTrendChart"></div>
+        <div id="dailyTrendTable"></div>
+      </div>
+      <div class="card">
+        <h2>Rush Hours (Orders &amp; Revenue by Hour)</h2>
+        <div id="rushHoursChart"></div>
+        <div id="rushHoursTable"></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h2>Top Selling Items</h2>
+        <div id="topItemsChart"></div>
+        <div id="topItemsTable"></div>
+      </div>
+      <div class="card">
+        <h2>Top Returning / Repeat Customers</h2>
+        <div id="repeatCustomersTable"></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h2>Table Turnaround Time &amp; Seat Turnover</h2>
+        <div id="tableTurnaroundTable"></div>
+      </div>
+      <div class="card">
+        <h2>Waive-offs, Refunds &amp; Replacements Log</h2>
+        <div id="adjustmentsTable"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let loadedBills = [];
+    let loadedItems = [];
+    let loadedAdjustments = [];
+
+    function getClient() {
+      return window.supabaseClient || (typeof supabaseClient !== "undefined" ? supabaseClient : null);
+    }
+
+    function getLocalDateKey(d = new Date()) {
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    function shiftDateKey(baseKey, deltaDays) {
+      const [y, m, d] = baseKey.split("-").map(Number);
+      return getLocalDateKey(new Date(y, m - 1, d + deltaDays));
+    }
+
+    function renderBarSvg(rows, labelKey, valueKey, formatFn) {
+      if (!rows.length) return `<p style="color:var(--muted); font-size:12px;">No data in range.</p>`;
+      const top = rows.slice(0, 10);
+      const maxVal = Math.max(...top.map(r => Number(r[valueKey] || 0)), 1);
+      const h = 24 * top.length + 12;
+      const bars = top.map((r, idx) => {
+        const val = Number(r[valueKey] || 0);
+        const w = Math.max(4, Math.round((val / maxVal) * 230));
+        const y = idx * 24 + 6;
+        return `
+          <text x="4" y="${y + 14}" font-size="11" fill="#241914">${String(r[labelKey]).slice(0, 18)}</text>
+          <rect x="145" y="${y + 2}" width="${w}" height="16" rx="4" fill="#3b2319" />
+          <text x="${152 + w}" y="${y + 14}" font-size="11" font-weight="600" fill="#6e5c52">${formatFn(val)}</text>
+        `;
+      }).join("");
+      return `<svg class="chart" viewBox="0 0 460 ${h}">${bars}</svg>`;
+    }
+
+    function parseHour(timeStr) {
+      const s = String(timeStr || "").trim();
+      const m12 = s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?\s*(AM|PM)$/i);
+      if (m12) {
+        let h = Number(m12[1]) % 12;
+        if (m12[3].toUpperCase() === "PM") h += 12;
+        return h;
+      }
+      const m24 = s.match(/^(\d{1,2}):(\d{2})/);
+      return m24 ? Number(m24[1]) : null;
+    }
+
+    async function loadAnalyticsRange(fromDate, toDate) {
+      const client = getClient();
+      document.getElementById("rangeSummary").textContent = "Loading...";
+
+      const [{ data: bills }, { data: items }, { data: adjs }] = await Promise.all([
+        client.from("bills").select("*").gte("bill_date", fromDate).lte("bill_date", toDate).order("bill_date", { ascending: true }),
+        client.from("bill_items").select("*").gte("bill_date", fromDate).lte("bill_date", toDate),
+        client.from("bill_adjustments").select("*").gte("created_at", `${fromDate}T00:00:00`).lte("created_at", `${toDate}T23:59:59`).order("created_at", { ascending: false })
+      ]);
+
+      loadedBills = bills || [];
+      loadedItems = items || [];
+      loadedAdjustments = adjs || [];
+
+      renderDashboard(fromDate, toDate);
+    }
+
+    function renderDashboard(fromDate, toDate) {
+      const grossSales = loadedBills.reduce((s, b) => s + Number(b.grand_total || 0), 0);
+      const totalAdjusted = loadedBills.reduce((s, b) => s + Number(b.adjusted_amount || 0), 0);
+      const netSales = grossSales - totalAdjusted;
+      const billCount = loadedBills.length;
+      const aov = billCount > 0 ? netSales / billCount : 0;
+
+      const turnaroundSamples = loadedBills
+        .map(b => Number(b.turnaround_minutes || b.consumption_json?.turnaroundMinutes || 0))
+        .filter(m => m > 0);
+      const avgTurnaround = turnaroundSamples.length > 0
+        ? Math.round(turnaroundSamples.reduce((a, b) => a + b, 0) / turnaroundSamples.length)
+        : 0;
+
+      document.getElementById("rangeSummary").textContent = `${fromDate} to ${toDate} • ${billCount} bills`;
+
+      document.getElementById("kpiGrid").innerHTML = `
+        <div class="kpi-card">
+          <div class="kpi-label">Net Revenue</div>
+          <div class="kpi-val">₹${netSales.toFixed(2)}</div>
+          <div class="kpi-sub">Gross: ₹${grossSales.toFixed(2)} • Adj: -₹${totalAdjusted.toFixed(2)}</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Average Order Value (AOV)</div>
+          <div class="kpi-val">₹${aov.toFixed(2)}</div>
+          <div class="kpi-sub">Across ${billCount} settled bills</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Avg Table Turnaround</div>
+          <div class="kpi-val">${avgTurnaround > 0 ? `${avgTurnaround} min` : "—"}</div>
+          <div class="kpi-sub">${turnaroundSamples.length} timed dine-in sessions</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Waive-offs / Refunds</div>
+          <div class="kpi-val">₹${totalAdjusted.toFixed(2)}</div>
+          <div class="kpi-sub">${loadedAdjustments.length} adjustment record(s)</div>
+        </div>
+      `;
+
+      // 1. Daily trend
+      const byDate = new Map();
+      for (const b of loadedBills) {
+        const cur = byDate.get(b.bill_date) || { date: b.bill_date, bills: 0, net: 0 };
+        cur.bills += 1;
+        cur.net += Number(b.grand_total || 0) - Number(b.adjusted_amount || 0);
+        byDate.set(b.bill_date, cur);
+      }
+      const dailyRows = [...byDate.values()];
+      document.getElementById("dailyTrendChart").innerHTML = renderBarSvg(dailyRows, "date", "net", v => `₹${v.toFixed(0)}`);
+      document.getElementById("dailyTrendTable").innerHTML = `
+        <table><thead><tr><th>Date</th><th>Bills</th><th>AOV</th><th>Net Sales</th></tr></thead>
+        <tbody>${dailyRows.map(r => `<tr><td>${r.date}</td><td>${r.bills}</td><td>₹${(r.net / r.bills).toFixed(0)}</td><td><strong>₹${r.net.toFixed(2)}</strong></td></tr>`).join("") || '<tr><td colspan="4">No bills</td></tr>'}</tbody></table>
+      `;
+
+      // 2. Rush hours
+      const byHour = new Map();
+      for (const b of loadedBills) {
+        const h = parseHour(b.bill_time);
+        if (h === null) continue;
+        const label = `${String(h).padStart(2, "0")}:00`;
+        const cur = byHour.get(label) || { hour: label, bills: 0, sales: 0 };
+        cur.bills += 1;
+        cur.sales += Number(b.grand_total || 0);
+        byHour.set(label, cur);
+      }
+      const hourRows = [...byHour.values()].sort((a, b) => a.hour.localeCompare(b.hour));
+      document.getElementById("rushHoursChart").innerHTML = renderBarSvg(hourRows, "hour", "bills", v => `${v} bills`);
+      document.getElementById("rushHoursTable").innerHTML = `
+        <table><thead><tr><th>Hour</th><th>Orders</th><th>Sales</th></tr></thead>
+        <tbody>${hourRows.map(r => `<tr><td>${r.hour}</td><td><strong>${r.bills}</strong></td><td>₹${r.sales.toFixed(2)}</td></tr>`).join("") || '<tr><td colspan="3">No data</td></tr>'}</tbody></table>
+      `;
+
+      // 3. Top Selling Items (uses bill_items first, falls back to consumption_json for older bills)
+      const itemMap = new Map();
+      if (loadedItems.length > 0) {
+        for (const it of loadedItems) {
+          const name = String(it.item_name || "").toUpperCase();
+          const cur = itemMap.get(name) || { name, qty: 0, rev: 0 };
+          cur.qty += Number(it.qty || 0) - Number(it.refunded_qty || 0);
+          cur.rev += Number(it.line_total || 0);
+          itemMap.set(name, cur);
+        }
+      } else {
+        for (const b of loadedBills) {
+          for (const li of (b.consumption_json?.consumedItems || [])) {
+            const name = String(li.name || "").toUpperCase();
+            const cur = itemMap.get(name) || { name, qty: 0, rev: 0 };
+            cur.qty += Number(li.qty || 0);
+            cur.rev += Number(li.price || 0) * Number(li.qty || 0);
+            itemMap.set(name, cur);
+          }
+        }
+      }
+      const topItems = [...itemMap.values()].sort((a, b) => b.qty - a.qty);
+      document.getElementById("topItemsChart").innerHTML = renderBarSvg(topItems, "name", "qty", v => `${v} sold`);
+      document.getElementById("topItemsTable").innerHTML = `
+        <table><thead><tr><th>Item</th><th>Qty Sold</th><th>Revenue</th></tr></thead>
+        <tbody>${topItems.slice(0, 15).map(i => `<tr><td>${i.name}</td><td><strong>${i.qty}</strong></td><td>₹${i.rev.toFixed(2)}</td></tr>`).join("") || '<tr><td colspan="3">No items</td></tr>'}</tbody></table>
+      `;
+
+      // 4. Repeat Customers
+      const custMap = new Map();
+      for (const b of loadedBills) {
+        const phone = String(b.customer_phone || "").trim();
+        const name = String(b.customer_name || "").trim();
+        const key = phone || name;
+        if (!key) continue;
+        const cur = custMap.get(key) || { customer: [name, phone].filter(Boolean).join(" • "), visits: 0, spend: 0, last: b.bill_date };
+        cur.visits += 1;
+        cur.spend += Number(b.grand_total || 0) - Number(b.adjusted_amount || 0);
+        if (b.bill_date > cur.last) cur.last = b.bill_date;
+        custMap.set(key, cur);
+      }
+      const repeatCusts = [...custMap.values()].sort((a, b) => b.visits - a.visits || b.spend - a.spend);
+      document.getElementById("repeatCustomersTable").innerHTML = `
+        <table><thead><tr><th>Customer</th><th>Visits</th><th>Last Visit</th><th>Total Spend</th></tr></thead>
+        <tbody>${repeatCusts.slice(0, 15).map(c => `<tr><td>${c.customer}</td><td><strong>${c.visits}</strong></td><td>${c.last}</td><td>₹${c.spend.toFixed(2)}</td></tr>`).join("") || '<tr><td colspan="4">No customer records</td></tr>'}</tbody></table>
+      `;
+
+      // 5. Table Turnaround
+      const daysSpan = Math.max(1, byDate.size);
+      const seatMap = new Map();
+      for (const b of loadedBills) {
+        const seat = `Seat ${b.table_name || "1"}`;
+        const cur = seatMap.get(seat) || { seat, bills: 0, minsSum: 0, minsCount: 0, rev: 0 };
+        cur.bills += 1;
+        cur.rev += Number(b.grand_total || 0);
+        const mins = Number(b.turnaround_minutes || b.consumption_json?.turnaroundMinutes || 0);
+        if (mins > 0) { cur.minsSum += mins; cur.minsCount += 1; }
+        seatMap.set(seat, cur);
+      }
+      document.getElementById("tableTurnaroundTable").innerHTML = `
+        <table><thead><tr><th>Seat</th><th>Bills</th><th>Turnover / Day</th><th>Avg Turnaround</th><th>Revenue</th></tr></thead>
+        <tbody>${[...seatMap.values()].map(s => `<tr><td>${s.seat}</td><td>${s.bills}</td><td>${(s.bills / daysSpan).toFixed(2)}x</td><td>${s.minsCount ? Math.round(s.minsSum / s.minsCount) + " min" : "—"}</td><td>₹${s.rev.toFixed(2)}</td></tr>`).join("") || '<tr><td colspan="5">No data</td></tr>'}</tbody></table>
+      `;
+
+      // 6. Adjustments
+      document.getElementById("adjustmentsTable").innerHTML = `
+        <table><thead><tr><th>Bill #</th><th>Type</th><th>Amount</th><th>Reason</th><th>By</th></tr></thead>
+        <tbody>${loadedAdjustments.map(a => `<tr><td>${a.bill_number}</td><td><strong>${a.adjustment_type}</strong></td><td>₹${Number(a.amount_delta).toFixed(2)}</td><td>${a.reason}</td><td>${a.approved_by_name || "-"}</td></tr>`).join("") || '<tr><td colspan="5">No waive-offs, refunds, or replacements</td></tr>'}</tbody></table>
+      `;
+    }
+
+    document.getElementById("btnApplyRange").addEventListener("click", () => {
+      loadAnalyticsRange(document.getElementById("fromDate").value, document.getElementById("toDate").value);
+    });
+    document.getElementById("btnPresetToday").addEventListener("click", () => {
+      const t = getLocalDateKey();
+      document.getElementById("fromDate").value = t;
+      document.getElementById("toDate").value = t;
+      loadAnalyticsRange(t, t);
+    });
+    document.getElementById("btnPreset7").addEventListener("click", () => {
+      const t = getLocalDateKey();
+      const f = shiftDateKey(t, -6);
+      document.getElementById("fromDate").value = f;
+      document.getElementById("toDate").value = t;
+      loadAnalyticsRange(f, t);
+    });
+    document.getElementById("btnPreset30").addEventListener("click", () => {
+      const t = getLocalDateKey();
+      const f = shiftDateKey(t, -29);
+      document.getElementById("fromDate").value = f;
+      document.getElementById("toDate").value = t;
+      loadAnalyticsRange(f, t);
+    });
+
+    document.getElementById("btnExportAnalyticsCsv").addEventListener("click", () => {
+      if (!loadedBills.length) return alert("No bills in selected range.");
+      const headers = ["Bill Number", "Date", "Time", "Seat", "Service Type", "Customer", "Phone", "Mode", "Subtotal", "SC", "CGST", "SGST", "Grand Total", "Adjusted", "Status"];
+      const rows = loadedBills.map(b => [
+        b.bill_number, b.bill_date, b.bill_time, b.table_name, b.service_type,
+        b.customer_name || "", b.customer_phone || "", b.payment_mode,
+        b.subtotal, b.service_charge, b.cgst_amount, b.sgst_amount,
+        b.grand_total, b.adjusted_amount || 0, b.status || "SETTLED"
+      ]);
+      const csv = [headers, ...rows].map(r => r.map(c => `"${String(c ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `cgs-analytics-${document.getElementById("fromDate").value}-to-${document.getElementById("toDate").value}.csv`;
+      a.click();
+    });
+
+    async function bootAnalytics() {
+      if (typeof requireLogin === "function") {
+        const authed = await requireLogin();
+        if (!authed) return;
+      }
+      await window.loadCurrentStaffProfile();
+      if (!window.canStaff("view_analytics")) {
+        alert("Access Denied: Admin / Analytics permission required.");
+        window.location.href = "/admin/pos.html";
+        return;
+      }
+      if (window.canStaff("manage_users")) {
+        document.getElementById("navUsersBtn").style.display = "inline-flex";
+      }
+      document.getElementById("analyticsMain").style.display = "block";
+      const today = getLocalDateKey();
+      document.getElementById("fromDate").value = shiftDateKey(today, -6);
+      document.getElementById("toDate").value = today;
+      await loadAnalyticsRange(document.getElementById("fromDate").value, today);
+    }
+
+    bootAnalytics();
+  </script>
+</body>
+</html>

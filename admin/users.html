@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Users & Access Control • CGS Admin</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/environment.js"></script>
+  <script src="/admin/session.js"></script>
+  <script src="/admin/rbac.js"></script>
+  <style>
+    :root {
+      --bg: #f6f1ea;
+      --surface: #fffdf9;
+      --surface-alt: #f2ece2;
+      --ink: #241914;
+      --muted: #6e5c52;
+      --border: #dfd4c5;
+      --accent: #3b2319;
+      --accent-hover: #27160f;
+      --accent-ink: #fffdf9;
+      --accent-soft: #efe5d8;
+      --danger: #8f2d24;
+      --danger-hover: #6e2019;
+      --ok: #255c35;
+      --warn-bg: #fdf2df;
+      --warn-ink: #6e4306;
+      --warn-border: #e5be82;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    header h1 { margin: 0; font-size: 18px; color: var(--accent); }
+    .container {
+      max-width: 1240px;
+      margin: 18px auto;
+      padding: 0 20px 30px;
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    @media (max-width: 960px) { .container { grid-template-columns: 1fr; } }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .panel h2 { margin: 0 0 12px; font-size: 16px; color: var(--accent); }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+    .field label { font-weight: 600; }
+    input[type="text"], input[type="email"], input[type="tel"], select {
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-alt);
+      font: inherit;
+      color: var(--ink);
+    }
+    input:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    .perm-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .perm-list {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      background: var(--surface-alt);
+      display: grid;
+      gap: 8px;
+      max-height: 290px;
+      overflow-y: auto;
+    }
+    .perm-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .btn {
+      border: 1px solid var(--accent);
+      background: var(--surface);
+      color: var(--accent);
+      padding: 7px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .btn:hover:not(:disabled) {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+      color: var(--accent-ink);
+    }
+    .btn-danger {
+      border-color: var(--danger);
+      background: var(--danger);
+      color: #ffffff;
+    }
+    .btn-danger:hover:not(:disabled) {
+      border-color: var(--danger-hover);
+      background: var(--danger-hover);
+      color: #ffffff;
+    }
+    .btn-outline-danger {
+      border-color: var(--danger);
+      background: var(--surface);
+      color: var(--danger);
+    }
+    .btn-outline-danger:hover:not(:disabled) {
+      border-color: var(--danger);
+      background: #fbeae8;
+      color: var(--danger-hover);
+    }
+    .btn-sm { padding: 4px 8px; font-size: 11px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th, td {
+      text-align: left;
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .pill {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      background: var(--accent-soft);
+      color: var(--accent);
+      margin: 2px 2px 0 0;
+    }
+    .pill.pending { background: var(--warn-bg); color: var(--warn-ink); }
+    .pill.inactive { background: #fbeae8; color: var(--danger); }
+    .msg { font-size: 12px; font-weight: 600; margin-top: 8px; min-height: 16px; }
+    .msg.err { color: var(--danger); }
+    .msg.ok { color: var(--ok); }
+
+    dialog.cgs-dialog {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0;
+      max-width: 520px;
+      width: calc(100% - 32px);
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 18px 40px rgba(36, 25, 20, 0.25);
+    }
+    dialog.cgs-dialog::backdrop {
+      background: rgba(36, 25, 20, 0.55);
+      backdrop-filter: blur(2px);
+    }
+    .dialog-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-alt);
+    }
+    .dialog-body {
+      padding: 16px 18px;
+      display: grid;
+      gap: 10px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .warning-banner {
+      background: var(--warn-bg);
+      color: var(--warn-ink);
+      border: 1px solid var(--warn-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-weight: 600;
+    }
+    .danger-banner {
+      background: #fbeae8;
+      color: var(--danger);
+      border: 1px solid #e3b2ad;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-weight: 600;
+    }
+    .dialog-foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 12px 18px;
+      border-top: 1px solid var(--border);
+      background: var(--surface-alt);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <a href="/admin/pos.html" class="btn btn-sm">← Back to POS</a>
+      <a href="/admin/analytics.html" class="btn btn-sm">Sales Analytics</a>
+      <h1>Users &amp; Role-Based Access Control</h1>
+    </div>
+    <div id="currentSuperuserBadge" style="font-size:12px; color:var(--muted);"></div>
+  </header>
+
+  <main class="container" id="mainContainer" style="display:none;">
+    <section class="panel">
+      <h2 id="formTitle">Create / Invite Operator</h2>
+      <form id="userForm" novalidate>
+        <input type="hidden" id="editingUserId" />
+        <div class="field">
+          <label for="uFullName">Full Name *</label>
+          <input type="text" id="uFullName" required placeholder="e.g., RAHUL SHARMA" />
+        </div>
+        <div class="field">
+          <label for="uEmail">Email Address *</label>
+          <input type="email" id="uEmail" required placeholder="operator@gmail.com" />
+        </div>
+        <div class="field">
+          <label for="uPhone">Phone Number (10 digits) *</label>
+          <input
+            type="tel"
+            id="uPhone"
+            inputmode="numeric"
+            maxlength="10"
+            pattern="[6-9][0-9]{9}"
+            required
+            placeholder="9876543210"
+          />
+        </div>
+        <div class="field">
+          <label for="uRole">Role Preset</label>
+          <select id="uRole">
+            <option value="cashier">Cashier / Counter</option>
+            <option value="captain">Captain / Floor Lead</option>
+            <option value="manager">Manager</option>
+            <option value="superuser">Superuser (Full Access)</option>
+          </select>
+        </div>
+
+        <div class="perm-header">
+          <span>Allowed Operations</span>
+          <div style="display:flex; gap:6px;">
+            <button type="button" class="btn btn-sm" id="btnCheckAll">Select All</button>
+            <button type="button" class="btn btn-sm" id="btnUncheckAll">Clear All</button>
+          </div>
+        </div>
+        <div class="perm-list" id="permCheckboxes"></div>
+
+        <div class="field" style="margin-top:12px;">
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+            <input type="checkbox" id="uIsActive" checked />
+            <span>Account Active (can log in &amp; operate)</span>
+          </label>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:14px;">
+          <button type="submit" class="btn btn-primary" id="btnSubmitUser" style="flex:1;">Send Account Invite</button>
+          <button type="button" class="btn" id="btnResetForm" style="display:none;">Cancel Edit</button>
+        </div>
+        <div class="msg" id="formMsg" role="status" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h2 style="margin:0;">Configured Users &amp; Operators</h2>
+        <button type="button" class="btn btn-sm" onclick="loadUsersTable()">Refresh</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Operator</th>
+              <th>Role &amp; Status</th>
+              <th>Enabled Operations</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <tr><td colspan="4">Loading users...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Self-Role Modification Warning Dialog -->
+  <dialog class="cgs-dialog" id="selfRoleWarningDialog">
+    <div class="dialog-head">
+      <strong>⚠️ Superuser Self-Role Warning</strong>
+      <button type="button" class="btn btn-sm" id="btnCloseSelfRoleDialog" aria-label="Close">✕</button>
+    </div>
+    <div class="dialog-body">
+      <div class="warning-banner">
+        You are modifying your own superuser permissions. This can restrict role or staff access for you and your team—review carefully before confirming.
+      </div>
+      <p id="selfRoleWarningSummary" style="margin:0;"></p>
+      <p style="margin:0; color:var(--muted); font-size:12px;">
+        Ensure at least one other active superuser remains before removing admin access.
+      </p>
+    </div>
+    <div class="dialog-foot">
+      <button type="button" class="btn" id="btnCancelSelfRoleDialog">Cancel</button>
+      <button type="button" class="btn btn-danger" id="btnConfirmSelfRoleDialog">Confirm Action</button>
+    </div>
+  </dialog>
+
+  <!-- Delete User Confirmation Dialog -->
+  <dialog class="cgs-dialog" id="deleteUserDialog">
+    <div class="dialog-head">
+      <strong>🗑️ Permanently Delete User</strong>
+      <button type="button" class="btn btn-sm" id="btnCloseDeleteUserDialog" aria-label="Close">✕</button>
+    </div>
+    <div class="dialog-body">
+      <div class="danger-banner">
+        This will permanently remove the operator's login access and profile from the system.
+      </div>
+      <p id="deleteUserSummary" style="margin:0;"></p>
+      <p style="margin:0; color:var(--muted); font-size:12px;">
+        Note: If this user already has historical POS bills or audit records linked to their account and cannot be hard-deleted, consider editing their account and unchecking <strong>Account Active</strong> instead.
+      </p>
+    </div>
+    <div class="dialog-foot">
+      <button type="button" class="btn" id="btnCancelDeleteUserDialog">Cancel</button>
+      <button type="button" class="btn btn-danger" id="btnConfirmDeleteUserDialog">Delete User</button>
+    </div>
+  </dialog>
+
+  <script>
+    let allStaff = [];
+    let currentProfile = null;
+    let pendingSelfRoleCallback = null;
+    let pendingDeleteUser = null;
+
+    function getClient() {
+      return window.supabaseClient || (typeof supabaseClient !== "undefined" ? supabaseClient : null);
+    }
+
+    function setFormMessage(type, text) {
+      const msgEl = document.getElementById("formMsg");
+      if (!msgEl) return;
+      msgEl.className = type ? `msg ${type}` : "msg";
+      msgEl.textContent = text || "";
+    }
+
+    function normalizePhone(raw) {
+      return String(raw || "").replace(/\D/g, "").slice(0, 10);
+    }
+
+    function isValidIndianMobile(digits) {
+      return /^[6-9]\d{9}$/.test(digits);
+    }
+
+    function formatPhoneDisplay(rawPhone) {
+      const cleaned = String(rawPhone || "").trim();
+      if (!cleaned || ["null", "undefined"].includes(cleaned.toLowerCase())) {
+        return "Phone not set";
+      }
+      const digits = normalizePhone(cleaned);
+      return digits.length === 10 ? `+91 ${digits}` : cleaned;
+    }
+
+    function isPendingInvite(userRow) {
+      const status = String(userRow?.invite_status || "").trim().toLowerCase();
+      return status === "pending" || status === "invited";
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function isSameAsLoggedInUser(userRow) {
+      const actorId = String(currentProfile?.id || currentProfile?.user_id || "").trim().toLowerCase();
+      const actorEmail = String(currentProfile?.email || "").trim().toLowerCase();
+      const targetId = String(userRow?.id || userRow?.user_id || "").trim().toLowerCase();
+      const targetEmail = String(userRow?.email || "").trim().toLowerCase();
+
+      return Boolean(
+        (actorId && targetId && actorId === targetId) ||
+        (actorEmail && targetEmail && actorEmail === targetEmail)
+      );
+    }
+
+    function isSuperuserRow(userRow) {
+      const roleLower = String(userRow?.role || "").trim().toLowerCase();
+      return roleLower === "superuser" || Boolean(userRow?.permissions?.manage_users);
+    }
+
+    function countActiveSuperusers() {
+      return allStaff.filter((u) => u.is_active !== false && isSuperuserRow(u)).length;
+    }
+
+    function isCurrentSuperuserAccount({ targetUserId = "", targetEmail = "" } = {}) {
+      const actorRole = String(currentProfile?.role || "").trim().toLowerCase();
+      if (actorRole !== "superuser") return false;
+      return isSameAsLoggedInUser({ id: targetUserId, email: targetEmail });
+    }
+
+    function requestSelfRoleConfirmation(summaryText, onConfirm) {
+      const dialog = document.getElementById("selfRoleWarningDialog");
+      const summaryEl = document.getElementById("selfRoleWarningSummary");
+
+      if (!dialog || typeof dialog.showModal !== "function") {
+        const confirmed = window.confirm(
+          "You are modifying your own superuser permissions. This can restrict role or staff access for you and your team—confirm only if you are sure."
+        );
+        if (confirmed && typeof onConfirm === "function") {
+          onConfirm();
+        }
+        return;
+      }
+
+      pendingSelfRoleCallback = onConfirm;
+      if (summaryEl) {
+        summaryEl.textContent = summaryText || "";
+      }
+      dialog.showModal();
+    }
+
+    function closeSelfRoleDialog() {
+      pendingSelfRoleCallback = null;
+      const dialog = document.getElementById("selfRoleWarningDialog");
+      if (dialog && dialog.open) {
+        dialog.close();
+      }
+    }
+
+    document.getElementById("btnCancelSelfRoleDialog")?.addEventListener("click", closeSelfRoleDialog);
+    document.getElementById("btnCloseSelfRoleDialog")?.addEventListener("click", closeSelfRoleDialog);
+    document.getElementById("selfRoleWarningDialog")?.addEventListener("cancel", (e) => {
+      e.preventDefault();
+      closeSelfRoleDialog();
+    });
+
+    document.getElementById("btnConfirmSelfRoleDialog")?.addEventListener("click", async () => {
+      const action = pendingSelfRoleCallback;
+      closeSelfRoleDialog();
+      if (typeof action === "function") {
+        await action();
+      }
+    });
+
+    function openDeleteUserDialog(userId) {
+      const u = allStaff.find((x) => x.id === userId);
+      if (!u) return;
+
+      if (isSameAsLoggedInUser(u)) {
+        alert("You cannot delete your own currently logged-in account.");
+        return;
+      }
+
+      if (isSuperuserRow(u) && u.is_active !== false && countActiveSuperusers() <= 1) {
+        alert("Cannot delete the last active Superuser account.");
+        return;
+      }
+
+      const dialog = document.getElementById("deleteUserDialog");
+      const summaryEl = document.getElementById("deleteUserSummary");
+      pendingDeleteUser = u;
+
+      const label = `${u.full_name || u.email} (${u.email}) — Role: ${String(u.role || "cashier").toUpperCase()}`;
+      if (!dialog || typeof dialog.showModal !== "function") {
+        if (window.confirm(`Permanently delete user ${label}?`)) {
+          executeDeleteUser(u);
+        }
+        return;
+      }
+
+      if (summaryEl) {
+        summaryEl.textContent = `Target Operator: ${label}`;
+      }
+      dialog.showModal();
+    }
+
+    function closeDeleteUserDialog() {
+      pendingDeleteUser = null;
+      const dialog = document.getElementById("deleteUserDialog");
+      if (dialog && dialog.open) {
+        dialog.close();
+      }
+    }
+
+    document.getElementById("btnCancelDeleteUserDialog")?.addEventListener("click", closeDeleteUserDialog);
+    document.getElementById("btnCloseDeleteUserDialog")?.addEventListener("click", closeDeleteUserDialog);
+    document.getElementById("deleteUserDialog")?.addEventListener("cancel", (e) => {
+      e.preventDefault();
+      closeDeleteUserDialog();
+    });
+
+    document.getElementById("btnConfirmDeleteUserDialog")?.addEventListener("click", async () => {
+      const target = pendingDeleteUser;
+      const confirmBtn = document.getElementById("btnConfirmDeleteUserDialog");
+      if (!target) return;
+
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = "Deleting...";
+      try {
+        await executeDeleteUser(target);
+        closeDeleteUserDialog();
+      } finally {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = "Delete User";
+      }
+    });
+
+    async function executeDeleteUser(u) {
+      const client = getClient();
+      const { data, error } = await client.functions.invoke("invite-staff-user", {
+        body: {
+          action: "delete",
+          user_id: u.id,
+          email: u.email
+        }
+      });
+
+      if (error || data?.error) {
+        setFormMessage("err", `Error deleting user: ${data?.error || error.message}`);
+        return;
+      }
+
+      if (document.getElementById("editingUserId").value === u.id) {
+        resetUserForm();
+      }
+      setFormMessage("ok", `User ${u.email} has been deleted.`);
+      await loadUsersTable();
+    }
+
+    document.getElementById("uPhone")?.addEventListener("input", (e) => {
+      e.target.value = normalizePhone(e.target.value);
+      setFormMessage("", "");
+    });
+
+    ["uFullName", "uEmail", "uRole", "uIsActive"].forEach((id) => {
+      document.getElementById(id)?.addEventListener("input", () => setFormMessage("", ""));
+      document.getElementById(id)?.addEventListener("change", () => setFormMessage("", ""));
+    });
+
+    function renderPermissionCheckboxes(perms = window.CGS_ROLE_PRESETS.cashier) {
+      const container = document.getElementById("permCheckboxes");
+      if (!container) return;
+      container.innerHTML = window.CGS_PERMISSIONS.map(p => `
+        <label class="perm-item">
+          <input type="checkbox" data-perm-key="${p.key}" ${perms[p.key] ? "checked" : ""} />
+          <span><strong>${escapeHtml(p.label)}</strong> <span style="color:var(--muted);">(${escapeHtml(p.group)})</span></span>
+        </label>
+      `).join("");
+      container.querySelectorAll("input[type='checkbox']").forEach(cb => {
+        cb.addEventListener("change", () => setFormMessage("", ""));
+      });
+    }
+
+    function readSelectedPermissions() {
+      const out = {};
+      document.querySelectorAll("#permCheckboxes input[data-perm-key]").forEach(cb => {
+        out[cb.dataset.permKey] = cb.checked;
+      });
+      return out;
+    }
+
+    document.getElementById("uRole")?.addEventListener("change", (e) => {
+      const preset = window.CGS_ROLE_PRESETS[e.target.value] || window.CGS_ROLE_PRESETS.cashier;
+      renderPermissionCheckboxes(preset);
+    });
+
+    document.getElementById("btnCheckAll")?.addEventListener("click", () => {
+      document.querySelectorAll("#permCheckboxes input[data-perm-key]").forEach(cb => { cb.checked = true; });
+      setFormMessage("", "");
+    });
+
+    document.getElementById("btnUncheckAll")?.addEventListener("click", () => {
+      document.querySelectorAll("#permCheckboxes input[data-perm-key]").forEach(cb => { cb.checked = false; });
+      setFormMessage("", "");
+    });
+
+    function resetUserForm() {
+      document.getElementById("editingUserId").value = "";
+      document.getElementById("formTitle").textContent = "Create / Invite Operator";
+      document.getElementById("btnSubmitUser").textContent = "Send Account Invite";
+      document.getElementById("btnResetForm").style.display = "none";
+      document.getElementById("uFullName").value = "";
+      document.getElementById("uEmail").value = "";
+      document.getElementById("uEmail").disabled = false;
+      document.getElementById("uPhone").value = "";
+      document.getElementById("uRole").value = "cashier";
+      document.getElementById("uIsActive").checked = true;
+      renderPermissionCheckboxes(window.CGS_ROLE_PRESETS.cashier);
+      setFormMessage("", "");
+    }
+
+    document.getElementById("btnResetForm")?.addEventListener("click", resetUserForm);
+
+    function editStaffUser(userId) {
+      const u = allStaff.find(x => x.id === userId);
+      if (!u) return;
+      document.getElementById("editingUserId").value = u.id;
+      document.getElementById("formTitle").textContent = `Edit Access: ${u.full_name || u.email}`;
+      document.getElementById("btnSubmitUser").textContent = "Save Role & Permissions";
+      document.getElementById("btnResetForm").style.display = "inline-flex";
+      document.getElementById("uFullName").value = u.full_name || "";
+      document.getElementById("uEmail").value = u.email || "";
+      document.getElementById("uEmail").disabled = true;
+      document.getElementById("uPhone").value = normalizePhone(u.phone);
+      document.getElementById("uRole").value = String(u.role || "cashier").toLowerCase();
+      document.getElementById("uIsActive").checked = u.is_active !== false;
+      renderPermissionCheckboxes(u.permissions || {});
+      setFormMessage("", "");
+    }
+
+    async function resendInvite(userId) {
+      const u = allStaff.find(x => x.id === userId);
+      if (!u) return;
+      const phone = normalizePhone(u.phone);
+      if (!isValidIndianMobile(phone)) {
+        alert("Please edit this user and enter a valid 10-digit mobile number before resending the invite.");
+        return;
+      }
+      const client = getClient();
+      const { data, error } = await client.functions.invoke("invite-staff-user", {
+        body: {
+          action: "resend",
+          user_id: u.id,
+          email: u.email,
+          full_name: u.full_name,
+          phone,
+          role: u.role,
+          permissions: u.permissions,
+          is_active: u.is_active,
+          redirect_to: `${window.location.origin}/admin/account-setup.html`
+        }
+      });
+      if (error || data?.error) {
+        alert(`Error: ${data?.error || error.message}`);
+        return;
+      }
+      alert(data?.message || `Setup invite re-sent to ${u.email}`);
+      await loadUsersTable();
+    }
+
+    async function loadUsersTable() {
+      const client = getClient();
+      const { data, error } = await client
+        .from("staff_profiles")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      const tbody = document.getElementById("usersTableBody");
+      if (!tbody) return;
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="4" style="color:var(--danger);">${escapeHtml(error.message)}</td></tr>`;
+        return;
+      }
+
+      allStaff = data || [];
+      if (allStaff.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4">No staff accounts configured yet.</td></tr>`;
+        return;
+      }
+
+      const activeSuperuserCount = countActiveSuperusers();
+
+      tbody.innerHTML = allStaff.map(u => {
+        const roleLower = String(u.role || "cashier").toLowerCase();
+        const pending = isPendingInvite(u);
+        const statusLabel = u.invite_status || (pending ? "invited" : "active");
+        const isSelf = isSameAsLoggedInUser(u);
+        const isSoleSuperuser = isSuperuserRow(u) && u.is_active !== false && activeSuperuserCount <= 1;
+        const canDelete = !isSelf && !isSoleSuperuser;
+        const deleteTitle = isSelf
+          ? "Cannot delete your own signed-in account"
+          : isSoleSuperuser
+            ? "Cannot delete the last active Superuser"
+            : pending
+              ? "Delete pending invite"
+              : "Delete user";
+
+        const enabledLabels = window.CGS_PERMISSIONS
+          .filter(p => roleLower === "superuser" || u.permissions?.[p.key])
+          .map(p => `<span class="pill">${escapeHtml(p.label)}</span>`)
+          .join("");
+
+        return `
+          <tr>
+            <td>
+              <strong>${escapeHtml(u.full_name || u.email)}</strong>
+              ${isSelf ? '<span class="pill">YOU</span>' : ""}<br/>
+              <span style="color:var(--muted);">${escapeHtml(u.email)}</span><br/>
+              <span style="color:var(--muted);">${escapeHtml(formatPhoneDisplay(u.phone))}</span>
+            </td>
+            <td>
+              <span class="pill">${escapeHtml(roleLower.toUpperCase())}</span>
+              <span class="pill ${pending ? "pending" : ""}">${escapeHtml(statusLabel)}</span>
+              ${u.is_active === false ? '<span class="pill inactive">DISABLED</span>' : ""}
+            </td>
+            <td>${enabledLabels || '<span style="color:var(--muted);">None</span>'}</td>
+            <td>
+              <div style="display:flex; flex-direction:column; gap:5px;">
+                <button type="button" class="btn btn-sm" onclick="editStaffUser('${u.id}')">Edit Roles</button>
+                ${pending
+                  ? `<button type="button" class="btn btn-sm" onclick="resendInvite('${u.id}')">Resend Email</button>`
+                  : ""}
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  ${canDelete ? "" : "disabled"}
+                  title="${escapeHtml(deleteTitle)}"
+                  onclick="openDeleteUserDialog('${u.id}')"
+                >${pending ? "Delete Invite" : "Delete User"}</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    async function checkOperatorExistsInDb(email, phone) {
+      const client = getClient();
+      const { data, error } = await client.rpc("check_operator_exists", {
+        p_email: email,
+        p_phone: phone || null
+      });
+      if (error) {
+        throw new Error(error.message || "Failed to check existing user in database.");
+      }
+      const row = Array.isArray(data) ? data[0] : data;
+      return Boolean(row && row.exists_flag)
+        ? {
+            exists: true,
+            existingEmail: row.existing_email || email,
+            existingRole: row.existing_role || "operator",
+            existingName: row.existing_name || ""
+          }
+        : { exists: false };
+    }
+
+    async function performRoleUpdate({ editingId, fullName, email, phone, role, permissions, isActive }) {
+      const client = getClient();
+      const submitBtn = document.getElementById("btnSubmitUser");
+      submitBtn.disabled = true;
+      setFormMessage("", "Saving changes...");
+
+      try {
+        const { error } = await client
+          .from("staff_profiles")
+          .update({
+            full_name: fullName,
+            phone,
+            role,
+            permissions,
+            is_active: isActive,
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", editingId);
+
+        if (error) {
+          setFormMessage("err", error.message);
+          return;
+        }
+
+        if (isCurrentSuperuserAccount({ targetUserId: editingId, targetEmail: email })) {
+          currentProfile = await window.loadCurrentStaffProfile();
+          document.getElementById("currentSuperuserBadge").textContent =
+            `Signed in as ${currentProfile.full_name} (${String(currentProfile.role || "").toUpperCase()})`;
+        }
+
+        setFormMessage("ok", "User permissions updated successfully.");
+        resetUserForm();
+        await loadUsersTable();
+      } finally {
+        submitBtn.disabled = false;
+      }
+    }
+
+    async function performCreateInvite({ fullName, email, phone, role, permissions, isActive }) {
+      const client = getClient();
+      const submitBtn = document.getElementById("btnSubmitUser");
+      submitBtn.disabled = true;
+      setFormMessage("", "Checking database & sending setup email...");
+
+      try {
+        const existingCheck = await checkOperatorExistsInDb(email, phone);
+        if (existingCheck.exists) {
+          setFormMessage(
+            "err",
+            `User already exists (${existingCheck.existingEmail}, role: ${existingCheck.existingRole}). User creation is blocked—use "Edit Roles" on the existing user instead.`
+          );
+          return;
+        }
+
+        const { data, error } = await client.functions.invoke("invite-staff-user", {
+          body: {
+            action: "invite",
+            email,
+            full_name: fullName,
+            phone,
+            role,
+            permissions,
+            is_active: isActive,
+            redirect_to: `${window.location.origin}/admin/account-setup.html`
+          }
+        });
+
+        if (error || data?.error) {
+          setFormMessage("err", data?.error || error.message);
+          return;
+        }
+
+        setFormMessage("ok", `Invite email sent to ${email}! They can now set their password.`);
+        resetUserForm();
+        await loadUsersTable();
+      } catch (err) {
+        setFormMessage("err", err?.message || "Failed to create/invite user.");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    }
+
+    document.getElementById("userForm")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      setFormMessage("", "");
+
+      const editingId = document.getElementById("editingUserId").value.trim();
+      const fullName = document.getElementById("uFullName").value.trim().toUpperCase();
+      const email = document.getElementById("uEmail").value.trim().toLowerCase();
+      const phone = normalizePhone(document.getElementById("uPhone").value);
+      const role = document.getElementById("uRole").value;
+      const permissions = readSelectedPermissions();
+      const isActive = document.getElementById("uIsActive").checked;
+
+      if (!fullName) {
+        setFormMessage("err", "Full name is required.");
+        return;
+      }
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setFormMessage("err", "Enter a valid email address.");
+        return;
+      }
+
+      if (!isValidIndianMobile(phone)) {
+        setFormMessage("err", "Enter a valid 10-digit mobile number.");
+        return;
+      }
+
+      if (editingId) {
+        const payload = { editingId, fullName, email, phone, role, permissions, isActive };
+        if (isCurrentSuperuserAccount({ targetUserId: editingId, targetEmail: email })) {
+          requestSelfRoleConfirmation(
+            `Account: ${email} | Target Role: ${role.toUpperCase()} | Active: ${isActive ? "Yes" : "No"}`,
+            () => performRoleUpdate(payload)
+          );
+          return;
+        }
+        await performRoleUpdate(payload);
+        return;
+      }
+
+      const createPayload = { fullName, email, phone, role, permissions, isActive };
+      if (isCurrentSuperuserAccount({ targetEmail: email })) {
+        requestSelfRoleConfirmation(
+          `Account: ${email} | Selected Role Preset: ${role.toUpperCase()}`,
+          () => performCreateInvite(createPayload)
+        );
+        return;
+      }
+
+      await performCreateInvite(createPayload);
+    });
+
+    async function bootUsersPage() {
+      if (typeof requireLogin === "function") {
+        const authed = await requireLogin();
+        if (!authed) return;
+      }
+      currentProfile = await window.loadCurrentStaffProfile();
+      if (!window.canStaff("manage_users")) {
+        alert("Access Denied: Only Superusers can manage users and roles.");
+        window.location.href = "/admin/pos.html";
+        return;
+      }
+      document.getElementById("currentSuperuserBadge").textContent =
+        `Signed in as ${currentProfile.full_name} (${String(currentProfile.role || "").toUpperCase()})`;
+      document.getElementById("mainContainer").style.display = "grid";
+      renderPermissionCheckboxes(window.CGS_ROLE_PRESETS.cashier);
+      await loadUsersTable();
+    }
+
+    bootUsersPage();
+  </script>
+</body>
+</html>

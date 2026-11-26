@@ -8,6 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="../js/environment.js"></script>
   <script src="/admin/session.js"></script>
+  <script src="/admin/rbac.js"></script>
   <style id="admin-auth-cloak">
     body.admin-auth-pending .app-shell {
       visibility: hidden;
@@ -944,9 +945,13 @@
         <a href="/admin/" class="btn btn-sm">← Admin</a>
         <h1>POS</h1>
         <span class="sync-pill" id="dbSyncStatus" title="Supabase sync status">DB: Checking...</span>
+        <span class="sync-pill" id="staffRoleBadge">Role: Loading...</span>
       </div>
       <div class="header-actions">
-        <button type="button" class="btn" id="btnOpenSettings">Billing Rules &amp; Tax</button>
+        <a href="/admin/analytics.html" class="btn" id="linkAdminAnalytics" style="display:none;">Sales Analytics</a>
+        <a href="/admin/users.html" class="btn" id="linkManageUsers" style="display:none;">Users &amp; Roles</a>
+        <a href="/admin/account-setup.html" class="btn btn-sm">My Account</a>
+        <button type="button" class="btn" id="btnOpenSettings" style="display:none;">Billing Rules &amp; Tax</button>
         <button type="button" class="btn" id="btnOpenSales">Bills &amp; Analytics (<span id="todayCount">0</span>)</button>
         <button type="button" class="btn btn-primary" id="btnExportCsv">Export CSV</button>
         <button type="button" class="btn btn-danger btn-sm" id="btnPosLogout">Sign Out</button>
@@ -1156,6 +1161,37 @@
     </div>
   </dialog>
 
+  <dialog class="app-dialog" id="adjustmentDialog" style="max-width: 520px;">
+    <div class="dialog-header">
+      <strong id="adjDialogTitle">Bill Adjustment (Waive-Off / Refund / Replace)</strong>
+      <button type="button" class="btn btn-sm" data-close-dialog="adjustmentDialog">✕</button>
+    </div>
+    <div class="dialog-body">
+      <input type="hidden" id="adjBillId" />
+      <div class="field" style="margin-bottom:10px;">
+        <label><strong>Adjustment Type</strong></label>
+        <select id="adjTypeSelect">
+          <option value="WAIVE_OFF">Waive-Off</option>
+          <option value="REFUND">Refund</option>
+          <option value="REPLACE">Replace Item(s)</option>
+        </select>
+      </div>
+      <div class="field" style="margin-bottom:10px;">
+        <label><strong>Amount to Waive / Refund (₹)</strong> (0 for pure item replacement)</label>
+        <input type="number" id="adjAmountInput" min="0" step="0.5" value="0" />
+      </div>
+      <div class="field" style="margin-bottom:10px;">
+        <label><strong>Reason / Audit Note *</strong></label>
+        <input type="text" id="adjReasonInput" placeholder="e.g., Guest feedback / Wrong item served" required />
+      </div>
+      <div class="field-error" id="adjErrorMsg"></div>
+    </div>
+    <div class="dialog-footer">
+      <button type="button" class="btn" data-close-dialog="adjustmentDialog">Cancel</button>
+      <button type="button" class="btn btn-primary" id="btnSubmitAdjustment">Record Adjustment</button>
+    </div>
+  </dialog>
+
   <div id="printMount"></div>
 
   <script>
@@ -1171,6 +1207,8 @@
 
     const DEFAULT_UPI_VPA = "anuragbirthare1988-1@oksbi";
     const tableSyncTimers = new Map();
+    let tableSessionsChannel = null;
+    let isClaimingTable = false;
 
     function getDbClient() {
       return window.supabaseClient || (typeof supabaseClient !== "undefined" ? supabaseClient : null);
@@ -1296,6 +1334,148 @@
       } catch (err) {
         console.warn("pos_table_sessions delete failed:", err);
       }
+    }
+
+    function hasActiveSessionOnTable(table) {
+      if (!table) return false;
+      const hasCart = Array.isArray(table.cart) && table.cart.length > 0;
+      const hasKots = Array.isArray(table.kots) && table.kots.length > 0;
+      const hasGuestInfo = Boolean(
+        String(table.customerName || "").trim() ||
+        String(table.customerPhone || "").trim() ||
+        String(table.tokenNumber || "").trim()
+      );
+      return hasCart || hasKots || hasGuestInfo;
+    }
+
+    function mapSessionRowToTable(row, fallbackSortOrder = 0) {
+      const custPhone = sanitizeTenDigitPhone(row.customer_phone || "");
+      const rawWa = sanitizeTenDigitPhone(row.wa_phone || "");
+      const isManual = Boolean(rawWa && custPhone && rawWa !== custPhone);
+      const rawItems = parseCartItems(row.cart_json);
+      return {
+        id: row.table_id,
+        name: formatSeatLabel(row.table_name),
+        sortOrder: Number.isFinite(Number(row.sort_order)) ? Number(row.sort_order) : fallbackSortOrder,
+        startedAt: row.updated_at || new Date().toISOString(),
+        cart: rawItems.map(normalizeCartItem),
+        kots: Array.isArray(row.kots_json) ? row.kots_json : [],
+        paymentMode: row.payment_mode || "UPI",
+        customerName: normalizeCustomerName(row.customer_name || ""),
+        customerPhone: custPhone,
+        waPhone: isManual ? rawWa : custPhone,
+        waPhoneManual: isManual,
+        serviceType: row.service_type === "Take away" ? "Take away" : "Dine-in",
+        tokenNumber: sanitizeToken(row.token_number || "")
+      };
+    }
+
+    async function refreshTableSessionsFromSupabase(preserveActiveSelection = true) {
+      const client = getDbClient();
+      if (!client?.from) return false;
+
+      try {
+        const { data: sessionRows, error: sessionsErr } = await client
+          .from("pos_table_sessions")
+          .select("*")
+          .order("sort_order", { ascending: true });
+
+        if (sessionsErr) throw sessionsErr;
+
+        if (Array.isArray(sessionRows) && sessionRows.length > 0) {
+          const previousActiveId = state.activeTableId;
+          const previousTable = state.tables.find(t => t.id === previousActiveId);
+          const previousHasDraft = previousTable && hasActiveSessionOnTable(previousTable);
+
+          state.tables = sessionRows.map((row, idx) => mapSessionRowToTable(row, idx));
+
+          if (preserveActiveSelection && state.tables.some(t => t.id === previousActiveId)) {
+            state.activeTableId = previousActiveId;
+          } else if (!preserveActiveSelection || !previousHasDraft) {
+            const firstVacant = state.tables.find(t => !hasActiveSessionOnTable(t));
+            state.activeTableId = (firstVacant || state.tables[0]).id;
+          } else if (!state.tables.some(t => t.id === state.activeTableId)) {
+            state.activeTableId = state.tables[0].id;
+          }
+
+          try {
+            localStorage.setItem(STORAGE_KEYS.tables, JSON.stringify({
+              tables: state.tables,
+              activeTableId: state.activeTableId
+            }));
+          } catch (_) {}
+
+          renderTableTabs();
+          renderCart();
+          return true;
+        }
+      } catch (err) {
+        console.warn("Failed refreshing pos_table_sessions:", err);
+      }
+      return false;
+    }
+
+    async function claimTableViaRpc(tableId, options = {}) {
+      const client = getDbClient();
+      if (!client?.rpc) {
+        return { ok: true };
+      }
+
+      const { data, error } = await client.rpc("allocate_pos_table", {
+        p_table_id: tableId,
+        p_service_type: options.serviceType || "Dine-in",
+        p_token_number: options.tokenNumber || null,
+        p_customer_name: options.customerName || null,
+        p_customer_phone: options.customerPhone || null,
+        p_payment_mode: options.paymentMode || "UPI"
+      });
+
+      if (error) {
+        return { ok: false, message: error.message };
+      }
+
+      if (data && data.ok === false) {
+        await refreshTableSessionsFromSupabase(false);
+        return {
+          ok: false,
+          code: data.code || "TABLE_ALREADY_ALLOCATED",
+          message: data.message || "This table is already in use on another terminal."
+        };
+      }
+
+      return { ok: true, session: data?.session || null };
+    }
+
+    function subscribePosTablesRealtime() {
+      const client = getDbClient();
+      if (!client?.channel) return;
+
+      if (tableSessionsChannel) {
+        try {
+          client.removeChannel(tableSessionsChannel);
+        } catch (_) {}
+        tableSessionsChannel = null;
+      }
+
+      tableSessionsChannel = client
+        .channel("cgs-pos-table-sessions-live")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "pos_table_sessions" },
+          async (payload) => {
+            if (isClaimingTable) return;
+            const changedId = payload?.new?.table_id || payload?.old?.table_id || "";
+            if (changedId && tableSyncTimers.has(changedId)) {
+              return;
+            }
+            await refreshTableSessionsFromSupabase(true);
+          }
+        )
+        .subscribe((status) => {
+          if (status === "SUBSCRIBED") {
+            setDbSyncStatus("synced", "DB: Live Sync");
+          }
+        });
     }
 
     async function syncBillingSettingsToSupabase(settings) {
@@ -1427,26 +1607,7 @@
           .order("sort_order", { ascending: true });
 
         if (!sessionsErr && Array.isArray(sessionRows) && sessionRows.length > 0) {
-          state.tables = sessionRows.map(row => {
-            const custPhone = sanitizeTenDigitPhone(row.customer_phone || "");
-            const rawWa = sanitizeTenDigitPhone(row.wa_phone || "");
-            const isManual = Boolean(rawWa && custPhone && rawWa !== custPhone);
-            const rawItems = parseCartItems(row.cart_json);
-            return {
-              id: row.table_id,
-              name: formatSeatLabel(row.table_name),
-              startedAt: row.updated_at || new Date().toISOString(),
-              cart: rawItems.map(normalizeCartItem),
-              kots: Array.isArray(row.kots_json) ? row.kots_json : [],
-              paymentMode: row.payment_mode || "UPI",
-              customerName: normalizeCustomerName(row.customer_name || ""),
-              customerPhone: custPhone,
-              waPhone: isManual ? rawWa : custPhone,
-              waPhoneManual: isManual,
-              serviceType: row.service_type === "Take away" ? "Take away" : "Dine-in",
-              tokenNumber: sanitizeToken(row.token_number || "")
-            };
-          });
+          state.tables = sessionRows.map((row, idx) => mapSessionRowToTable(row, idx));
           if (!state.tables.some(t => t.id === state.activeTableId)) {
             state.activeTableId = state.tables[0].id;
           }
@@ -1652,20 +1813,10 @@
       queueTableSessionSync(getActiveTable(), immediateDbSync);
     }
 
-    /**
-     * Single source of truth for item price in POS:
-     * 1) custom_price (if > 0) overrides base/cost-calculated price
-     * 2) recipe cost + margin (if ingredients_json & margin available) or base_price / display_price
-     */
     function roundUpFriendlyPos(val) {
       return Math.ceil(val / 5) * 5;
     }
 
-    /**
-     * Option 2 Price Resolution for POS:
-     * Highest applicable price between base price and custom-margin-derived price
-     * (and display_price when already persisted).
-     */
     window.getBillingItemPrice = function (item, globalMarginPct = null) {
       if (!item) return 0;
 
@@ -1699,7 +1850,7 @@
         ? Number(fallbackDisplay.toFixed(2))
         : 0;
     };
-    
+
     async function fetchGlobalBaseMarginPos(client) {
       try {
         const { data: idRow } = await client
@@ -2099,7 +2250,7 @@
       const container = document.getElementById("tableTabs");
       container.innerHTML = state.tables.map(t => {
         const count = t.cart.reduce((sum, item) => sum + item.qty, 0);
-        const isOngoing = count > 0 || (t.kots && t.kots.length > 0);
+        const isOngoing = count > 0 || (t.kots && t.kots.length > 0) || hasActiveSessionOnTable(t);
         const classes = [
           "table-tab",
           isOngoing ? "ongoing" : "",
@@ -2108,7 +2259,7 @@
 
         const badgeText = count > 0
           ? `${count} item${count > 1 ? "s" : ""}`
-          : (t.kots && t.kots.length > 0 ? `KOT ${t.kots.length}` : "Vacant");
+          : (t.kots && t.kots.length > 0 ? `KOT ${t.kots.length}` : (isOngoing ? "In Use" : "Vacant"));
 
         return `
           <button type="button" class="${classes}" onclick="selectTable('${escapeAttr(t.id)}')">
@@ -2133,8 +2284,20 @@
       removeBtn.disabled = state.tables.length <= 1 || active.cart.length > 0 || (active.kots && active.kots.length > 0);
     }
 
-    function selectTable(tableId) {
-      state.activeTableId = tableId;
+    async function selectTable(tableId) {
+      await refreshTableSessionsFromSupabase(true);
+      const target = state.tables.find(t => t.id === tableId);
+      if (!target) return;
+
+      if (tableId !== state.activeTableId && hasActiveSessionOnTable(target)) {
+        state.activeTableId = target.id;
+        saveTablesState(false);
+        renderTableTabs();
+        renderCart();
+        return;
+      }
+
+      state.activeTableId = target.id;
       saveTablesState(false);
       renderTableTabs();
       renderCart();
@@ -2181,7 +2344,6 @@
       renderCart();
     }
 
-    
     function populateCategoryFilter() {
       const select = document.getElementById("categoryFilter");
       const current = select.value;
@@ -2255,11 +2417,30 @@
       container.innerHTML = html;
     }
 
-    function addToCart(itemId) {
+    async function addToCart(itemId) {
       const table = getActiveTable();
-      if (table.cart.length === 0 && (!table.kots || table.kots.length === 0)) {
+      const isFreshAllocation = !hasActiveSessionOnTable(table);
+
+      if (isFreshAllocation) {
+        isClaimingTable = true;
+        try {
+          const claimResult = await claimTableViaRpc(table.id, {
+            serviceType: table.serviceType || "Dine-in",
+            tokenNumber: table.tokenNumber || "",
+            customerName: table.customerName || "",
+            customerPhone: table.customerPhone || "",
+            paymentMode: table.paymentMode || "UPI"
+          });
+          if (!claimResult.ok) {
+            alert(claimResult.message || `Table ${formatSeatLabel(table.name)} is already allocated on another PC.`);
+            return;
+          }
+        } finally {
+          isClaimingTable = false;
+        }
         table.startedAt = new Date().toISOString();
       }
+
       const existing = table.cart.find(c => c.id === itemId);
       if (existing) {
         existing.qty += 1;
@@ -2276,7 +2457,7 @@
           kotNumbers: []
         });
       }
-      saveTablesState(false);
+      saveTablesState(true);
       renderTableTabs();
       renderCart();
     }
@@ -3247,6 +3428,21 @@
 
         if (error) throw error;
 
+        const billHour = parseHourFromTimeStr(bill.time);
+        const itemRows = (bill.lineItems || []).map(li => ({
+          bill_number: bill.id,
+          bill_date: bill.date,
+          bill_hour: billHour,
+          item_id: li.id || null,
+          item_name: String(li.name || "").toUpperCase(),
+          qty: Number(li.qty || 1),
+          unit_price: Number(li.price || 0),
+          line_total: Number((Number(li.price || 0) * Number(li.qty || 1)).toFixed(2))
+        }));
+        if (itemRows.length > 0) {
+          await client.from("bill_items").insert(itemRows);
+        }
+
         await logPosActivity("BILL_SETTLED", {
           billNumber: bill.id,
           mode: bill.mode,
@@ -3540,7 +3736,7 @@
                         <td>₹${cgstVal.toFixed(2)}</td>
                         <td>₹${sgstVal.toFixed(2)}</td>
                         <td><strong>₹${Number(b.grandTotal).toFixed(2)}</strong></td>
-                        <td><button type="button" class="btn btn-sm" onclick="printPastBill('${escapeAttr(b.id)}')">Print</button></td>
+                        <td><button type="button" class="btn btn-sm" onclick="printPastBill('${escapeAttr(b.id)}')">Print</button> ${(window.canStaff("waive_off") || window.canStaff("refund") || window.canStaff("replace")) ? `<button type="button" class="btn btn-sm btn-danger" onclick="openAdjustmentDialog('${escapeAttr(b.id)}')">Adjust</button>` : ""}</td>
                       </tr>
                     `;
                   }).join("")}
@@ -3948,7 +4144,111 @@
     document.getElementById("btnExportCsv").addEventListener("click", exportSalesCsv);
     document.getElementById("btnExportCsvInner").addEventListener("click", exportSalesCsv);
 
+    window.addEventListener("focus", () => {
+      refreshTableSessionsFromSupabase(true);
+    });
+
     setInterval(enforceMidnightRolloverForSales, 30000);
+
+    function applyPosRolePermissions() {
+      const profile = window.currentStaffProfile;
+      const roleBadge = document.getElementById("staffRoleBadge");
+      if (roleBadge && profile) {
+        roleBadge.textContent = `${profile.full_name || "Staff"} (${String(profile.role || "").toUpperCase()})`;
+      }
+
+      if (!window.canStaff("pos_access")) {
+        alert("Your account does not have POS access enabled. Contact Superuser.");
+        window.location.href = "/admin/account-setup.html";
+        return false;
+      }
+
+      if (window.canStaff("view_analytics")) {
+        document.getElementById("linkAdminAnalytics").style.display = "inline-flex";
+      }
+      if (window.canStaff("manage_users")) {
+        document.getElementById("linkManageUsers").style.display = "inline-flex";
+      }
+      if (window.canStaff("edit_billing_rules")) {
+        document.getElementById("btnOpenSettings").style.display = "inline-flex";
+      }
+
+      if (!window.canStaff("send_kot")) {
+        document.getElementById("btnSendKot").style.display = "none";
+      }
+      if (!window.canStaff("settle_bill")) {
+        document.getElementById("btnCloseTransaction").style.display = "none";
+      }
+      return true;
+    }
+
+    function openAdjustmentDialog(billId) {
+      const bill = state.historyBills.find(b => b.id === billId) || state.sales.find(b => b.id === billId);
+      if (!bill) return;
+      const sel = document.getElementById("adjTypeSelect");
+      sel.innerHTML = "";
+      if (window.canStaff("waive_off")) sel.innerHTML += '<option value="WAIVE_OFF">Waive-Off</option>';
+      if (window.canStaff("refund")) sel.innerHTML += '<option value="REFUND">Refund</option>';
+      if (window.canStaff("replace")) sel.innerHTML += '<option value="REPLACE">Replace Item(s)</option>';
+      if (!sel.innerHTML) {
+        alert("You do not have permission to waive off, refund, or replace bills.");
+        return;
+      }
+      document.getElementById("adjBillId").value = bill.id;
+      document.getElementById("adjDialogTitle").textContent = `Adjust Bill ${bill.id} (Total: ₹${Number(bill.grandTotal).toFixed(2)})`;
+      document.getElementById("adjAmountInput").value = "0";
+      document.getElementById("adjReasonInput").value = "";
+      document.getElementById("adjErrorMsg").textContent = "";
+      document.getElementById("adjustmentDialog").showModal();
+    }
+
+    document.getElementById("btnSubmitAdjustment").addEventListener("click", async () => {
+      const billId = document.getElementById("adjBillId").value;
+      const adjType = document.getElementById("adjTypeSelect").value;
+      const amountDelta = Math.max(0, Number(document.getElementById("adjAmountInput").value) || 0);
+      const reason = document.getElementById("adjReasonInput").value.trim();
+      const errEl = document.getElementById("adjErrorMsg");
+
+      if (!reason) {
+        errEl.textContent = "Please enter a reason for this adjustment.";
+        return;
+      }
+
+      const client = getDbClient();
+      const staffId = await getCurrentStaffId();
+      const staffName = window.currentStaffProfile?.full_name || "STAFF";
+
+      const { error } = await client.from("bill_adjustments").insert([{
+        bill_number: billId,
+        adjustment_type: adjType,
+        amount_delta: amountDelta,
+        reason,
+        approved_by: staffId,
+        approved_by_name: staffName
+      }]);
+
+      if (error) {
+        errEl.textContent = error.message;
+        return;
+      }
+
+      const targetBill = state.historyBills.find(b => b.id === billId) || state.sales.find(b => b.id === billId);
+      if (targetBill && amountDelta > 0) {
+        const nextAdj = Number(targetBill.adjustedAmount || 0) + amountDelta;
+        const newStatus = nextAdj >= Number(targetBill.grandTotal || 0)
+          ? (adjType === "WAIVE_OFF" ? "WAIVED" : "REFUNDED")
+          : "PARTIAL_REFUND";
+        await client.from("bills").update({
+          adjusted_amount: nextAdj,
+          net_total: Math.max(0, Number(targetBill.grandTotal || 0) - nextAdj),
+          status: newStatus
+        }).eq("bill_number", billId);
+      }
+
+      await logPosActivity("BILL_ADJUSTED", { billNumber: billId, adjType, amountDelta, reason }, null, billId);
+      document.getElementById("adjustmentDialog").close();
+      await fetchBillingHistoryRange(state.historyFromDate, state.historyToDate);
+    });
 
     async function bootPos() {
       if (typeof requireLogin === "function") {
@@ -3956,12 +4256,16 @@
         if (!authed) return;
       }
 
+      await window.loadCurrentStaffProfile();
+      if (!applyPosRolePermissions()) return;
+
       loadPersistedState();
       renderTableTabs();
       renderCart();
       renderHistoryAndAnalytics();
 
       await hydratePosFromSupabase();
+      subscribePosTablesRealtime();
       renderTableTabs();
       renderCart();
       renderHistoryAndAnalytics();

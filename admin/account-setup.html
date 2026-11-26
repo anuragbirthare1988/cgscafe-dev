@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Setup & Password • CGS</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/environment.js"></script>
+  <script src="/admin/session.js"></script>
+  <script src="/admin/rbac.js"></script>
+  <style>
+    :root {
+      --bg: #f6f1ea;
+      --surface: #fffdf9;
+      --surface-alt: #f2ece2;
+      --ink: #241914;
+      --muted: #6e5c52;
+      --border: #dfd4c5;
+      --accent: #3b2319;
+      --accent-hover: #27160f;
+      --accent-ink: #fffdf9;
+      --ok: #255c35;
+      --danger: #8f2d24;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 12px 32px rgba(36, 25, 20, 0.1);
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      color: var(--accent);
+    }
+    .subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 18px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 13px;
+      font-size: 13px;
+    }
+    .field label {
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+    }
+    .lock-badge {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    input {
+      padding: 9px 11px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font: inherit;
+      background: #ffffff;
+      color: var(--ink);
+    }
+    input[readonly], input:disabled {
+      background: var(--surface-alt);
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+    .btn {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-radius: 8px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+    .btn:hover:not(:disabled) { background: var(--accent-hover); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--accent);
+      margin-top: 10px;
+    }
+    .msg {
+      font-size: 12px;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+    .msg.err { color: var(--danger); }
+    .msg.ok { color: var(--ok); }
+    .divider {
+      border-top: 1px solid var(--border);
+      margin: 18px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Account Setup &amp; Password</h1>
+    <p class="subtitle" id="pageSubtitle">Set up your password to activate your CGS operator account or update your existing password.</p>
+
+    <div id="authenticatedSection" style="display:none;">
+      <div class="field">
+        <label>Full Name <span class="lock-badge">Admin Assigned (Locked)</span></label>
+        <input type="text" id="accFullName" readonly />
+      </div>
+      <div class="field">
+        <label>Email Address <span class="lock-badge">Admin Assigned (Locked)</span></label>
+        <input type="email" id="accEmail" readonly />
+      </div>
+      <div class="field">
+        <label>Phone Number <span class="lock-badge">Admin Assigned (Locked)</span></label>
+        <input type="text" id="accPhone" readonly />
+      </div>
+      <div class="field">
+        <label>Assigned Role <span class="lock-badge">Admin Assigned (Locked)</span></label>
+        <input type="text" id="accRole" readonly />
+      </div>
+
+      <div class="divider"></div>
+
+      <form id="passwordForm">
+        <div class="field">
+          <label for="newPassword">New Password</label>
+          <input type="password" id="newPassword" minlength="8" required placeholder="Minimum 8 characters" />
+        </div>
+        <div class="field">
+          <label for="confirmPassword">Confirm New Password</label>
+          <input type="password" id="confirmPassword" minlength="8" required placeholder="Re-enter password" />
+        </div>
+        <button type="submit" class="btn" id="btnSavePassword">Save Password &amp; Activate Account</button>
+      </form>
+
+      <button type="button" class="btn btn-secondary" id="btnGoPos" style="display:none;" onclick="window.location.href='/admin/pos.html'">
+        Continue to POS →
+      </button>
+    </div>
+
+    <div id="resetRequestSection" style="display:none;">
+      <p class="subtitle">Forgot your password? Enter your registered email to receive a password reset link.</p>
+      <form id="requestResetForm">
+        <div class="field">
+          <label for="resetEmailInput">Registered Email</label>
+          <input type="email" id="resetEmailInput" required placeholder="operator@example.com" />
+        </div>
+        <button type="submit" class="btn">Send Password Reset Link</button>
+      </form>
+    </div>
+
+    <div class="msg" id="statusMsg"></div>
+  </div>
+
+  <script>
+    function getClient() {
+      return window.supabaseClient || (typeof supabaseClient !== "undefined" ? supabaseClient : null);
+    }
+
+    function setMessage(text, isError = false) {
+      const el = document.getElementById("statusMsg");
+      el.className = `msg ${isError ? "err" : "ok"}`;
+      el.textContent = text;
+    }
+
+    async function initAccountSetup() {
+      const client = getClient();
+      if (!client?.auth) {
+        setMessage("Supabase client not initialized.", true);
+        return;
+      }
+
+      // Exchange URL hash/code tokens from invite or recovery email if present
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get("code");
+      if (code && typeof client.auth.exchangeCodeForSession === "function") {
+        await client.auth.exchangeCodeForSession(code).catch(() => {});
+      }
+
+      const { data: { session } } = await client.auth.getSession();
+      if (!session?.user) {
+        document.getElementById("resetRequestSection").style.display = "block";
+        return;
+      }
+
+      const user = session.user;
+      const profile = await window.loadCurrentStaffProfile();
+
+      document.getElementById("authenticatedSection").style.display = "block";
+      document.getElementById("accFullName").value = profile?.full_name || user.user_metadata?.full_name || "";
+      document.getElementById("accEmail").value = profile?.email || user.email || "";
+      document.getElementById("accPhone").value = profile?.phone || user.user_metadata?.phone || "";
+      document.getElementById("accRole").value = String(profile?.role || "cashier").toUpperCase();
+
+      if (profile?.invite_status === "ACTIVE") {
+        document.getElementById("btnSavePassword").textContent = "Update Password";
+        document.getElementById("btnGoPos").style.display = "block";
+      }
+    }
+
+    document.getElementById("passwordForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const pw = document.getElementById("newPassword").value;
+      const confirm = document.getElementById("confirmPassword").value;
+      if (pw.length < 8) {
+        setMessage("Password must be at least 8 characters.", true);
+        return;
+      }
+      if (pw !== confirm) {
+        setMessage("Passwords do not match.", true);
+        return;
+      }
+
+      const btn = document.getElementById("btnSavePassword");
+      btn.disabled = true;
+      setMessage("Updating password...");
+
+      const client = getClient();
+      const { data: updateData, error } = await client.auth.updateUser({ password: pw });
+      if (error) {
+        btn.disabled = false;
+        setMessage(error.message, true);
+        return;
+      }
+
+      // Mark invite_status ACTIVE without altering any locked admin fields
+      if (updateData?.user?.id) {
+        await client
+          .from("staff_profiles")
+          .update({ invite_status: "ACTIVE" })
+          .eq("id", updateData.user.id);
+      }
+
+      btn.disabled = false;
+      document.getElementById("newPassword").value = "";
+      document.getElementById("confirmPassword").value = "";
+      document.getElementById("btnGoPos").style.display = "block";
+      setMessage("Password saved and account activated!");
+    });
+
+    document.getElementById("requestResetForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("resetEmailInput").value.trim();
+      const client = getClient();
+      const { error } = await client.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/admin/account-setup.html`
+      });
+      if (error) {
+        setMessage(error.message, true);
+      } else {
+        setMessage("Password reset link sent to your email.");
+      }
+    });
+
+    initAccountSetup();
+  </script>
+</body>
+</html>
