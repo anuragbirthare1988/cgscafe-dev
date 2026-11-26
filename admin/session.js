@@ -5,6 +5,11 @@ function getAdminSupabaseClient() {
   return window.supabaseClient || (typeof supabaseClient !== "undefined" ? supabaseClient : null);
 }
 
+function isAccountSetupPage() {
+  if (typeof window === "undefined") return false;
+  return window.location.pathname.replace(/\/+$/, "").endsWith("/admin/account-setup.html");
+}
+
 function setAdminAuthCloak(isPending) {
   if (typeof document === "undefined" || !document.body) return;
   document.body.classList.toggle("admin-auth-pending", Boolean(isPending));
@@ -18,6 +23,12 @@ async function getCurrentUser() {
 }
 
 async function requireLogin() {
+  // account-setup.html handles invite/recovery token exchange & session transitions directly
+  if (isAccountSetupPage()) {
+    setAdminAuthCloak(false);
+    return true;
+  }
+
   setAdminAuthCloak(true);
 
   const client = getAdminSupabaseClient();
@@ -35,9 +46,9 @@ async function requireLogin() {
   // Session confirmed: reveal page content
   setAdminAuthCloak(false);
 
-  // Keep every /admin/* view guarded if session expires or is signed out elsewhere
+  // Keep every other /admin/* view guarded if session expires or is signed out elsewhere
   client.auth.onAuthStateChange((_event, nextSession) => {
-    if (!nextSession && window.location.pathname.startsWith("/admin/")) {
+    if (!nextSession && window.location.pathname.startsWith("/admin/") && !isAccountSetupPage()) {
       setAdminAuthCloak(true);
       window.location.replace(ADMIN_LOGIN_URL);
     }
@@ -64,8 +75,12 @@ async function isAdmin() {
   return true;
 }
 
-// Auto-enforce on any page under /admin/ once DOM is ready
-if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin/")) {
+// Auto-enforce on protected pages under /admin/ once DOM is ready (excluding account-setup.html)
+if (
+  typeof window !== "undefined" &&
+  window.location.pathname.startsWith("/admin/") &&
+  !isAccountSetupPage()
+) {
   const runGlobalAdminGuard = () => {
     requireLogin();
   };
