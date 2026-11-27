@@ -1,10 +1,10 @@
-/* Import Google Fonts directly as a safeguard against local font overrides */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap');
 
 body {
     margin: 0;
-    background-color: #f7f3eb; /* Warm cream background */
-    color: #1B1412;
+    min-height: 100vh;
+    background-color: #dcd2c4;
+    color: #261c17;
 }
 
 body.admin-auth-pending .grid,
@@ -12,29 +12,28 @@ body.admin-auth-pending #cgs-common-admin-bar {
     visibility: hidden;
 }
 
-/* 3-column compact grid to show more tiles at once with less scrolling */
 .grid {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 76px 28px 40px;
+    padding: 44px 28px 44px;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px 18px;
+    gap: 18px 20px;
     box-sizing: border-box;
 }
 
 @media (max-width: 1024px) {
     .grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        padding: 96px 22px 36px;
-        gap: 14px 16px;
+        padding: 36px 22px 36px;
+        gap: 16px;
     }
 }
 
 @media (max-width: 640px) {
     .grid {
         grid-template-columns: 1fr;
-        padding: 112px 16px 32px;
+        padding: 28px 16px 32px;
         gap: 12px;
     }
 }
@@ -45,62 +44,54 @@ body.admin-auth-pending #cgs-common-admin-bar {
     flex-direction: row;
     align-items: center;
     gap: 14px;
-    background-color: #f5f1e8; /* Soft warm ivory card surface */
-    border: 1px solid #e3dcd0;
-    border-left: 4px solid #c9a648; /* Warm brushed gold left bar */
-    border-radius: 6px;
+    background-color: #ebe4d8;
+    border: 1px solid #c6b8a5;
+    border-left: 4px solid #9e7944;
+    border-radius: 10px;
     padding: 16px 18px;
-    min-height: 92px;
+    min-height: 94px;
     box-sizing: border-box;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(27, 20, 18, 0.04);
-    transition: transform 0.2s ease,
-                box-shadow 0.2s ease,
-                background-color 0.2s ease,
-                border-color 0.2s ease;
+    box-shadow: 0 2px 8px rgba(38, 28, 23, 0.06);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
 }
 
 .grid .tile:hover {
     transform: translateY(-2px);
-    background-color: #fbf9f4;
-    border-color: #d6be7a;
-    border-left-color: #b89128;
-    box-shadow: 0 8px 18px rgba(27, 20, 18, 0.07);
+    background-color: #f2ece2;
+    border-color: #9e7944;
+    box-shadow: 0 8px 18px rgba(38, 28, 23, 0.1);
 }
 
 .grid .tile:active {
     transform: translateY(0);
 }
 
-/* Compact dark espresso circular badge on the left */
 .grid .tile-badge {
     flex-shrink: 0;
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background-color: #1B1412;
+    background-color: #332620;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #d4af37;
-    box-shadow: 0 2px 6px rgba(27, 20, 18, 0.14);
-    transition: transform 0.2s ease, background-color 0.2s ease;
+    color: #dfc082;
 }
 
 .grid .tile:hover .tile-badge {
     transform: scale(1.04);
-    background-color: #261c19;
+    background-color: #42322a;
 }
 
 .grid .tile-badge svg {
     width: 22px;
     height: 22px;
-    stroke: #d4af37;
-    stroke-width: 1.5;
+    stroke: currentColor;
+    stroke-width: 1.6;
     fill: none;
 }
 
-/* Right-side text column */
 .grid .tile-content {
     display: flex;
     flex-direction: column;
@@ -112,15 +103,13 @@ body.admin-auth-pending #cgs-common-admin-bar {
     margin: 0 0 4px 0;
     font-family: 'Playfair Display', Georgia, 'Times New Roman', serif !important;
     font-size: 1.12rem !important;
-    font-weight: 500 !important;
+    font-weight: 600 !important;
     line-height: 1.25;
-    letter-spacing: 0.01em;
-    color: #1B1412 !important;
-    transition: color 0.2s ease;
+    color: #261c17 !important;
 }
 
 .grid .tile:hover h2 {
-    color: #7d5e10 !important;
+    color: #6b4d22 !important;
 }
 
 .grid .tile p {
@@ -128,6 +117,6 @@ body.admin-auth-pending #cgs-common-admin-bar {
     font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif !important;
     font-size: 0.82rem !important;
     font-weight: 400 !important;
-    line-height: 1.4;
-    color: #5c544e !important;
+    line-height: 1.42;
+    color: #57483e !important;
 }

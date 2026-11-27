@@ -2,40 +2,176 @@
 <html lang="en">
    <head>
       <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <script>(function(){try{var t=localStorage.getItem('cgs-theme');if(t==='botanica')document.documentElement.setAttribute('data-theme','botanica');}catch(e){}})();</script>
-      <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any">
-      <link rel="stylesheet" href="/fonts/local-fonts.css">
-      <link rel="preconnect" href="https://gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
-      <link rel="stylesheet" href="/css/theme.css">
-      <meta name="theme-color" content="#1B1412">
-      <link rel="stylesheet" href="admin.css">
-      <title>CGS Admin Portal</title>
-
-      <!-- Dependencies First -->
-      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>CGS Administrator Login</title>
+      <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
       <script src="/js/environment.js"></script>
-
-      <!-- Admin-Specific Logic -->
-      <script src="module.js"></script>
-      <script src="session.js"></script>
-
-      <!-- Global Scripts (Load these before admin.js so they are ready) -->
-      <script src="/js/custom.js"></script>
-      <script src="/js/components.js"></script>
-      <script src="/js/animations.js"></script>
-
-      <!-- Admin logic executes last -->
-      <script src="admin.js" defer></script>
+      <style>
+         *{
+            box-sizing:border-box;
+            margin:0;
+            padding:0;
+         }
+         body{
+            background:#0f0f0f;
+            font-family:'Plus Jakarta Sans',sans-serif;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            padding:16px;
+            color:white;
+         }
+         .login-card{
+            width:420px;
+            max-width:100%;
+            background:#181818;
+            border:1px solid rgba(212,175,55,.25);
+            border-radius:22px;
+            padding:42px;
+            box-shadow:0 20px 70px rgba(0,0,0,.45);
+         }
+         .logo{
+            font-family:'Oswald';
+            font-size:34px;
+            letter-spacing:3px;
+            text-align:center;
+            color:#D4AF37;
+         }
+         .subtitle{
+            text-align:center;
+            margin-top:8px;
+            margin-bottom:32px;
+            color:#9b9b9b;
+         }
+         input{
+            width:100%;
+            padding:14px;
+            margin-bottom:16px;
+            border-radius:12px;
+            border:1px solid #333;
+            background:#111;
+            color:white;
+            font-size:15px;
+         }
+         input:focus{
+            outline:none;
+            border-color:#D4AF37;
+         }
+         .forgot-row{
+            display:flex;
+            justify-content:flex-end;
+            margin-top:-4px;
+            margin-bottom:18px;
+         }
+         .link-btn{
+            background:none;
+            border:none;
+            padding:0;
+            width:auto;
+            font-family:'Plus Jakarta Sans',sans-serif;
+            font-size:13px;
+            color:#D4AF37;
+            cursor:pointer;
+            text-decoration:underline;
+         }
+         .link-btn:hover{
+            background:none;
+            color:#e7bf45;
+         }
+         button.primary-btn{
+            width:100%;
+            padding:14px;
+            border:none;
+            border-radius:12px;
+            background:#D4AF37;
+            color:#0f0f0f;
+            font-family:'Oswald';
+            font-size:16px;
+            font-weight:600;
+            letter-spacing:1px;
+            cursor:pointer;
+            transition:background-color 0.15s ease, opacity 0.15s ease;
+         }
+         button.primary-btn:hover:not(:disabled){
+            background:#e7bf45;
+         }
+         button.primary-btn:disabled{
+            opacity:0.4;
+            cursor:not-allowed;
+         }
+         #error{
+            margin-top:16px;
+            text-align:center;
+            color:#ff7070;
+            font-size:13.5px;
+            line-height:1.45;
+         }
+         #status{
+            margin-top:16px;
+            text-align:center;
+            color:#7ee09a;
+            font-size:13.5px;
+            line-height:1.45;
+         }
+         .panel{
+            display:none;
+         }
+         .panel.active{
+            display:block;
+         }
+         .back-link-wrap{
+            margin-top:14px;
+            text-align:center;
+         }
+      </style>
    </head>
-   <body class="admin-auth-pending">
-      <!-- Public header hidden automatically on /admin/* by session.js -->
-      <header id="header"></header>
-      <main id="admin-grid" class="grid"></main>
-      <!-- Footer Section -->
-      <footer class="site-footer" id="footer"></footer>
-      <!-- Miscellaneous (Top-Bottom scrolling, WhatsApp Chat) -->
-      <div id="preloader"></div>
+   <body>
+      <div class="login-card">
+         <div class="logo">
+            CGS
+         </div>
+         <div class="subtitle" id="authSubtitle">
+            Administrator Login
+         </div>
+
+         <form id="loginForm" class="panel active" onsubmit="handleLoginSubmit(event)" novalidate>
+            <input
+               id="email"
+               type="email"
+               autocomplete="email"
+               placeholder="Email">
+            <input
+               id="password"
+               type="password"
+               autocomplete="current-password"
+               placeholder="Password">
+            <div class="forgot-row">
+               <button type="button" class="link-btn" onclick="showForgotPanel()">Forgot Password?</button>
+            </div>
+            <button type="submit" id="loginBtn" class="primary-btn" disabled>
+               LOGIN
+            </button>
+         </form>
+
+         <form id="forgotForm" class="panel" onsubmit="handleForgotSubmit(event)" novalidate>
+            <input
+               id="forgotEmail"
+               type="email"
+               autocomplete="email"
+               placeholder="Enter account email for reset link">
+            <button type="submit" id="forgotBtn" class="primary-btn" disabled>
+               SEND RESET LINK
+            </button>
+            <div class="back-link-wrap">
+               <button type="button" class="link-btn" onclick="showLoginPanel()">Back to Login</button>
+            </div>
+         </form>
+
+         <div id="error"></div>
+         <div id="status"></div>
+      </div>
+      <script src="auth.js"></script>
    </body>
 </html>
